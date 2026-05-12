@@ -5,8 +5,6 @@ import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanst
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createMiddleware } from "@tanstack/react-start";
 import { evlogErrorHandler } from "evlog/nitro/v3";
-import { RootProvider } from 'fumadocs-ui/provider/tanstack';
-
 import appCss from "../index.css?url";
 
 export interface RouterAppContext {
@@ -71,9 +69,7 @@ function RootDocument() {
           <HeadContent />
         </head>
         <body>
-          <RootProvider>
-            <Outlet />
-          </RootProvider>
+          <Outlet />
           <Toaster richColors position="bottom-right" />
           <TanStackRouterDevtools position="bottom-left" />
           <ReactQueryDevtools initialIsOpen={false} />
