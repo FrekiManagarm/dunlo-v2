@@ -12,9 +12,118 @@ Dunlo is a Stripe payment recovery SaaS. The UI and auth are fully built. This s
 
 **Architecture decision:** Everything stays in the existing TanStack Start monorepo. API routes handle Stripe OAuth + webhooks. A Nitro scheduled task runs email delivery every 5 minutes. No new services, no external queues.
 
+**Authentication:** Better Auth with email verification, password reset, rate limiting, and secure session settings per `/better-auth-best-practices`. Auth emails (verification, password reset) are sent via a platform-level Resend key — distinct from per-user recovery email keys.
+
 **Email provider:** Users configure their own Resend API key + sending domain. Dunlo calls Resend on their behalf at send time.
 
 **AI drafting:** Anthropic SDK (Claude Sonnet) generates escalation email drafts. Requires adding `@anthropic-ai/sdk` and `ANTHROPIC_API_KEY`.
+
+---
+
+## 0. Authentication (Better Auth)
+
+All auth lives in `packages/auth/src/index.ts`. The existing scaffold (drizzleAdapter + emailAndPassword + tanstackStartCookies) is extended with email verification, password reset, rate limiting, and hardened session settings.
+
+### Updated `packages/auth/src/index.ts` config
+
+```ts
+export const auth = createAuth({
+  appName: "Dunlo",
+  database: drizzleAdapter(db, { provider: "pg", schema }),
+  trustedOrigins: [env.CORS_ORIGIN],
+
+  // Session hardening
+  session: {
+    expiresIn: 60 * 60 * 24 * 7,        // 7 days
+    updateAge: 60 * 60 * 24,             // refresh cookie daily
+    cookieCache: {
+      enabled: true,
+      maxAge: 60 * 5,                    // 5-min client cache
+    },
+  },
+
+  // Security
+  advanced: {
+    useSecureCookies: env.NODE_ENV === "production",
+  },
+
+  // Rate limiting (uses DB storage, no Redis needed)
+  rateLimit: {
+    enabled: true,
+    window: 60,                           // 60s window
+    max: 10,                              // 10 auth requests per window per IP
+    storage: "database",
+  },
+
+  emailAndPassword: {
+    enabled: true,
+    requireEmailVerification: true,
+    sendResetPassword: async ({ user, url }) => {
+      await sendAuthEmail({
+        to: user.email,
+        subject: "Reset your Dunlo password",
+        html: passwordResetEmailHtml({ url }),
+      })
+    },
+  },
+
+  emailVerification: {
+    sendOnSignUp: true,
+    autoSignInAfterVerification: true,
+    sendVerificationEmail: async ({ user, url }) => {
+      await sendAuthEmail({
+        to: user.email,
+        subject: "Verify your Dunlo account",
+        html: verificationEmailHtml({ url }),
+      })
+    },
+  },
+
+  plugins: [tanstackStartCookies()],
+})
+```
+
+### Platform email sender (`apps/web/src/lib/auth-email.ts`)
+
+Auth emails (verification + password reset) use a **platform-level** Resend key — not the per-user recovery key which may not exist yet at signup time.
+
+```ts
+// Uses RESEND_API_KEY (platform key, not user's key)
+export async function sendAuthEmail({ to, subject, html }) {
+  const resend = new Resend(env.RESEND_API_KEY)
+  await resend.emails.send({
+    from: "Dunlo <noreply@dunlo.io>",
+    to, subject, html,
+  })
+}
+```
+
+### UI changes needed for auth flows
+
+**`sign-up-form.tsx`:** After successful `signUp.email()`, show an inline message: *"Check your inbox — we've sent you a verification link."* instead of navigating to dashboard.
+
+**`login.tsx`:** Add a "Forgot password?" link below the sign-in form. Clicking it shows an inline email input → calls `authClient.requestPasswordReset()` → shows confirmation message.
+
+**New route `/verify-email`:** TanStack Start will need to handle the `?token=...` callback from the verification email. Better Auth handles this automatically via `/api/auth/verify-email` — no custom route needed, but we add a post-verification redirect to `/onboarding`.
+
+**New route `/reset-password`:** Handles `?token=...` from the reset email. Single form with new password + confirm. Calls `authClient.resetPassword({ newPassword, token })`.
+
+### New environment variables for auth
+
+```env
+RESEND_API_KEY=re_...    # Platform-level key for auth emails (noreply@dunlo.io)
+```
+
+Added to `packages/env/src/server.ts`.
+
+### Schema changes
+
+`requireEmailVerification: true` and `rateLimit.storage: "database"` require running the Better Auth CLI to generate/migrate new columns. Run after updating the config:
+
+```bash
+bunx @better-auth/cli@latest generate
+bun run db:push
+```
 
 ---
 
@@ -175,12 +284,15 @@ STRIPE_SECRET_KEY=sk_...              # Your Stripe platform secret key
 STRIPE_WEBHOOK_SECRET=whsec_...       # For locally testing webhooks (dev only)
 
 # Encryption
-ENCRYPTION_KEY=<32-byte hex string>
+ENCRYPTION_KEY=<32-byte hex string>   # Generate: openssl rand -hex 32
 
 # Anthropic (AI escalation drafts)
 ANTHROPIC_API_KEY=sk-ant-...
 
-# App URL (for OAuth callbacks)
+# Platform email (auth flows — verification + password reset)
+RESEND_API_KEY=re_...                 # Platform Resend key (noreply@dunlo.io)
+
+# App URL (for OAuth callbacks + email links)
 APP_URL=http://localhost:3001
 ```
 
@@ -462,7 +574,8 @@ packages/db/src/
 
 apps/web/src/
   routes/
-    onboarding.tsx              — Multi-step onboarding wizard
+    onboarding.tsx              — Multi-step onboarding wizard (Stripe + email provider setup)
+    reset-password.tsx          — Password reset form (consumes ?token= from email link)
     payments.tsx                — Full payments list
     sequences.tsx               — Sequence editor
     settings.tsx                — Settings (account, email, escalation)
@@ -484,6 +597,7 @@ apps/web/src/
   lib/
     stripe.ts                   — Stripe SDK instance (uses stored access token)
     resend.ts                   — Resend client factory (uses stored api key)
+    auth-email.ts               — Platform-level Resend sender for auth emails
     anthropic.ts                — Anthropic SDK instance
     template.ts                 — Template variable renderer
   server/plugins/
@@ -494,6 +608,11 @@ apps/web/src/
 
 ## 14. Acceptance Criteria
 
+- [ ] Sign-up sends a verification email via platform Resend key; user must verify before accessing dashboard
+- [ ] "Forgot password" flow sends reset email; token-based reset works end-to-end
+- [ ] Rate limiting blocks >10 auth attempts per 60s per IP
+- [ ] Sessions expire after 7 days; cookie refreshes daily
+- [ ] `useSecureCookies` is active in production
 - [ ] User can connect a Stripe account via OAuth; `stripeConnection` record is created
 - [ ] Default recovery sequences are seeded on first Stripe connect
 - [ ] Webhook receives `payment_intent.payment_failed`; `failedPayment` + `recoveryAttempt` records are created
