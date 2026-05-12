@@ -15,8 +15,15 @@ import {
 
 import { authClient } from "@/lib/auth-client";
 import { getUser } from "@/functions/get-user";
+import { Logo } from "@/components/logo";
 
 export const Route = createFileRoute("/dashboard")({
+  head: () => ({
+    meta: [
+      { name: "robots", content: "noindex, nofollow" },
+      { title: "Dashboard — Dunlo" },
+    ],
+  }),
   component: RouteComponent,
   beforeLoad: async () => {
     const session = await getUser();
@@ -129,11 +136,8 @@ function RouteComponent() {
     <div className="flex min-h-dvh bg-[#f7f8fa] font-sans">
       {/* Sidebar */}
       <aside className="hidden w-60 shrink-0 flex-col border-r border-gray-100 bg-white lg:flex">
-        <div className="flex items-center gap-2 border-b border-gray-100 px-5 py-4">
-          <span className="flex size-7 items-center justify-center rounded-full bg-dunlo text-[11px] font-bold text-white">
-            D
-          </span>
-          <span className="text-sm font-semibold text-gray-900">dunlo</span>
+        <div className="flex items-center border-b border-gray-100 px-5 py-4">
+          <Logo size={26} />
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5">

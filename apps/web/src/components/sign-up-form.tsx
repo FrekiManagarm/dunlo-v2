@@ -8,7 +8,11 @@ import z from "zod";
 
 import { authClient } from "@/lib/auth-client";
 
-export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () => void }) {
+export default function SignUpForm({
+  onSwitchToSignIn,
+}: {
+  onSwitchToSignIn: () => void;
+}) {
   const navigate = useNavigate({ from: "/login" });
   const { isPending } = authClient.useSession();
 
@@ -22,7 +26,8 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
             navigate({ to: "/dashboard" });
             toast.success("Account created! Welcome to Dunlo.");
           },
-          onError: (err) => toast.error(err.error.message || err.error.statusText),
+          onError: (err) =>
+            toast.error(err.error.message || err.error.statusText),
         },
       );
     },
@@ -46,16 +51,25 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
   return (
     <div>
       <h2 className="text-2xl font-bold text-gray-900">Create your account</h2>
-      <p className="mt-1 text-sm text-gray-500">Free during beta — no credit card needed.</p>
+      <p className="mt-1 text-sm text-gray-500">
+        Free during beta — no credit card needed.
+      </p>
 
       <form
-        onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); form.handleSubmit(); }}
+        onSubmit={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          form.handleSubmit();
+        }}
         className="mt-8 space-y-5"
       >
         <form.Field name="name">
           {(field) => (
             <div className="space-y-1.5">
-              <Label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor={field.name}
+                className="text-sm font-medium text-gray-700"
+              >
                 Full name
               </Label>
               <Input
@@ -69,7 +83,9 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
                 className="h-11 rounded-xl border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:border-dunlo focus:ring-dunlo/20"
               />
               {field.state.meta.errors.map((error) => (
-                <p key={error?.message} className="text-xs text-red-500">{error?.message}</p>
+                <p key={error?.message} className="text-xs text-red-500">
+                  {error?.message}
+                </p>
               ))}
             </div>
           )}
@@ -78,7 +94,10 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
         <form.Field name="email">
           {(field) => (
             <div className="space-y-1.5">
-              <Label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor={field.name}
+                className="text-sm font-medium text-gray-700"
+              >
                 Work email
               </Label>
               <Input
@@ -93,7 +112,9 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
                 className="h-11 rounded-xl border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:border-dunlo focus:ring-dunlo/20"
               />
               {field.state.meta.errors.map((error) => (
-                <p key={error?.message} className="text-xs text-red-500">{error?.message}</p>
+                <p key={error?.message} className="text-xs text-red-500">
+                  {error?.message}
+                </p>
               ))}
             </div>
           )}
@@ -102,7 +123,10 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
         <form.Field name="password">
           {(field) => (
             <div className="space-y-1.5">
-              <Label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+              <Label
+                htmlFor={field.name}
+                className="text-sm font-medium text-gray-700"
+              >
                 Password
               </Label>
               <Input
@@ -117,13 +141,20 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
                 className="h-11 rounded-xl border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:border-dunlo focus:ring-dunlo/20"
               />
               {field.state.meta.errors.map((error) => (
-                <p key={error?.message} className="text-xs text-red-500">{error?.message}</p>
+                <p key={error?.message} className="text-xs text-red-500">
+                  {error?.message}
+                </p>
               ))}
             </div>
           )}
         </form.Field>
 
-        <form.Subscribe selector={(s) => ({ canSubmit: s.canSubmit, isSubmitting: s.isSubmitting })}>
+        <form.Subscribe
+          selector={(s) => ({
+            canSubmit: s.canSubmit,
+            isSubmitting: s.isSubmitting,
+          })}
+        >
           {({ canSubmit, isSubmitting }) => (
             <button
               type="submit"
@@ -131,9 +162,13 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
               className="flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-dunlo text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98] disabled:opacity-50"
             >
               {isSubmitting ? (
-                <><Loader2 className="size-4 animate-spin" /> Creating account…</>
+                <>
+                  <Loader2 className="size-4 animate-spin" /> Creating account…
+                </>
               ) : (
-                <>Create free account <ChevronRight size={15} /></>
+                <>
+                  Create free account <ChevronRight size={15} />
+                </>
               )}
             </button>
           )}
@@ -142,14 +177,28 @@ export default function SignUpForm({ onSwitchToSignIn }: { onSwitchToSignIn: () 
 
       <p className="mt-4 text-center text-[11px] text-gray-400">
         By signing up you agree to our{" "}
-        <a href="#" className="underline underline-offset-2 hover:text-gray-600">Terms</a>{" "}
+        <a
+          href="#"
+          className="underline underline-offset-2 hover:text-gray-600"
+        >
+          Terms
+        </a>{" "}
         and{" "}
-        <a href="#" className="underline underline-offset-2 hover:text-gray-600">Privacy Policy</a>.
+        <a
+          href="#"
+          className="underline underline-offset-2 hover:text-gray-600"
+        >
+          Privacy Policy
+        </a>
+        .
       </p>
 
       <p className="mt-5 text-center text-sm text-gray-500">
         Already have an account?{" "}
-        <button onClick={onSwitchToSignIn} className="font-semibold text-gray-900 hover:underline">
+        <button
+          onClick={onSwitchToSignIn}
+          className="font-semibold text-gray-900 hover:underline"
+        >
           Sign in
         </button>
       </p>

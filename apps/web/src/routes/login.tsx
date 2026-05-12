@@ -3,8 +3,15 @@ import { useState } from "react";
 import { Check } from "lucide-react";
 import SignInForm from "@/components/sign-in-form";
 import SignUpForm from "@/components/sign-up-form";
+import { Logo } from "@/components/logo";
 
 export const Route = createFileRoute("/login")({
+  head: () => ({
+    meta: [
+      { name: "robots", content: "noindex, nofollow" },
+      { title: "Sign in — Dunlo" },
+    ],
+  }),
   component: RouteComponent,
 });
 
@@ -34,11 +41,8 @@ function RouteComponent() {
           aria-hidden
         />
 
-        <Link to="/" className="relative z-10 flex items-center gap-2">
-          <span className="flex size-7 items-center justify-center rounded-full bg-dunlo text-[11px] font-bold text-white">
-            D
-          </span>
-          <span className="text-sm font-semibold text-white">dunlo</span>
+        <Link to="/" className="relative z-10">
+          <Logo size={26} dark />
         </Link>
 
         <div className="relative z-10 space-y-10">
