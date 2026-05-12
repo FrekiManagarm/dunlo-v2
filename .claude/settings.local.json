@@ -1,0 +1,29 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(bun eslint *)",
+      "Bash(bun run *)",
+      "Bash(bun x *)",
+      "Bash(python3 /Users/mathieuchambaud/.claude/plugins/cache/ui-ux-pro-max-skill/ui-ux-pro-max/2.5.0/.claude/skills/ui-ux-pro-max/scripts/search.py \"SaaS developer productivity tool dark mode modern\" --design-system -p \"Dunlo\" -f markdown)",
+      "Bash(gh api *)",
+      "Bash(python3 *)",
+      "Bash(grep -E '\\\\.\\(tsx|ts|css|json\\)$')",
+      "Bash(grep -E '\\\\.\\(tsx|ts|css\\)$')",
+      "Bash(curl -s http://localhost:3001)",
+      "Bash(bun exec *)",
+      "Bash(./node_modules/.bin/tsc --noEmit)",
+      "Bash(npx tsc *)",
+      "Bash(curl -s http://localhost:3002/login)",
+      "Bash(curl -s http://localhost:3002)",
+      "Bash(curl -s http://localhost:3002/)",
+      "Bash(awk '{print $2, $11, $12}')",
+      "Bash(curl -s http://localhost:3001/)",
+      "WebFetch(domain:taap.it)",
+      "Bash(bun add *)",
+      "Bash(pkill -f \"vite dev\")",
+      "WebFetch(domain:dunlo.io)",
+      "Bash(lsof -ti:3001)",
+      "Bash(xargs kill -9)"
+    ]
+  }
+}

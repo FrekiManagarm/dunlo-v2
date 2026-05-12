@@ -1,135 +1,139 @@
-import { Button } from "@dunlo-v2/ui/components/button";
 import { Input } from "@dunlo-v2/ui/components/input";
 import { Label } from "@dunlo-v2/ui/components/label";
 import { useForm } from "@tanstack/react-form";
 import { useNavigate } from "@tanstack/react-router";
+import { Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import z from "zod";
 
 import { authClient } from "@/lib/auth-client";
 
-import Loader from "./loader";
-
 export default function SignInForm({ onSwitchToSignUp }: { onSwitchToSignUp: () => void }) {
-  const navigate = useNavigate({
-    from: "/",
-  });
+  const navigate = useNavigate({ from: "/login" });
   const { isPending } = authClient.useSession();
 
   const form = useForm({
-    defaultValues: {
-      email: "",
-      password: "",
-    },
+    defaultValues: { email: "", password: "" },
     onSubmit: async ({ value }) => {
       await authClient.signIn.email(
-        {
-          email: value.email,
-          password: value.password,
-        },
+        { email: value.email, password: value.password },
         {
           onSuccess: () => {
-            navigate({
-              to: "/dashboard",
-            });
-            toast.success("Sign in successful");
+            navigate({ to: "/dashboard" });
+            toast.success("Welcome back!");
           },
-          onError: (error) => {
-            toast.error(error.error.message || error.error.statusText);
-          },
+          onError: (err) => toast.error(err.error.message || err.error.statusText),
         },
       );
     },
     validators: {
       onSubmit: z.object({
         email: z.email("Invalid email address"),
-        password: z.string().min(8, "Password must be at least 8 characters"),
+        password: z.string().min(8, "Minimum 8 characters"),
       }),
     },
   });
 
   if (isPending) {
-    return <Loader />;
+    return (
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="size-5 animate-spin text-dunlo" />
+      </div>
+    );
   }
 
   return (
-    <div className="mx-auto w-full mt-10 max-w-md p-6">
-      <h1 className="mb-6 text-center text-3xl font-bold">Welcome Back</h1>
+    <div>
+      <h2 className="text-2xl font-bold text-gray-900">Welcome back</h2>
+      <p className="mt-1 text-sm text-gray-500">Sign in to your Dunlo account.</p>
 
       <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          e.stopPropagation();
-          form.handleSubmit();
-        }}
-        className="space-y-4"
+        onSubmit={(e) => { e.preventDefault(); e.stopPropagation(); form.handleSubmit(); }}
+        className="mt-8 space-y-5"
       >
-        <div>
-          <form.Field name="email">
-            {(field) => (
-              <div className="space-y-2">
-                <Label htmlFor={field.name}>Email</Label>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="email"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-                {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500">
-                    {error?.message}
-                  </p>
-                ))}
-              </div>
-            )}
-          </form.Field>
-        </div>
+        <form.Field name="email">
+          {(field) => (
+            <div className="space-y-1.5">
+              <Label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+                Email
+              </Label>
+              <Input
+                id={field.name}
+                name={field.name}
+                type="email"
+                autoComplete="email"
+                placeholder="you@company.com"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                className="h-11 rounded-xl border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:border-dunlo focus:ring-dunlo/20"
+              />
+              {field.state.meta.errors.map((error) => (
+                <p key={error?.message} className="text-xs text-red-500">
+                  {error?.message}
+                </p>
+              ))}
+            </div>
+          )}
+        </form.Field>
 
-        <div>
-          <form.Field name="password">
-            {(field) => (
-              <div className="space-y-2">
-                <Label htmlFor={field.name}>Password</Label>
-                <Input
-                  id={field.name}
-                  name={field.name}
-                  type="password"
-                  value={field.state.value}
-                  onBlur={field.handleBlur}
-                  onChange={(e) => field.handleChange(e.target.value)}
-                />
-                {field.state.meta.errors.map((error) => (
-                  <p key={error?.message} className="text-red-500">
-                    {error?.message}
-                  </p>
-                ))}
+        <form.Field name="password">
+          {(field) => (
+            <div className="space-y-1.5">
+              <div className="flex items-center justify-between">
+                <Label htmlFor={field.name} className="text-sm font-medium text-gray-700">
+                  Password
+                </Label>
+                <a href="#" className="text-xs font-medium text-dunlo-dim hover:underline">
+                  Forgot password?
+                </a>
               </div>
-            )}
-          </form.Field>
-        </div>
+              <Input
+                id={field.name}
+                name={field.name}
+                type="password"
+                autoComplete="current-password"
+                placeholder="••••••••"
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) => field.handleChange(e.target.value)}
+                className="h-11 rounded-xl border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:border-dunlo focus:ring-dunlo/20"
+              />
+              {field.state.meta.errors.map((error) => (
+                <p key={error?.message} className="text-xs text-red-500">
+                  {error?.message}
+                </p>
+              ))}
+            </div>
+          )}
+        </form.Field>
 
-        <form.Subscribe
-          selector={(state) => ({ canSubmit: state.canSubmit, isSubmitting: state.isSubmitting })}
-        >
+        <form.Subscribe selector={(s) => ({ canSubmit: s.canSubmit, isSubmitting: s.isSubmitting })}>
           {({ canSubmit, isSubmitting }) => (
-            <Button type="submit" className="w-full" disabled={!canSubmit || isSubmitting}>
-              {isSubmitting ? "Submitting..." : "Sign In"}
-            </Button>
+            <button
+              type="submit"
+              disabled={!canSubmit || isSubmitting}
+              className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-gray-900 text-sm font-semibold text-white transition-all hover:bg-gray-700 active:scale-[0.98] disabled:opacity-50"
+            >
+              {isSubmitting ? (
+                <><Loader2 className="size-4 animate-spin" /> Signing in…</>
+              ) : (
+                "Sign in"
+              )}
+            </button>
           )}
         </form.Subscribe>
       </form>
 
-      <div className="mt-4 text-center">
-        <Button
-          variant="link"
+      <p className="mt-6 text-center text-sm text-gray-500">
+        No account?{" "}
+        <button
           onClick={onSwitchToSignUp}
-          className="text-indigo-600 hover:text-indigo-800"
+          className="font-semibold text-dunlo-dim hover:underline"
         >
-          Need an account? Sign Up
-        </Button>
-      </div>
+          Create one free
+        </button>
+      </p>
     </div>
   );
 }
