@@ -5,7 +5,6 @@ import { HeadContent, Outlet, Scripts, createRootRouteWithContext } from "@tanst
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createMiddleware } from "@tanstack/react-start";
 import { evlogErrorHandler } from "evlog/nitro/v3";
-
 import appCss from "../index.css?url";
 
 export interface RouterAppContext {
@@ -26,8 +25,28 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
         content:
           "Dunlo connects to Stripe, detects every failed payment by type, and sends the right recovery email automatically. Setup in 5 minutes.",
       },
+      { property: "og:type", content: "website" },
+      { property: "og:site_name", content: "Dunlo" },
+      { property: "og:title", content: "Dunlo — Stop losing revenue to failed payments" },
+      {
+        property: "og:description",
+        content:
+          "Dunlo connects to Stripe, detects every failed payment by type, and sends the right recovery email automatically. Setup in 5 minutes.",
+      },
+      { property: "og:image", content: "https://dunlo.io/brand/dunlo-logo.png" },
+      { property: "og:url", content: "https://dunlo.io" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "Dunlo — Stop losing revenue to failed payments" },
+      {
+        name: "twitter:description",
+        content:
+          "Dunlo connects to Stripe, detects every failed payment by type, and sends the right recovery email automatically. Setup in 5 minutes.",
+      },
+      { name: "twitter:image", content: "https://dunlo.io/brand/dunlo-logo.png" },
     ],
     links: [
+      { rel: "icon", href: "/brand/dunlo-mark.svg", type: "image/svg+xml" },
+      { rel: "icon", href: "/brand/dunlo-mark.png", type: "image/png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
       {

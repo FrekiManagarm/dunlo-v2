@@ -21,7 +21,8 @@
     "noUncheckedSideEffectImports": true,
     "paths": {
       "@/*": ["./src/*"],
-      "@dunlo-v2/ui/*": ["../../packages/ui/src/*"]
+      "@dunlo-v2/ui/*": ["../../packages/ui/src/*"],
+      "collections/*": ["./.source/*"]
     }
   }
 }
