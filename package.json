@@ -1,0 +1,42 @@
+{
+  "name": "dunlo-v2",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ],
+    "catalog": {
+      "dotenv": "^17.2.2",
+      "zod": "^4.1.13",
+      "typescript": "^6",
+      "@types/node": "^22.13.14",
+      "next-themes": "^0.4.6",
+      "better-auth": "1.6.9",
+      "@types/react-dom": "^19.2.3"
+    }
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "check-types": "turbo check-types",
+    "dev:web": "turbo -F web dev",
+    "db:push": "turbo -F @dunlo-v2/db db:push",
+    "db:studio": "turbo -F @dunlo-v2/db db:studio",
+    "db:generate": "turbo -F @dunlo-v2/db db:generate",
+    "db:migrate": "turbo -F @dunlo-v2/db db:migrate"
+  },
+  "dependencies": {
+    "@dunlo-v2/env": "workspace:*",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@dunlo-v2/config": "workspace:*",
+    "@types/node": "catalog:",
+    "turbo": "^2.8.12",
+    "typescript": "catalog:"
+  },
+  "packageManager": "bun@1.2.21"
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://ui.shadcn.com/schema.json",
+  "style": "base-lyra",
+  "rsc": false,
+  "tsx": true,
+  "tailwind": {
+    "config": "",
+    "css": "src/styles/globals.css",
+    "baseColor": "neutral",
+    "cssVariables": true,
+    "prefix": ""
+  },
+  "iconLibrary": "lucide",
+  "aliases": {
+    "components": "@dunlo-v2/ui/components",
+    "utils": "@dunlo-v2/ui/lib/utils",
+    "hooks": "@dunlo-v2/ui/hooks",
+    "lib": "@dunlo-v2/ui/lib",
+    "ui": "@dunlo-v2/ui/components"
+  },
+  "menuColor": "default",
+  "menuAccent": "subtle",
+  "registries": {}
+}

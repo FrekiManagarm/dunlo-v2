@@ -1,0 +1,24 @@
+{
+  "name": "@dunlo-v2/auth",
+  "type": "module",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./*": {
+      "default": "./src/*.ts"
+    }
+  },
+  "scripts": {},
+  "dependencies": {
+    "@dunlo-v2/db": "workspace:*",
+    "@dunlo-v2/env": "workspace:*",
+    "better-auth": "catalog:",
+    "dotenv": "catalog:",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@dunlo-v2/config": "workspace:*",
+    "typescript": "catalog:"
+  }
+}
