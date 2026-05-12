@@ -26,6 +26,7 @@ title: string        # Post title
 description: string  # Short excerpt shown on cards
 date: YYYY-MM-DD     # Publication date (ISO)
 author: string       # Author display name
+tags: [tag1, tag2]   # Keywords used for SEO meta tags
 ---
 ```
 
@@ -89,6 +90,16 @@ Wrap `<Outlet />` in `__root.tsx` with `<RootProvider>` from `fumadocs-ui/provid
 - Loads single post server-side via `createServerFn` calling `blog.getPage([slug])`. Returns 404 if not found.
 - UI: shared site nav → narrow centered column → large post title → meta row (date + author) → MDX body rendered with `<MDXContent components={mdxComponents} />`.
 - No sidebar. Clean reading layout.
+- Exports a `head()` function with full SEO meta tags derived from frontmatter:
+  - `<title>` — post title + " | Dunlo Blog"
+  - `<meta name="description">` — post description
+  - `<meta name="keywords">` — comma-joined tags array
+  - `og:title`, `og:description`, `og:url`, `og:type: article`
+  - `twitter:title`, `twitter:description`, `twitter:card: summary_large_image`
+
+### `/blog` — Index SEO
+
+- Also exports `head()` with a static title ("Dunlo Blog"), description, and `og:url`.
 
 ---
 
@@ -121,6 +132,6 @@ content/blog/*.mdx
 
 - Search (`/api/search`) — not needed for a blog (few posts)
 - Pagination — not needed initially
-- Tags / categories — not needed initially
+- Tag index pages (`/blog/tags/:tag`) — tags exist in frontmatter for SEO keywords but no tag-filtered listing pages
 - RSS feed — not in this iteration
 - Dark mode — project is light-mode only
