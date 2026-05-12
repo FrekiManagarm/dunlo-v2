@@ -16,19 +16,22 @@ export const Route = createFileRoute('/blog/$slug')({
       tags: (page.data.tags as string[]) ?? [],
     };
   },
-  head: ({ loaderData }) => ({
-    meta: [
-      { title: `${loaderData.title} | Dunlo Blog` },
-      { name: 'description', content: loaderData.description },
-      { name: 'keywords', content: loaderData.tags.join(', ') },
-      { property: 'og:title', content: loaderData.title },
-      { property: 'og:description', content: loaderData.description },
-      { property: 'og:type', content: 'article' },
-      { name: 'twitter:card', content: 'summary_large_image' },
-      { name: 'twitter:title', content: loaderData.title },
-      { name: 'twitter:description', content: loaderData.description },
-    ],
-  }),
+  head: ({ loaderData }) => {
+    if (!loaderData) return {};
+    return {
+      meta: [
+        { title: `${loaderData.title} | Dunlo Blog` },
+        { name: 'description', content: loaderData.description },
+        { name: 'keywords', content: loaderData.tags.join(', ') },
+        { property: 'og:title', content: loaderData.title },
+        { property: 'og:description', content: loaderData.description },
+        { property: 'og:type', content: 'article' },
+        { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:title', content: loaderData.title },
+        { name: 'twitter:description', content: loaderData.description },
+      ],
+    };
+  },
   component: PostPage,
 });
 
