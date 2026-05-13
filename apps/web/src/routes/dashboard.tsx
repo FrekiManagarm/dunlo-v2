@@ -15,6 +15,8 @@ import {
 
 import { authClient } from "@/lib/auth-client";
 import { getUser } from "@/functions/get-user";
+import { getDashboardData } from "@/functions/payments";
+import { formatAmount } from "@/lib/template";
 import { Logo } from "@/components/logo";
 
 export const Route = createFileRoute("/dashboard")({
@@ -33,66 +35,32 @@ export const Route = createFileRoute("/dashboard")({
     if (!context.session) {
       throw redirect({ to: "/login" });
     }
+    const data = await getDashboardData();
+    return data;
   },
 });
 
-const PAYMENTS = [
-  {
-    id: 1,
-    name: "Meridian Analytics",
-    email: "billing@meridian.io",
-    amount: "€890",
-    status: "recovered",
-    type: "Card expired",
-    time: "2 min ago",
-  },
-  {
-    id: 2,
-    name: "Volta Cloud",
-    email: "ops@voltacloud.eu",
-    amount: "€2,340",
-    status: "escalated",
-    type: "Bank declined",
-    time: "18 min ago",
-  },
-  {
-    id: 3,
-    name: "Praxis Labs",
-    email: "cfo@praxislabs.com",
-    amount: "€415",
-    status: "recovering",
-    type: "Insufficient funds",
-    time: "1 hour ago",
-  },
-  {
-    id: 4,
-    name: "Helix Software",
-    email: "admin@helix.dev",
-    amount: "€1,200",
-    status: "recovered",
-    type: "Card expired",
-    time: "3 hours ago",
-  },
-  {
-    id: 5,
-    name: "Orbis Finance",
-    email: "finance@orbis.io",
-    amount: "€3,500",
-    status: "escalated",
-    type: "Bank declined",
-    time: "5 hours ago",
-  },
-];
-
 const STATUS_STYLE: Record<string, string> = {
   recovered: "bg-dunlo/8 text-dunlo-deep border-dunlo/25",
-  recovering: "bg-amber-50 text-amber-700 border-amber-200",
+  in_recovery: "bg-amber-50 text-amber-700 border-amber-200",
   escalated: "bg-red-50 text-red-700 border-red-200",
   pending: "bg-gray-100 text-gray-600 border-gray-200",
+  failed: "bg-gray-100 text-gray-600 border-gray-200",
+  dismissed: "bg-gray-100 text-gray-600 border-gray-200",
+};
+
+const STATUS_LABEL: Record<string, string> = {
+  recovered: "recovered",
+  in_recovery: "in recovery",
+  escalated: "escalated",
+  pending: "pending",
+  failed: "failed",
+  dismissed: "dismissed",
 };
 
 function RouteComponent() {
   const { session } = Route.useRouteContext();
+  const loaderData = Route.useLoaderData();
   const navigate = Route.useNavigate();
 
   const handleSignOut = () => {
@@ -101,34 +69,36 @@ function RouteComponent() {
     });
   };
 
+  const { stripeConnected, stats: s, recentPayments, currency } = loaderData;
+
   const stats = [
     {
       label: "Recovered this month",
-      value: "€12,480",
-      delta: "+18% vs last month",
+      value: formatAmount(s.recoveredAmount, currency),
+      delta: stripeConnected ? "Current month" : "Connect Stripe to track",
       icon: TrendingUp,
-      positive: true,
+      positive: s.recoveredAmount > 0 ? true : null,
     },
     {
       label: "Failed payments",
-      value: "47",
-      delta: "34 in recovery",
+      value: String(s.inRecoveryCount),
+      delta: `${s.inRecoveryCount} in recovery`,
       icon: AlertCircle,
       positive: null,
     },
     {
       label: "Recovery rate",
-      value: "72.3%",
-      delta: "+4.1% this week",
+      value: `${s.successRate.toFixed(1)}%`,
+      delta: "Current month",
       icon: CheckCircle,
-      positive: true,
+      positive: s.successRate > 0 ? true : null,
     },
     {
       label: "MRR at risk",
-      value: "€3,240",
-      delta: "13 accounts",
+      value: formatAmount(s.mrrAtRisk, currency),
+      delta: `${s.inRecoveryCount} account${s.inRecoveryCount === 1 ? "" : "s"}`,
       icon: DollarSign,
-      positive: false,
+      positive: s.mrrAtRisk > 0 ? false : null,
     },
   ];
 
@@ -200,28 +170,35 @@ function RouteComponent() {
             <div className="flex items-center gap-2 rounded-full border border-dunlo/25 bg-dunlo/8 px-3 py-1.5">
               <span className="size-1.5 animate-pulse rounded-full bg-dunlo" />
               <span className="text-[11px] font-semibold text-dunlo-deep">
-                Beta · Stripe connected
+                {stripeConnected
+                  ? "Beta · Stripe connected"
+                  : "Beta · Stripe not connected"}
               </span>
             </div>
           </div>
         </div>
 
         <div className="p-6 space-y-6">
-          {/* Stripe CTA */}
-          <div className="flex items-center justify-between rounded-2xl border border-dunlo/25 bg-dunlo/8 p-5">
-            <div>
-              <p className="text-sm font-semibold text-gray-900">
-                Connect Stripe to start recovering payments
-              </p>
-              <p className="mt-0.5 text-xs text-gray-500">
-                Takes 2 minutes. OAuth, no code required.
-              </p>
+          {/* Stripe CTA — only when not connected */}
+          {!stripeConnected && (
+            <div className="flex items-center justify-between rounded-2xl border border-dunlo/25 bg-dunlo/8 p-5">
+              <div>
+                <p className="text-sm font-semibold text-gray-900">
+                  Connect Stripe to start recovering payments
+                </p>
+                <p className="mt-0.5 text-xs text-gray-500">
+                  Takes 2 minutes. OAuth, no code required.
+                </p>
+              </div>
+              <a
+                href="/api/stripe/connect"
+                className="flex shrink-0 items-center gap-2 rounded-full bg-dunlo px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.97]"
+              >
+                Connect Stripe
+                <ExternalLink size={13} />
+              </a>
             </div>
-            <button className="flex shrink-0 items-center gap-2 rounded-full bg-dunlo px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.97]">
-              Connect Stripe
-              <ExternalLink size={13} />
-            </button>
-          </div>
+          )}
 
           {/* Stats */}
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
@@ -258,9 +235,12 @@ function RouteComponent() {
               <h2 className="text-sm font-semibold text-gray-900">
                 Payments in recovery
               </h2>
-              <button className="flex items-center gap-1 text-xs font-medium text-dunlo-dim hover:underline">
+              <a
+                href="/payments"
+                className="flex items-center gap-1 text-xs font-medium text-dunlo-dim hover:underline"
+              >
                 View all <ChevronRight size={13} />
-              </button>
+              </a>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full">
@@ -283,37 +263,53 @@ function RouteComponent() {
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-50">
-                  {PAYMENTS.map((p) => (
-                    <tr
-                      key={p.id}
-                      className="transition-colors hover:bg-gray-50/50"
-                    >
-                      <td className="px-5 py-4">
-                        <p className="text-sm font-semibold text-gray-900">
-                          {p.name}
-                        </p>
-                        <p className="text-xs text-gray-400">{p.email}</p>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="text-sm text-gray-600">{p.type}</span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="font-mono text-sm font-semibold text-gray-900">
-                          {p.amount}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span
-                          className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold capitalize ${STATUS_STYLE[p.status]}`}
-                        >
-                          {p.status}
-                        </span>
-                      </td>
-                      <td className="px-5 py-4">
-                        <span className="text-xs text-gray-400">{p.time}</span>
+                  {recentPayments.length === 0 ? (
+                    <tr>
+                      <td
+                        colSpan={5}
+                        className="px-5 py-10 text-center text-xs text-gray-400"
+                      >
+                        No failed payments yet — your dashboard will populate
+                        when a payment fails.
                       </td>
                     </tr>
-                  ))}
+                  ) : (
+                    recentPayments.map((p) => (
+                      <tr
+                        key={p.id}
+                        className="transition-colors hover:bg-gray-50/50"
+                      >
+                        <td className="px-5 py-4">
+                          <p className="text-sm font-semibold text-gray-900">
+                            {p.name}
+                          </p>
+                          <p className="text-xs text-gray-400">{p.email}</p>
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className="text-sm text-gray-600">
+                            {p.type}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className="font-mono text-sm font-semibold text-gray-900">
+                            {p.amount}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <span
+                            className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold capitalize ${STATUS_STYLE[p.status] ?? STATUS_STYLE.pending}`}
+                          >
+                            {STATUS_LABEL[p.status] ?? p.status}
+                          </span>
+                        </td>
+                        <td className="px-5 py-4">
+                          <span className="text-xs text-gray-400">
+                            {p.time}
+                          </span>
+                        </td>
+                      </tr>
+                    ))
+                  )}
                 </tbody>
               </table>
             </div>
