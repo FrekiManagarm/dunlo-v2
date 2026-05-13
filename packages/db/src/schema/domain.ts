@@ -23,6 +23,7 @@ export const recoveryAttemptStatus = pgEnum("recovery_attempt_status", [
   "scheduled",
   "sent",
   "failed",
+  "dismissed",
 ]);
 
 export const escalationStatus = pgEnum("escalation_status", [
