@@ -1,6 +1,9 @@
 import { db } from "@dunlo-v2/db";
 import {
   emailProvider,
+  escalation,
+  failedPayment,
+  recoveryAttempt,
   recoverySequence,
   sequenceStep,
   stripeConnection,
@@ -8,7 +11,9 @@ import {
 import { createServerFn } from "@tanstack/react-start";
 import { and, eq } from "drizzle-orm";
 
+import { generateEscalationDraft } from "@/functions/escalations";
 import { authMiddleware } from "@/middleware/auth";
+import { getConnectedStripe } from "@/lib/stripe";
 
 export type DecryptedStripeConnection = {
   id: string;
@@ -227,3 +232,158 @@ export async function seedDefaultSequences(userId: string): Promise<void> {
     }
   }
 }
+
+export const syncExistingFailedPayments = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .handler(async ({ context }) => {
+    if (!context.session?.user) throw new Error("Unauthorized");
+    const userId = context.session.user.id;
+
+    const connection = await getStripeConnection(userId);
+    if (!connection) throw new Error("Stripe not connected");
+
+    const stripe = getConnectedStripe(connection.accessToken);
+    const since = Math.floor((Date.now() - 90 * 24 * 3600 * 1000) / 1000);
+
+    const piList = await stripe.paymentIntents.list({
+      limit: 100,
+      created: { gte: since },
+    });
+
+    const failedPIs = piList.data.filter(
+      (pi) => pi.status === "requires_payment_method",
+    );
+
+    let imported = 0;
+    let skipped = 0;
+
+    for (const pi of failedPIs) {
+      const existing = await db
+        .select({ id: failedPayment.id })
+        .from(failedPayment)
+        .where(eq(failedPayment.stripePaymentIntentId, pi.id))
+        .limit(1);
+
+      if (existing.length > 0) {
+        skipped++;
+        continue;
+      }
+
+      let customerEmail: string | null = pi.receipt_email ?? null;
+      let customerName: string | null = null;
+
+      if (!customerEmail && pi.customer) {
+        try {
+          const cid =
+            typeof pi.customer === "string" ? pi.customer : pi.customer.id;
+          const customer = await stripe.customers.retrieve(cid);
+          if (!("deleted" in customer)) {
+            customerEmail = customer.email ?? null;
+            customerName = customer.name ?? null;
+          }
+        } catch {
+          // skip if customer fetch fails
+        }
+      }
+
+      if (!customerEmail) {
+        skipped++;
+        continue;
+      }
+
+      const failureCode =
+        pi.last_payment_error?.decline_code ??
+        pi.last_payment_error?.code ??
+        "card_declined";
+      const failureMessage = pi.last_payment_error?.message ?? null;
+      const customerId =
+        typeof pi.customer === "string"
+          ? pi.customer
+          : (pi.customer as { id: string } | null)?.id ?? "";
+      const invoiceId =
+        typeof pi.invoice === "string"
+          ? pi.invoice
+          : (pi.invoice as { id: string } | null)?.id ?? null;
+
+      const threshold = connection.escalationThreshold;
+      const shouldEscalate =
+        threshold !== null && threshold > 0 && pi.amount >= threshold;
+
+      const paymentId = crypto.randomUUID();
+
+      await db.insert(failedPayment).values({
+        id: paymentId,
+        userId,
+        stripePaymentIntentId: pi.id,
+        stripeCustomerId: customerId,
+        stripeInvoiceId: invoiceId,
+        amount: pi.amount,
+        currency: pi.currency,
+        failureCode,
+        failureMessage,
+        customerName,
+        customerEmail,
+        status: shouldEscalate ? "escalated" : "in_recovery",
+        createdAt: new Date(pi.created * 1000),
+      });
+
+      if (shouldEscalate) {
+        const escalationId = crypto.randomUUID();
+        await db.insert(escalation).values({
+          id: escalationId,
+          failedPaymentId: paymentId,
+          userId,
+          status: "pending",
+        });
+        generateEscalationDraft(escalationId).catch(() => {});
+      } else {
+        const [direct] = await db
+          .select()
+          .from(recoverySequence)
+          .where(
+            and(
+              eq(recoverySequence.userId, userId),
+              eq(recoverySequence.failureCode, failureCode),
+              eq(recoverySequence.isActive, true),
+            ),
+          )
+          .limit(1);
+        const [fallback] = direct
+          ? []
+          : await db
+              .select()
+              .from(recoverySequence)
+              .where(
+                and(
+                  eq(recoverySequence.userId, userId),
+                  eq(recoverySequence.failureCode, "card_declined"),
+                  eq(recoverySequence.isActive, true),
+                ),
+              )
+              .limit(1);
+        const sequence = direct ?? fallback ?? null;
+
+        if (sequence) {
+          const steps = await db
+            .select()
+            .from(sequenceStep)
+            .where(eq(sequenceStep.sequenceId, sequence.id));
+
+          const now = Date.now();
+          for (const step of steps.sort((a, b) => a.stepNumber - b.stepNumber)) {
+            await db.insert(recoveryAttempt).values({
+              id: crypto.randomUUID(),
+              failedPaymentId: paymentId,
+              sequenceStepId: step.id,
+              status: "scheduled",
+              scheduledAt: new Date(now + step.delayHours * 3600 * 1000),
+            });
+          }
+        }
+      }
+
+      imported++;
+    }
+
+    return { imported, skipped };
+  });
