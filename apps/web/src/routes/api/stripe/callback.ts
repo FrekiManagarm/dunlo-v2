@@ -5,7 +5,7 @@ import { stripeConnection } from "@dunlo-v2/db/schema/domain";
 import { env } from "@dunlo-v2/env/server";
 import { createFileRoute } from "@tanstack/react-router";
 
-import { seedDefaultSequences } from "@/functions/stripe";
+import { seedDefaultSequences, importExistingFailedPayments, getStripeConnection } from "@/functions/stripe";
 
 const STATE_COOKIE = "stripe_oauth_state";
 
@@ -129,6 +129,13 @@ export const Route = createFileRoute("/api/stripe/callback")({
           });
 
           await seedDefaultSequences(session.user.id);
+
+          const connection = await getStripeConnection(session.user.id);
+          if (connection) {
+            importExistingFailedPayments(session.user.id, connection).catch(
+              (e) => console.error("[stripe/callback] initial sync failed", e),
+            );
+          }
 
           return new Response(null, {
             status: 302,
