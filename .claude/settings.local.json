@@ -51,7 +51,9 @@
       "Bash(node -e ' *)",
       "Bash(node *)",
       "Bash(grep \"node:path\\\\|path\\\\$1\")",
-      "Bash(bun install *)"
+      "Bash(bun install *)",
+      "Bash(openssl rand *)",
+      "Bash(bun --filter @dunlo-v2/db test)"
     ]
   }
 }

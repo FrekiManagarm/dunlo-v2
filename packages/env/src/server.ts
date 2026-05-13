@@ -9,6 +9,21 @@ export const env = createEnv({
     BETTER_AUTH_URL: z.url(),
     CORS_ORIGIN: z.url(),
     NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+
+    STRIPE_CLIENT_ID: z.string().min(1),
+    STRIPE_SECRET_KEY: z.string().min(1),
+    STRIPE_WEBHOOK_SECRET: z.string().min(1),
+
+    ENCRYPTION_KEY: z
+      .string()
+      .regex(/^[0-9a-fA-F]{64}$/, "ENCRYPTION_KEY must be a 64-char hex string (32 bytes)"),
+
+    ANTHROPIC_API_KEY: z.string().min(1),
+    RESEND_API_KEY: z.string().min(1),
+
+    APP_URL: z.url(),
+
+    SCHEDULER_INTERVAL_MINUTES: z.coerce.number().int().positive().default(5),
   },
   runtimeEnv: process.env,
   emptyStringAsUndefined: true,

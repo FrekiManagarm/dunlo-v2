@@ -15,6 +15,7 @@
     "@dunlo-v2/env": "workspace:*",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
+    "resend": "^6.12.3",
     "zod": "catalog:"
   },
   "devDependencies": {
