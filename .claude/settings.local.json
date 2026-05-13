@@ -56,7 +56,29 @@
       "Bash(bun --filter @dunlo-v2/db test)",
       "Bash(grep -v \"^$\")",
       "Bash(echo \"CRON_SECRET=$\\(openssl rand -hex 16\\)\")",
-      "Bash(CRON_SECRET=3aa60fee5dd7792a359bc9399759dbeb bunx vitest run)"
+      "Bash(CRON_SECRET=3aa60fee5dd7792a359bc9399759dbeb bunx vitest run)",
+      "Skill(update-config)",
+      "Bash(bunx turbo *)",
+      "Bash(bash -c ' *)",
+      "Bash(grep -v \"auth-client\\\\|api/auth\\\\|/auth\\\\$\\\\|better-auth\")",
+      "Bash(bunx tsr *)",
+      "Bash(bunx @tanstack/router-cli generate)"
+    ]
+  },
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "file=$(jq -r '.tool_input.file_path // empty'); echo \"$file\" | grep -qE '\\.(ts|tsx)$' || exit 0; cd /Users/mathieuchambaud/Documents/projects/dunlo-v2/apps/web && count=$(bunx tsc --noEmit 2>&1 | grep -c 'error TS' || echo 0); [ \"$count\" -le 17 ] || { echo \"TypeScript regressions: $count errors (baseline: 17)\"; exit 2; }",
+            "timeout": 60,
+            "statusMessage": "Checking TypeScript...",
+            "asyncRewake": true
+          }
+        ]
+      }
     ]
   }
 }

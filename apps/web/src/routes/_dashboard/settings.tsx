@@ -5,13 +5,17 @@ import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   AlertCircle,
+  AlertTriangle,
   CheckCircle2,
+  CreditCard,
+  FlaskConical,
   Loader2,
   LogOut,
   Mail,
   RefreshCw,
   Save,
   Send,
+  TrendingUp,
   Unplug,
   User as UserIcon,
 } from "lucide-react";
@@ -30,13 +34,19 @@ import {
   updateEscalationSettings,
 } from "@/functions/escalations";
 import { syncExistingFailedPayments } from "@/functions/stripe";
+import {
+  simulateFailedPayment,
+  simulateEscalation,
+  simulateRecovery,
+} from "@/functions/testing";
 
-type Tab = "account" | "email" | "escalation";
+type Tab = "account" | "email" | "escalation" | "testing";
 
 const TABS = [
   { id: "account" as const, label: "Account", icon: UserIcon },
   { id: "email" as const, label: "Email provider", icon: Mail },
   { id: "escalation" as const, label: "Escalation", icon: AlertCircle },
+  { id: "testing" as const, label: "Testing", icon: FlaskConical },
 ];
 
 export const Route = createFileRoute("/_dashboard/settings")({
@@ -121,6 +131,7 @@ function RouteComponent() {
               )}
               {tab === "email" && <EmailTab initial={emailState} />}
               {tab === "escalation" && <EscalationTab initial={escalationState} />}
+              {tab === "testing" && <TestingTab />}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -626,6 +637,119 @@ function EscalationTab({
             </button>
           </div>
         </div>
+      </div>
+    </div>
+  );
+}
+
+type SimAction = "failure" | "escalation" | "recovery";
+
+const SIM_BUTTONS: {
+  action: SimAction;
+  label: string;
+  description: string;
+  icon: React.ElementType;
+  accent: string;
+  badge: string;
+}[] = [
+  {
+    action: "failure",
+    label: "Failed payment",
+    description: "Creates a test failed payment and schedules its recovery sequence.",
+    icon: CreditCard,
+    accent: "text-red-500",
+    badge: "bg-red-50 border-red-100 text-red-600",
+  },
+  {
+    action: "escalation",
+    label: "Escalation",
+    description: "Creates a failed payment above your escalation threshold and queues an AI email draft.",
+    icon: TrendingUp,
+    accent: "text-amber-500",
+    badge: "bg-amber-50 border-amber-100 text-amber-600",
+  },
+  {
+    action: "recovery",
+    label: "Recovery",
+    description: "Marks the most recent in-recovery payment as recovered and cancels pending emails.",
+    icon: AlertTriangle,
+    accent: "text-dunlo",
+    badge: "bg-dunlo/[0.07] border-dunlo/20 text-dunlo-deep",
+  },
+];
+
+function TestingTab() {
+  const [busy, setBusy] = useState<SimAction | null>(null);
+
+  const run = async (action: SimAction) => {
+    setBusy(action);
+    try {
+      if (action === "failure") {
+        const r = await simulateFailedPayment();
+        toast.success(`Failed payment created for ${r.customerName}`);
+      } else if (action === "escalation") {
+        const r = await simulateEscalation();
+        toast.success(`Escalation created for ${r.customerName}`);
+      } else {
+        const r = await simulateRecovery();
+        toast.success(`${r.customerName ?? "Payment"} marked as recovered`);
+      }
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : "Simulation failed");
+    } finally {
+      setBusy(null);
+    }
+  };
+
+  return (
+    <div className="space-y-5">
+      <div className="rounded-2xl border border-zinc-100 bg-white shadow-[0_1px_4px_0_rgba(0,0,0,0.04)]">
+        <div className="flex items-center gap-3 px-6 py-5 border-b border-zinc-50">
+          <div className="flex size-8 items-center justify-center rounded-xl bg-zinc-50">
+            <FlaskConical size={14} className="text-zinc-400" />
+          </div>
+          <div>
+            <p className="text-sm font-semibold tracking-tight text-zinc-900">Event simulator</p>
+            <p className="text-xs text-zinc-400">
+              Trigger test events to preview the full recovery flow end-to-end.
+            </p>
+          </div>
+        </div>
+
+        <div className="divide-y divide-zinc-50">
+          {SIM_BUTTONS.map(({ action, label, description, icon: Icon, accent, badge }) => (
+            <div key={action} className="flex items-center justify-between gap-4 px-6 py-4">
+              <div className="flex items-start gap-3 min-w-0">
+                <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg bg-zinc-50">
+                  <Icon size={13} className={accent} />
+                </div>
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-zinc-800">{label}</p>
+                  <p className="mt-0.5 text-xs leading-relaxed text-zinc-400">{description}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => run(action)}
+                disabled={busy !== null}
+                className={`shrink-0 flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${badge}`}
+              >
+                {busy === action ? (
+                  <Loader2 size={11} className="animate-spin" />
+                ) : (
+                  <Icon size={11} />
+                )}
+                {busy === action ? "Running…" : "Simulate"}
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
+        <AlertCircle size={13} className="mt-0.5 shrink-0 text-amber-500" />
+        <p className="text-xs leading-relaxed text-amber-700">
+          Test events create real database records prefixed with <code className="font-mono">pi_test_</code>. They will appear in Payments, Escalations, and the activity feed.
+        </p>
       </div>
     </div>
   );
