@@ -16,6 +16,8 @@ import {
 } from "@/functions/stripe";
 import { generateEscalationDraft } from "@/functions/escalations";
 import { getPlatformStripe } from "@/lib/stripe";
+import { sendAlertNotification } from "@/lib/notifications";
+import { env } from "@dunlo-v2/env/server";
 
 const FAILURE_EVENTS = new Set<string>([
   "payment_intent.payment_failed",
@@ -106,18 +108,26 @@ function extractFailureContext(event: Stripe.Event) {
   return null;
 }
 
+type FailedPaymentResult = {
+  wasEscalated: boolean;
+  customerName: string | null;
+  customerEmail: string;
+  amount: number;
+  currency: string;
+} | null;
+
 export async function processFailedPayment(
   event: Stripe.Event,
   connection: DecryptedStripeConnection,
-): Promise<void> {
+): Promise<FailedPaymentResult> {
   const ctx = extractFailureContext(event);
-  if (!ctx) return;
+  if (!ctx) return null;
   if (!ctx.customerEmail) {
     console.warn(
       "[stripe/webhook] skipping failed payment with no customer email",
       ctx.paymentIntentId,
     );
-    return;
+    return null;
   }
 
   const { code: failureCode, message: failureMessage } = pickFailureCode(event);
@@ -127,7 +137,7 @@ export async function processFailedPayment(
     .from(failedPayment)
     .where(eq(failedPayment.stripePaymentIntentId, ctx.paymentIntentId))
     .limit(1);
-  if (existing.length > 0) return;
+  if (existing.length > 0) return null;
 
   const threshold = connection.escalationThreshold;
   const shouldEscalate =
@@ -163,25 +173,30 @@ export async function processFailedPayment(
       status: "pending",
     });
 
-    // Fire-and-forget AI draft — webhook must respond fast.
     generateEscalationDraft(escalationId).catch((e) =>
       console.error("[stripe/webhook] AI draft failed:", e),
     );
-    return;
+    return {
+      wasEscalated: true,
+      customerName: ctx.customerName,
+      customerEmail: ctx.customerEmail,
+      amount: ctx.amount,
+      currency: ctx.currency,
+    };
   }
 
   const sequence = await findSequenceForFailureCode(
     connection.userId,
     failureCode,
   );
-  if (!sequence) return;
+  if (!sequence) return null;
 
   const steps = await db
     .select()
     .from(sequenceStep)
     .where(eq(sequenceStep.sequenceId, sequence.id));
 
-  if (steps.length === 0) return;
+  if (steps.length === 0) return null;
 
   const now = Date.now();
   for (const step of steps.sort((a, b) => a.stepNumber - b.stepNumber)) {
@@ -193,6 +208,14 @@ export async function processFailedPayment(
       scheduledAt: new Date(now + step.delayHours * 3600 * 1000),
     });
   }
+
+  return {
+    wasEscalated: false,
+    customerName: ctx.customerName,
+    customerEmail: ctx.customerEmail,
+    amount: ctx.amount,
+    currency: ctx.currency,
+  };
 }
 
 async function findSequenceForFailureCode(userId: string, failureCode: string) {
@@ -223,10 +246,17 @@ async function findSequenceForFailureCode(userId: string, failureCode: string) {
   return fallback ?? null;
 }
 
+type RecoveredPaymentResult = {
+  customerName: string | null;
+  customerEmail: string;
+  amount: number;
+  currency: string;
+} | null;
+
 export async function processRecoveredPayment(
   event: Stripe.Event,
   connection: DecryptedStripeConnection,
-): Promise<void> {
+): Promise<RecoveredPaymentResult> {
   let paymentIntentId: string | null = null;
   let invoiceId: string | null = null;
 
@@ -246,7 +276,7 @@ export async function processRecoveredPayment(
         : inv.payment_intent?.id ?? null;
   }
 
-  if (!paymentIntentId && !invoiceId) return;
+  if (!paymentIntentId && !invoiceId) return null;
 
   const matches = await db
     .select()
@@ -263,7 +293,7 @@ export async function processRecoveredPayment(
       (paymentIntentId && p.stripePaymentIntentId === paymentIntentId) ||
       (invoiceId && p.stripeInvoiceId === invoiceId),
   );
-  if (!target) return;
+  if (!target) return null;
 
   await db
     .update(failedPayment)
@@ -279,6 +309,13 @@ export async function processRecoveredPayment(
         eq(recoveryAttempt.status, "scheduled"),
       ),
     );
+
+  return {
+    customerName: target.customerName,
+    customerEmail: target.customerEmail,
+    amount: target.amount,
+    currency: target.currency,
+  };
 }
 
 export const Route = createFileRoute("/api/stripe/webhook")({
@@ -294,14 +331,20 @@ export const Route = createFileRoute("/api/stripe/webhook")({
           });
         }
 
-        let parsed: { account?: string; type?: string };
+        const stripe = getPlatformStripe();
+        let event: Stripe.Event;
         try {
-          parsed = JSON.parse(rawBody);
-        } catch {
-          return new Response("Invalid JSON", { status: 400 });
+          event = stripe.webhooks.constructEvent(
+            rawBody,
+            sig,
+            env.STRIPE_WEBHOOK_SECRET,
+          );
+        } catch (err) {
+          console.error("[stripe/webhook] signature verification failed", err);
+          return new Response("Invalid signature", { status: 400 });
         }
 
-        const accountId = parsed.account;
+        const accountId = (event as { account?: string }).account;
         if (!accountId) {
           return new Response("Missing account on event", { status: 400 });
         }
@@ -311,24 +354,35 @@ export const Route = createFileRoute("/api/stripe/webhook")({
           return new Response("Unknown connected account", { status: 400 });
         }
 
-        const stripe = getPlatformStripe();
-        let event: Stripe.Event;
-        try {
-          event = stripe.webhooks.constructEvent(
-            rawBody,
-            sig,
-            connection.webhookSecret,
-          );
-        } catch (err) {
-          console.error("[stripe/webhook] signature verification failed", err);
-          return new Response("Invalid signature", { status: 400 });
-        }
-
         try {
           if (FAILURE_EVENTS.has(event.type)) {
-            await processFailedPayment(event, connection);
+            const result = await processFailedPayment(event, connection);
+            if (result) {
+              sendAlertNotification({
+                userId: connection.userId,
+                eventType: result.wasEscalated ? "escalation" : "failure",
+                customerName: result.customerName,
+                customerEmail: result.customerEmail,
+                amount: result.amount,
+                currency: result.currency,
+              }).catch((e) =>
+                console.error("[webhook] alert notification failed", e),
+              );
+            }
           } else if (SUCCESS_EVENTS.has(event.type)) {
-            await processRecoveredPayment(event, connection);
+            const result = await processRecoveredPayment(event, connection);
+            if (result) {
+              sendAlertNotification({
+                userId: connection.userId,
+                eventType: "recovery",
+                customerName: result.customerName,
+                customerEmail: result.customerEmail,
+                amount: result.amount,
+                currency: result.currency,
+              }).catch((e) =>
+                console.error("[webhook] alert notification failed", e),
+              );
+            }
           }
         } catch (err) {
           console.error(
