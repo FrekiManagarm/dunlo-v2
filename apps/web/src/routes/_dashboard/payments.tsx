@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { z } from "zod";
 
@@ -140,28 +140,41 @@ function RouteComponent() {
                   </tr>
                 ) : (
                   payments.map((p) => (
-                    <tr key={p.id} className="transition-colors hover:bg-zinc-50/50">
+                    <tr
+                      key={p.id}
+                      className="cursor-pointer transition-colors hover:bg-zinc-50/50"
+                    >
                       <td className="px-5 py-4">
-                        <p className="text-sm font-semibold text-zinc-900">{p.name}</p>
-                        <p className="text-xs text-zinc-400">{p.email}</p>
+                        <Link to="/payments/$id" params={{ id: p.id }} className="block">
+                          <p className="text-sm font-semibold text-zinc-900">{p.name}</p>
+                          <p className="text-xs text-zinc-400">{p.email}</p>
+                        </Link>
                       </td>
                       <td className="px-5 py-4">
-                        <span className="text-sm text-zinc-600">{p.type}</span>
+                        <Link to="/payments/$id" params={{ id: p.id }} className="block text-sm text-zinc-600">
+                          {p.type}
+                        </Link>
                       </td>
                       <td className="px-5 py-4">
-                        <span className="font-mono text-sm font-semibold text-zinc-900">
-                          {p.amount}
-                        </span>
+                        <Link to="/payments/$id" params={{ id: p.id }} className="block">
+                          <span className="font-mono text-sm font-semibold text-zinc-900">
+                            {p.amount}
+                          </span>
+                        </Link>
                       </td>
                       <td className="px-5 py-4">
-                        <span
-                          className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold capitalize ${STATUS_STYLE[p.status] ?? STATUS_STYLE.pending}`}
-                        >
-                          {STATUS_LABEL[p.status] ?? p.status}
-                        </span>
+                        <Link to="/payments/$id" params={{ id: p.id }} className="block">
+                          <span
+                            className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold capitalize ${STATUS_STYLE[p.status] ?? STATUS_STYLE.pending}`}
+                          >
+                            {STATUS_LABEL[p.status] ?? p.status}
+                          </span>
+                        </Link>
                       </td>
                       <td className="px-5 py-4">
-                        <span className="text-xs text-zinc-400">{p.time}</span>
+                        <Link to="/payments/$id" params={{ id: p.id }} className="block text-xs text-zinc-400">
+                          {p.time}
+                        </Link>
                       </td>
                     </tr>
                   ))

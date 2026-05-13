@@ -2,13 +2,17 @@ import { createServerFn } from "@tanstack/react-start";
 import { redirect } from "@tanstack/react-router";
 import { db } from "@dunlo-v2/db";
 import {
-  failedPayment,
   escalation,
+  failedPayment,
+  recoveryAttempt,
+  recoverySequence,
+  sequenceStep,
   stripeConnection,
 } from "@dunlo-v2/db/schema/domain";
 import { and, desc, eq, gte } from "drizzle-orm";
 import { z } from "zod";
 
+import { generateEscalationDraft } from "@/functions/escalations";
 import { authMiddleware } from "@/middleware/auth";
 import { formatAmount, humanizeFailureCode } from "@/lib/template";
 
@@ -207,4 +211,164 @@ export const getPayments = createServerFn({ method: "GET" })
       limit,
       offset,
     };
+  });
+
+export const getPaymentDetail = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .inputValidator((raw: unknown) => z.object({ id: z.string() }).parse(raw))
+  .handler(async ({ context, data }) => {
+    if (!context.session) throw redirect({ to: "/login" });
+    const userId = context.session.user.id;
+
+    const [row] = await db
+      .select()
+      .from(failedPayment)
+      .where(and(eq(failedPayment.id, data.id), eq(failedPayment.userId, userId)))
+      .limit(1);
+
+    if (!row) throw new Error("Payment not found");
+
+    const attempts = await db
+      .select({
+        id: recoveryAttempt.id,
+        status: recoveryAttempt.status,
+        scheduledAt: recoveryAttempt.scheduledAt,
+        sentAt: recoveryAttempt.sentAt,
+        stepNumber: sequenceStep.stepNumber,
+        delayHours: sequenceStep.delayHours,
+        subject: sequenceStep.subject,
+      })
+      .from(recoveryAttempt)
+      .innerJoin(sequenceStep, eq(recoveryAttempt.sequenceStepId, sequenceStep.id))
+      .where(eq(recoveryAttempt.failedPaymentId, row.id))
+      .orderBy(sequenceStep.stepNumber);
+
+    const [esc] = await db
+      .select({ id: escalation.id, status: escalation.status })
+      .from(escalation)
+      .where(eq(escalation.failedPaymentId, row.id))
+      .limit(1);
+
+    const [conn] = await db
+      .select({ stripeAccountId: stripeConnection.stripeAccountId })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .limit(1);
+
+    return {
+      id: row.id,
+      customerName: row.customerName,
+      customerEmail: row.customerEmail,
+      amount: row.amount,
+      currency: row.currency,
+      formattedAmount: formatAmount(row.amount, row.currency),
+      failureCode: row.failureCode,
+      failureLabel: humanizeFailureCode(row.failureCode),
+      failureMessage: row.failureMessage,
+      lastFour: row.lastFour,
+      status: row.status,
+      stripePaymentIntentId: row.stripePaymentIntentId,
+      stripeAccountId: conn?.stripeAccountId ?? null,
+      createdAt: row.createdAt.toISOString(),
+      recoveredAt: row.recoveredAt?.toISOString() ?? null,
+      attempts: attempts.map((a) => ({
+        id: a.id,
+        status: a.status,
+        scheduledAt: a.scheduledAt.toISOString(),
+        sentAt: a.sentAt?.toISOString() ?? null,
+        stepNumber: a.stepNumber,
+        delayHours: a.delayHours,
+        subject: a.subject,
+      })),
+      escalation: esc ? { id: esc.id, status: esc.status } : null,
+    };
+  });
+
+export const markPaymentRecovered = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator((raw: unknown) => z.object({ id: z.string() }).parse(raw))
+  .handler(async ({ context, data }) => {
+    if (!context.session) throw new Error("Unauthorized");
+    const userId = context.session.user.id;
+
+    const [row] = await db
+      .select({ id: failedPayment.id })
+      .from(failedPayment)
+      .where(and(eq(failedPayment.id, data.id), eq(failedPayment.userId, userId)))
+      .limit(1);
+
+    if (!row) throw new Error("Payment not found");
+
+    await db
+      .update(failedPayment)
+      .set({ status: "recovered", recoveredAt: new Date() })
+      .where(eq(failedPayment.id, row.id));
+
+    await db
+      .update(recoveryAttempt)
+      .set({ status: "dismissed" })
+      .where(
+        and(
+          eq(recoveryAttempt.failedPaymentId, row.id),
+          eq(recoveryAttempt.status, "scheduled"),
+        ),
+      );
+
+    await db
+      .update(escalation)
+      .set({ status: "dismissed" })
+      .where(
+        and(eq(escalation.failedPaymentId, row.id), eq(escalation.status, "pending")),
+      );
+  });
+
+export const escalatePaymentManually = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator((raw: unknown) => z.object({ id: z.string() }).parse(raw))
+  .handler(async ({ context, data }) => {
+    if (!context.session) throw new Error("Unauthorized");
+    const userId = context.session.user.id;
+
+    const [row] = await db
+      .select({ id: failedPayment.id, status: failedPayment.status })
+      .from(failedPayment)
+      .where(and(eq(failedPayment.id, data.id), eq(failedPayment.userId, userId)))
+      .limit(1);
+
+    if (!row) throw new Error("Payment not found");
+
+    const [existing] = await db
+      .select({ id: escalation.id })
+      .from(escalation)
+      .where(eq(escalation.failedPaymentId, row.id))
+      .limit(1);
+
+    if (existing) throw new Error("Already escalated");
+
+    await db
+      .update(failedPayment)
+      .set({ status: "escalated" })
+      .where(eq(failedPayment.id, row.id));
+
+    await db
+      .update(recoveryAttempt)
+      .set({ status: "dismissed" })
+      .where(
+        and(
+          eq(recoveryAttempt.failedPaymentId, row.id),
+          eq(recoveryAttempt.status, "scheduled"),
+        ),
+      );
+
+    const escalationId = crypto.randomUUID();
+    await db.insert(escalation).values({
+      id: escalationId,
+      failedPaymentId: row.id,
+      userId,
+      status: "pending",
+    });
+
+    generateEscalationDraft(escalationId).catch((_e: unknown) => {
+      console.error("[payments] escalation draft failed");
+    });
   });
