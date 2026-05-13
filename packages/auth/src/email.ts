@@ -6,6 +6,12 @@ const resend = new Resend(env.RESEND_API_KEY);
 const FROM = "Dunlo <noreply@dunlo.io>";
 const ACCENT = "#00e87b";
 
+const LOGO_SVG = `<svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;">
+  <rect width="32" height="32" rx="8.5" fill="${ACCENT}"/>
+  <path d="M 16 25 A 9 9 0 1 0 7 16" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <path d="M 4.5 18.5 L 7 16 L 9.5 18.5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+</svg>`;
+
 export async function sendAuthEmail({
   to,
   subject,
@@ -38,8 +44,8 @@ function wrap(inner: string) {
             <tr>
               <td>
                 <div style="display:flex;align-items:center;gap:8px;margin-bottom:24px;">
-                  <span style="display:inline-block;width:24px;height:24px;border-radius:9999px;background:${ACCENT};color:#fff;font-weight:700;font-size:12px;text-align:center;line-height:24px;">D</span>
-                  <span style="font-weight:700;font-size:14px;color:#0f172a;">dunlo</span>
+                  ${LOGO_SVG}
+                  <span style="font-weight:700;font-size:15px;color:#0f172a;vertical-align:middle;margin-left:8px;">dunlo</span>
                 </div>
                 ${inner}
                 <p style="margin-top:32px;font-size:12px;color:#94a3b8;">If you didn't request this email, you can safely ignore it.</p>

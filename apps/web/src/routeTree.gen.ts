@@ -9,14 +9,17 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as SettingsRouteImport } from './routes/settings'
-import { Route as SequencesRouteImport } from './routes/sequences'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
-import { Route as PaymentsRouteImport } from './routes/payments'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
-import { Route as DashboardRouteImport } from './routes/dashboard'
+import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as DashboardSettingsRouteImport } from './routes/_dashboard/settings'
+import { Route as DashboardSequencesRouteImport } from './routes/_dashboard/sequences'
+import { Route as DashboardPaymentsRouteImport } from './routes/_dashboard/payments'
+import { Route as DashboardEscalationsRouteImport } from './routes/_dashboard/escalations'
+import { Route as DashboardDashboardRouteImport } from './routes/_dashboard/dashboard'
+import { Route as DashboardAlertsRouteImport } from './routes/_dashboard/alerts'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
 import { Route as ApiStripeDisconnectRouteImport } from './routes/api/stripe/disconnect'
 import { Route as ApiStripeConnectRouteImport } from './routes/api/stripe/connect'
@@ -24,24 +27,9 @@ import { Route as ApiStripeCallbackRouteImport } from './routes/api/stripe/callb
 import { Route as ApiCronProcessEmailsRouteImport } from './routes/api/cron/process-emails'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
-const SettingsRoute = SettingsRouteImport.update({
-  id: '/settings',
-  path: '/settings',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SequencesRoute = SequencesRouteImport.update({
-  id: '/sequences',
-  path: '/sequences',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const PaymentsRoute = PaymentsRouteImport.update({
-  id: '/payments',
-  path: '/payments',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -55,14 +43,43 @@ const LoginRoute = LoginRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardRoute = DashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
+  id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardSequencesRoute = DashboardSequencesRouteImport.update({
+  id: '/sequences',
+  path: '/sequences',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardPaymentsRoute = DashboardPaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardEscalationsRoute = DashboardEscalationsRouteImport.update({
+  id: '/escalations',
+  path: '/escalations',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardDashboardRoute = DashboardDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => DashboardRoute,
+} as any)
+const DashboardAlertsRoute = DashboardAlertsRouteImport.update({
+  id: '/alerts',
+  path: '/alerts',
+  getParentRoute: () => DashboardRoute,
 } as any)
 const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
   id: '/api/stripe/webhook',
@@ -97,13 +114,15 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
-  '/payments': typeof PaymentsRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/sequences': typeof SequencesRoute
-  '/settings': typeof SettingsRoute
+  '/alerts': typeof DashboardAlertsRoute
+  '/dashboard': typeof DashboardDashboardRoute
+  '/escalations': typeof DashboardEscalationsRoute
+  '/payments': typeof DashboardPaymentsRoute
+  '/sequences': typeof DashboardSequencesRoute
+  '/settings': typeof DashboardSettingsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
@@ -113,13 +132,15 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
-  '/payments': typeof PaymentsRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/sequences': typeof SequencesRoute
-  '/settings': typeof SettingsRoute
+  '/alerts': typeof DashboardAlertsRoute
+  '/dashboard': typeof DashboardDashboardRoute
+  '/escalations': typeof DashboardEscalationsRoute
+  '/payments': typeof DashboardPaymentsRoute
+  '/sequences': typeof DashboardSequencesRoute
+  '/settings': typeof DashboardSettingsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
@@ -130,13 +151,16 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/dashboard': typeof DashboardRoute
+  '/_dashboard': typeof DashboardRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
-  '/payments': typeof PaymentsRoute
   '/reset-password': typeof ResetPasswordRoute
-  '/sequences': typeof SequencesRoute
-  '/settings': typeof SettingsRoute
+  '/_dashboard/alerts': typeof DashboardAlertsRoute
+  '/_dashboard/dashboard': typeof DashboardDashboardRoute
+  '/_dashboard/escalations': typeof DashboardEscalationsRoute
+  '/_dashboard/payments': typeof DashboardPaymentsRoute
+  '/_dashboard/sequences': typeof DashboardSequencesRoute
+  '/_dashboard/settings': typeof DashboardSettingsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
@@ -148,11 +172,13 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/dashboard'
     | '/login'
     | '/onboarding'
-    | '/payments'
     | '/reset-password'
+    | '/alerts'
+    | '/dashboard'
+    | '/escalations'
+    | '/payments'
     | '/sequences'
     | '/settings'
     | '/api/auth/$'
@@ -164,11 +190,13 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/dashboard'
     | '/login'
     | '/onboarding'
-    | '/payments'
     | '/reset-password'
+    | '/alerts'
+    | '/dashboard'
+    | '/escalations'
+    | '/payments'
     | '/sequences'
     | '/settings'
     | '/api/auth/$'
@@ -180,13 +208,16 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
-    | '/dashboard'
+    | '/_dashboard'
     | '/login'
     | '/onboarding'
-    | '/payments'
     | '/reset-password'
-    | '/sequences'
-    | '/settings'
+    | '/_dashboard/alerts'
+    | '/_dashboard/dashboard'
+    | '/_dashboard/escalations'
+    | '/_dashboard/payments'
+    | '/_dashboard/sequences'
+    | '/_dashboard/settings'
     | '/api/auth/$'
     | '/api/cron/process-emails'
     | '/api/stripe/callback'
@@ -197,13 +228,10 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  DashboardRoute: typeof DashboardRoute
+  DashboardRoute: typeof DashboardRouteWithChildren
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
-  PaymentsRoute: typeof PaymentsRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
-  SequencesRoute: typeof SequencesRoute
-  SettingsRoute: typeof SettingsRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCronProcessEmailsRoute: typeof ApiCronProcessEmailsRoute
   ApiStripeCallbackRoute: typeof ApiStripeCallbackRoute
@@ -214,32 +242,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/settings': {
-      id: '/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof SettingsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sequences': {
-      id: '/sequences'
-      path: '/sequences'
-      fullPath: '/sequences'
-      preLoaderRoute: typeof SequencesRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/payments': {
-      id: '/payments'
-      path: '/payments'
-      fullPath: '/payments'
-      preLoaderRoute: typeof PaymentsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -256,10 +263,10 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoginRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/dashboard': {
-      id: '/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
+    '/_dashboard': {
+      id: '/_dashboard'
+      path: ''
+      fullPath: '/'
       preLoaderRoute: typeof DashboardRouteImport
       parentRoute: typeof rootRouteImport
     }
@@ -269,6 +276,48 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/_dashboard/settings': {
+      id: '/_dashboard/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof DashboardSettingsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/sequences': {
+      id: '/_dashboard/sequences'
+      path: '/sequences'
+      fullPath: '/sequences'
+      preLoaderRoute: typeof DashboardSequencesRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/payments': {
+      id: '/_dashboard/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof DashboardPaymentsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/escalations': {
+      id: '/_dashboard/escalations'
+      path: '/escalations'
+      fullPath: '/escalations'
+      preLoaderRoute: typeof DashboardEscalationsRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/dashboard': {
+      id: '/_dashboard/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof DashboardDashboardRouteImport
+      parentRoute: typeof DashboardRoute
+    }
+    '/_dashboard/alerts': {
+      id: '/_dashboard/alerts'
+      path: '/alerts'
+      fullPath: '/alerts'
+      preLoaderRoute: typeof DashboardAlertsRouteImport
+      parentRoute: typeof DashboardRoute
     }
     '/api/stripe/webhook': {
       id: '/api/stripe/webhook'
@@ -315,15 +364,34 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface DashboardRouteChildren {
+  DashboardAlertsRoute: typeof DashboardAlertsRoute
+  DashboardDashboardRoute: typeof DashboardDashboardRoute
+  DashboardEscalationsRoute: typeof DashboardEscalationsRoute
+  DashboardPaymentsRoute: typeof DashboardPaymentsRoute
+  DashboardSequencesRoute: typeof DashboardSequencesRoute
+  DashboardSettingsRoute: typeof DashboardSettingsRoute
+}
+
+const DashboardRouteChildren: DashboardRouteChildren = {
+  DashboardAlertsRoute: DashboardAlertsRoute,
+  DashboardDashboardRoute: DashboardDashboardRoute,
+  DashboardEscalationsRoute: DashboardEscalationsRoute,
+  DashboardPaymentsRoute: DashboardPaymentsRoute,
+  DashboardSequencesRoute: DashboardSequencesRoute,
+  DashboardSettingsRoute: DashboardSettingsRoute,
+}
+
+const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
+  DashboardRouteChildren,
+)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  DashboardRoute: DashboardRoute,
+  DashboardRoute: DashboardRouteWithChildren,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
-  PaymentsRoute: PaymentsRoute,
   ResetPasswordRoute: ResetPasswordRoute,
-  SequencesRoute: SequencesRoute,
-  SettingsRoute: SettingsRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCronProcessEmailsRoute: ApiCronProcessEmailsRoute,
   ApiStripeCallbackRoute: ApiStripeCallbackRoute,

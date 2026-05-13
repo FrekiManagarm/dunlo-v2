@@ -13,6 +13,7 @@ import { authMiddleware } from "@/middleware/auth";
 import { getResendClient } from "@/lib/resend";
 import { ANTHROPIC_MODEL, getAnthropic } from "@/lib/anthropic";
 import { formatAmount, humanizeFailureCode } from "@/lib/template";
+import { wrapEmail } from "@/lib/email-wrapper";
 
 export type EscalationRow = {
   id: string;
@@ -153,7 +154,7 @@ export const sendEscalationEmail = createServerFn({ method: "POST" })
       from: `${provider.fromName} <${provider.fromEmail}>`,
       to: row.failed_payment.customerEmail,
       subject: row.escalation.draftSubject,
-      html: row.escalation.draftBody.replace(/\n/g, "<br />"),
+      html: wrapEmail(`<p style="font-size:14px;line-height:1.65;color:#475569;margin:0;">${row.escalation.draftBody.replace(/\n/g, "<br />")}</p>`),
     });
 
     await db

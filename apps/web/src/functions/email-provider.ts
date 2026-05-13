@@ -6,6 +6,7 @@ import { z } from "zod";
 
 import { authMiddleware } from "@/middleware/auth";
 import { getResendClient } from "@/lib/resend";
+import { wrapEmail } from "@/lib/email-wrapper";
 
 function maskKey(plain: string): string {
   if (!plain) return "";
@@ -128,7 +129,14 @@ export const sendTestEmail = createServerFn({ method: "POST" })
       from: `${row.fromName} <${row.fromEmail}>`,
       to: userEmail,
       subject: "Hello from Dunlo — your email setup is working",
-      html: `<p>Nice work. Your Resend API key, sending domain, and from name are all wired up correctly.</p><p>You can now run recovery sequences from this address.</p><p>— The Dunlo team</p>`,
+      html: wrapEmail(`
+        <h1 style="margin:0 0 12px;font-size:20px;color:#0f172a;">Your email setup is working</h1>
+        <p style="margin:0 0 24px;font-size:14px;line-height:1.55;color:#475569;">
+          Nice work. Your Resend API key, sending domain, and from name are all wired up correctly.
+          You can now run recovery sequences from this address.
+        </p>
+        <p style="margin:0;font-size:14px;color:#475569;">— The Dunlo team</p>
+      `),
     });
 
     if ("error" in result && result.error) {

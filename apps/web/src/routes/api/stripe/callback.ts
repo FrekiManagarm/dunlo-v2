@@ -6,16 +6,8 @@ import { env } from "@dunlo-v2/env/server";
 import { createFileRoute } from "@tanstack/react-router";
 
 import { seedDefaultSequences } from "@/functions/stripe";
-import { getConnectedStripe } from "@/lib/stripe";
 
 const STATE_COOKIE = "stripe_oauth_state";
-
-const WEBHOOK_EVENTS: string[] = [
-  "payment_intent.payment_failed",
-  "payment_intent.succeeded",
-  "invoice.payment_failed",
-  "invoice.payment_succeeded",
-];
 
 function clearStateCookie(): string {
   const parts = [
@@ -123,24 +115,14 @@ export const Route = createFileRoute("/api/stripe/callback")({
 
           const token = (await tokenRes.json()) as StripeOAuthTokenResponse;
 
-          const connectedStripe = getConnectedStripe(token.access_token);
-          const webhook = await connectedStripe.webhookEndpoints.create({
-            url: `${env.APP_URL}/api/stripe/webhook`,
-            enabled_events: WEBHOOK_EVENTS as never,
-          });
-
-          if (!webhook.secret) {
-            return redirectWithError("webhook_secret_missing");
-          }
-
           await db.insert(stripeConnection).values({
             id: crypto.randomUUID(),
             userId: session.user.id,
             stripeAccountId: token.stripe_user_id,
             accessToken: encrypt(token.access_token),
             publishableKey: token.stripe_publishable_key ?? null,
-            webhookEndpointId: webhook.id,
-            webhookSecret: encrypt(webhook.secret),
+            webhookEndpointId: null,
+            webhookSecret: encrypt("placeholder"),
             scope: token.scope ?? "read_write",
             escalationThreshold: 50000,
             escalationCurrency: "eur",
@@ -151,7 +133,7 @@ export const Route = createFileRoute("/api/stripe/callback")({
           return new Response(null, {
             status: 302,
             headers: {
-              Location: "/dashboard?stripe=connected",
+              Location: "/onboarding?step=2",
               "Set-Cookie": clearStateCookie(),
             },
           });
