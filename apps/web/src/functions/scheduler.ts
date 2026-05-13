@@ -17,6 +17,8 @@ import {
   renderTemplate,
 } from "@/lib/template";
 import { sendUserEmail } from "@/lib/resend";
+import { wrapEmail } from "@/lib/email-wrapper";
+import { sendAlertNotification } from "@/lib/notifications";
 
 type SchedulerResult = {
   processed: number;
@@ -147,7 +149,7 @@ export async function processScheduledEmails(): Promise<SchedulerResult> {
 
     const subject = renderTemplate(step.subject, vars);
     const renderedBody = renderTemplate(step.body, vars);
-    const html = markdownToHtml(renderedBody);
+    const html = wrapEmail(markdownToHtml(renderedBody));
 
     try {
       const resendId = await sendUserEmail({
@@ -171,6 +173,17 @@ export async function processScheduledEmails(): Promise<SchedulerResult> {
         .where(eq(recoveryAttempt.id, attempt.id));
 
       sent += 1;
+
+      sendAlertNotification({
+        userId: payment.userId,
+        eventType: "emailSent",
+        customerName: payment.customerName,
+        customerEmail: payment.customerEmail,
+        amount: payment.amount,
+        currency: payment.currency,
+      }).catch((e) =>
+        console.error("[scheduler] alert notification failed", e),
+      );
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
       await db
