@@ -227,6 +227,34 @@ export const escalation = pgTable(
   (table) => [index("escalation_user_id_idx").on(table.userId)],
 );
 
+export const notificationSettings = pgTable(
+  "notification_settings",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .unique()
+      .references(() => user.id, { onDelete: "cascade" }),
+    emailOnFailure: boolean("email_on_failure").default(true).notNull(),
+    emailOnRecovery: boolean("email_on_recovery").default(true).notNull(),
+    emailOnEscalation: boolean("email_on_escalation").default(true).notNull(),
+    emailOnEmailSent: boolean("email_on_email_sent").default(false).notNull(),
+    slackOnFailure: boolean("slack_on_failure").default(false).notNull(),
+    slackOnRecovery: boolean("slack_on_recovery").default(false).notNull(),
+    slackOnEscalation: boolean("slack_on_escalation").default(true).notNull(),
+    slackOnEmailSent: boolean("slack_on_email_sent").default(false).notNull(),
+    slackWebhookUrl: text("slack_webhook_url"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => new Date())
+      .notNull(),
+  },
+  (table) => [index("notification_settings_user_id_idx").on(table.userId)],
+);
+
 // ---------- Relations ----------
 
 export const stripeConnectionRelations = relations(
@@ -307,3 +335,13 @@ export const escalationRelations = relations(escalation, ({ one }) => ({
     references: [user.id],
   }),
 }));
+
+export const notificationSettingsRelations = relations(
+  notificationSettings,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [notificationSettings.userId],
+      references: [user.id],
+    }),
+  }),
+);
