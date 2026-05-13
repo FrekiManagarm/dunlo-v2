@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   ArrowRight,
@@ -8,7 +9,7 @@ import {
   Zap,
 } from "lucide-react";
 
-import { getDashboardData } from "@/functions/payments";
+import { dashboardQueryOptions } from "@/lib/queries";
 import { formatAmount } from "@/lib/template";
 
 export const Route = createFileRoute("/_dashboard/dashboard")({
@@ -18,10 +19,8 @@ export const Route = createFileRoute("/_dashboard/dashboard")({
       { title: "Dashboard — Dunlo" },
     ],
   }),
-  loader: async () => {
-    const data = await getDashboardData();
-    return data;
-  },
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(dashboardQueryOptions()),
   component: RouteComponent,
 });
 
@@ -44,7 +43,8 @@ const STATUS_LABEL: Record<string, string> = {
 
 function RouteComponent() {
   const { session } = Route.useRouteContext();
-  const { stripeConnected, stats: s, recentPayments, currency } = Route.useLoaderData();
+  const { data } = useSuspenseQuery(dashboardQueryOptions());
+  const { stripeConnected, stats: s, recentPayments, currency } = data;
 
   const firstName = session?.user.name?.split(" ")[0] ?? "there";
 

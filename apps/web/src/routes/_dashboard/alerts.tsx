@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   AlertCircle,
@@ -13,13 +14,12 @@ import { useState } from "react";
 import { toast } from "sonner";
 
 import {
-  getAlertFeed,
-  getNotificationSettings,
   updateNotificationSettings,
   type AlertEventType,
   type FeedEvent,
   type NotificationSettings,
 } from "@/functions/alerts";
+import { alertFeedQueryOptions, notificationSettingsQueryOptions } from "@/lib/queries";
 import { formatAmount } from "@/lib/template";
 
 export const Route = createFileRoute("/_dashboard/alerts")({
@@ -29,10 +29,11 @@ export const Route = createFileRoute("/_dashboard/alerts")({
       { title: "Alerts — Dunlo" },
     ],
   }),
-  loader: async () => {
-    const [feed, settings] = await Promise.all([getAlertFeed(), getNotificationSettings()]);
-    return { feed, settings };
-  },
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(alertFeedQueryOptions()),
+      context.queryClient.ensureQueryData(notificationSettingsQueryOptions()),
+    ]),
   component: RouteComponent,
 });
 
@@ -108,7 +109,8 @@ function Toggle({
 }
 
 function RouteComponent() {
-  const { feed, settings: initialSettings } = Route.useLoaderData();
+  const { data: feed } = useSuspenseQuery(alertFeedQueryOptions());
+  const { data: initialSettings } = useSuspenseQuery(notificationSettingsQueryOptions());
   const [settings, setSettings] = useState<NotificationSettings>(initialSettings);
   const [saving, setSaving] = useState(false);
 

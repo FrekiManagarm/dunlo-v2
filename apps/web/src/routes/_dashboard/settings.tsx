@@ -1,6 +1,7 @@
 import { Input } from "@dunlo-v2/ui/components/input";
 import { Label } from "@dunlo-v2/ui/components/label";
 import { useForm } from "@tanstack/react-form";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -39,6 +40,10 @@ import {
   simulateEscalation,
   simulateRecovery,
 } from "@/functions/testing";
+import {
+  emailProviderQueryOptions,
+  escalationSettingsQueryOptions,
+} from "@/lib/queries";
 
 type Tab = "account" | "email" | "escalation" | "testing";
 
@@ -56,19 +61,18 @@ export const Route = createFileRoute("/_dashboard/settings")({
       { title: "Settings — Dunlo" },
     ],
   }),
-  loader: async () => {
-    const [emailState, escalationState] = await Promise.all([
-      getEmailProvider(),
-      getEscalationSettings(),
-    ]);
-    return { emailState, escalationState };
-  },
+  loader: ({ context }) =>
+    Promise.all([
+      context.queryClient.ensureQueryData(emailProviderQueryOptions()),
+      context.queryClient.ensureQueryData(escalationSettingsQueryOptions()),
+    ]),
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { session } = Route.useRouteContext();
-  const { emailState, escalationState } = Route.useLoaderData();
+  const { data: emailState } = useSuspenseQuery(emailProviderQueryOptions());
+  const { data: escalationState } = useSuspenseQuery(escalationSettingsQueryOptions());
   const navigate = Route.useNavigate();
   const [tab, setTab] = useState<Tab>("account");
 

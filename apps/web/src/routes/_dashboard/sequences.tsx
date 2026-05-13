@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { ChevronDown, Clock, Plus, RotateCcw, Save, Trash2, Zap } from "lucide-react";
 import { useState } from "react";
@@ -7,12 +8,12 @@ import { toast } from "sonner";
 import {
   addSequenceStep,
   deleteSequenceStep,
-  getSequences,
   resetSequencesToDefault,
   toggleSequence,
   updateSequenceStep,
   type SequenceWithSteps,
 } from "@/functions/sequences";
+import { sequencesQueryOptions } from "@/lib/queries";
 
 export const Route = createFileRoute("/_dashboard/sequences")({
   head: () => ({
@@ -21,10 +22,8 @@ export const Route = createFileRoute("/_dashboard/sequences")({
       { title: "Recovery sequences — Dunlo" },
     ],
   }),
-  loader: async () => {
-    const sequences = await getSequences();
-    return { sequences };
-  },
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(sequencesQueryOptions()),
   component: RouteComponent,
 });
 
@@ -40,21 +39,19 @@ const TEMPLATE_VARS = [
 ];
 
 function RouteComponent() {
-  const { sequences: initialSequences } = Route.useLoaderData();
-  const [sequences, setSequences] = useState<SequenceWithSteps[]>(initialSequences);
-  const [selectedId, setSelectedId] = useState<string>(initialSequences[0]?.id ?? "");
+  const queryClient = useQueryClient();
+  const { data: sequences } = useSuspenseQuery(sequencesQueryOptions());
+  const [selectedId, setSelectedId] = useState<string>(sequences[0]?.id ?? "");
   const [busy, setBusy] = useState(false);
   const [varsOpen, setVarsOpen] = useState(false);
 
-  const refresh = async () => {
-    const fresh = await getSequences();
-    setSequences(fresh);
-  };
+  const invalidate = () =>
+    queryClient.invalidateQueries({ queryKey: ["sequences"] });
 
   const onToggle = async (sequenceId: string, isActive: boolean) => {
     try {
       await toggleSequence({ data: { sequenceId, isActive } });
-      setSequences((prev) => prev.map((s) => (s.id === sequenceId ? { ...s, isActive } : s)));
+      await invalidate();
       toast.success(isActive ? "Sequence enabled" : "Sequence paused");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to update");
@@ -66,7 +63,7 @@ function RouteComponent() {
     setBusy(true);
     try {
       await resetSequencesToDefault();
-      await refresh();
+      await invalidate();
       toast.success("Sequences reset to defaults");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Reset failed");
@@ -87,7 +84,7 @@ function RouteComponent() {
           delayHours: 24,
         },
       });
-      await refresh();
+      await invalidate();
       toast.success("Step added");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to add step");
@@ -98,7 +95,7 @@ function RouteComponent() {
     if (!window.confirm("Delete this step?")) return;
     try {
       await deleteSequenceStep({ data: { stepId } });
-      await refresh();
+      await invalidate();
       toast.success("Step deleted");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to delete");
@@ -285,7 +282,7 @@ function RouteComponent() {
                         key={step.id}
                         step={step}
                         canDelete={selectedSeq.steps.length > 1}
-                        onSaved={refresh}
+                        onSaved={invalidate}
                         onDelete={() => onDelete(step.id)}
                         isLast={idx === selectedSeq.steps.length - 1}
                       />

@@ -1,6 +1,7 @@
 import { Input } from "@dunlo-v2/ui/components/input";
 import { Label } from "@dunlo-v2/ui/components/label";
 import { useForm } from "@tanstack/react-form";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
 import { Check, ChevronRight, ExternalLink, Loader2 } from "lucide-react";
 import { useEffect } from "react";
@@ -10,7 +11,7 @@ import { z } from "zod";
 import { Logo } from "@/components/logo";
 import { saveEmailProvider } from "@/functions/email-provider";
 import { getUser } from "@/functions/get-user";
-import { getOnboardingState } from "@/functions/stripe";
+import { onboardingStateQueryOptions } from "@/lib/queries";
 
 const searchSchema = z.object({
   step: z.coerce.number().int().min(1).max(3).catch(1),
@@ -31,9 +32,8 @@ export const Route = createFileRoute("/onboarding")({
     if (!session?.user) throw redirect({ to: "/login" });
     return { session };
   },
-  loader: async () => {
-    return await getOnboardingState();
-  },
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(onboardingStateQueryOptions()),
   component: RouteComponent,
 });
 
@@ -72,7 +72,9 @@ function StepConnector({ done }: { done: boolean }) {
 }
 
 function RouteComponent() {
-  const { stripeConnected, emailConfigured } = Route.useLoaderData();
+  const { data: { stripeConnected, emailConfigured } } = useSuspenseQuery(
+    onboardingStateQueryOptions(),
+  );
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/onboarding" });
 

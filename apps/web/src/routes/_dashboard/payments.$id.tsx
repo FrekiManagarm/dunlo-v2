@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   AlertTriangle,
@@ -16,9 +17,9 @@ import { toast } from "sonner";
 
 import {
   escalatePaymentManually,
-  getPaymentDetail,
   markPaymentRecovered,
 } from "@/functions/payments";
+import { paymentDetailQueryOptions } from "@/lib/queries";
 
 export const Route = createFileRoute("/_dashboard/payments/$id")({
   head: () => ({
@@ -27,14 +28,10 @@ export const Route = createFileRoute("/_dashboard/payments/$id")({
       { title: "Payment detail — Dunlo" },
     ],
   }),
-  loader: async ({ params }) => {
-    const payment = await getPaymentDetail({ data: { id: params.id } });
-    return { payment };
-  },
+  loader: ({ context, params }) =>
+    context.queryClient.ensureQueryData(paymentDetailQueryOptions(params.id)),
   component: RouteComponent,
 });
-
-type Payment = Awaited<ReturnType<typeof getPaymentDetail>>;
 
 const STATUS_STYLE: Record<string, string> = {
   recovered: "bg-dunlo/[0.07] text-dunlo-deep border-dunlo/25",
@@ -89,8 +86,9 @@ function formatDate(iso: string) {
 }
 
 function RouteComponent() {
-  const { payment: initial } = Route.useLoaderData();
-  const [payment, setPayment] = useState<Payment>(initial);
+  const { id } = Route.useParams();
+  const queryClient = useQueryClient();
+  const { data: payment } = useSuspenseQuery(paymentDetailQueryOptions(id));
   const [recovering, setRecovering] = useState(false);
   const [escalating, setEscalating] = useState(false);
 
@@ -103,18 +101,19 @@ function RouteComponent() {
       ? `https://dashboard.stripe.com/${payment.stripeAccountId}/payments/${payment.stripePaymentIntentId}`
       : null;
 
+  const invalidatePaymentViews = () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["payments"] }),
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] }),
+      queryClient.invalidateQueries({ queryKey: ["escalations"] }),
+      queryClient.invalidateQueries({ queryKey: ["alerts", "feed"] }),
+    ]);
+
   const handleRecover = async () => {
     setRecovering(true);
     try {
       await markPaymentRecovered({ data: { id: payment.id } });
-      setPayment((p) => ({
-        ...p,
-        status: "recovered",
-        recoveredAt: new Date().toISOString(),
-        attempts: p.attempts.map((a) =>
-          a.status === "scheduled" ? { ...a, status: "dismissed" as const } : a,
-        ),
-      }));
+      await invalidatePaymentViews();
       toast.success("Payment marked as recovered");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");
@@ -127,14 +126,7 @@ function RouteComponent() {
     setEscalating(true);
     try {
       await escalatePaymentManually({ data: { id: payment.id } });
-      setPayment((p) => ({
-        ...p,
-        status: "escalated",
-        escalation: { id: "pending", status: "pending" },
-        attempts: p.attempts.map((a) =>
-          a.status === "scheduled" ? { ...a, status: "dismissed" as const } : a,
-        ),
-      }));
+      await invalidatePaymentViews();
       toast.success("Escalated — AI draft is being generated");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed");

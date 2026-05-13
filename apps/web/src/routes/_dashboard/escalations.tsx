@@ -1,4 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
+import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   CheckCircle,
@@ -11,12 +12,11 @@ import { toast } from "sonner";
 
 import {
   dismissEscalation,
-  getEscalations,
   regenerateEscalationDraft,
   sendEscalationEmail,
   updateEscalationDraft,
-  type EscalationRow,
 } from "@/functions/escalations";
+import { escalationsQueryOptions } from "@/lib/queries";
 import { formatAmount, humanizeFailureCode } from "@/lib/template";
 
 export const Route = createFileRoute("/_dashboard/escalations")({
@@ -26,10 +26,8 @@ export const Route = createFileRoute("/_dashboard/escalations")({
       { title: "Escalations — Dunlo" },
     ],
   }),
-  loader: async () => {
-    const escalations = await getEscalations();
-    return { escalations };
-  },
+  loader: ({ context }) =>
+    context.queryClient.ensureQueryData(escalationsQueryOptions()),
   component: RouteComponent,
 });
 
@@ -48,19 +46,21 @@ type CardEdit = { subject: string; body: string };
 type BusyState = { sending: boolean; regenerating: boolean; dismissing: boolean };
 
 function RouteComponent() {
-  const { escalations: initial } = Route.useLoaderData();
-  const [items, setItems] = useState<EscalationRow[]>(initial);
+  const queryClient = useQueryClient();
+  const { data: items } = useSuspenseQuery(escalationsQueryOptions());
   const [edits, setEdits] = useState<Record<string, CardEdit>>(() =>
     Object.fromEntries(
-      initial.map((e) => [e.id, { subject: e.draftSubject ?? "", body: e.draftBody ?? "" }]),
+      items.map((e) => [e.id, { subject: e.draftSubject ?? "", body: e.draftBody ?? "" }]),
     ),
   );
-  const [busy, setBusy] = useState<Record<string, BusyState>>(() =>
-    Object.fromEntries(
-      initial.map((e) => [e.id, { sending: false, regenerating: false, dismissing: false }]),
-    ),
-  );
+  const [busy, setBusy] = useState<Record<string, BusyState>>({});
   const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
+
+  const setBusyFor = (id: string, patch: Partial<BusyState>) =>
+    setBusy((prev) => {
+      const current = prev[id] ?? { sending: false, regenerating: false, dismissing: false };
+      return { ...prev, [id]: { ...current, ...patch } };
+    });
 
   function scheduleAutoSave(id: string, subject: string, body: string) {
     clearTimeout(saveTimers.current[id]);
@@ -75,30 +75,34 @@ function RouteComponent() {
   }
 
   function setEdit(id: string, field: "subject" | "body", value: string) {
-    const next = { ...edits[id], [field]: value };
+    const current = edits[id] ?? { subject: "", body: "" };
+    const next = { ...current, [field]: value };
     setEdits((prev) => ({ ...prev, [id]: next }));
     scheduleAutoSave(id, next.subject, next.body);
   }
 
   async function handleSend(id: string) {
-    setBusy((prev) => ({ ...prev, [id]: { ...prev[id], sending: true } }));
+    setBusyFor(id, { sending: true });
     try {
       await sendEscalationEmail({ data: { escalationId: id } });
-      setItems((prev) => prev.map((e) => (e.id === id ? { ...e, status: "sent" as const } : e)));
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["escalations"] }),
+        queryClient.invalidateQueries({ queryKey: ["payments"] }),
+        queryClient.invalidateQueries({ queryKey: ["alerts", "feed"] }),
+      ]);
       toast.success("Email sent");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to send");
     } finally {
-      setBusy((prev) => ({ ...prev, [id]: { ...prev[id], sending: false } }));
+      setBusyFor(id, { sending: false });
     }
   }
 
   async function handleRegenerate(id: string) {
-    setBusy((prev) => ({ ...prev, [id]: { ...prev[id], regenerating: true } }));
+    setBusyFor(id, { regenerating: true });
     try {
       await regenerateEscalationDraft({ data: { escalationId: id } });
-      const refreshed = await getEscalations();
-      setItems(refreshed);
+      const refreshed = await queryClient.fetchQuery(escalationsQueryOptions());
       const updated = refreshed.find((e) => e.id === id);
       if (updated) {
         setEdits((prev) => ({
@@ -110,20 +114,24 @@ function RouteComponent() {
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to regenerate");
     } finally {
-      setBusy((prev) => ({ ...prev, [id]: { ...prev[id], regenerating: false } }));
+      setBusyFor(id, { regenerating: false });
     }
   }
 
   async function handleDismiss(id: string) {
-    setBusy((prev) => ({ ...prev, [id]: { ...prev[id], dismissing: true } }));
+    setBusyFor(id, { dismissing: true });
     try {
       await dismissEscalation({ data: { escalationId: id } });
-      setItems((prev) => prev.filter((e) => e.id !== id));
+      await Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["escalations"] }),
+        queryClient.invalidateQueries({ queryKey: ["payments"] }),
+        queryClient.invalidateQueries({ queryKey: ["alerts", "feed"] }),
+      ]);
       toast.success("Escalation dismissed");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to dismiss");
     } finally {
-      setBusy((prev) => ({ ...prev, [id]: { ...prev[id], dismissing: false } }));
+      setBusyFor(id, { dismissing: false });
     }
   }
 

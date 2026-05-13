@@ -1,9 +1,10 @@
 import { motion } from "framer-motion";
+import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, ChevronRight, CreditCard } from "lucide-react";
 import { z } from "zod";
 
-import { getPayments } from "@/functions/payments";
+import { paymentsListQueryOptions } from "@/lib/queries";
 
 const PAGE_SIZE = 50;
 
@@ -50,23 +51,27 @@ export const Route = createFileRoute("/_dashboard/payments")({
     status: search.status,
     page: search.page ?? 1,
   }),
-  loader: async ({ deps }) => {
-    const offset = ((deps.page ?? 1) - 1) * PAGE_SIZE;
-    const data = await getPayments({
-      data: {
+  loader: ({ context, deps }) =>
+    context.queryClient.ensureQueryData(
+      paymentsListQueryOptions({
         status: deps.status,
         limit: PAGE_SIZE,
-        offset,
-      },
-    });
-    return data;
-  },
+        offset: ((deps.page ?? 1) - 1) * PAGE_SIZE,
+      }),
+    ),
   component: RouteComponent,
 });
 
 function RouteComponent() {
   const { status, page } = Route.useSearch();
-  const { payments, hasMore } = Route.useLoaderData();
+  const { data } = useSuspenseQuery(
+    paymentsListQueryOptions({
+      status,
+      limit: PAGE_SIZE,
+      offset: ((page ?? 1) - 1) * PAGE_SIZE,
+    }),
+  );
+  const { payments, hasMore } = data;
   const navigate = Route.useNavigate();
 
   const currentPage = page ?? 1;
