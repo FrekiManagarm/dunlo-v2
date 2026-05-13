@@ -11,5 +11,14 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
-  plugins: [mdx(), tailwindcss(), tanstackStart(), viteReact()],
+  plugins: [
+    mdx(),
+    tailwindcss(),
+    tanstackStart({
+      nitro: {
+        plugins: ["./server/plugins/email-scheduler.ts"],
+      },
+    }),
+    viteReact(),
+  ],
 });
