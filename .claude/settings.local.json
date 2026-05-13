@@ -62,7 +62,11 @@
       "Bash(bash -c ' *)",
       "Bash(grep -v \"auth-client\\\\|api/auth\\\\|/auth\\\\$\\\\|better-auth\")",
       "Bash(bunx tsr *)",
-      "Bash(bunx @tanstack/router-cli generate)"
+      "Bash(bunx @tanstack/router-cli generate)",
+      "Bash(gh repo *)",
+      "Bash(grep -E 'payments\\\\.\\(tsx|$id\\)')",
+      "Bash(grep 'dashboard.tsx\\\\|payments.tsx\\\\|payments.$id')",
+      "Bash(grep -E 'payments\\\\.$id')"
     ]
   },
   "hooks": {
