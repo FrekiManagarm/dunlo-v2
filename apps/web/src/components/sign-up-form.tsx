@@ -24,6 +24,7 @@ export default function SignUpForm({
           email: value.email,
           password: value.password,
           name: value.name,
+          callbackURL: "/onboarding",
         },
         {
           onSuccess: () => {

@@ -12,6 +12,8 @@ import { z } from "zod";
 
 import { authMiddleware } from "@/middleware/auth";
 import { getResendClient } from "@/lib/resend";
+import { ANTHROPIC_MODEL, getAnthropic } from "@/lib/anthropic";
+import { formatAmount, humanizeFailureCode } from "@/lib/template";
 
 export type EscalationRow = {
   id: string;
@@ -242,3 +244,100 @@ export const updateEscalationSettings = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+/**
+ * Plain async draft generator — NOT a server function so it can be
+ * fire-and-forget from the webhook (no client round-trip, no middleware).
+ * Always resolves; failures fall back to a generic draft.
+ */
+export async function generateEscalationDraft(
+  escalationId: string,
+): Promise<void> {
+  const [row] = await db
+    .select()
+    .from(escalation)
+    .innerJoin(failedPayment, eq(escalation.failedPaymentId, failedPayment.id))
+    .where(eq(escalation.id, escalationId))
+    .limit(1);
+
+  if (!row) return;
+
+  const payment = row.failed_payment;
+  const customerName = payment.customerName ?? "there";
+  const productName = payment.description ?? "your subscription";
+  const subject = `Quick question about your ${productName} payment`;
+
+  const fallback = {
+    subject,
+    body: `Hi ${customerName}, I noticed your recent payment didn't go through — let me know if there's anything I can do to help.`,
+  };
+
+  try {
+    const system =
+      "You are writing a short, personal email from a SaaS founder to a customer whose payment failed. The email should feel human, not automated. 2-3 sentences max. No subject line needed.";
+
+    const userPrompt =
+      `Customer: ${customerName}. ` +
+      `Monthly value: ${formatAmount(payment.amount, payment.currency)}. ` +
+      `Product: ${productName}. ` +
+      `Failure: ${humanizeFailureCode(payment.failureCode)}. ` +
+      `Write the email body only.`;
+
+    const response = await getAnthropic().messages.create({
+      model: ANTHROPIC_MODEL,
+      max_tokens: 400,
+      system,
+      messages: [{ role: "user", content: userPrompt }],
+    });
+
+    const first = response.content[0];
+    const body =
+      first && first.type === "text" && first.text.trim().length > 0
+        ? first.text.trim()
+        : fallback.body;
+
+    await db
+      .update(escalation)
+      .set({
+        draftSubject: subject,
+        draftBody: body,
+        updatedAt: new Date(),
+      })
+      .where(eq(escalation.id, escalationId));
+  } catch (e) {
+    console.error("[escalations] AI draft generation failed:", e);
+    await db
+      .update(escalation)
+      .set({
+        draftSubject: fallback.subject,
+        draftBody: fallback.body,
+        updatedAt: new Date(),
+      })
+      .where(eq(escalation.id, escalationId));
+  }
+}
+
+export const regenerateEscalationDraft = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .validator((input: unknown) =>
+    z.object({ escalationId: z.string().min(1) }).parse(input),
+  )
+  .handler(async ({ context, data }) => {
+    if (!context.session?.user) throw new Error("Unauthorized");
+    const userId = context.session.user.id;
+
+    const [owned] = await db
+      .select({ id: escalation.id })
+      .from(escalation)
+      .where(
+        and(
+          eq(escalation.id, data.escalationId),
+          eq(escalation.userId, userId),
+        ),
+      )
+      .limit(1);
+
+    if (!owned) throw new Error("Escalation not found");
+
+    await generateEscalationDraft(data.escalationId);
+    return { ok: true };
+  });
