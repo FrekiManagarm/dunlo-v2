@@ -53,7 +53,10 @@
       "Bash(grep \"node:path\\\\|path\\\\$1\")",
       "Bash(bun install *)",
       "Bash(openssl rand *)",
-      "Bash(bun --filter @dunlo-v2/db test)"
+      "Bash(bun --filter @dunlo-v2/db test)",
+      "Bash(grep -v \"^$\")",
+      "Bash(echo \"CRON_SECRET=$\\(openssl rand -hex 16\\)\")",
+      "Bash(CRON_SECRET=3aa60fee5dd7792a359bc9399759dbeb bunx vitest run)"
     ]
   }
 }
