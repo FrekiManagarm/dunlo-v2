@@ -1,8 +1,8 @@
 import { Input } from "@dunlo-v2/ui/components/input";
 import { Label } from "@dunlo-v2/ui/components/label";
 import { useForm } from "@tanstack/react-form";
-import { useNavigate } from "@tanstack/react-router";
-import { ChevronRight, Loader2 } from "lucide-react";
+import { ChevronRight, Loader2, MailCheck } from "lucide-react";
+import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
 
@@ -13,18 +13,21 @@ export default function SignUpForm({
 }: {
   onSwitchToSignIn: () => void;
 }) {
-  const navigate = useNavigate({ from: "/login" });
   const { isPending } = authClient.useSession();
+  const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
 
   const form = useForm({
     defaultValues: { name: "", email: "", password: "" },
     onSubmit: async ({ value }) => {
       await authClient.signUp.email(
-        { email: value.email, password: value.password, name: value.name },
+        {
+          email: value.email,
+          password: value.password,
+          name: value.name,
+        },
         {
           onSuccess: () => {
-            navigate({ to: "/dashboard" });
-            toast.success("Account created! Welcome to Dunlo.");
+            setSubmittedEmail(value.email);
           },
           onError: (err) =>
             toast.error(err.error.message || err.error.statusText),
@@ -44,6 +47,43 @@ export default function SignUpForm({
     return (
       <div className="flex items-center justify-center py-16">
         <Loader2 className="size-5 animate-spin text-dunlo" />
+      </div>
+    );
+  }
+
+  if (submittedEmail) {
+    return (
+      <div className="text-center">
+        <div className="mx-auto flex size-12 items-center justify-center rounded-full bg-dunlo/15">
+          <MailCheck className="size-6 text-dunlo-deep" />
+        </div>
+        <h2 className="mt-5 text-2xl font-bold text-gray-900">
+          Check your inbox
+        </h2>
+        <p className="mt-2 text-sm text-gray-500">
+          We've sent a verification link to{" "}
+          <span className="font-semibold text-gray-900">{submittedEmail}</span>.
+          Click it to finish creating your Dunlo account.
+        </p>
+        <p className="mt-6 text-xs text-gray-400">
+          Didn't get it? Check spam, or{" "}
+          <button
+            onClick={() => setSubmittedEmail(null)}
+            className="font-semibold text-dunlo-dim hover:underline"
+          >
+            try another email
+          </button>
+          .
+        </p>
+        <p className="mt-8 text-center text-sm text-gray-500">
+          Already verified?{" "}
+          <button
+            onClick={onSwitchToSignIn}
+            className="font-semibold text-gray-900 hover:underline"
+          >
+            Sign in
+          </button>
+        </p>
       </div>
     );
   }
