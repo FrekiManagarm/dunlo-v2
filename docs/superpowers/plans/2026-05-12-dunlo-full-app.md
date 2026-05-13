@@ -88,7 +88,7 @@ Tasks must be executed in numerical order — later tasks depend on earlier ones
 
 ---
 
-- [ ] **Step 1: Add Stripe, Anthropic SDK, and Vitest dev tooling to `apps/web/package.json`**
+- [x] **Step 1: Add Stripe, Anthropic SDK, and Vitest dev tooling to `apps/web/package.json`**
 
 Replace the existing `apps/web/package.json` so that it contains:
 
@@ -158,7 +158,7 @@ Notes:
 
 ---
 
-- [ ] **Step 2: Add Resend to `packages/auth/package.json`**
+- [x] **Step 2: Add Resend to `packages/auth/package.json`**
 
 Replace `packages/auth/package.json` with:
 
@@ -194,7 +194,7 @@ This lets the auth package send verification + password-reset emails via the pla
 
 ---
 
-- [ ] **Step 3: Add Vitest to `packages/db/package.json` and wire a test script**
+- [x] **Step 3: Add Vitest to `packages/db/package.json` and wire a test script**
 
 Replace `packages/db/package.json` with:
 
@@ -236,7 +236,7 @@ Replace `packages/db/package.json` with:
 
 ---
 
-- [ ] **Step 4: Run `bun install` to fetch new dependencies**
+- [x] **Step 4: Run `bun install` to fetch new dependencies**
 
 From the repo root:
 
@@ -248,7 +248,7 @@ Expect: lockfile updates, no errors, new packages present in `node_modules`.
 
 ---
 
-- [ ] **Step 5: Extend `packages/env/src/server.ts` to validate the new env vars**
+- [x] **Step 5: Extend `packages/env/src/server.ts` to validate the new env vars**
 
 Replace the file with:
 
@@ -314,7 +314,7 @@ SCHEDULER_INTERVAL_MINUTES=5
 
 ---
 
-- [ ] **Step 6: Create `apps/web/vitest.config.ts`**
+- [x] **Step 6: Create `apps/web/vitest.config.ts`**
 
 Create the file with:
 
@@ -334,7 +334,7 @@ export default defineConfig({
 
 ---
 
-- [ ] **Step 7: Create `packages/db/vitest.config.ts`**
+- [x] **Step 7: Create `packages/db/vitest.config.ts`**
 
 This is where the encryption tests actually live. Create:
 
@@ -352,7 +352,7 @@ export default defineConfig({
 
 ---
 
-- [ ] **Step 8: Create the failing test file `packages/db/src/encrypt.test.ts` (TDD — RED)**
+- [x] **Step 8: Create the failing test file `packages/db/src/encrypt.test.ts` (TDD — RED)**
 
 Create the file with:
 
@@ -443,7 +443,7 @@ Expected output: `Cannot find module './encrypt'` or equivalent.
 
 ---
 
-- [ ] **Step 9: Implement `packages/db/src/encrypt.ts` (TDD — GREEN)**
+- [x] **Step 9: Implement `packages/db/src/encrypt.ts` (TDD — GREEN)**
 
 Create the file with:
 
@@ -517,7 +517,7 @@ Expected output: all 6 tests pass.
 
 ---
 
-- [ ] **Step 10: Create `packages/db/src/schema/domain.ts` with all 7 tables + enums + relations**
+- [x] **Step 10: Create `packages/db/src/schema/domain.ts` with all 7 tables + enums + relations**
 
 Create the file with:
 
@@ -834,7 +834,7 @@ export const escalationRelations = relations(escalation, ({ one }) => ({
 
 ---
 
-- [ ] **Step 11: Update `packages/db/src/schema/index.ts` to export the domain schema**
+- [x] **Step 11: Update `packages/db/src/schema/index.ts` to export the domain schema**
 
 Replace the file with:
 
@@ -847,7 +847,7 @@ export * from "./domain";
 
 ---
 
-- [ ] **Step 12: Type-check the workspace**
+- [x] **Step 12: Type-check the workspace**
 
 From the repo root:
 
@@ -877,7 +877,7 @@ bun run db:studio
 
 ---
 
-- [ ] **Step 14: Final test run — encryption tests still green after schema changes**
+- [x] **Step 14: Final test run — encryption tests still green after schema changes**
 
 ```bash
 bun --filter @dunlo-v2/db test
