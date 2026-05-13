@@ -1,3 +1,4 @@
+import { AnimatePresence, motion } from "framer-motion";
 import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import {
   AlertCircle,
@@ -66,9 +67,9 @@ const NAV_ITEMS = [
   { icon: Receipt, label: "Payments", to: "/payments" as const, active: false },
   { icon: Zap, label: "Recovery sequences", to: "/sequences" as const, active: false },
   { icon: AlertCircle, label: "Escalations", to: "/escalations" as const, active: true },
-  { icon: Bell, label: "Alerts", to: null as null, active: false },
+  { icon: Bell, label: "Alerts", to: "/alerts" as const, active: false },
   { icon: Settings, label: "Settings", to: "/settings" as const, active: false },
-];
+] as const;
 
 function RouteComponent() {
   const { session } = Route.useRouteContext();
@@ -77,26 +78,18 @@ function RouteComponent() {
   const [items, setItems] = useState<EscalationRow[]>(initial);
   const [edits, setEdits] = useState<Record<string, CardEdit>>(() =>
     Object.fromEntries(
-      initial.map((e) => [
-        e.id,
-        { subject: e.draftSubject ?? "", body: e.draftBody ?? "" },
-      ]),
+      initial.map((e) => [e.id, { subject: e.draftSubject ?? "", body: e.draftBody ?? "" }]),
     ),
   );
   const [busy, setBusy] = useState<Record<string, BusyState>>(() =>
     Object.fromEntries(
-      initial.map((e) => [
-        e.id,
-        { sending: false, regenerating: false, dismissing: false },
-      ]),
+      initial.map((e) => [e.id, { sending: false, regenerating: false, dismissing: false }]),
     ),
   );
   const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
 
   const handleSignOut = () => {
-    authClient.signOut({
-      fetchOptions: { onSuccess: () => navigate({ to: "/" }) },
-    });
+    authClient.signOut({ fetchOptions: { onSuccess: () => navigate({ to: "/" }) } });
   };
 
   function scheduleAutoSave(id: string, subject: string, body: string) {
@@ -121,9 +114,7 @@ function RouteComponent() {
     setBusy((prev) => ({ ...prev, [id]: { ...prev[id], sending: true } }));
     try {
       await sendEscalationEmail({ data: { escalationId: id } });
-      setItems((prev) =>
-        prev.map((e) => (e.id === id ? { ...e, status: "sent" as const } : e)),
-      );
+      setItems((prev) => prev.map((e) => (e.id === id ? { ...e, status: "sent" as const } : e)));
       toast.success("Email sent");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to send");
@@ -142,20 +133,14 @@ function RouteComponent() {
       if (updated) {
         setEdits((prev) => ({
           ...prev,
-          [id]: {
-            subject: updated.draftSubject ?? "",
-            body: updated.draftBody ?? "",
-          },
+          [id]: { subject: updated.draftSubject ?? "", body: updated.draftBody ?? "" },
         }));
       }
       toast.success("Draft regenerated");
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to regenerate");
     } finally {
-      setBusy((prev) => ({
-        ...prev,
-        [id]: { ...prev[id], regenerating: false },
-      }));
+      setBusy((prev) => ({ ...prev, [id]: { ...prev[id], regenerating: false } }));
     }
   }
 
@@ -168,10 +153,7 @@ function RouteComponent() {
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Failed to dismiss");
     } finally {
-      setBusy((prev) => ({
-        ...prev,
-        [id]: { ...prev[id], dismissing: false },
-      }));
+      setBusy((prev) => ({ ...prev, [id]: { ...prev[id], dismissing: false } }));
     }
   }
 
@@ -179,50 +161,39 @@ function RouteComponent() {
 
   return (
     <div className="flex h-dvh bg-[#f7f8fa] font-sans">
-      <aside className="hidden h-dvh w-60 shrink-0 sticky top-0 flex-col border-r border-gray-100 bg-white lg:flex">
-        <div className="flex items-center border-b border-gray-100 px-5 py-4">
+      <aside className="hidden h-dvh w-[232px] shrink-0 sticky top-0 flex-col border-r border-zinc-100 bg-white lg:flex">
+        <div className="flex items-center border-b border-zinc-100 px-5 py-4">
           <Logo size={26} />
         </div>
-        <nav className="flex-1 px-3 py-4 space-y-0.5">
-          {NAV_ITEMS.map(({ icon: Icon, label, to, active }) => {
-            const className = `flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
-              active
-                ? "bg-gray-100 text-gray-900"
-                : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-            }`;
-            if (to) {
-              return (
-                <Link key={label} to={to} className={className}>
-                  <Icon size={15} />
-                  {label}
-                </Link>
-              );
-            }
-            return (
-              <button key={label} className={className}>
-                <Icon size={15} />
-                {label}
-              </button>
-            );
-          })}
+        <nav className="flex-1 px-3 py-4 space-y-px">
+          {NAV_ITEMS.map(({ icon: Icon, label, to, active }) => (
+            <Link
+              key={label}
+              to={to}
+              className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm transition-all ${
+                active
+                  ? "bg-dunlo/[0.07] font-semibold text-dunlo-deep"
+                  : "font-medium text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800"
+              }`}
+            >
+              <Icon size={15} className={active ? "text-dunlo" : ""} />
+              {label}
+            </Link>
+          ))}
         </nav>
-        <div className="border-t border-gray-100 p-4">
+        <div className="border-t border-zinc-100 p-4">
           <div className="mb-3 flex items-center gap-2.5">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gray-100 text-xs font-bold text-gray-700">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-zinc-100 text-xs font-bold text-zinc-700">
               {session?.user.name?.charAt(0).toUpperCase() ?? "U"}
             </div>
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-gray-900">
-                {session?.user.name}
-              </p>
-              <p className="truncate text-xs text-gray-400">
-                {session?.user.email}
-              </p>
+              <p className="truncate text-sm font-semibold text-zinc-900">{session?.user.name}</p>
+              <p className="truncate text-xs text-zinc-400">{session?.user.email}</p>
             </div>
           </div>
           <button
             onClick={handleSignOut}
-            className="flex items-center gap-2 text-xs text-gray-400 transition-colors hover:text-gray-700"
+            className="flex items-center gap-2 text-xs text-zinc-400 transition-colors hover:text-zinc-700"
           >
             <LogOut size={12} />
             Sign out
@@ -231,148 +202,152 @@ function RouteComponent() {
       </aside>
 
       <main className="flex-1 overflow-auto">
-        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-gray-100 bg-white/80 px-6 py-4 backdrop-blur-md">
+        <div className="sticky top-0 z-20 flex items-center justify-between border-b border-zinc-100 bg-white/80 px-6 py-4 backdrop-blur-md">
           <div>
-            <h1 className="text-base font-bold text-gray-900">Escalations</h1>
-            <p className="text-xs text-gray-400">
-              {pendingCount > 0
-                ? `${pendingCount} pending manual action`
-                : "All clear"}
-            </p>
+            <h1 className="text-[15px] font-semibold tracking-tight text-zinc-900">Escalations</h1>
+            <p className="text-xs text-zinc-400">High-value payments requiring manual action</p>
           </div>
+          {pendingCount > 0 && (
+            <span className="rounded-full border border-amber-200 bg-amber-50 px-3 py-1 text-xs font-semibold text-amber-700">
+              {pendingCount} pending
+            </span>
+          )}
         </div>
 
-        <div className="mx-auto max-w-3xl space-y-4 p-6">
+        <div className="mx-auto max-w-2xl space-y-3 p-6">
           {items.length === 0 ? (
-            <div className="flex flex-col items-center justify-center py-24 text-center">
-              <CheckCircle size={40} className="mb-3 text-gray-200" />
-              <p className="text-sm font-medium text-gray-500">No escalations</p>
-              <p className="mt-1 text-xs text-gray-400">
-                Payments above your threshold will appear here. Adjust the
-                threshold in{" "}
-                <Link to="/settings" className="text-dunlo-dim underline">
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="flex flex-col items-center justify-center py-28 text-center"
+            >
+              <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-dunlo/[0.07]">
+                <CheckCircle size={22} className="text-dunlo" />
+              </div>
+              <p className="text-sm font-semibold text-zinc-800">All clear</p>
+              <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-zinc-400">
+                Payments above your threshold will appear here. Adjust the threshold in{" "}
+                <Link to="/settings" className="text-dunlo-dim underline underline-offset-2">
                   Settings
                 </Link>
                 .
               </p>
-            </div>
+            </motion.div>
           ) : (
-            items.map((esc) => {
-              const edit = edits[esc.id] ?? { subject: "", body: "" };
-              const b = busy[esc.id] ?? {
-                sending: false,
-                regenerating: false,
-                dismissing: false,
-              };
-              const draftReady = Boolean(esc.draftSubject);
-              const isSent = esc.status === "sent";
+            <AnimatePresence initial={false}>
+              {items.map((esc, i) => {
+                const edit = edits[esc.id] ?? { subject: "", body: "" };
+                const b = busy[esc.id] ?? { sending: false, regenerating: false, dismissing: false };
+                const draftReady = Boolean(esc.draftSubject);
+                const isSent = esc.status === "sent";
 
-              return (
-                <div
-                  key={esc.id}
-                  className="rounded-2xl border border-gray-100 bg-white p-5 shadow-sm"
-                >
-                  <div className="flex items-start justify-between gap-4">
-                    <div>
-                      <p className="text-sm font-semibold text-gray-900">
-                        {esc.payment.customerName ?? esc.payment.customerEmail}
-                      </p>
-                      <p className="text-xs text-gray-400">
-                        {esc.payment.customerEmail}
-                      </p>
-                    </div>
-                    <div className="flex shrink-0 flex-wrap items-center justify-end gap-2">
-                      <span className="text-xs font-semibold text-gray-900">
-                        {formatAmount(
-                          esc.payment.amount,
-                          esc.payment.currency,
-                        )}
-                      </span>
-                      <span className="rounded-full border border-gray-200 bg-gray-100 px-2 py-0.5 text-xs font-medium capitalize text-gray-600">
-                        {humanizeFailureCode(esc.payment.failureCode)}
-                      </span>
-                      <span
-                        className={`rounded-full border px-2 py-0.5 text-xs font-medium ${
-                          isSent
-                            ? "border-dunlo/25 bg-dunlo/8 text-dunlo-deep"
-                            : "border-amber-200 bg-amber-50 text-amber-700"
-                        }`}
-                      >
-                        {isSent ? "sent" : "pending"}
-                      </span>
-                    </div>
-                  </div>
-                  <p className="mt-1 text-xs text-gray-400">
-                    {relativeTime(new Date(esc.createdAt))}
-                  </p>
+                return (
+                  <motion.div
+                    key={esc.id}
+                    layout
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.97 }}
+                    transition={{ delay: i * 0.04, duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                    className={`overflow-hidden rounded-2xl border border-zinc-100 bg-white shadow-[0_1px_4px_0_rgba(0,0,0,0.04)] transition-opacity ${
+                      isSent ? "opacity-60" : ""
+                    }`}
+                  >
+                    <div className={`h-[3px] w-full ${isSent ? "bg-dunlo/30" : "bg-amber-400"}`} />
 
-                  {!draftReady ? (
-                    <div className="mt-4 flex flex-col items-center justify-center rounded-xl border border-gray-100 bg-gray-50 py-6 text-center">
-                      <RefreshCw
-                        size={14}
-                        className="mb-1.5 animate-spin text-gray-400"
-                      />
-                      <p className="text-xs text-gray-400">
-                        AI is drafting your email…
-                      </p>
-                    </div>
-                  ) : (
-                    <div className="mt-4 space-y-2">
-                      <input
-                        type="text"
-                        value={edit.subject}
-                        onChange={(e) =>
-                          setEdit(esc.id, "subject", e.target.value)
-                        }
-                        disabled={isSent}
-                        placeholder="Subject"
-                        className="w-full rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-dunlo/30 disabled:opacity-50"
-                      />
-                      <textarea
-                        value={edit.body}
-                        onChange={(e) =>
-                          setEdit(esc.id, "body", e.target.value)
-                        }
-                        disabled={isSent}
-                        rows={4}
-                        placeholder="Email body"
-                        className="w-full resize-none rounded-xl border border-gray-200 px-3 py-2 text-sm text-gray-900 placeholder-gray-300 focus:outline-none focus:ring-2 focus:ring-dunlo/30 disabled:opacity-50"
-                      />
-                    </div>
-                  )}
+                    <div className="p-5">
+                      <div className="flex items-start justify-between gap-4">
+                        <div>
+                          <p className="text-[15px] font-semibold text-zinc-900">
+                            {esc.payment.customerName ?? esc.payment.customerEmail}
+                          </p>
+                          <p className="text-xs text-zinc-400">{esc.payment.customerEmail}</p>
+                        </div>
+                        <div className="flex shrink-0 flex-col items-end gap-1.5">
+                          <span className="font-mono text-base font-bold text-zinc-900">
+                            {formatAmount(esc.payment.amount, esc.payment.currency)}
+                          </span>
+                          <div className="flex items-center gap-1.5">
+                            <span className="rounded-md bg-zinc-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-zinc-500">
+                              {humanizeFailureCode(esc.payment.failureCode)}
+                            </span>
+                            <span
+                              className={`rounded-md px-2 py-0.5 text-[10px] font-semibold uppercase tracking-wide ${
+                                isSent ? "bg-dunlo/10 text-dunlo-deep" : "bg-amber-50 text-amber-600"
+                              }`}
+                            >
+                              {isSent ? "sent" : "pending"}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
 
-                  <div className="mt-4 flex items-center justify-end gap-2">
-                    <button
-                      onClick={() => handleDismiss(esc.id)}
-                      disabled={b.dismissing}
-                      className="flex items-center gap-1.5 rounded-xl border border-gray-200 px-3 py-1.5 text-xs text-gray-500 transition hover:bg-gray-50 disabled:opacity-50"
-                    >
-                      <Trash2 size={12} />
-                      Dismiss
-                    </button>
-                    <button
-                      onClick={() => handleRegenerate(esc.id)}
-                      disabled={b.regenerating || isSent}
-                      className="flex items-center gap-1.5 rounded-xl border border-gray-200 px-3 py-1.5 text-xs text-gray-500 transition hover:bg-gray-50 disabled:opacity-50"
-                    >
-                      <RefreshCw
-                        size={12}
-                        className={b.regenerating ? "animate-spin" : ""}
-                      />
-                      Regenerate
-                    </button>
-                    <button
-                      onClick={() => handleSend(esc.id)}
-                      disabled={b.sending || !draftReady || isSent}
-                      className="flex items-center gap-1.5 rounded-xl bg-gray-900 px-3 py-1.5 text-xs font-medium text-white transition hover:bg-gray-700 disabled:opacity-50"
-                    >
-                      <Send size={12} />
-                      {b.sending ? "Sending…" : "Send"}
-                    </button>
-                  </div>
-                </div>
-              );
-            })
+                      <p className="mt-1.5 text-[11px] text-zinc-400">
+                        {relativeTime(new Date(esc.createdAt))}
+                      </p>
+
+                      {!draftReady ? (
+                        <div className="mt-4 space-y-2">
+                          <div className="h-9 w-full animate-pulse rounded-xl bg-zinc-100" />
+                          <div className="h-28 w-full animate-pulse rounded-xl bg-zinc-100" />
+                          <p className="text-center text-[11px] text-zinc-400">
+                            AI is drafting your recovery email…
+                          </p>
+                        </div>
+                      ) : (
+                        <div className="mt-4 space-y-2">
+                          <input
+                            type="text"
+                            value={edit.subject}
+                            onChange={(e) => setEdit(esc.id, "subject", e.target.value)}
+                            disabled={isSent}
+                            placeholder="Subject"
+                            className="h-9 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-900 placeholder-zinc-300 transition-colors focus:border-dunlo/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-dunlo/20 disabled:opacity-50"
+                          />
+                          <textarea
+                            value={edit.body}
+                            onChange={(e) => setEdit(esc.id, "body", e.target.value)}
+                            disabled={isSent}
+                            rows={5}
+                            placeholder="Email body"
+                            className="w-full resize-none rounded-xl border border-zinc-200 bg-zinc-50 px-3 py-2.5 text-sm leading-relaxed text-zinc-900 placeholder-zinc-300 transition-colors focus:border-dunlo/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-dunlo/20 disabled:opacity-50"
+                          />
+                        </div>
+                      )}
+
+                      <div className="mt-4 flex items-center justify-between">
+                        <button
+                          onClick={() => handleDismiss(esc.id)}
+                          disabled={b.dismissing}
+                          className="rounded-lg p-1.5 text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-500 active:scale-[0.97] disabled:opacity-40"
+                          aria-label="Dismiss"
+                        >
+                          <Trash2 size={14} />
+                        </button>
+                        <div className="flex items-center gap-2">
+                          <button
+                            onClick={() => handleRegenerate(esc.id)}
+                            disabled={b.regenerating || isSent}
+                            className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-600 transition-all hover:bg-zinc-50 active:scale-[0.97] disabled:opacity-40"
+                          >
+                            <RefreshCw size={11} className={b.regenerating ? "animate-spin" : ""} />
+                            Regenerate
+                          </button>
+                          <button
+                            onClick={() => handleSend(esc.id)}
+                            disabled={b.sending || !draftReady || isSent}
+                            className="flex items-center gap-1.5 rounded-lg bg-dunlo px-3 py-1.5 text-xs font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.97] disabled:opacity-40"
+                          >
+                            <Send size={11} />
+                            {b.sending ? "Sending…" : "Send"}
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </AnimatePresence>
           )}
         </div>
       </main>
