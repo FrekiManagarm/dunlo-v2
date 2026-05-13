@@ -26,6 +26,7 @@ import { Route as ApiStripeConnectRouteImport } from './routes/api/stripe/connec
 import { Route as ApiStripeCallbackRouteImport } from './routes/api/stripe/callback'
 import { Route as ApiCronProcessEmailsRouteImport } from './routes/api/cron/process-emails'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
+import { Route as DashboardPaymentsIdRouteImport } from './routes/_dashboard/payments.$id'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -111,6 +112,11 @@ const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
   path: '/api/auth/$',
   getParentRoute: () => rootRouteImport,
 } as any)
+const DashboardPaymentsIdRoute = DashboardPaymentsIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => DashboardPaymentsRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -120,9 +126,10 @@ export interface FileRoutesByFullPath {
   '/alerts': typeof DashboardAlertsRoute
   '/dashboard': typeof DashboardDashboardRoute
   '/escalations': typeof DashboardEscalationsRoute
-  '/payments': typeof DashboardPaymentsRoute
+  '/payments': typeof DashboardPaymentsRouteWithChildren
   '/sequences': typeof DashboardSequencesRoute
   '/settings': typeof DashboardSettingsRoute
+  '/payments/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
@@ -138,9 +145,10 @@ export interface FileRoutesByTo {
   '/alerts': typeof DashboardAlertsRoute
   '/dashboard': typeof DashboardDashboardRoute
   '/escalations': typeof DashboardEscalationsRoute
-  '/payments': typeof DashboardPaymentsRoute
+  '/payments': typeof DashboardPaymentsRouteWithChildren
   '/sequences': typeof DashboardSequencesRoute
   '/settings': typeof DashboardSettingsRoute
+  '/payments/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
@@ -158,9 +166,10 @@ export interface FileRoutesById {
   '/_dashboard/alerts': typeof DashboardAlertsRoute
   '/_dashboard/dashboard': typeof DashboardDashboardRoute
   '/_dashboard/escalations': typeof DashboardEscalationsRoute
-  '/_dashboard/payments': typeof DashboardPaymentsRoute
+  '/_dashboard/payments': typeof DashboardPaymentsRouteWithChildren
   '/_dashboard/sequences': typeof DashboardSequencesRoute
   '/_dashboard/settings': typeof DashboardSettingsRoute
+  '/_dashboard/payments/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
@@ -181,6 +190,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/sequences'
     | '/settings'
+    | '/payments/$id'
     | '/api/auth/$'
     | '/api/cron/process-emails'
     | '/api/stripe/callback'
@@ -199,6 +209,7 @@ export interface FileRouteTypes {
     | '/payments'
     | '/sequences'
     | '/settings'
+    | '/payments/$id'
     | '/api/auth/$'
     | '/api/cron/process-emails'
     | '/api/stripe/callback'
@@ -218,6 +229,7 @@ export interface FileRouteTypes {
     | '/_dashboard/payments'
     | '/_dashboard/sequences'
     | '/_dashboard/settings'
+    | '/_dashboard/payments/$id'
     | '/api/auth/$'
     | '/api/cron/process-emails'
     | '/api/stripe/callback'
@@ -361,14 +373,32 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiAuthSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_dashboard/payments/$id': {
+      id: '/_dashboard/payments/$id'
+      path: '/$id'
+      fullPath: '/payments/$id'
+      preLoaderRoute: typeof DashboardPaymentsIdRouteImport
+      parentRoute: typeof DashboardPaymentsRoute
+    }
   }
 }
+
+interface DashboardPaymentsRouteChildren {
+  DashboardPaymentsIdRoute: typeof DashboardPaymentsIdRoute
+}
+
+const DashboardPaymentsRouteChildren: DashboardPaymentsRouteChildren = {
+  DashboardPaymentsIdRoute: DashboardPaymentsIdRoute,
+}
+
+const DashboardPaymentsRouteWithChildren =
+  DashboardPaymentsRoute._addFileChildren(DashboardPaymentsRouteChildren)
 
 interface DashboardRouteChildren {
   DashboardAlertsRoute: typeof DashboardAlertsRoute
   DashboardDashboardRoute: typeof DashboardDashboardRoute
   DashboardEscalationsRoute: typeof DashboardEscalationsRoute
-  DashboardPaymentsRoute: typeof DashboardPaymentsRoute
+  DashboardPaymentsRoute: typeof DashboardPaymentsRouteWithChildren
   DashboardSequencesRoute: typeof DashboardSequencesRoute
   DashboardSettingsRoute: typeof DashboardSettingsRoute
 }
@@ -377,7 +407,7 @@ const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAlertsRoute: DashboardAlertsRoute,
   DashboardDashboardRoute: DashboardDashboardRoute,
   DashboardEscalationsRoute: DashboardEscalationsRoute,
-  DashboardPaymentsRoute: DashboardPaymentsRoute,
+  DashboardPaymentsRoute: DashboardPaymentsRouteWithChildren,
   DashboardSequencesRoute: DashboardSequencesRoute,
   DashboardSettingsRoute: DashboardSettingsRoute,
 }

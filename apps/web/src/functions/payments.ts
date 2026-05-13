@@ -5,7 +5,6 @@ import {
   escalation,
   failedPayment,
   recoveryAttempt,
-  recoverySequence,
   sequenceStep,
   stripeConnection,
 } from "@dunlo-v2/db/schema/domain";

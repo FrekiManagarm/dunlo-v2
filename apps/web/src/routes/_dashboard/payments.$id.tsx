@@ -19,7 +19,6 @@ import {
   getPaymentDetail,
   markPaymentRecovered,
 } from "@/functions/payments";
-import { formatAmount } from "@/lib/template";
 
 export const Route = createFileRoute("/_dashboard/payments/$id")({
   head: () => ({
@@ -91,7 +90,6 @@ function formatDate(iso: string) {
 
 function RouteComponent() {
   const { payment: initial } = Route.useLoaderData();
-  const navigate = Route.useNavigate();
   const [payment, setPayment] = useState<Payment>(initial);
   const [recovering, setRecovering] = useState(false);
   const [escalating, setEscalating] = useState(false);
@@ -288,8 +286,8 @@ function RouteComponent() {
               <div className="absolute left-[2.5rem] top-8 bottom-8 w-px bg-zinc-100" />
               <div className="space-y-1">
                 {payment.attempts.map((attempt, i) => {
-                  const meta =
-                    ATTEMPT_META[attempt.status] ?? ATTEMPT_META.scheduled;
+                  const meta: { icon: React.ElementType; label: string; style: string } =
+                    ATTEMPT_META[attempt.status] ?? ATTEMPT_META.scheduled!;
                   const Icon = meta.icon;
                   const isCancelled = attempt.status === "dismissed";
 

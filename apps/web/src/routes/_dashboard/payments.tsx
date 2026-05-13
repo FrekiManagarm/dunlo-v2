@@ -1,5 +1,6 @@
+import { motion } from "framer-motion";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, CreditCard } from "lucide-react";
 import { z } from "zod";
 
 import { getPayments } from "@/functions/payments";
@@ -21,12 +22,11 @@ const searchSchema = z.object({
 });
 
 const STATUS_STYLE: Record<string, string> = {
-  recovered: "bg-dunlo/8 text-dunlo-deep border-dunlo/25",
-  in_recovery: "bg-amber-50 text-amber-700 border-amber-200",
-  escalated: "bg-red-50 text-red-700 border-red-200",
-  pending: "bg-gray-100 text-gray-600 border-gray-200",
-  failed: "bg-gray-100 text-gray-600 border-gray-200",
-  dismissed: "bg-gray-100 text-gray-600 border-gray-200",
+  recovered: "bg-dunlo/[0.07] text-dunlo-deep border-dunlo/25",
+  in_recovery: "bg-amber-50 text-amber-700 border-amber-100",
+  escalated: "bg-red-50 text-red-700 border-red-100",
+  failed: "bg-zinc-100 text-zinc-500 border-zinc-200",
+  dismissed: "bg-zinc-100 text-zinc-400 border-zinc-200",
 };
 
 const STATUS_LABEL: Record<string, string> = {
@@ -121,10 +121,10 @@ function RouteComponent() {
             <table className="w-full">
               <thead>
                 <tr className="border-b border-zinc-50">
-                  {["Customer", "Failure type", "Amount", "Status", "Created"].map((h) => (
+                  {["Customer", "Failure type", "Amount", "Status", "Created", ""].map((h, i) => (
                     <th
-                      key={h}
-                      className="px-5 py-3 text-left text-[11px] font-semibold uppercase tracking-wider text-zinc-400"
+                      key={i}
+                      className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400"
                     >
                       {h}
                     </th>
@@ -134,49 +134,62 @@ function RouteComponent() {
               <tbody className="divide-y divide-zinc-50">
                 {payments.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-5 py-10 text-center text-xs text-zinc-400">
-                      No payments to show.
+                    <td colSpan={6} className="py-20 text-center">
+                      <div className="flex flex-col items-center gap-2">
+                        <CreditCard size={18} className="text-zinc-200" />
+                        <p className="text-xs text-zinc-400">No payments to show.</p>
+                      </div>
                     </td>
                   </tr>
                 ) : (
                   payments.map((p) => (
-                    <tr
+                    <motion.tr
                       key={p.id}
-                      className="cursor-pointer transition-colors hover:bg-zinc-50/50"
+                      initial={{ opacity: 0 }}
+                      animate={{ opacity: 1 }}
+                      transition={{ duration: 0.2 }}
+                      className="group transition-colors hover:bg-zinc-50/60"
                     >
-                      <td className="px-5 py-4">
+                      <td className="px-5 py-3.5">
                         <Link to="/payments/$id" params={{ id: p.id }} className="block">
-                          <p className="text-sm font-semibold text-zinc-900">{p.name}</p>
-                          <p className="text-xs text-zinc-400">{p.email}</p>
+                          <p className="text-sm font-semibold text-zinc-900 transition-colors group-hover:text-dunlo-deep">
+                            {p.name}
+                          </p>
+                          <p className="text-[11px] text-zinc-400">{p.email}</p>
                         </Link>
                       </td>
-                      <td className="px-5 py-4">
-                        <Link to="/payments/$id" params={{ id: p.id }} className="block text-sm text-zinc-600">
+                      <td className="px-5 py-3.5">
+                        <Link to="/payments/$id" params={{ id: p.id }} className="block text-sm text-zinc-500">
                           {p.type}
                         </Link>
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-5 py-3.5">
                         <Link to="/payments/$id" params={{ id: p.id }} className="block">
-                          <span className="font-mono text-sm font-semibold text-zinc-900">
-                            {p.amount}
-                          </span>
+                          <span className="font-mono text-sm font-semibold text-zinc-900">{p.amount}</span>
                         </Link>
                       </td>
-                      <td className="px-5 py-4">
+                      <td className="px-5 py-3.5">
                         <Link to="/payments/$id" params={{ id: p.id }} className="block">
-                          <span
-                            className={`rounded-full border px-2.5 py-1 text-[11px] font-semibold capitalize ${STATUS_STYLE[p.status] ?? STATUS_STYLE.pending}`}
-                          >
+                          <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${STATUS_STYLE[p.status] ?? "bg-zinc-100 text-zinc-400 border-zinc-200"}`}>
                             {STATUS_LABEL[p.status] ?? p.status}
                           </span>
                         </Link>
                       </td>
-                      <td className="px-5 py-4">
-                        <Link to="/payments/$id" params={{ id: p.id }} className="block text-xs text-zinc-400">
+                      <td className="px-5 py-3.5">
+                        <Link to="/payments/$id" params={{ id: p.id }} className="block text-[11px] text-zinc-400">
                           {p.time}
                         </Link>
                       </td>
-                    </tr>
+                      <td className="px-5 py-3.5 text-right">
+                        <Link
+                          to="/payments/$id"
+                          params={{ id: p.id }}
+                          className="inline-flex items-center gap-1 text-[11px] font-medium text-zinc-300 opacity-0 transition-all group-hover:opacity-100 group-hover:text-dunlo-dim"
+                        >
+                          Detail <ArrowRight size={10} />
+                        </Link>
+                      </td>
+                    </motion.tr>
                   ))
                 )}
               </tbody>
