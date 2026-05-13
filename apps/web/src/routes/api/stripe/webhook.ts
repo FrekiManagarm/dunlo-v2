@@ -14,6 +14,7 @@ import {
   getStripeConnectionByAccountId,
   type DecryptedStripeConnection,
 } from "@/functions/stripe";
+import { generateEscalationDraft } from "@/functions/escalations";
 import { getPlatformStripe } from "@/lib/stripe";
 
 const FAILURE_EVENTS = new Set<string>([
@@ -161,6 +162,11 @@ export async function processFailedPayment(
       draftBody: null,
       status: "pending",
     });
+
+    // Fire-and-forget AI draft — webhook must respond fast.
+    generateEscalationDraft(escalationId).catch((e) =>
+      console.error("[stripe/webhook] AI draft failed:", e),
+    );
     return;
   }
 

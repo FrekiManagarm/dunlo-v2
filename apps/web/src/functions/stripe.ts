@@ -1,11 +1,15 @@
 import { db } from "@dunlo-v2/db";
 import { decrypt } from "@dunlo-v2/db/encrypt";
 import {
+  emailProvider,
   recoverySequence,
   sequenceStep,
   stripeConnection,
 } from "@dunlo-v2/db/schema/domain";
+import { createServerFn } from "@tanstack/react-start";
 import { and, eq } from "drizzle-orm";
+
+import { authMiddleware } from "@/middleware/auth";
 
 export type DecryptedStripeConnection = {
   id: string;
@@ -163,6 +167,28 @@ const DEFAULT_SEQUENCES: DefaultSequence[] = [
     ],
   },
 ];
+
+export const getOnboardingState = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .handler(async ({ context }) => {
+    if (!context.session?.user) throw new Error("Unauthorized");
+    const userId = context.session.user.id;
+
+    const [conn] = await db
+      .select({ id: stripeConnection.id })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .limit(1);
+    const [prov] = await db
+      .select({ id: emailProvider.id })
+      .from(emailProvider)
+      .where(eq(emailProvider.userId, userId))
+      .limit(1);
+    return {
+      stripeConnected: Boolean(conn),
+      emailConfigured: Boolean(prov),
+    };
+  });
 
 export async function seedDefaultSequences(userId: string): Promise<void> {
   for (const seq of DEFAULT_SEQUENCES) {
