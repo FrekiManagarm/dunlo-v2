@@ -22,6 +22,7 @@ export const env = createEnv({
     RESEND_API_KEY: z.string().min(1),
 
     APP_URL: z.url(),
+    CRON_SECRET: z.string().min(16),
 
     SCHEDULER_INTERVAL_MINUTES: z.coerce.number().int().positive().default(5),
   },
