@@ -1,8 +1,5 @@
 import { db } from "@dunlo-v2/db";
-import {
-  recoverySequence,
-  sequenceStep,
-} from "@dunlo-v2/db/schema/domain";
+import { recoverySequence, sequenceStep } from "@dunlo-v2/db/schema/domain";
 import { createServerFn } from "@tanstack/react-start";
 import { and, asc, eq } from "drizzle-orm";
 import { z } from "zod";
@@ -71,12 +68,17 @@ const updateStepSchema = z.object({
   stepId: z.string().min(1),
   subject: z.string().min(1).max(500).optional(),
   body: z.string().min(1).max(10000).optional(),
-  delayHours: z.number().int().min(0).max(24 * 30).optional(),
+  delayHours: z
+    .number()
+    .int()
+    .min(0)
+    .max(24 * 30)
+    .optional(),
 });
 
 export const updateSequenceStep = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((input: unknown) => updateStepSchema.parse(input))
+  .inputValidator((input) => updateStepSchema.parse(input))
   .handler(async ({ context, data }) => {
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
@@ -118,7 +120,7 @@ const toggleSchema = z.object({
 
 export const toggleSequence = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((input: unknown) => toggleSchema.parse(input))
+  .inputValidator((input) => toggleSchema.parse(input))
   .handler(async ({ context, data }) => {
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
@@ -149,12 +151,16 @@ const addStepSchema = z.object({
   stepNumber: z.number().int().min(1).max(20),
   subject: z.string().min(1).max(500),
   body: z.string().min(1).max(10000),
-  delayHours: z.number().int().min(0).max(24 * 30),
+  delayHours: z
+    .number()
+    .int()
+    .min(0)
+    .max(24 * 30),
 });
 
 export const addSequenceStep = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((input: unknown) => addStepSchema.parse(input))
+  .inputValidator((input) => addStepSchema.parse(input))
   .handler(async ({ context, data }) => {
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
@@ -189,7 +195,7 @@ const deleteStepSchema = z.object({ stepId: z.string().min(1) });
 
 export const deleteSequenceStep = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((input: unknown) => deleteStepSchema.parse(input))
+  .inputValidator((input) => deleteStepSchema.parse(input))
   .handler(async ({ context, data }) => {
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;

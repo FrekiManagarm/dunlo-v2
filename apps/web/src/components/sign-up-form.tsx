@@ -13,7 +13,6 @@ export default function SignUpForm({
 }: {
   onSwitchToSignIn: () => void;
 }) {
-  const { isPending } = authClient.useSession();
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
 
   const form = useForm({
@@ -43,14 +42,6 @@ export default function SignUpForm({
       }),
     },
   });
-
-  if (isPending) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <Loader2 className="size-5 animate-spin text-dunlo" />
-      </div>
-    );
-  }
 
   if (submittedEmail) {
     return (

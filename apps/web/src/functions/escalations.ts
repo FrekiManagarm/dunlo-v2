@@ -1,5 +1,4 @@
 import { db } from "@dunlo-v2/db";
-import { decrypt } from "@dunlo-v2/db/encrypt";
 import {
   emailProvider,
   escalation,
@@ -41,7 +40,10 @@ export const getEscalations = createServerFn({ method: "GET" })
     const rows = await db
       .select()
       .from(escalation)
-      .innerJoin(failedPayment, eq(escalation.failedPaymentId, failedPayment.id))
+      .innerJoin(
+        failedPayment,
+        eq(escalation.failedPaymentId, failedPayment.id),
+      )
       .where(
         and(
           eq(escalation.userId, userId),
@@ -76,7 +78,7 @@ const updateDraftSchema = z.object({
 
 export const updateEscalationDraft = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((input: unknown) => updateDraftSchema.parse(input))
+  .inputValidator((input) => updateDraftSchema.parse(input))
   .handler(async ({ context, data }) => {
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
@@ -110,7 +112,7 @@ const sendSchema = z.object({ escalationId: z.string().min(1) });
 
 export const sendEscalationEmail = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((input: unknown) => sendSchema.parse(input))
+  .inputValidator((input) => sendSchema.parse(input))
   .handler(async ({ context, data }) => {
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
@@ -118,7 +120,10 @@ export const sendEscalationEmail = createServerFn({ method: "POST" })
     const [row] = await db
       .select()
       .from(escalation)
-      .innerJoin(failedPayment, eq(escalation.failedPaymentId, failedPayment.id))
+      .innerJoin(
+        failedPayment,
+        eq(escalation.failedPaymentId, failedPayment.id),
+      )
       .where(
         and(
           eq(escalation.id, data.escalationId),
@@ -140,6 +145,7 @@ export const sendEscalationEmail = createServerFn({ method: "POST" })
 
     if (!provider) throw new Error("Configure your email provider first");
 
+    const { decrypt } = await import("@dunlo-v2/db/encrypt");
     const apiKey = decrypt(provider.apiKey);
     const resend = getResendClient(apiKey);
 
@@ -162,7 +168,7 @@ const dismissSchema = z.object({ escalationId: z.string().min(1) });
 
 export const dismissEscalation = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((input: unknown) => dismissSchema.parse(input))
+  .inputValidator((input) => dismissSchema.parse(input))
   .handler(async ({ context, data }) => {
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
@@ -227,7 +233,7 @@ const updateSettingsSchema = z.object({
 
 export const updateEscalationSettings = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((input: unknown) => updateSettingsSchema.parse(input))
+  .inputValidator((input) => updateSettingsSchema.parse(input))
   .handler(async ({ context, data }) => {
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
@@ -235,7 +241,8 @@ export const updateEscalationSettings = createServerFn({ method: "POST" })
     await db
       .update(stripeConnection)
       .set({
-        escalationThreshold: data.threshold === null ? null : data.threshold * 100,
+        escalationThreshold:
+          data.threshold === null ? null : data.threshold * 100,
         escalationCurrency: data.currency,
         updatedAt: new Date(),
       })
@@ -318,7 +325,7 @@ export async function generateEscalationDraft(
 
 export const regenerateEscalationDraft = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .validator((input: unknown) =>
+  .inputValidator((input) =>
     z.object({ escalationId: z.string().min(1) }).parse(input),
   )
   .handler(async ({ context, data }) => {

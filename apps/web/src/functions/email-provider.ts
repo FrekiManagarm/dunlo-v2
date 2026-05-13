@@ -1,5 +1,4 @@
 import { db } from "@dunlo-v2/db";
-import { decrypt, encrypt } from "@dunlo-v2/db/encrypt";
 import { emailProvider } from "@dunlo-v2/db/schema/domain";
 import { createServerFn } from "@tanstack/react-start";
 import { eq } from "drizzle-orm";
@@ -39,6 +38,7 @@ export const getEmailProvider = createServerFn({ method: "GET" })
 
     let masked: string | null = null;
     try {
+      const { decrypt } = await import("@dunlo-v2/db/encrypt");
       const plain = decrypt(row.apiKey);
       masked = maskKey(plain);
     } catch {
@@ -60,8 +60,8 @@ const saveSchema = z.object({
 });
 
 export const saveEmailProvider = createServerFn({ method: "POST" })
+  .inputValidator((input) => saveSchema.parse(input))
   .middleware([authMiddleware])
-  .validator((input: unknown) => saveSchema.parse(input))
   .handler(async ({ context, data }) => {
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
@@ -74,6 +74,7 @@ export const saveEmailProvider = createServerFn({ method: "POST" })
 
     const trimmedKey = data.apiKey.trim();
 
+    const { encrypt } = await import("@dunlo-v2/db/encrypt");
     if (!existing) {
       if (!trimmedKey) {
         throw new Error("API key is required on first setup");
@@ -119,6 +120,7 @@ export const sendTestEmail = createServerFn({ method: "POST" })
 
     if (!row) throw new Error("Configure your email provider first");
 
+    const { decrypt } = await import("@dunlo-v2/db/encrypt");
     const apiKey = decrypt(row.apiKey);
     const resend = getResendClient(apiKey);
 

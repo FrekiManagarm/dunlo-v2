@@ -9,4 +9,13 @@ export function createDb() {
   return drizzle(sql, { schema });
 }
 
-export const db = createDb();
+type Db = ReturnType<typeof createDb>;
+
+let _instance: Db | undefined;
+
+export const db = new Proxy({} as Db, {
+  get(_, prop, receiver) {
+    if (!_instance) _instance = createDb();
+    return Reflect.get(_instance, prop, receiver);
+  },
+});

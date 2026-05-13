@@ -7,6 +7,10 @@ export type UserEmailProvider = {
   fromName: string;
 };
 
+export function getResendClient(apiKey: string): Resend {
+  return new Resend(apiKey);
+}
+
 export function getUserResend(provider: { apiKey: string }): Resend {
   const decrypted = decrypt(provider.apiKey);
   return new Resend(decrypted);

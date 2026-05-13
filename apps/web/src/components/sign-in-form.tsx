@@ -17,7 +17,6 @@ export default function SignInForm({
   onSwitchToSignUp: () => void;
 }) {
   const navigate = useNavigate({ from: "/login" });
-  const { isPending } = authClient.useSession();
   const [view, setView] = useState<View>("signin");
 
   const signInForm = useForm({
@@ -63,14 +62,6 @@ export default function SignInForm({
       }),
     },
   });
-
-  if (isPending) {
-    return (
-      <div className="flex items-center justify-center py-16">
-        <Loader2 className="size-5 animate-spin text-dunlo" />
-      </div>
-    );
-  }
 
   if (view === "forgot-sent") {
     return (

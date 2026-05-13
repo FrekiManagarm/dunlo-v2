@@ -1,4 +1,4 @@
-import { defineNitroPlugin } from "nitropack/runtime";
+import { definePlugin as defineNitroPlugin } from "nitro";
 import { env } from "@dunlo-v2/env/server";
 import { processScheduledEmails } from "../../src/functions/scheduler";
 

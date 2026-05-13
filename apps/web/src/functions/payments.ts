@@ -164,7 +164,7 @@ const getPaymentsInput = z.object({
 
 export const getPayments = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
-  .validator((raw: unknown) => getPaymentsInput.parse(raw))
+  .inputValidator((raw: unknown) => getPaymentsInput.parse(raw))
   .handler(async ({ context, data }) => {
     if (!context.session) {
       throw redirect({ to: "/login" });

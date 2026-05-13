@@ -1,5 +1,4 @@
 import { db } from "@dunlo-v2/db";
-import { decrypt } from "@dunlo-v2/db/encrypt";
 import {
   emailProvider,
   recoverySequence,
@@ -35,6 +34,7 @@ export async function getStripeConnection(
 
   if (!row) return null;
 
+  const { decrypt } = await import("@dunlo-v2/db/encrypt");
   return {
     id: row.id,
     userId: row.userId,
@@ -60,6 +60,7 @@ export async function getStripeConnectionByAccountId(
 
   if (!row) return null;
 
+  const { decrypt } = await import("@dunlo-v2/db/encrypt");
   return {
     id: row.id,
     userId: row.userId,

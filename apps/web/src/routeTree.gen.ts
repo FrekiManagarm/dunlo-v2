@@ -9,13 +9,46 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as SettingsRouteImport } from './routes/settings'
+import { Route as SequencesRouteImport } from './routes/sequences'
+import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as PaymentsRouteImport } from './routes/payments'
+import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as DashboardRouteImport } from './routes/dashboard'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as BlogIndexRouteImport } from './routes/blog/index'
-import { Route as BlogSlugRouteImport } from './routes/blog/$slug'
+import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
+import { Route as ApiStripeDisconnectRouteImport } from './routes/api/stripe/disconnect'
+import { Route as ApiStripeConnectRouteImport } from './routes/api/stripe/connect'
+import { Route as ApiStripeCallbackRouteImport } from './routes/api/stripe/callback'
+import { Route as ApiCronProcessEmailsRouteImport } from './routes/api/cron/process-emails'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
+const SettingsRoute = SettingsRouteImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SequencesRoute = SequencesRouteImport.update({
+  id: '/sequences',
+  path: '/sequences',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ResetPasswordRoute = ResetPasswordRouteImport.update({
+  id: '/reset-password',
+  path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentsRoute = PaymentsRouteImport.update({
+  id: '/payments',
+  path: '/payments',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OnboardingRoute = OnboardingRouteImport.update({
+  id: '/onboarding',
+  path: '/onboarding',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LoginRoute = LoginRouteImport.update({
   id: '/login',
   path: '/login',
@@ -31,14 +64,29 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogIndexRoute = BlogIndexRouteImport.update({
-  id: '/blog/',
-  path: '/blog/',
+const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
+  id: '/api/stripe/webhook',
+  path: '/api/stripe/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
-const BlogSlugRoute = BlogSlugRouteImport.update({
-  id: '/blog/$slug',
-  path: '/blog/$slug',
+const ApiStripeDisconnectRoute = ApiStripeDisconnectRouteImport.update({
+  id: '/api/stripe/disconnect',
+  path: '/api/stripe/disconnect',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStripeConnectRoute = ApiStripeConnectRouteImport.update({
+  id: '/api/stripe/connect',
+  path: '/api/stripe/connect',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiStripeCallbackRoute = ApiStripeCallbackRouteImport.update({
+  id: '/api/stripe/callback',
+  path: '/api/stripe/callback',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiCronProcessEmailsRoute = ApiCronProcessEmailsRouteImport.update({
+  id: '/api/cron/process-emails',
+  path: '/api/cron/process-emails',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiAuthSplatRoute = ApiAuthSplatRouteImport.update({
@@ -51,26 +99,50 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
-  '/blog/$slug': typeof BlogSlugRoute
-  '/blog/': typeof BlogIndexRoute
+  '/onboarding': typeof OnboardingRoute
+  '/payments': typeof PaymentsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sequences': typeof SequencesRoute
+  '/settings': typeof SettingsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
+  '/api/stripe/callback': typeof ApiStripeCallbackRoute
+  '/api/stripe/connect': typeof ApiStripeConnectRoute
+  '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
-  '/blog/$slug': typeof BlogSlugRoute
-  '/blog': typeof BlogIndexRoute
+  '/onboarding': typeof OnboardingRoute
+  '/payments': typeof PaymentsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sequences': typeof SequencesRoute
+  '/settings': typeof SettingsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
+  '/api/stripe/callback': typeof ApiStripeCallbackRoute
+  '/api/stripe/connect': typeof ApiStripeConnectRoute
+  '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/dashboard': typeof DashboardRoute
   '/login': typeof LoginRoute
-  '/blog/$slug': typeof BlogSlugRoute
-  '/blog/': typeof BlogIndexRoute
+  '/onboarding': typeof OnboardingRoute
+  '/payments': typeof PaymentsRoute
+  '/reset-password': typeof ResetPasswordRoute
+  '/sequences': typeof SequencesRoute
+  '/settings': typeof SettingsRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
+  '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
+  '/api/stripe/callback': typeof ApiStripeCallbackRoute
+  '/api/stripe/connect': typeof ApiStripeConnectRoute
+  '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -78,32 +150,105 @@ export interface FileRouteTypes {
     | '/'
     | '/dashboard'
     | '/login'
-    | '/blog/$slug'
-    | '/blog/'
+    | '/onboarding'
+    | '/payments'
+    | '/reset-password'
+    | '/sequences'
+    | '/settings'
     | '/api/auth/$'
+    | '/api/cron/process-emails'
+    | '/api/stripe/callback'
+    | '/api/stripe/connect'
+    | '/api/stripe/disconnect'
+    | '/api/stripe/webhook'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dashboard' | '/login' | '/blog/$slug' | '/blog' | '/api/auth/$'
+  to:
+    | '/'
+    | '/dashboard'
+    | '/login'
+    | '/onboarding'
+    | '/payments'
+    | '/reset-password'
+    | '/sequences'
+    | '/settings'
+    | '/api/auth/$'
+    | '/api/cron/process-emails'
+    | '/api/stripe/callback'
+    | '/api/stripe/connect'
+    | '/api/stripe/disconnect'
+    | '/api/stripe/webhook'
   id:
     | '__root__'
     | '/'
     | '/dashboard'
     | '/login'
-    | '/blog/$slug'
-    | '/blog/'
+    | '/onboarding'
+    | '/payments'
+    | '/reset-password'
+    | '/sequences'
+    | '/settings'
     | '/api/auth/$'
+    | '/api/cron/process-emails'
+    | '/api/stripe/callback'
+    | '/api/stripe/connect'
+    | '/api/stripe/disconnect'
+    | '/api/stripe/webhook'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRoute
   LoginRoute: typeof LoginRoute
-  BlogSlugRoute: typeof BlogSlugRoute
-  BlogIndexRoute: typeof BlogIndexRoute
+  OnboardingRoute: typeof OnboardingRoute
+  PaymentsRoute: typeof PaymentsRoute
+  ResetPasswordRoute: typeof ResetPasswordRoute
+  SequencesRoute: typeof SequencesRoute
+  SettingsRoute: typeof SettingsRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
+  ApiCronProcessEmailsRoute: typeof ApiCronProcessEmailsRoute
+  ApiStripeCallbackRoute: typeof ApiStripeCallbackRoute
+  ApiStripeConnectRoute: typeof ApiStripeConnectRoute
+  ApiStripeDisconnectRoute: typeof ApiStripeDisconnectRoute
+  ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/settings': {
+      id: '/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof SettingsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sequences': {
+      id: '/sequences'
+      path: '/sequences'
+      fullPath: '/sequences'
+      preLoaderRoute: typeof SequencesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reset-password': {
+      id: '/reset-password'
+      path: '/reset-password'
+      fullPath: '/reset-password'
+      preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payments': {
+      id: '/payments'
+      path: '/payments'
+      fullPath: '/payments'
+      preLoaderRoute: typeof PaymentsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/onboarding': {
+      id: '/onboarding'
+      path: '/onboarding'
+      fullPath: '/onboarding'
+      preLoaderRoute: typeof OnboardingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/login': {
       id: '/login'
       path: '/login'
@@ -125,18 +270,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog/': {
-      id: '/blog/'
-      path: '/blog'
-      fullPath: '/blog/'
-      preLoaderRoute: typeof BlogIndexRouteImport
+    '/api/stripe/webhook': {
+      id: '/api/stripe/webhook'
+      path: '/api/stripe/webhook'
+      fullPath: '/api/stripe/webhook'
+      preLoaderRoute: typeof ApiStripeWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/blog/$slug': {
-      id: '/blog/$slug'
-      path: '/blog/$slug'
-      fullPath: '/blog/$slug'
-      preLoaderRoute: typeof BlogSlugRouteImport
+    '/api/stripe/disconnect': {
+      id: '/api/stripe/disconnect'
+      path: '/api/stripe/disconnect'
+      fullPath: '/api/stripe/disconnect'
+      preLoaderRoute: typeof ApiStripeDisconnectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stripe/connect': {
+      id: '/api/stripe/connect'
+      path: '/api/stripe/connect'
+      fullPath: '/api/stripe/connect'
+      preLoaderRoute: typeof ApiStripeConnectRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/stripe/callback': {
+      id: '/api/stripe/callback'
+      path: '/api/stripe/callback'
+      fullPath: '/api/stripe/callback'
+      preLoaderRoute: typeof ApiStripeCallbackRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/cron/process-emails': {
+      id: '/api/cron/process-emails'
+      path: '/api/cron/process-emails'
+      fullPath: '/api/cron/process-emails'
+      preLoaderRoute: typeof ApiCronProcessEmailsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/auth/$': {
@@ -153,9 +319,17 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRoute,
   LoginRoute: LoginRoute,
-  BlogSlugRoute: BlogSlugRoute,
-  BlogIndexRoute: BlogIndexRoute,
+  OnboardingRoute: OnboardingRoute,
+  PaymentsRoute: PaymentsRoute,
+  ResetPasswordRoute: ResetPasswordRoute,
+  SequencesRoute: SequencesRoute,
+  SettingsRoute: SettingsRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
+  ApiCronProcessEmailsRoute: ApiCronProcessEmailsRoute,
+  ApiStripeCallbackRoute: ApiStripeCallbackRoute,
+  ApiStripeConnectRoute: ApiStripeConnectRoute,
+  ApiStripeDisconnectRoute: ApiStripeDisconnectRoute,
+  ApiStripeWebhookRoute: ApiStripeWebhookRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
