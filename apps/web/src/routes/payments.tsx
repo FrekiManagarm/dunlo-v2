@@ -119,9 +119,9 @@ function RouteComponent() {
   };
 
   return (
-    <div className="flex min-h-dvh bg-[#f7f8fa] font-sans">
+    <div className="flex h-dvh bg-[#f7f8fa] font-sans">
       {/* Sidebar */}
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-gray-100 bg-white lg:flex">
+      <aside className="hidden h-dvh w-60 shrink-0 sticky top-0 flex-col border-r border-gray-100 bg-white lg:flex">
         <div className="flex items-center border-b border-gray-100 px-5 py-4">
           <Logo size={26} />
         </div>
@@ -144,16 +144,16 @@ function RouteComponent() {
               icon: Zap,
               label: "Recovery sequences",
               active: false,
-              to: null,
+              to: "/sequences" as const,
             },
             {
               icon: AlertCircle,
               label: "Escalations",
               active: false,
-              to: null,
+              to: "/escalations" as const,
             },
-            { icon: Bell, label: "Alerts", active: false, to: null },
-            { icon: Settings, label: "Settings", active: false, to: null },
+            { icon: Bell, label: "Alerts", active: false, to: "/alerts" as const },
+            { icon: Settings, label: "Settings", active: false, to: "/settings" as const },
           ].map(({ icon: Icon, label, active, to }) => {
             const className = `flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
               active

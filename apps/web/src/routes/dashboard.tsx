@@ -1,4 +1,4 @@
-import { createFileRoute, redirect } from "@tanstack/react-router";
+import { createFileRoute, Link, redirect } from "@tanstack/react-router";
 import {
   AlertCircle,
   CheckCircle,
@@ -6,6 +6,7 @@ import {
   DollarSign,
   LayoutDashboard,
   LogOut,
+  Receipt,
   Settings,
   TrendingUp,
   Zap,
@@ -103,33 +104,42 @@ function RouteComponent() {
   ];
 
   return (
-    <div className="flex min-h-dvh bg-[#f7f8fa] font-sans">
+    <div className="flex h-dvh bg-[#f7f8fa] font-sans">
       {/* Sidebar */}
-      <aside className="hidden w-60 shrink-0 flex-col border-r border-gray-100 bg-white lg:flex">
+      <aside className="hidden h-dvh w-60 shrink-0 sticky top-0 flex-col border-r border-gray-100 bg-white lg:flex">
         <div className="flex items-center border-b border-gray-100 px-5 py-4">
           <Logo size={26} />
         </div>
 
         <nav className="flex-1 px-3 py-4 space-y-0.5">
           {[
-            { icon: LayoutDashboard, label: "Overview", active: true },
-            { icon: Zap, label: "Recovery sequences", active: false },
-            { icon: AlertCircle, label: "Escalations", active: false },
-            { icon: Bell, label: "Alerts", active: false },
-            { icon: Settings, label: "Settings", active: false },
-          ].map(({ icon: Icon, label, active }) => (
-            <button
-              key={label}
-              className={`flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
-                active
-                  ? "bg-gray-100 text-gray-900"
-                  : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
-              }`}
-            >
-              <Icon size={15} />
-              {label}
-            </button>
-          ))}
+            { icon: LayoutDashboard, label: "Overview", to: "/dashboard" as const, active: true },
+            { icon: Receipt, label: "Payments", to: "/payments" as const, active: false },
+            { icon: Zap, label: "Recovery sequences", to: "/sequences" as const, active: false },
+            { icon: AlertCircle, label: "Escalations", to: "/escalations" as const, active: false },
+            { icon: Bell, label: "Alerts", to: "/alerts" as const, active: false },
+            { icon: Settings, label: "Settings", to: "/settings" as const, active: false },
+          ].map(({ icon: Icon, label, to, active }) => {
+            const cls = `flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium transition-all ${
+              active
+                ? "bg-gray-100 text-gray-900"
+                : "text-gray-500 hover:bg-gray-50 hover:text-gray-700"
+            }`;
+            if (to) {
+              return (
+                <Link key={label} to={to} className={cls}>
+                  <Icon size={15} />
+                  {label}
+                </Link>
+              );
+            }
+            return (
+              <button key={label} className={cls}>
+                <Icon size={15} />
+                {label}
+              </button>
+            );
+          })}
         </nav>
 
         <div className="border-t border-gray-100 p-4">
