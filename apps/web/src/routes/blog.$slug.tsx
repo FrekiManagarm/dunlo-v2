@@ -5,6 +5,7 @@ import { ArrowLeft, Clock, Copy, Check } from "lucide-react";
 import { getBlogBody, getPostMeta } from "@/lib/blog";
 import { mdxComponents } from "@/components/mdx-components";
 import { BlogNav } from "@/components/blog-nav";
+import { SITE_NAME, absoluteUrl, canonicalLink, ogMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
@@ -17,17 +18,17 @@ export const Route = createFileRoute("/blog/$slug")({
       { title: `${loaderData?.title} — Dunlo Blog` },
       { name: "description", content: loaderData?.description },
       { name: "keywords", content: loaderData?.keywords?.join(", ") },
-      { property: "og:type", content: "article" },
-      { property: "og:title", content: loaderData?.title ?? "" },
-      { property: "og:description", content: loaderData?.description ?? "" },
-      { property: "og:site_name", content: "Dunlo Blog" },
-      { name: "twitter:card", content: "summary" },
-      { name: "twitter:title", content: loaderData?.title ?? "" },
-      { name: "twitter:description", content: loaderData?.description ?? "" },
+      ...ogMeta({
+        title: `${loaderData?.title ?? "Dunlo Blog"} — Dunlo Blog`,
+        description: loaderData?.description ?? "",
+        path: `/blog/${loaderData?.slug ?? ""}`,
+        type: "article",
+      }),
       ...(loaderData?.date
         ? [{ property: "article:published_time", content: loaderData.date }]
         : []),
     ],
+    links: [canonicalLink(`/blog/${loaderData?.slug ?? ""}`)],
   }),
   component: BlogPostPage,
 });
@@ -205,11 +206,12 @@ function BlogPostPage() {
   const jsonLd = JSON.stringify({
     "@context": "https://schema.org",
     "@type": "Article",
+    mainEntityOfPage: absoluteUrl(`/blog/${slug}`),
     headline: title,
     description,
     datePublished: date,
     keywords: keywords?.join(", "),
-    publisher: { "@type": "Organization", name: "Dunlo", url: "https://dunlo.io" },
+    publisher: { "@type": "Organization", name: SITE_NAME, url: absoluteUrl("/") },
   });
 
   return (

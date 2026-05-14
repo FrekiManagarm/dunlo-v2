@@ -9,10 +9,23 @@ import { LogoMarquee } from "@/components/landing/logo-marquee";
 import { Nav } from "@/components/landing/nav";
 import { Pricing } from "@/components/landing/pricing";
 import { Testimonials } from "@/components/landing/testimonials";
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_TITLE,
+  SITE_NAME,
+  SITE_URL,
+  canonicalLink,
+  ogMeta,
+} from "@/lib/seo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    meta: [{ property: "og:url", content: "https://dunlo.io/" }],
+    meta: [
+      { title: DEFAULT_TITLE },
+      { name: "description", content: DEFAULT_DESCRIPTION },
+      ...ogMeta({ title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION }),
+    ],
+    links: [canonicalLink("/")],
     scripts: [
       {
         type: "application/ld+json",
@@ -30,7 +43,12 @@ export const Route = createFileRoute("/")({
             priceCurrency: "EUR",
             description: "Free during beta",
           },
-          url: "https://dunlo.io",
+          provider: {
+            "@type": "Organization",
+            name: SITE_NAME,
+            url: SITE_URL,
+          },
+          url: SITE_URL,
         }),
       },
       {

@@ -1,5 +1,9 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Allow: /
+Disallow: /api/
+Disallow: /dashboard/*
+Disallow: /onboarding
+Disallow: /reset-password
 
 Sitemap: https://dunlo.io/sitemap.xml

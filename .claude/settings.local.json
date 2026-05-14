@@ -101,7 +101,13 @@
       "Bash(wait)",
       "Bash(grep -A5 'blog.$slug')",
       "Bash(bun build *)",
-      "Bash(tsc --noEmit)"
+      "Bash(tsc --noEmit)",
+      "Bash(mkdir -p /Users/mathieuchambaud/.agents/skills)",
+      "Bash(cp -r /Users/mathieuchambaud/.claude/skills/. /Users/mathieuchambaud/.agents/skills/)",
+      "Read(//Users/mathieuchambaud/.agents/skills/**)",
+      "Bash(mkdir -p /Users/mathieuchambaud/.agents)",
+      "Bash(cp /Users/mathieuchambaud/.claude/CLAUDE.md /Users/mathieuchambaud/.agents/AGENTS.md)",
+      "Read(//Users/mathieuchambaud/.agents/**)"
     ]
   },
   "hooks": {

@@ -3,18 +3,25 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { BlogNav } from "@/components/blog-nav";
 import { getAllPosts } from "@/lib/blog";
+import { canonicalLink, ogMeta } from "@/lib/seo";
+
+const BLOG_TITLE = "Stripe Payment Recovery Blog - Dunlo";
+const BLOG_DESCRIPTION =
+  "Guides and tutorials for SaaS teams to recover failed Stripe payments, reduce involuntary churn, and improve dunning workflows.";
 
 export const Route = createFileRoute("/blog/")({
   loader: async () => getAllPosts(),
   head: () => ({
     meta: [
-      { title: "Blog — Dunlo" },
-      {
-        name: "description",
-        content:
-          "Guides et tutoriels pour récupérer vos paiements Stripe échoués et réduire le churn involontaire.",
-      },
+      { title: BLOG_TITLE },
+      { name: "description", content: BLOG_DESCRIPTION },
+      ...ogMeta({
+        title: BLOG_TITLE,
+        description: BLOG_DESCRIPTION,
+        path: "/blog",
+      }),
     ],
+    links: [canonicalLink("/blog")],
   }),
   component: BlogPage,
 });

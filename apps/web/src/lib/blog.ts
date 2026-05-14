@@ -56,6 +56,7 @@ export const getPostMeta = createServerFn({ method: "GET" })
     return {
       title: post.data.title,
       description: post.data.description,
+      slug,
       date: post.data.date,
       tags: post.data.tags,
       keywords: post.data.keywords,

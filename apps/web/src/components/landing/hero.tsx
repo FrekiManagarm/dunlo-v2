@@ -1,10 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import {
-  motion,
-  useMotionValue,
-  useSpring,
-  useTransform,
-} from "framer-motion";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowUpRight, ChevronRight } from "lucide-react";
 import { useRef } from "react";
 import { usePostHog } from "posthog-js/react";
@@ -170,9 +165,18 @@ function DashboardMockup() {
   ];
 
   const statusCfg = {
-    recovered: { wrap: "bg-dunlo/8 text-dunlo-deep border-dunlo/25", dot: "bg-dunlo" },
-    recovering: { wrap: "bg-amber-50 text-amber-700 border-amber-200", dot: "bg-amber-400" },
-    escalated: { wrap: "bg-red-50 text-red-600 border-red-200", dot: "bg-red-400" },
+    recovered: {
+      wrap: "bg-dunlo/8 text-dunlo-deep border-dunlo/25",
+      dot: "bg-dunlo",
+    },
+    recovering: {
+      wrap: "bg-amber-50 text-amber-700 border-amber-200",
+      dot: "bg-amber-400",
+    },
+    escalated: {
+      wrap: "bg-red-50 text-red-600 border-red-200",
+      dot: "bg-red-400",
+    },
   };
 
   return (
@@ -236,8 +240,16 @@ function DashboardMockup() {
         >
           <defs>
             <linearGradient id="chartFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0%" stopColor="var(--dunlo-accent)" stopOpacity="0.14" />
-              <stop offset="100%" stopColor="var(--dunlo-accent)" stopOpacity="0" />
+              <stop
+                offset="0%"
+                stopColor="var(--dunlo-accent)"
+                stopOpacity="0.14"
+              />
+              <stop
+                offset="100%"
+                stopColor="var(--dunlo-accent)"
+                stopOpacity="0"
+              />
             </linearGradient>
           </defs>
           <path d={areaPath} fill="url(#chartFill)" />
@@ -256,7 +268,12 @@ function DashboardMockup() {
             fill="var(--dunlo-accent)"
             fillOpacity="0.2"
           />
-          <circle cx={lastPt[0]} cy={lastPt[1]} r="2.5" fill="var(--dunlo-accent)" />
+          <circle
+            cx={lastPt[0]}
+            cy={lastPt[1]}
+            r="2.5"
+            fill="var(--dunlo-accent)"
+          />
         </svg>
         <div className="mb-3 mt-1 flex justify-between">
           <span className="text-[10px] text-gray-300">May 1</span>
@@ -278,7 +295,10 @@ function DashboardMockup() {
           {payments.map((p) => {
             const cfg = statusCfg[p.status];
             return (
-              <div key={p.name} className="flex items-center gap-2.5 px-2 py-2.5">
+              <div
+                key={p.name}
+                className="flex items-center gap-2.5 px-2 py-2.5"
+              >
                 <div
                   className={`flex size-6 shrink-0 items-center justify-center rounded-full text-[9px] font-bold ${p.color}`}
                 >
@@ -367,7 +387,7 @@ export function Hero() {
               No credit card required · Cancel anytime · 5 min setup
             </p>
 
-            <div className="anim-6 mt-10 flex items-center gap-8 border-t border-gray-200/50 pt-8">
+            {/*<div className="anim-6 mt-10 flex items-center gap-8 border-t border-gray-200/50 pt-8">
               {[
                 { value: "€4.2M+", label: "Recovered" },
                 { value: "72.3%", label: "Success rate" },
@@ -380,7 +400,7 @@ export function Hero() {
                   <span className="text-xs text-gray-400">{s.label}</span>
                 </div>
               ))}
-            </div>
+            </div>*/}
           </div>
 
           {/* Right: 3D tilt mockup */}
@@ -395,7 +415,11 @@ export function Hero() {
 
             <motion.div
               animate={{ y: [0, -10, 0] }}
-              transition={{ duration: 4.4, repeat: Infinity, ease: "easeInOut" }}
+              transition={{
+                duration: 4.4,
+                repeat: Infinity,
+                ease: "easeInOut",
+              }}
               className="absolute -left-14 top-6 z-10 hidden rounded-2xl border border-gray-100 bg-white px-4 py-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.07)] md:block"
             >
               <p className="text-[11px] font-semibold text-gray-900">

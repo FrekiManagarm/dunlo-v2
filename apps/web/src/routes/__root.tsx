@@ -17,6 +17,14 @@ import { PostHogProvider } from "posthog-js/react";
 import { useEffect } from "react";
 import { env } from "@dunlo-v2/env/web";
 import appCss from "../index.css?url";
+import {
+  DEFAULT_DESCRIPTION,
+  DEFAULT_OG_IMAGE,
+  DEFAULT_TITLE,
+  SITE_NAME,
+  SITE_URL,
+  ogMeta,
+} from "@/lib/seo";
 
 export interface RouterAppContext {
   queryClient: QueryClient;
@@ -30,42 +38,12 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Dunlo — Stop losing revenue to failed payments" },
+      { title: DEFAULT_TITLE },
       {
         name: "description",
-        content:
-          "Dunlo connects to Stripe, detects every failed payment by type, and sends the right recovery email automatically. Setup in 5 minutes.",
+        content: DEFAULT_DESCRIPTION,
       },
-      { property: "og:type", content: "website" },
-      { property: "og:site_name", content: "Dunlo" },
-      {
-        property: "og:title",
-        content: "Dunlo — Stop losing revenue to failed payments",
-      },
-      {
-        property: "og:description",
-        content:
-          "Dunlo connects to Stripe, detects every failed payment by type, and sends the right recovery email automatically. Setup in 5 minutes.",
-      },
-      {
-        property: "og:image",
-        content: "https://dunlo.io/brand/dunlo-logo.png",
-      },
-      { property: "og:url", content: "https://dunlo.io" },
-      { name: "twitter:card", content: "summary_large_image" },
-      {
-        name: "twitter:title",
-        content: "Dunlo — Stop losing revenue to failed payments",
-      },
-      {
-        name: "twitter:description",
-        content:
-          "Dunlo connects to Stripe, detects every failed payment by type, and sends the right recovery email automatically. Setup in 5 minutes.",
-      },
-      {
-        name: "twitter:image",
-        content: "https://dunlo.io/brand/dunlo-logo.png",
-      },
+      ...ogMeta({ title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION }),
     ],
     links: [
       { rel: "icon", href: "/brand/dunlo-mark.svg", type: "image/svg+xml" },
@@ -81,6 +59,27 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
         href: "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap",
       },
       { rel: "stylesheet", href: appCss },
+    ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          name: SITE_NAME,
+          url: SITE_URL,
+          logo: DEFAULT_OG_IMAGE,
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebSite",
+          name: SITE_NAME,
+          url: SITE_URL,
+        }),
+      },
     ],
   }),
   component: RootDocument,
