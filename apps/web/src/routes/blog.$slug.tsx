@@ -1,6 +1,8 @@
 import { type ComponentType } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { getPost } from "@/lib/blog";
+import { mdxComponents } from "@/components/mdx-components";
+import { BlogNav } from "@/components/blog-nav";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: ({ params }) => {
@@ -32,7 +34,9 @@ function BlogPostPage() {
   const MDX = post.data.body as ComponentType;
 
   return (
-    <main className="max-w-3xl mx-auto px-6 py-16">
+    <>
+      <BlogNav />
+      <main className="max-w-3xl mx-auto px-6 pt-24 pb-16">
       <Link
         to="/blog"
         className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-dunlo-dim transition-colors mb-10"
@@ -64,8 +68,9 @@ function BlogPostPage() {
       </header>
 
       <article className="prose prose-zinc max-w-none">
-        <MDX />
+        <MDX components={mdxComponents} />
       </article>
     </main>
+    </>
   );
 }

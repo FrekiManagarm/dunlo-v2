@@ -1,5 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { getAllPosts } from "@/lib/blog";
+import { BlogNav } from "@/components/blog-nav";
 
 export const Route = createFileRoute("/blog")({
   loader: () => {
@@ -29,7 +30,9 @@ function BlogPage() {
   const posts = Route.useLoaderData();
 
   return (
-    <main className="max-w-5xl mx-auto px-6 py-16">
+    <>
+      <BlogNav />
+      <main className="max-w-5xl mx-auto px-6 pt-24 pb-16">
       <div className="mb-12">
         <h1 className="text-4xl font-bold tracking-tight mb-3">Blog</h1>
         <p className="text-muted-foreground text-lg">
@@ -76,5 +79,6 @@ function BlogPage() {
         ))}
       </div>
     </main>
+    </>
   );
 }
