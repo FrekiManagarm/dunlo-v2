@@ -12,8 +12,9 @@ import {
   TrendingUp,
   XCircle,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { usePostHog } from "posthog-js/react";
 
 import {
   escalatePaymentManually,
@@ -86,9 +87,14 @@ function formatDate(iso: string) {
 }
 
 function RouteComponent() {
+  const posthog = usePostHog();
   const { id } = Route.useParams();
   const queryClient = useQueryClient();
   const { data: payment } = useSuspenseQuery(paymentDetailQueryOptions(id));
+
+  useEffect(() => {
+    posthog.capture("payment_viewed", { payment_id: id });
+  }, [id]);
   const [recovering, setRecovering] = useState(false);
   const [escalating, setEscalating] = useState(false);
 

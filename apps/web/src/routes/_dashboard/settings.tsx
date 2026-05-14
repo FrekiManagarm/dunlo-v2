@@ -1,6 +1,7 @@
 import { Input } from "@dunlo-v2/ui/components/input";
 import { Label } from "@dunlo-v2/ui/components/label";
 import { useForm } from "@tanstack/react-form";
+import { usePostHog } from "posthog-js/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
@@ -24,6 +25,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
+import { useCustomer } from "autumn-js/react";
 import { authClient } from "@/lib/auth-client";
 import {
   getEmailProvider,
@@ -45,10 +47,11 @@ import {
   escalationSettingsQueryOptions,
 } from "@/lib/queries";
 
-type Tab = "account" | "email" | "escalation" | "testing";
+type Tab = "account" | "billing" | "email" | "escalation" | "testing";
 
 const TABS = [
   { id: "account" as const, label: "Account", icon: UserIcon },
+  { id: "billing" as const, label: "Billing", icon: CreditCard },
   { id: "email" as const, label: "Email provider", icon: Mail },
   { id: "escalation" as const, label: "Escalation", icon: AlertCircle },
   { id: "testing" as const, label: "Testing", icon: FlaskConical },
@@ -141,6 +144,7 @@ function RouteComponent() {
                   onSignOut={handleSignOut}
                 />
               )}
+              {tab === "billing" && <BillingTab />}
               {tab === "email" && <EmailTab initial={emailState} />}
               {tab === "escalation" && (
                 <EscalationTab initial={escalationState} />
@@ -249,6 +253,7 @@ function EmailTab({
 }: {
   initial: Awaited<ReturnType<typeof getEmailProvider>>;
 }) {
+  const posthog = usePostHog();
   const [testing, setTesting] = useState(false);
 
   const form = useForm({
@@ -260,6 +265,7 @@ function EmailTab({
     onSubmit: async ({ value }) => {
       try {
         await saveEmailProvider({ data: value });
+        posthog.capture("settings_updated", { section: "email_provider" });
         toast.success("Email provider saved");
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Save failed");
@@ -452,6 +458,7 @@ function EscalationTab({
 }: {
   initial: Awaited<ReturnType<typeof getEscalationSettings>>;
 }) {
+  const posthog = usePostHog();
   const [disconnecting, setDisconnecting] = useState(false);
   const [syncing, setSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<{
@@ -469,6 +476,7 @@ function EscalationTab({
         await updateEscalationSettings({
           data: { threshold: value.threshold, currency: value.currency },
         });
+        posthog.capture("settings_updated", { section: "escalation" });
         toast.success("Escalation settings saved");
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Save failed");
@@ -829,6 +837,103 @@ function TestingTab() {
           <code className="font-mono">pi_test_</code>. They will appear in
           Payments, Escalations, and the activity feed.
         </p>
+      </div>
+    </div>
+  );
+}
+
+/* ─── Billing tab ───────────────────────────────────────────────────────────── */
+
+function BillingTab() {
+  const { data: customer, isLoading, openCustomerPortal } = useCustomer();
+
+  const activePlans: string[] =
+    customer?.products
+      ?.filter((p: { status: string }) => p.status === "active")
+      .map((p: { name: string }) => p.name) ?? [];
+
+  const hasPaidPlan = activePlans.length > 0;
+
+  const handleManageBilling = async () => {
+    try {
+      await openCustomerPortal({});
+    } catch {
+      toast.error("Could not open billing portal");
+    }
+  };
+
+  return (
+    <div className="space-y-5">
+      {/* Current plan card */}
+      <div className="rounded-2xl border border-zinc-100 bg-white shadow-[0_1px_4px_0_rgba(0,0,0,0.04)]">
+        <div className="border-b border-zinc-50 px-6 py-5">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+            Current plan
+          </p>
+          {isLoading ? (
+            <div className="mt-3 h-6 w-32 animate-pulse rounded-lg bg-zinc-100" />
+          ) : (
+            <div className="mt-2 flex items-center gap-3">
+              <span className="text-[18px] font-semibold tracking-tight text-zinc-900">
+                {hasPaidPlan ? activePlans.join(", ") : "Beta"}
+              </span>
+              <span className="rounded-full bg-dunlo/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-widest text-dunlo-deep">
+                {hasPaidPlan ? "Active" : "Free during beta"}
+              </span>
+            </div>
+          )}
+        </div>
+
+        <div className="space-y-3 px-6 py-5">
+          {!hasPaidPlan && (
+            <div className="flex items-start gap-3 rounded-xl border border-dunlo/15 bg-dunlo/[0.04] p-4">
+              <TrendingUp size={14} className="mt-0.5 shrink-0 text-dunlo-deep" />
+              <p className="text-[12px] leading-relaxed text-zinc-600">
+                Dunlo is <strong className="font-semibold text-zinc-800">free during beta</strong>. Paid plans launch soon — you'll get a 2-week heads-up before any billing starts.
+              </p>
+            </div>
+          )}
+
+          <div className="flex items-center justify-between gap-4 pt-1">
+            <p className="text-[12px] text-zinc-400">
+              {hasPaidPlan
+                ? "Manage your subscription, update your payment method, or view invoices."
+                : "When paid plans launch, you can upgrade here."}
+            </p>
+            <button
+              onClick={handleManageBilling}
+              className="flex shrink-0 items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-4 py-2 text-[12px] font-semibold text-zinc-700 transition-all hover:bg-zinc-50 active:scale-[0.97]"
+            >
+              <CreditCard size={12} />
+              Manage billing
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Plan features */}
+      <div className="rounded-2xl border border-zinc-100 bg-white shadow-[0_1px_4px_0_rgba(0,0,0,0.04)]">
+        <div className="px-6 py-5">
+          <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
+            What's included
+          </p>
+          <ul className="mt-4 space-y-3">
+            {[
+              "Unlimited recovery sequences",
+              "All Stripe failure codes covered",
+              "Custom email templates with variables",
+              "Escalation rules & alerts",
+              "Full payment recovery history",
+            ].map((feature) => (
+              <li key={feature} className="flex items-center gap-2.5 text-[13px] text-zinc-700">
+                <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-dunlo/10">
+                  <CheckCircle2 size={10} className="text-dunlo-deep" />
+                </span>
+                {feature}
+              </li>
+            ))}
+          </ul>
+        </div>
       </div>
     </div>
   );
