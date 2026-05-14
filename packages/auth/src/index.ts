@@ -2,6 +2,7 @@ import { createDb } from "@dunlo-v2/db";
 import * as schema from "@dunlo-v2/db/schema/auth";
 import { env } from "@dunlo-v2/env/server";
 import { betterAuth } from "better-auth";
+import { autumn } from "autumn-js/better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { tanstackStartCookies } from "better-auth/tanstack-start";
 
@@ -68,7 +69,10 @@ export function createAuth() {
       storage: "memory",
     },
 
-    plugins: [tanstackStartCookies()],
+    plugins: [
+      tanstackStartCookies(),
+      autumn(env.AUTUMN_SECRET_KEY ? { secretKey: env.AUTUMN_SECRET_KEY } : {}),
+    ],
   });
 }
 

@@ -17,6 +17,8 @@ export const env = createEnv({
       .string()
       .regex(/^[0-9a-fA-F]{64}$/, "ENCRYPTION_KEY must be a 64-char hex string (32 bytes)"),
 
+    AUTUMN_SECRET_KEY: z.string().min(1).optional(),
+
     ANTHROPIC_API_KEY: z.string().min(1),
     RESEND_API_KEY: z.string().min(1),
 

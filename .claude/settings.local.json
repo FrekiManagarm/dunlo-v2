@@ -93,7 +93,15 @@
       "Bash(timeout 90 bun run dev)",
       "Bash(echo \"Dev server starting with PID $!\")",
       "Bash(pkill -f \"bun run dev\")",
-      "Skill(superpowers:finishing-a-development-branch)"
+      "Skill(superpowers:finishing-a-development-branch)",
+      "Bash(bun tsc *)",
+      "Bash(tsc --noEmit -p apps/web/tsconfig.json)",
+      "Bash(bun info *)",
+      "Bash(kill %1)",
+      "Bash(wait)",
+      "Bash(grep -A5 'blog.$slug')",
+      "Bash(bun build *)",
+      "Bash(tsc --noEmit)"
     ]
   },
   "hooks": {

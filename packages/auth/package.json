@@ -13,6 +13,7 @@
   "dependencies": {
     "@dunlo-v2/db": "workspace:*",
     "@dunlo-v2/env": "workspace:*",
+    "autumn-js": "*",
     "better-auth": "catalog:",
     "dotenv": "catalog:",
     "resend": "^6.12.3",
