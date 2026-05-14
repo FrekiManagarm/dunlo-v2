@@ -1,3 +1,4 @@
+import { type ComponentType } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { getPost } from "@/lib/blog";
 
@@ -28,7 +29,7 @@ function BlogPostPage() {
   const { title, date, tags } = Route.useLoaderData();
 
   const post = getPost(slug)!;
-  const MDX = post.data.body as React.ComponentType;
+  const MDX = post.data.body as ComponentType;
 
   return (
     <main className="max-w-3xl mx-auto px-6 py-16">
