@@ -3,6 +3,8 @@ import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
 import { nitro } from "nitro/vite";
+import mdx from "fumadocs-mdx/vite";
+import * as MdxConfig from "./source.config.js";
 
 export default defineConfig({
   server: {
@@ -12,6 +14,7 @@ export default defineConfig({
     tsconfigPaths: true,
   },
   plugins: [
+    mdx(MdxConfig),
     tailwindcss(),
     nitro(),
     tanstackStart({
