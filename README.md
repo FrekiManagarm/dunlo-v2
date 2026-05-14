@@ -1,92 +1,181 @@
-# dunlo-v2
+<div align="center">
 
-This project was created with [Better-T-Stack](https://github.com/AmanVarshney01/create-better-t-stack), a modern TypeScript stack that combines React, TanStack Start, Self, and more.
+# Dunlo
 
-## Features
+**Stripe payment recovery for SaaS businesses.**  
+Automatically retry failed charges, send smart dunning emails, and track every dollar recovered — so you don't lose customers to involuntary churn.
 
-- **TypeScript** - For type safety and improved developer experience
-- **TanStack Start** - SSR framework with TanStack Router
-- **TailwindCSS** - Utility-first CSS for rapid UI development
-- **Shared UI package** - shadcn/ui primitives live in `packages/ui`
-- **Drizzle** - TypeScript-first ORM
-- **PostgreSQL** - Database engine
-- **Authentication** - Better-Auth
-- **Turborepo** - Optimized monorepo build system
+[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-3178C6?style=flat-square&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
+[![TanStack Start](https://img.shields.io/badge/TanStack_Start-SSR-FF4154?style=flat-square)](https://tanstack.com/start)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-v4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![Bun](https://img.shields.io/badge/Bun-1.2-fbf0df?style=flat-square&logo=bun&logoColor=black)](https://bun.sh/)
+
+</div>
+
+---
+
+## Overview
+
+Dunlo monitors your Stripe account for failed payments and handles recovery automatically:
+
+- **Detects** failed charges in real time via Stripe webhooks
+- **Retries** payments on an intelligent schedule
+- **Emails** customers with branded, actionable recovery messages
+- **Tracks** recovered revenue with a clear dashboard
+
+Currently in **free beta** — full recovery pipeline available to early adopters at no cost.
+
+---
+
+## Tech Stack
+
+| Layer | Technology |
+|---|---|
+| Framework | [TanStack Start](https://tanstack.com/start) (SSR, Vite + Nitro) |
+| Router | [TanStack Router](https://tanstack.com/router) (file-based, type-safe) |
+| Auth | [better-auth](https://better-auth.com) + `tanstackStartCookies` |
+| Database | [Drizzle ORM](https://orm.drizzle.team) + [Neon](https://neon.tech) (serverless PostgreSQL) |
+| Styling | [Tailwind CSS v4](https://tailwindcss.com/) |
+| Components | [shadcn/ui](https://ui.shadcn.com/) (built on `@base-ui/react`) |
+| Forms | [@tanstack/react-form](https://tanstack.com/form) + Zod |
+| Payments | [Stripe](https://stripe.com) |
+| Blog/MDX | [Fumadocs MDX](https://fumadocs.vercel.app/) |
+| Analytics | [PostHog](https://posthog.com) |
+| Build | [Turborepo](https://turbo.build/) + [Bun](https://bun.sh) workspaces |
+| Deployment | [Vercel](https://vercel.com) |
+
+---
+
+## Monorepo Structure
+
+```
+dunlo-v2/
+├── apps/
+│   └── web/                  # TanStack Start SSR app (frontend + API)
+│       ├── src/
+│       │   ├── components/   # UI components
+│       │   ├── lib/          # Utilities, server functions, API queries
+│       │   ├── routes/       # File-based routes (TanStack Router)
+│       │   └── server/       # Nitro server plugins (email scheduler, etc.)
+│       └── content/
+│           └── blog/         # MDX blog articles
+├── packages/
+│   ├── auth/                 # better-auth config (shared server-side)
+│   ├── config/               # Shared TypeScript / tooling config
+│   ├── db/                   # Drizzle ORM schema + Neon client
+│   ├── env/                  # Type-safe env vars (@t3-oss/env-core)
+│   └── ui/                   # Shared component library + global CSS
+├── package.json              # Root — Bun workspaces + Turborepo scripts
+└── turbo.json                # Turborepo pipeline
+```
+
+---
 
 ## Getting Started
 
-First, install the dependencies:
+### Prerequisites
+
+- [Bun](https://bun.sh) `>= 1.2`
+- A [Neon](https://neon.tech) PostgreSQL database
+- A [Stripe](https://stripe.com) account (test mode works for local dev)
+
+### Installation
 
 ```bash
+git clone https://github.com/FrekiManagarm/dunlo-v2.git
+cd dunlo-v2
 bun install
 ```
 
-## Database Setup
+### Environment Variables
 
-This project uses PostgreSQL with Drizzle ORM.
+Create a `.env` file at the repo root:
 
-1. Make sure you have a PostgreSQL database set up.
-2. Update your `apps/web/.env` file with your PostgreSQL connection details.
+```env
+# Database
+DATABASE_URL=postgresql://...
 
-3. Apply the schema to your database:
+# Auth
+BETTER_AUTH_SECRET=...                 # Random 32+ character secret
+BETTER_AUTH_URL=http://localhost:3001
+CORS_ORIGIN=http://localhost:3001
+
+# Stripe
+STRIPE_SECRET_KEY=sk_test_...
+STRIPE_WEBHOOK_SECRET=whsec_...
+
+NODE_ENV=development
+```
+
+### Database Setup
 
 ```bash
 bun run db:push
 ```
 
-Then, run the development server:
+### Start Development
 
 ```bash
 bun run dev
 ```
 
-Open [http://localhost:3001](http://localhost:3001) in your browser to see the fullstack application.
+Open [http://localhost:3001](http://localhost:3001) in your browser.
+
+---
+
+## Routes
+
+| Route | Description |
+|---|---|
+| `/` | Landing page |
+| `/login` | Sign in / Sign up |
+| `/onboarding` | Stripe Connect onboarding |
+| `/dashboard` | Payments overview, stats, recovery status |
+| `/blog` | Marketing blog (MDX articles) |
+| `/blog/:slug` | Individual blog post |
+
+---
+
+## Available Scripts
+
+Run from the **repo root**:
+
+| Command | Description |
+|---|---|
+| `bun run dev` | Start all apps in parallel (hot reload) |
+| `bun run dev:web` | Start only the web app |
+| `bun run build` | Production build |
+| `bun run check-types` | TypeScript type-check across the monorepo |
+| `bun run db:push` | Push Drizzle schema to Neon |
+| `bun run db:generate` | Generate migration files |
+| `bun run db:migrate` | Run pending migrations |
+| `bun run db:studio` | Open Drizzle Studio |
+
+---
 
 ## UI Customization
 
-React web apps in this stack share shadcn/ui primitives through `packages/ui`.
+Design tokens live in `packages/ui/src/styles/globals.css` and are available as Tailwind utilities everywhere in the monorepo:
 
-- Change design tokens and global styles in `packages/ui/src/styles/globals.css`
-- Update shared primitives in `packages/ui/src/components/*`
-- Adjust shadcn aliases or style config in `packages/ui/components.json` and `apps/web/components.json`
+| Class | Description |
+|---|---|
+| `bg-dunlo` / `text-dunlo` | Primary brand green |
+| `text-dunlo-dim` | Green links on white backgrounds |
+| `text-dunlo-deep` | Dark green text on light green |
+| `bg-dunlo/20`, `border-dunlo/30` | Opacity modifier variants |
 
-### Add more shared components
-
-Run this from the project root to add more primitives to the shared UI package:
+To add shadcn/ui primitives to the shared package:
 
 ```bash
-npx shadcn@latest add accordion dialog popover sheet table -c packages/ui
+npx shadcn@latest add accordion dialog -c packages/ui
 ```
-
-Import shared components like this:
 
 ```tsx
 import { Button } from "@dunlo-v2/ui/components/button";
 ```
 
-### Add app-specific blocks
+---
 
-If you want to add app-specific blocks instead of shared primitives, run the shadcn CLI from `apps/web`.
+## License
 
-## Project Structure
-
-```
-dunlo-v2/
-├── apps/
-│   └── web/         # Fullstack application (React + TanStack Start)
-├── packages/
-│   ├── ui/          # Shared shadcn/ui components and styles
-│   ├── auth/        # Authentication configuration & logic
-│   └── db/          # Database schema & queries
-```
-
-## Available Scripts
-
-- `bun run dev`: Start all applications in development mode
-- `bun run build`: Build all applications
-- `bun run dev:web`: Start only the web application
-- `bun run check-types`: Check TypeScript types across all apps
-- `bun run db:push`: Push schema changes to database
-- `bun run db:generate`: Generate database client/types
-- `bun run db:migrate`: Run database migrations
-- `bun run db:studio`: Open database studio UI
+[MIT](LICENSE)
