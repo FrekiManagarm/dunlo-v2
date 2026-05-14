@@ -21,9 +21,7 @@ import { Logo, LogoMark } from "@/components/logo";
 
 export const Route = createFileRoute("/")({
   head: () => ({
-    meta: [
-      { property: "og:url", content: "https://dunlo.io/" },
-    ],
+    meta: [{ property: "og:url", content: "https://dunlo.io/" }],
     scripts: [
       {
         type: "application/ld+json",
@@ -275,7 +273,7 @@ function ProgressBar({ duration }: { duration: number }) {
 /* ─── Page ──────────────────────────────────────────────────────────────────── */
 function LandingPage() {
   return (
-    <div className="min-h-[100dvh] bg-[#e9eaeb] font-sans">
+    <div className="min-h-dvh  bg-[#e9eaeb] font-sans">
       <Nav />
       <Hero />
       <LogoMarquee />
@@ -357,7 +355,7 @@ function Hero() {
       </div>
 
       {/* Split grid */}
-      <div className="relative mx-auto flex min-h-[100dvh] max-w-6xl items-center px-4 pb-20 pt-28 md:px-6 md:pt-24">
+      <div className="relative mx-auto flex min-h-dvh max-w-6xl items-center px-4 pb-20 pt-28 md:px-6 md:pt-24">
         <div className="grid w-full grid-cols-1 items-center gap-14 md:grid-cols-2 md:gap-10 lg:gap-20">
           {/* ── Left: text ── */}
           <div className="flex flex-col">
@@ -1047,19 +1045,27 @@ function MockupConnect() {
         />
       </div>
       <div className="rounded-xl border border-white/8 bg-white/5 p-4 space-y-2.5">
-        <div className="text-xs text-white/40 mb-3">Requesting read-only access to</div>
-        {["Payment Intents", "Customers", "Charges", "Subscriptions"].map((item, i) => (
-          <motion.div
-            key={item}
-            initial={{ opacity: 0, x: -8 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: i * 0.15 + 0.3, duration: 0.4, ease: [0.16, 1, 0.3, 1] }}
-            className="flex items-center gap-2"
-          >
-            <Check size={12} className="text-dunlo shrink-0" />
-            <span className="text-sm text-white/70">{item}</span>
-          </motion.div>
-        ))}
+        <div className="text-xs text-white/40 mb-3">
+          Requesting read-only access to
+        </div>
+        {["Payment Intents", "Customers", "Charges", "Subscriptions"].map(
+          (item, i) => (
+            <motion.div
+              key={item}
+              initial={{ opacity: 0, x: -8 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{
+                delay: i * 0.15 + 0.3,
+                duration: 0.4,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="flex items-center gap-2"
+            >
+              <Check size={12} className="text-dunlo shrink-0" />
+              <span className="text-sm text-white/70">{item}</span>
+            </motion.div>
+          ),
+        )}
       </div>
       <motion.button
         whileHover={{ scale: 1.02 }}
@@ -1074,28 +1080,51 @@ function MockupConnect() {
 
 function MockupSequences() {
   const emails = [
-    { delay: "Immediately", subject: "Quick note about your payment", tag: "High priority" },
-    { delay: "After 3 days", subject: "Still want to continue?", tag: "Follow-up" },
-    { delay: "After 7 days", subject: "Last chance — update your card", tag: "Final" },
+    {
+      delay: "Immediately",
+      subject: "Quick note about your payment",
+      tag: "High priority",
+    },
+    {
+      delay: "After 3 days",
+      subject: "Still want to continue?",
+      tag: "Follow-up",
+    },
+    {
+      delay: "After 7 days",
+      subject: "Last chance — update your card",
+      tag: "Final",
+    },
   ];
   return (
     <div className="space-y-2">
       <div className="mb-4 flex items-center justify-between">
-        <span className="text-xs text-white/40">Card declined — recovery sequence</span>
-        <span className="rounded-full bg-dunlo/15 px-2 py-0.5 text-xs text-dunlo">Active</span>
+        <span className="text-xs text-white/40">
+          Card declined — recovery sequence
+        </span>
+        <span className="rounded-full bg-dunlo/15 px-2 py-0.5 text-xs text-dunlo">
+          Active
+        </span>
       </div>
       {emails.map((email, i) => (
         <motion.div
           key={email.delay}
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: i * 0.18, duration: 0.45, ease: [0.16, 1, 0.3, 1] }}
+          transition={{
+            delay: i * 0.18,
+            duration: 0.45,
+            ease: [0.16, 1, 0.3, 1],
+          }}
           className="flex gap-3"
         >
           <div className="flex flex-col items-center pt-1.5">
             <div className="size-2 shrink-0 rounded-full bg-dunlo" />
             {i < emails.length - 1 && (
-              <div className="mt-1 w-px flex-1 bg-dunlo/20" style={{ minHeight: "2rem" }} />
+              <div
+                className="mt-1 w-px flex-1 bg-dunlo/20"
+                style={{ minHeight: "2rem" }}
+              />
             )}
           </div>
           <div className="mb-2 flex-1 rounded-xl border border-white/8 bg-white/5 p-3">
@@ -1127,8 +1156,12 @@ function MockupDashboard() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <div className="font-mono text-2xl font-bold text-dunlo">€4,820</div>
-            <div className="mt-0.5 text-xs text-white/40">Recovered this month</div>
+            <div className="font-mono text-2xl font-bold text-dunlo">
+              €4,820
+            </div>
+            <div className="mt-0.5 text-xs text-white/40">
+              Recovered this month
+            </div>
           </motion.div>
         </div>
         <div className="rounded-xl border border-white/8 bg-white/5 p-4">
@@ -1156,7 +1189,9 @@ function MockupDashboard() {
           >
             <span className="text-sm text-white/60">{row.name}</span>
             <div className="flex items-center gap-3">
-              <span className="font-mono text-sm text-white/80">{row.amount}</span>
+              <span className="font-mono text-sm text-white/80">
+                {row.amount}
+              </span>
               <span
                 className={`rounded-full px-2 py-0.5 text-xs ${
                   row.recovered
@@ -1295,7 +1330,7 @@ function HowItWorks() {
           </div>
 
           {/* ── Right: mockup stage ── */}
-          <div className="relative flex min-h-[340px] items-center overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] p-6 md:min-h-[420px] md:p-8">
+          <div className="relative flex min-h-85 items-center overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] p-6 md:min-h-[420px] md:p-8">
             {/* Subtle radial glow behind mockup */}
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <div className="size-64 rounded-full bg-dunlo/5 blur-3xl" />

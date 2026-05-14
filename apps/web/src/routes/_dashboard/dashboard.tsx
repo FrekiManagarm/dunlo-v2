@@ -40,7 +40,6 @@ const STATUS_LABEL: Record<string, string> = {
   dismissed: "Dismissed",
 };
 
-
 function RouteComponent() {
   const { session } = Route.useRouteContext();
   const { data } = useSuspenseQuery(dashboardQueryOptions());
@@ -90,7 +89,9 @@ function RouteComponent() {
           <h1 className="text-[15px] font-semibold tracking-tight text-zinc-900">
             Good morning, {firstName}
           </h1>
-          <p className="text-xs text-zinc-400">Here's what's happening with your revenue.</p>
+          <p className="text-xs text-zinc-400">
+            Here's what's happening with your revenue.
+          </p>
         </div>
         <div className="flex items-center gap-2 rounded-full border border-dunlo/25 bg-dunlo/[0.07] px-3 py-1.5">
           <span className="size-1.5 animate-pulse rounded-full bg-dunlo" />
@@ -109,9 +110,9 @@ function RouteComponent() {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -8 }}
               transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
-              className="relative overflow-hidden rounded-2xl border border-dunlo/20 bg-dunlo/[0.05] p-5"
+              className="relative overflow-hidden rounded-2xl border border-dunlo/20 bg-dunlo/5 p-5"
             >
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,_var(--tw-gradient-stops))] from-dunlo/10 via-transparent to-transparent" />
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_left,var(--tw-gradient-stops))] from-dunlo/10 via-transparent to-transparent" />
               <div className="relative flex items-center justify-between gap-4">
                 <div className="flex items-center gap-3">
                   <div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-dunlo/10">
@@ -145,13 +146,19 @@ function RouteComponent() {
               key={label}
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: i * 0.06, duration: 0.22, ease: [0.16, 1, 0.3, 1] as [number, number, number, number] }}
+              transition={{
+                delay: i * 0.06,
+                duration: 0.22,
+                ease: [0.16, 1, 0.3, 1] as [number, number, number, number],
+              }}
               className={`rounded-2xl border border-zinc-100 border-t-2 bg-white px-5 py-4 shadow-[0_1px_4px_0_rgba(0,0,0,0.04)] ${accent}`}
             >
               <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
                 {label}
               </p>
-              <p className={`mt-2 font-mono text-[1.6rem] font-bold leading-none tracking-tight ${valueColor}`}>
+              <p
+                className={`mt-2 font-mono text-[1.6rem] font-bold leading-none tracking-tight ${valueColor}`}
+              >
                 {value}
               </p>
               <p className="mt-1.5 text-[11px] text-zinc-400">{delta}</p>
@@ -168,8 +175,12 @@ function RouteComponent() {
         >
           <div className="flex items-center justify-between border-b border-zinc-100 px-5 py-4">
             <div>
-              <h2 className="text-sm font-semibold text-zinc-900">Recent payments</h2>
-              <p className="text-[11px] text-zinc-400">Last 20 failed charges</p>
+              <h2 className="text-sm font-semibold text-zinc-900">
+                Recent payments
+              </h2>
+              <p className="text-[11px] text-zinc-400">
+                Last 20 failed charges
+              </p>
             </div>
             <Link
               to="/payments"
@@ -184,9 +195,12 @@ function RouteComponent() {
               <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-zinc-50">
                 <CheckCircle2 size={20} className="text-zinc-300" />
               </div>
-              <p className="text-sm font-semibold text-zinc-700">No failed payments yet</p>
+              <p className="text-sm font-semibold text-zinc-700">
+                No failed payments yet
+              </p>
               <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-zinc-400">
-                Your dashboard will populate automatically when Stripe detects a failed charge.
+                Your dashboard will populate automatically when Stripe detects a
+                failed charge.
               </p>
             </div>
           ) : (
@@ -194,14 +208,16 @@ function RouteComponent() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-zinc-50">
-                    {["Customer", "Failure", "Amount", "Status", ""].map((h, i) => (
-                      <th
-                        key={i}
-                        className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400"
-                      >
-                        {h}
-                      </th>
-                    ))}
+                    {["Customer", "Failure", "Amount", "Status", ""].map(
+                      (h, i) => (
+                        <th
+                          key={i}
+                          className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400"
+                        >
+                          {h}
+                        </th>
+                      ),
+                    )}
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-zinc-50">
@@ -214,7 +230,11 @@ function RouteComponent() {
                       className="group transition-colors hover:bg-zinc-50/60"
                     >
                       <td className="px-5 py-3.5">
-                        <Link to="/payments/$id" params={{ id: p.id }} className="block">
+                        <Link
+                          to="/payments/$id"
+                          params={{ id: p.id }}
+                          className="block"
+                        >
                           <p className="text-sm font-semibold text-zinc-900 group-hover:text-dunlo-deep transition-colors">
                             {p.name}
                           </p>
@@ -222,18 +242,34 @@ function RouteComponent() {
                         </Link>
                       </td>
                       <td className="px-5 py-3.5">
-                        <Link to="/payments/$id" params={{ id: p.id }} className="block text-sm text-zinc-500">
+                        <Link
+                          to="/payments/$id"
+                          params={{ id: p.id }}
+                          className="block text-sm text-zinc-500"
+                        >
                           {p.type}
                         </Link>
                       </td>
                       <td className="px-5 py-3.5">
-                        <Link to="/payments/$id" params={{ id: p.id }} className="block">
-                          <span className="font-mono text-sm font-semibold text-zinc-900">{p.amount}</span>
+                        <Link
+                          to="/payments/$id"
+                          params={{ id: p.id }}
+                          className="block"
+                        >
+                          <span className="font-mono text-sm font-semibold text-zinc-900">
+                            {p.amount}
+                          </span>
                         </Link>
                       </td>
                       <td className="px-5 py-3.5">
-                        <Link to="/payments/$id" params={{ id: p.id }} className="block">
-                          <span className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${STATUS_STYLE[p.status] ?? STATUS_STYLE.failed}`}>
+                        <Link
+                          to="/payments/$id"
+                          params={{ id: p.id }}
+                          className="block"
+                        >
+                          <span
+                            className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${STATUS_STYLE[p.status] ?? STATUS_STYLE.failed}`}
+                          >
                             {STATUS_LABEL[p.status] ?? p.status}
                           </span>
                         </Link>
@@ -268,11 +304,18 @@ function RouteComponent() {
           >
             <div className="flex items-center gap-3">
               <div className="flex size-8 items-center justify-center rounded-xl bg-zinc-50 transition-colors group-hover:bg-dunlo/[0.07]">
-                <Zap size={13} className="text-zinc-400 transition-colors group-hover:text-dunlo" />
+                <Zap
+                  size={13}
+                  className="text-zinc-400 transition-colors group-hover:text-dunlo"
+                />
               </div>
               <div>
-                <p className="text-sm font-semibold text-zinc-800">Recovery sequences</p>
-                <p className="text-[11px] text-zinc-400">Customize emails per failure type</p>
+                <p className="text-sm font-semibold text-zinc-800">
+                  Recovery sequences
+                </p>
+                <p className="text-[11px] text-zinc-400">
+                  Customize emails per failure type
+                </p>
               </div>
             </div>
             <ArrowRight
@@ -287,11 +330,18 @@ function RouteComponent() {
           >
             <div className="flex items-center gap-3">
               <div className="flex size-8 items-center justify-center rounded-xl bg-zinc-50 transition-colors group-hover:bg-amber-50">
-                <Settings size={13} className="text-zinc-400 transition-colors group-hover:text-amber-600" />
+                <Settings
+                  size={13}
+                  className="text-zinc-400 transition-colors group-hover:text-amber-600"
+                />
               </div>
               <div>
-                <p className="text-sm font-semibold text-zinc-800">Escalation threshold</p>
-                <p className="text-[11px] text-zinc-400">Alert for high-value accounts</p>
+                <p className="text-sm font-semibold text-zinc-800">
+                  Escalation threshold
+                </p>
+                <p className="text-[11px] text-zinc-400">
+                  Alert for high-value accounts
+                </p>
               </div>
             </div>
             <ArrowRight

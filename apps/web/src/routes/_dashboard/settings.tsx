@@ -72,26 +72,34 @@ export const Route = createFileRoute("/_dashboard/settings")({
 function RouteComponent() {
   const { session } = Route.useRouteContext();
   const { data: emailState } = useSuspenseQuery(emailProviderQueryOptions());
-  const { data: escalationState } = useSuspenseQuery(escalationSettingsQueryOptions());
+  const { data: escalationState } = useSuspenseQuery(
+    escalationSettingsQueryOptions(),
+  );
   const navigate = Route.useNavigate();
   const [tab, setTab] = useState<Tab>("account");
 
   const handleSignOut = () => {
-    authClient.signOut({ fetchOptions: { onSuccess: () => navigate({ to: "/" }) } });
+    authClient.signOut({
+      fetchOptions: { onSuccess: () => navigate({ to: "/" }) },
+    });
   };
 
   return (
     <>
       <div className="sticky top-0 z-20 flex items-center border-b border-zinc-100 bg-white/80 px-6 py-4 backdrop-blur-md">
         <div>
-          <h1 className="text-[15px] font-semibold tracking-tight text-zinc-900">Settings</h1>
-          <p className="text-xs text-zinc-400">Account, email provider, escalation thresholds.</p>
+          <h1 className="text-[15px] font-semibold tracking-tight text-zinc-900">
+            Settings
+          </h1>
+          <p className="text-xs text-zinc-400">
+            Account, email provider, escalation thresholds.
+          </p>
         </div>
       </div>
 
       <div className="flex gap-0 p-6 pb-12">
         {/* Vertical section nav */}
-        <nav className="w-[172px] shrink-0 pr-4">
+        <nav className="w-43 shrink-0 pr-4">
           <p className="mb-2 px-3 text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
             Preferences
           </p>
@@ -134,7 +142,9 @@ function RouteComponent() {
                 />
               )}
               {tab === "email" && <EmailTab initial={emailState} />}
-              {tab === "escalation" && <EscalationTab initial={escalationState} />}
+              {tab === "escalation" && (
+                <EscalationTab initial={escalationState} />
+              )}
               {tab === "testing" && <TestingTab />}
             </motion.div>
           </AnimatePresence>
@@ -190,7 +200,9 @@ function AccountTab({
               />
             </div>
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-zinc-500">Email address</Label>
+              <Label className="text-xs font-medium text-zinc-500">
+                Email address
+              </Label>
               <Input
                 value={email}
                 readOnly
@@ -199,7 +211,8 @@ function AccountTab({
             </div>
           </div>
           <p className="text-[11px] text-zinc-400">
-            Profile is managed through Better Auth. Changes must be made directly in your auth provider.
+            Profile is managed through Better Auth. Changes must be made
+            directly in your auth provider.
           </p>
         </div>
       </div>
@@ -213,7 +226,9 @@ function AccountTab({
           <div className="mt-4 flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-zinc-800">Sign out</p>
-              <p className="text-xs text-zinc-400 mt-0.5">End your current session on this device.</p>
+              <p className="text-xs text-zinc-400 mt-0.5">
+                End your current session on this device.
+              </p>
             </div>
             <button
               onClick={onSignOut}
@@ -285,12 +300,16 @@ function EmailTab({
         {initial.configured ? (
           <div className="flex items-center gap-1.5 rounded-full border border-dunlo/20 bg-dunlo/[0.07] px-3 py-1.5">
             <CheckCircle2 size={11} className="text-dunlo" />
-            <span className="text-[11px] font-semibold text-dunlo-deep">Configured</span>
+            <span className="text-[11px] font-semibold text-dunlo-deep">
+              Configured
+            </span>
           </div>
         ) : (
           <div className="flex items-center gap-1.5 rounded-full border border-zinc-200 bg-zinc-50 px-3 py-1.5">
             <span className="size-1.5 rounded-full bg-zinc-400" />
-            <span className="text-[11px] font-semibold text-zinc-500">Not configured</span>
+            <span className="text-[11px] font-semibold text-zinc-500">
+              Not configured
+            </span>
           </div>
         )}
       </div>
@@ -307,9 +326,13 @@ function EmailTab({
           {(field) => (
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
-                <Label className="text-xs font-medium text-zinc-500">Resend API key</Label>
+                <Label className="text-xs font-medium text-zinc-500">
+                  Resend API key
+                </Label>
                 {initial.apiKey && (
-                  <span className="text-[10px] text-dunlo-dim font-medium">Key saved</span>
+                  <span className="text-[10px] text-dunlo-dim font-medium">
+                    Key saved
+                  </span>
                 )}
               </div>
               <Input
@@ -327,7 +350,9 @@ function EmailTab({
                   : "Generate a key at resend.com/api-keys with send permissions."}
               </p>
               {field.state.meta.errors.map((err) => (
-                <p key={err?.message} className="text-xs text-red-500">{err?.message}</p>
+                <p key={err?.message} className="text-xs text-red-500">
+                  {err?.message}
+                </p>
               ))}
             </div>
           )}
@@ -337,7 +362,9 @@ function EmailTab({
           <form.Field name="fromEmail">
             {(field) => (
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-zinc-500">From address</Label>
+                <Label className="text-xs font-medium text-zinc-500">
+                  From address
+                </Label>
                 <Input
                   type="email"
                   placeholder="noreply@yourdomain.com"
@@ -347,7 +374,9 @@ function EmailTab({
                   className="h-10 rounded-xl border-zinc-200 bg-zinc-50 text-sm placeholder:text-zinc-300 focus:border-dunlo/40 focus:bg-white focus:ring-dunlo/10"
                 />
                 {field.state.meta.errors.map((err) => (
-                  <p key={err?.message} className="text-xs text-red-500">{err?.message}</p>
+                  <p key={err?.message} className="text-xs text-red-500">
+                    {err?.message}
+                  </p>
                 ))}
               </div>
             )}
@@ -356,7 +385,9 @@ function EmailTab({
           <form.Field name="fromName">
             {(field) => (
               <div className="space-y-1.5">
-                <Label className="text-xs font-medium text-zinc-500">From name</Label>
+                <Label className="text-xs font-medium text-zinc-500">
+                  From name
+                </Label>
                 <Input
                   placeholder="Your company"
                   value={field.state.value}
@@ -365,7 +396,9 @@ function EmailTab({
                   className="h-10 rounded-xl border-zinc-200 bg-zinc-50 text-sm placeholder:text-zinc-300 focus:border-dunlo/40 focus:bg-white focus:ring-dunlo/10"
                 />
                 {field.state.meta.errors.map((err) => (
-                  <p key={err?.message} className="text-xs text-red-500">{err?.message}</p>
+                  <p key={err?.message} className="text-xs text-red-500">
+                    {err?.message}
+                  </p>
                 ))}
               </div>
             )}
@@ -379,12 +412,19 @@ function EmailTab({
             disabled={!initial.configured || testing}
             className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3.5 py-2 text-xs font-semibold text-zinc-600 transition-all hover:bg-zinc-50 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {testing ? <Loader2 size={12} className="animate-spin" /> : <Send size={12} />}
+            {testing ? (
+              <Loader2 size={12} className="animate-spin" />
+            ) : (
+              <Send size={12} />
+            )}
             Send test
           </button>
 
           <form.Subscribe
-            selector={(s) => ({ canSubmit: s.canSubmit, isSubmitting: s.isSubmitting })}
+            selector={(s) => ({
+              canSubmit: s.canSubmit,
+              isSubmitting: s.isSubmitting,
+            })}
           >
             {({ canSubmit, isSubmitting }) => (
               <button
@@ -414,7 +454,10 @@ function EscalationTab({
 }) {
   const [disconnecting, setDisconnecting] = useState(false);
   const [syncing, setSyncing] = useState(false);
-  const [syncResult, setSyncResult] = useState<{ imported: number; skipped: number } | null>(null);
+  const [syncResult, setSyncResult] = useState<{
+    imported: number;
+    skipped: number;
+  } | null>(null);
 
   const form = useForm({
     defaultValues: {
@@ -490,7 +533,8 @@ function EscalationTab({
             Escalation threshold
           </p>
           <p className="mt-1 text-xs text-zinc-400 max-w-lg">
-            Failed payments above this amount bypass the recovery sequence and surface here for a personal email.
+            Failed payments above this amount bypass the recovery sequence and
+            surface here for a personal email.
           </p>
         </div>
 
@@ -507,7 +551,10 @@ function EscalationTab({
               {(field) => (
                 <div className="space-y-1.5">
                   <Label className="text-xs font-medium text-zinc-500">
-                    Amount <span className="text-zinc-400 font-normal">(major units)</span>
+                    Amount{" "}
+                    <span className="text-zinc-400 font-normal">
+                      (major units)
+                    </span>
                   </Label>
                   <Input
                     type="number"
@@ -515,7 +562,9 @@ function EscalationTab({
                     placeholder="500"
                     value={field.state.value}
                     onBlur={field.handleBlur}
-                    onChange={(e) => field.handleChange(Number(e.target.value) || 0)}
+                    onChange={(e) =>
+                      field.handleChange(Number(e.target.value) || 0)
+                    }
                     className="h-10 rounded-xl border-zinc-200 bg-zinc-50 font-mono text-sm focus:border-dunlo/40 focus:bg-white focus:ring-dunlo/10"
                   />
                   <p className="text-[11px] text-zinc-400">
@@ -528,12 +577,16 @@ function EscalationTab({
             <form.Field name="currency">
               {(field) => (
                 <div className="space-y-1.5">
-                  <Label className="text-xs font-medium text-zinc-500">Currency</Label>
+                  <Label className="text-xs font-medium text-zinc-500">
+                    Currency
+                  </Label>
                   <select
                     value={field.state.value}
                     onBlur={field.handleBlur}
                     onChange={(e) =>
-                      field.handleChange(e.target.value as "eur" | "usd" | "gbp")
+                      field.handleChange(
+                        e.target.value as "eur" | "usd" | "gbp",
+                      )
                     }
                     className="h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-900 focus:border-dunlo/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-dunlo/10"
                   >
@@ -557,12 +610,17 @@ function EscalationTab({
 
           <div className="flex justify-end border-t border-zinc-50 pt-5">
             <form.Subscribe
-              selector={(s) => ({ canSubmit: s.canSubmit, isSubmitting: s.isSubmitting })}
+              selector={(s) => ({
+                canSubmit: s.canSubmit,
+                isSubmitting: s.isSubmitting,
+              })}
             >
               {({ canSubmit, isSubmitting }) => (
                 <button
                   type="submit"
-                  disabled={!canSubmit || isSubmitting || !initial.hasConnection}
+                  disabled={
+                    !canSubmit || isSubmitting || !initial.hasConnection
+                  }
                   className="flex items-center gap-1.5 rounded-xl bg-dunlo px-4 py-2 text-xs font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.97] disabled:opacity-50"
                 >
                   {isSubmitting ? (
@@ -589,11 +647,13 @@ function EscalationTab({
               Sync existing failed payments
             </p>
             <p className="mt-1 text-xs text-zinc-500 leading-relaxed max-w-sm">
-              Pull failed PaymentIntents from the last 90 days and enqueue them into recovery sequences. Already-imported payments are skipped.
+              Pull failed PaymentIntents from the last 90 days and enqueue them
+              into recovery sequences. Already-imported payments are skipped.
             </p>
             {syncResult && (
               <p className="mt-2 text-[11px] font-semibold text-dunlo-deep">
-                {syncResult.imported} imported · {syncResult.skipped} already in Dunlo
+                {syncResult.imported} imported · {syncResult.skipped} already in
+                Dunlo
               </p>
             )}
           </div>
@@ -625,7 +685,8 @@ function EscalationTab({
         <div className="px-6 py-5">
           <div className="flex items-start justify-between gap-6">
             <p className="text-xs text-zinc-500 leading-relaxed max-w-sm">
-              Removes the OAuth connection and deregisters the webhook. Your recovery sequences and all historical payment data are preserved.
+              Removes the OAuth connection and deregisters the webhook. Your
+              recovery sequences and all historical payment data are preserved.
             </p>
             <button
               onClick={onDisconnect}
@@ -659,7 +720,8 @@ const SIM_BUTTONS: {
   {
     action: "failure",
     label: "Failed payment",
-    description: "Creates a test failed payment and schedules its recovery sequence.",
+    description:
+      "Creates a test failed payment and schedules its recovery sequence.",
     icon: CreditCard,
     accent: "text-red-500",
     badge: "bg-red-50 border-red-100 text-red-600",
@@ -667,7 +729,8 @@ const SIM_BUTTONS: {
   {
     action: "escalation",
     label: "Escalation",
-    description: "Creates a failed payment above your escalation threshold and queues an AI email draft.",
+    description:
+      "Creates a failed payment above your escalation threshold and queues an AI email draft.",
     icon: TrendingUp,
     accent: "text-amber-500",
     badge: "bg-amber-50 border-amber-100 text-amber-600",
@@ -675,7 +738,8 @@ const SIM_BUTTONS: {
   {
     action: "recovery",
     label: "Recovery",
-    description: "Marks the most recent in-recovery payment as recovered and cancels pending emails.",
+    description:
+      "Marks the most recent in-recovery payment as recovered and cancels pending emails.",
     icon: AlertTriangle,
     accent: "text-dunlo",
     badge: "bg-dunlo/[0.07] border-dunlo/20 text-dunlo-deep",
@@ -713,7 +777,9 @@ function TestingTab() {
             <FlaskConical size={14} className="text-zinc-400" />
           </div>
           <div>
-            <p className="text-sm font-semibold tracking-tight text-zinc-900">Event simulator</p>
+            <p className="text-sm font-semibold tracking-tight text-zinc-900">
+              Event simulator
+            </p>
             <p className="text-xs text-zinc-400">
               Trigger test events to preview the full recovery flow end-to-end.
             </p>
@@ -721,38 +787,47 @@ function TestingTab() {
         </div>
 
         <div className="divide-y divide-zinc-50">
-          {SIM_BUTTONS.map(({ action, label, description, icon: Icon, accent, badge }) => (
-            <div key={action} className="flex items-center justify-between gap-4 px-6 py-4">
-              <div className="flex items-start gap-3 min-w-0">
-                <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg bg-zinc-50">
-                  <Icon size={13} className={accent} />
-                </div>
-                <div className="min-w-0">
-                  <p className="text-sm font-medium text-zinc-800">{label}</p>
-                  <p className="mt-0.5 text-xs leading-relaxed text-zinc-400">{description}</p>
-                </div>
-              </div>
-              <button
-                onClick={() => run(action)}
-                disabled={busy !== null}
-                className={`shrink-0 flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${badge}`}
+          {SIM_BUTTONS.map(
+            ({ action, label, description, icon: Icon, accent, badge }) => (
+              <div
+                key={action}
+                className="flex items-center justify-between gap-4 px-6 py-4"
               >
-                {busy === action ? (
-                  <Loader2 size={11} className="animate-spin" />
-                ) : (
-                  <Icon size={11} />
-                )}
-                {busy === action ? "Running…" : "Simulate"}
-              </button>
-            </div>
-          ))}
+                <div className="flex items-start gap-3 min-w-0">
+                  <div className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-lg bg-zinc-50">
+                    <Icon size={13} className={accent} />
+                  </div>
+                  <div className="min-w-0">
+                    <p className="text-sm font-medium text-zinc-800">{label}</p>
+                    <p className="mt-0.5 text-xs leading-relaxed text-zinc-400">
+                      {description}
+                    </p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => run(action)}
+                  disabled={busy !== null}
+                  className={`shrink-0 flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${badge}`}
+                >
+                  {busy === action ? (
+                    <Loader2 size={11} className="animate-spin" />
+                  ) : (
+                    <Icon size={11} />
+                  )}
+                  {busy === action ? "Running…" : "Simulate"}
+                </button>
+              </div>
+            ),
+          )}
         </div>
       </div>
 
       <div className="flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
         <AlertCircle size={13} className="mt-0.5 shrink-0 text-amber-500" />
         <p className="text-xs leading-relaxed text-amber-700">
-          Test events create real database records prefixed with <code className="font-mono">pi_test_</code>. They will appear in Payments, Escalations, and the activity feed.
+          Test events create real database records prefixed with{" "}
+          <code className="font-mono">pi_test_</code>. They will appear in
+          Payments, Escalations, and the activity feed.
         </p>
       </div>
     </div>

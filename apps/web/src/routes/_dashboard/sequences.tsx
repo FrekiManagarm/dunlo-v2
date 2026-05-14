@@ -584,7 +584,7 @@ function StepRow({
                     <button
                       key={v}
                       onClick={() => insertVar(v)}
-                      className="rounded-md border border-zinc-200 bg-white px-1.5 py-0.5 font-mono text-[10px] text-zinc-500 transition-all hover:border-dunlo/40 hover:bg-dunlo/[0.05] hover:text-dunlo-deep active:scale-[0.97]"
+                      className="rounded-md border border-zinc-200 bg-white px-1.5 py-0.5 font-mono text-[10px] text-zinc-500 transition-all hover:border-dunlo/40 hover:bg-dunlo/5 hover:text-dunlo-deep active:scale-[0.97]"
                     >
                       {v}
                     </button>
@@ -698,7 +698,7 @@ function SaveBadge({ status }: { status: SaveStatus }) {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
-          className="inline-flex items-center gap-1 rounded-md bg-dunlo/[0.08] px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-dunlo-deep"
+          className="inline-flex items-center gap-1 rounded-md bg-dunlo/8 px-1.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-dunlo-deep"
         >
           <span className="size-1 rounded-full bg-dunlo" />
           Saved
@@ -734,14 +734,15 @@ function EmailPreview({
         </span>
       </div>
       <div className="space-y-1 border-b border-zinc-50 px-4 py-3 text-[11px]">
-        <PreviewLine label="From" value="Aurélie Marchand <recovery@your-domain.com>" />
+        <PreviewLine
+          label="From"
+          value="Aurélie Marchand <recovery@your-domain.com>"
+        />
         <PreviewLine label="To" value="maxime@beauchamp.io" />
         <PreviewLine label="Subject" value={rSubject || "—"} bold />
       </div>
       <div className="whitespace-pre-wrap px-4 py-4 text-[12.5px] leading-[1.7] text-zinc-700">
-        {rBody || (
-          <span className="italic text-zinc-300">Body is empty</span>
-        )}
+        {rBody || <span className="italic text-zinc-300">Body is empty</span>}
       </div>
     </div>
   );

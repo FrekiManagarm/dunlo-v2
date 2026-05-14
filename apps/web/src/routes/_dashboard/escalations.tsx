@@ -54,7 +54,11 @@ function relativeTime(from: Date): string {
 }
 
 type EditState = { subject: string; body: string };
-type BusyState = { sending?: boolean; regenerating?: boolean; dismissing?: boolean };
+type BusyState = {
+  sending?: boolean;
+  regenerating?: boolean;
+  dismissing?: boolean;
+};
 
 function RouteComponent() {
   const queryClient = useQueryClient();
@@ -176,7 +180,9 @@ function RouteComponent() {
       setBusyFor(id, { regenerating: true });
       try {
         await regenerateEscalationDraft({ data: { escalationId: id } });
-        const refreshed = await queryClient.fetchQuery(escalationsQueryOptions());
+        const refreshed = await queryClient.fetchQuery(
+          escalationsQueryOptions(),
+        );
         const updated = refreshed.find((e) => e.id === id);
         if (updated) {
           setEdits((prev) => ({
@@ -372,7 +378,9 @@ function FilterChip({
     <button
       onClick={onClick}
       className={`relative flex items-center gap-1.5 rounded-full px-3 py-1.5 text-[11px] font-semibold transition-colors ${
-        active ? "text-white" : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-700"
+        active
+          ? "text-white"
+          : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-700"
       }`}
     >
       {active && (
@@ -458,13 +466,13 @@ function ListRow({
         <motion.span
           layoutId="row-marker"
           transition={{ type: "spring", stiffness: 400, damping: 32 }}
-          className="absolute inset-y-1 left-0 w-[3px] rounded-r-full bg-dunlo"
+          className="absolute inset-y-1 left-0 w-0.75 rounded-r-full bg-dunlo"
         />
       )}
       <button
         onClick={onSelect}
         className={`flex w-full flex-col gap-1 px-4 py-3.5 text-left transition-colors ${
-          active ? "bg-dunlo/[0.04]" : "hover:bg-zinc-50/60"
+          active ? "bg-dunlo/4" : "hover:bg-zinc-50/60"
         }`}
       >
         <div className="flex items-center justify-between gap-3">
@@ -478,7 +486,7 @@ function ListRow({
             {formatAmount(esc.payment.amount, esc.payment.currency)}
           </span>
         </div>
-        <div className="flex items-center justify-between gap-3 pl-[18px]">
+        <div className="flex items-center justify-between gap-3 pl-4.5">
           <span className="truncate text-[11px] text-zinc-400">
             {humanizeFailureCode(esc.payment.failureCode)}
           </span>
@@ -578,7 +586,11 @@ function DetailPane({
           <motion.dl
             initial={{ opacity: 0, y: 6 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.05, duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+            transition={{
+              delay: 0.05,
+              duration: 0.25,
+              ease: [0.16, 1, 0.3, 1],
+            }}
             className="grid grid-cols-3 divide-x divide-zinc-100 border-y border-zinc-100"
           >
             <Stat
@@ -674,7 +686,10 @@ function DetailPane({
             disabled={regenerating || isSent}
             className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-[12px] font-medium text-zinc-700 transition-all hover:bg-zinc-50 active:scale-[0.97] disabled:opacity-40"
           >
-            <RefreshCw size={12} className={regenerating ? "animate-spin" : ""} />
+            <RefreshCw
+              size={12}
+              className={regenerating ? "animate-spin" : ""}
+            />
             Regenerate
           </button>
           <motion.button

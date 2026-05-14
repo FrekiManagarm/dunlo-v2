@@ -19,7 +19,10 @@ import {
   type FeedEvent,
   type NotificationSettings,
 } from "@/functions/alerts";
-import { alertFeedQueryOptions, notificationSettingsQueryOptions } from "@/lib/queries";
+import {
+  alertFeedQueryOptions,
+  notificationSettingsQueryOptions,
+} from "@/lib/queries";
 import { formatAmount } from "@/lib/template";
 
 export const Route = createFileRoute("/_dashboard/alerts")({
@@ -110,8 +113,11 @@ function Toggle({
 
 function RouteComponent() {
   const { data: feed } = useSuspenseQuery(alertFeedQueryOptions());
-  const { data: initialSettings } = useSuspenseQuery(notificationSettingsQueryOptions());
-  const [settings, setSettings] = useState<NotificationSettings>(initialSettings);
+  const { data: initialSettings } = useSuspenseQuery(
+    notificationSettingsQueryOptions(),
+  );
+  const [settings, setSettings] =
+    useState<NotificationSettings>(initialSettings);
   const [saving, setSaving] = useState(false);
 
   async function handleSave() {
@@ -142,8 +148,12 @@ function RouteComponent() {
     <>
       <div className="sticky top-0 z-20 flex items-center border-b border-zinc-100 bg-white/80 px-6 py-4 backdrop-blur-md">
         <div>
-          <h1 className="text-[15px] font-semibold tracking-tight text-zinc-900">Alerts</h1>
-          <p className="text-xs text-zinc-400">Activity feed and notification preferences</p>
+          <h1 className="text-[15px] font-semibold tracking-tight text-zinc-900">
+            Alerts
+          </h1>
+          <p className="text-xs text-zinc-400">
+            Activity feed and notification preferences
+          </p>
         </div>
       </div>
 
@@ -158,14 +168,17 @@ function RouteComponent() {
                 <div className="mb-4 flex size-12 items-center justify-center rounded-2xl bg-zinc-50">
                   <Bell size={20} className="text-zinc-300" />
                 </div>
-                <p className="text-sm font-semibold text-zinc-700">No activity yet</p>
+                <p className="text-sm font-semibold text-zinc-700">
+                  No activity yet
+                </p>
                 <p className="mt-1.5 max-w-xs text-xs leading-relaxed text-zinc-400">
-                  Events appear here once Stripe is connected and payments start flowing.
+                  Events appear here once Stripe is connected and payments start
+                  flowing.
                 </p>
               </div>
             ) : (
               <div className="relative">
-                <div className="absolute left-[2.375rem] top-5 bottom-5 w-px bg-zinc-100" />
+                <div className="absolute left-9.5 top-5 bottom-5 w-px bg-zinc-100" />
                 {feed.map((event: FeedEvent, i: number) => {
                   const { icon: Icon, dot, text } = EVENT_META[event.type];
                   return (
@@ -173,7 +186,11 @@ function RouteComponent() {
                       key={event.id}
                       initial={{ opacity: 0, x: -6 }}
                       animate={{ opacity: 1, x: 0 }}
-                      transition={{ delay: i * 0.03, duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{
+                        delay: i * 0.03,
+                        duration: 0.2,
+                        ease: [0.16, 1, 0.3, 1],
+                      }}
                       className="flex items-center gap-4 px-5 py-3.5"
                     >
                       <div className="relative z-10 flex size-7 shrink-0 items-center justify-center rounded-full border border-white bg-white shadow-[0_0_0_3px_#f4f4f5]">
@@ -215,7 +232,10 @@ function RouteComponent() {
             </div>
             <div className="divide-y divide-zinc-50">
               {EMAIL_TOGGLES.map(({ key, label }) => (
-                <div key={key} className="flex items-center justify-between py-2.5">
+                <div
+                  key={key}
+                  className="flex items-center justify-between py-2.5"
+                >
                   <span className="text-sm text-zinc-600">{label}</span>
                   <Toggle
                     checked={settings[key]}
@@ -235,14 +255,20 @@ function RouteComponent() {
               type="url"
               value={settings.slackWebhookUrl ?? ""}
               onChange={(e) =>
-                setSettings((s) => ({ ...s, slackWebhookUrl: e.target.value || null }))
+                setSettings((s) => ({
+                  ...s,
+                  slackWebhookUrl: e.target.value || null,
+                }))
               }
               placeholder="https://hooks.slack.com/services/…"
               className="mb-4 h-9 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-xs text-zinc-900 placeholder-zinc-300 transition-colors focus:border-dunlo/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-dunlo/20"
             />
             <div className="divide-y divide-zinc-50">
               {SLACK_TOGGLES.map(({ key, label }) => (
-                <div key={key} className="flex items-center justify-between py-2.5">
+                <div
+                  key={key}
+                  className="flex items-center justify-between py-2.5"
+                >
                   <span className="text-sm text-zinc-600">{label}</span>
                   <Toggle
                     checked={settings[key]}

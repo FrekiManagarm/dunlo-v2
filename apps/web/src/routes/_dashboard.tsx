@@ -1,4 +1,10 @@
-import { createFileRoute, Link, Outlet, redirect, useRouterState } from "@tanstack/react-router";
+import {
+  createFileRoute,
+  Link,
+  Outlet,
+  redirect,
+  useRouterState,
+} from "@tanstack/react-router";
 import {
   AlertCircle,
   Bell,
@@ -37,12 +43,14 @@ function DashboardLayout() {
   const navigate = Route.useNavigate();
 
   const handleSignOut = () => {
-    authClient.signOut({ fetchOptions: { onSuccess: () => navigate({ to: "/" }) } });
+    authClient.signOut({
+      fetchOptions: { onSuccess: () => navigate({ to: "/" }) },
+    });
   };
 
   return (
     <div className="flex h-dvh bg-[#f7f8fa] font-sans">
-      <aside className="hidden h-dvh w-[232px] shrink-0 sticky top-0 flex-col border-r border-zinc-100 bg-white lg:flex">
+      <aside className="hidden h-dvh w-58 shrink-0 sticky top-0 flex-col border-r border-zinc-100 bg-white lg:flex">
         <div className="flex items-center border-b border-zinc-100 px-5 py-4">
           <Logo size={26} />
         </div>
@@ -71,8 +79,12 @@ function DashboardLayout() {
               {session?.user.name?.charAt(0).toUpperCase() ?? "U"}
             </div>
             <div className="min-w-0">
-              <p className="truncate text-sm font-semibold text-zinc-900">{session?.user.name}</p>
-              <p className="truncate text-xs text-zinc-400">{session?.user.email}</p>
+              <p className="truncate text-sm font-semibold text-zinc-900">
+                {session?.user.name}
+              </p>
+              <p className="truncate text-xs text-zinc-400">
+                {session?.user.email}
+              </p>
             </div>
           </div>
           <button
