@@ -47,26 +47,21 @@ function RouteComponent() {
 
         <div className="relative z-10 space-y-10">
           <div>
-            <p className="text-3xl font-bold leading-snug text-white">
-              "We recovered €4,200
-              <br />
-              <span className="text-dunlo">in the first week.</span>
-              <br />
-              Setup took 4 minutes."
+            <p className="text-xs font-semibold uppercase tracking-widest text-white/30">
+              The problem
             </p>
-            <div className="mt-6 flex items-center gap-3">
-              <img
-                src="https://picsum.photos/seed/thomasr/40/40"
-                alt="Thomas R."
-                className="size-9 rounded-full object-cover"
-              />
-              <div>
-                <p className="text-sm font-semibold text-white">Thomas R.</p>
-                <p className="text-xs text-white/50">
-                  Founder · CleanFlow SaaS
-                </p>
-              </div>
-            </div>
+            <p className="mt-4 text-6xl font-bold tracking-tighter text-dunlo">
+              ~5%
+            </p>
+            <p className="mt-3 text-xl font-semibold leading-snug text-white">
+              of your MRR fails silently
+              <br />
+              every month.
+            </p>
+            <p className="mt-3 text-sm leading-relaxed text-white/50">
+              Expired cards, bank declines, insufficient funds — most of it
+              is recoverable if you act on the right failure at the right time.
+            </p>
           </div>
 
           <ul className="space-y-3">
