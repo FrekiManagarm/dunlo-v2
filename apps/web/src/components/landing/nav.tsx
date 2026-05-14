@@ -1,8 +1,11 @@
 import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
+import { usePostHog } from "posthog-js/react";
 import { Logo } from "@/components/logo";
 
 export function Nav() {
+  const posthog = usePostHog();
+
   return (
     <div className="fixed inset-x-0 top-4 z-50 px-4">
       <div className="mx-auto flex max-w-5xl items-center justify-between rounded-full border border-gray-200 bg-white/90 px-4 py-2.5 shadow-sm backdrop-blur-md">
@@ -38,6 +41,7 @@ export function Nav() {
           <Link
             to="/login"
             className="flex items-center gap-1.5 rounded-full bg-gray-900 px-4 py-1.5 text-sm font-semibold text-white transition-all hover:bg-gray-700 active:scale-[0.97]"
+            onClick={() => posthog.capture("cta_clicked", { location: "nav" })}
           >
             Sign up
             <ChevronRight size={14} />

@@ -91,12 +91,14 @@ function RootDocument() {
   const router = useRouter();
 
   useEffect(() => {
-    posthog.init(env.VITE_POSTHOG_KEY, {
-      api_host: env.VITE_POSTHOG_HOST,
-      capture_pageview: false,
-      autocapture: false,
-      disable_session_recording: false,
-    });
+    if (!posthog.__loaded) {
+      posthog.init(env.VITE_POSTHOG_KEY, {
+        api_host: env.VITE_POSTHOG_HOST,
+        capture_pageview: false,
+        autocapture: false,
+        disable_session_recording: false,
+      });
+    }
 
     posthog.capture("$pageview");
 
