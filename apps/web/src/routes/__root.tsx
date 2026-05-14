@@ -105,7 +105,7 @@ function RootDocument() {
     });
 
     return unsubscribe;
-  }, []);
+  }, [router]);
 
   return (
     <PostHogProvider client={posthog}>
