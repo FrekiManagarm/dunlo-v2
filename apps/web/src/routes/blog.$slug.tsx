@@ -1,3 +1,4 @@
+import type { MDXContent } from "mdx/types";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { getPostMeta, getBlogBody } from "@/lib/blog";
 import { mdxComponents } from "@/components/mdx-components";
@@ -23,7 +24,7 @@ function BlogPostPage() {
   const { slug } = Route.useParams();
   const { title, date, tags } = Route.useLoaderData();
 
-  const MDX = getBlogBody(slug)!;
+  const MDX = getBlogBody(slug) as MDXContent;
 
   return (
     <>

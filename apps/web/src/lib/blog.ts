@@ -1,12 +1,12 @@
 import { createServerFn } from "@tanstack/react-start";
-import type { ComponentType } from "react";
+import type { MDXContent } from "mdx/types";
 
-const mdxModules = import.meta.glob<{ default: ComponentType }>(
+const mdxModules = import.meta.glob<{ default: MDXContent }>(
   "../../../content/blog/*.mdx",
   { eager: true },
 );
 
-export function getBlogBody(slug: string): ComponentType | null {
+export function getBlogBody(slug: string): MDXContent | null {
   return mdxModules[`../../../content/blog/${slug}.mdx`]?.default ?? null;
 }
 
