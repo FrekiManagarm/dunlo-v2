@@ -1,9 +1,10 @@
 import { blog } from "collections/server";
 import { loader } from "fumadocs-core/source";
+import { toFumadocsSource } from "fumadocs-mdx/runtime/server";
 
 const blogSource = loader({
   baseUrl: "/blog",
-  source: blog.toFumadocsSource(),
+  source: toFumadocsSource(blog, []),
 });
 
 export function getAllPosts() {
@@ -12,7 +13,7 @@ export function getAllPosts() {
     .filter((p) => p.data.published)
     .sort(
       (a, b) =>
-        new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+        new Date(b.data.date).getTime() - new Date(a.data.date).getTime(),
     );
 }
 

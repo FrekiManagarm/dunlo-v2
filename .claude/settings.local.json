@@ -72,7 +72,28 @@
       "Skill(vercel:deploy)",
       "Skill(tanstack-start)",
       "Bash(xargs ls -la)",
-      "Skill(commit)"
+      "Skill(commit)",
+      "WebFetch(domain:vercel.com)",
+      "WebFetch(domain:docs.useautumn.com)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:www.mintlify.com)",
+      "WebFetch(domain:better-auth.com)",
+      "WebFetch(domain:encore.dev)",
+      "WebFetch(domain:api.github.com)",
+      "Skill(superpowers:brainstorming)",
+      "Bash(xargs cat)",
+      "Skill(superpowers:writing-plans)",
+      "Skill(superpowers:subagent-driven-development)",
+      "Read(//Users/mathieuchambaud/.claude/plugins/cache/claude-plugins-official/superpowers/requesting-code-review/**)",
+      "Read(//Users/mathieuchambaud/.claude/plugins/**)",
+      "Bash(bun list *)",
+      "Bash(bun -e \"import { defineCollections } from 'fumadocs-mdx/config'; import { z } from 'zod'; console.log\\('✓ Imports valid'\\)\")",
+      "Bash(timeout 90 bun run dev)",
+      "Bash(echo \"Dev server starting with PID $!\")",
+      "Bash(pkill -f \"bun run dev\")",
+      "Skill(superpowers:finishing-a-development-branch)"
     ]
   },
   "hooks": {
@@ -82,7 +103,7 @@
         "hooks": [
           {
             "type": "command",
-            "command": "file=$(jq -r '.tool_input.file_path // empty'); echo \"$file\" | grep -qE '\\.(ts|tsx)$' || exit 0; cd /Users/mathieuchambaud/Documents/projects/dunlo-v2/apps/web && count=$(bunx tsc --noEmit 2>&1 | grep -c 'error TS' || echo 0); [ \"$count\" -le 17 ] || { echo \"TypeScript regressions: $count errors (baseline: 17)\"; exit 2; }",
+            "command": "file=$(jq -r '.tool_input.file_path // empty'); echo \"$file\" | grep -qE '\\.(ts|tsx)$' || exit 0; cd /Users/mathieuchambaud/Documents/Perso-Projects/dunlo-v2/apps/web && count=$(bunx tsc --noEmit 2>&1 | grep -c 'error TS' || echo 0); [ \"$count\" -le 17 ] || { echo \"TypeScript regressions: $count errors (baseline: 17)\"; exit 2; }",
             "timeout": 60,
             "statusMessage": "Checking TypeScript...",
             "asyncRewake": true
