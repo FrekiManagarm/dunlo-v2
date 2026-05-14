@@ -3,6 +3,7 @@ import { Label } from "@dunlo-v2/ui/components/label";
 import { useForm } from "@tanstack/react-form";
 import { useNavigate } from "@tanstack/react-router";
 import { ArrowLeft, Loader2, MailCheck } from "lucide-react";
+import { usePostHog } from "posthog-js/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
@@ -17,6 +18,7 @@ export default function SignInForm({
   onSwitchToSignUp: () => void;
 }) {
   const navigate = useNavigate({ from: "/login" });
+  const posthog = usePostHog();
   const [view, setView] = useState<View>("signin");
 
   const signInForm = useForm({
@@ -26,11 +28,16 @@ export default function SignInForm({
         { email: value.email, password: value.password },
         {
           onSuccess: () => {
+            posthog.capture("login_success");
             navigate({ to: "/dashboard" });
             toast.success("Welcome back!");
           },
-          onError: (err) =>
-            toast.error(err.error.message || err.error.statusText),
+          onError: (err) => {
+            posthog.capture("login_failed", {
+              error: err.error.message || err.error.statusText,
+            });
+            toast.error(err.error.message || err.error.statusText);
+          },
         },
       );
     },

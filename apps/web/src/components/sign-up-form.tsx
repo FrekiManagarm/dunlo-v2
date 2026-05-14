@@ -2,6 +2,7 @@ import { Input } from "@dunlo-v2/ui/components/input";
 import { Label } from "@dunlo-v2/ui/components/label";
 import { useForm } from "@tanstack/react-form";
 import { ChevronRight, Loader2, MailCheck } from "lucide-react";
+import { usePostHog } from "posthog-js/react";
 import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
@@ -13,11 +14,13 @@ export default function SignUpForm({
 }: {
   onSwitchToSignIn: () => void;
 }) {
+  const posthog = usePostHog();
   const [submittedEmail, setSubmittedEmail] = useState<string | null>(null);
 
   const form = useForm({
     defaultValues: { name: "", email: "", password: "" },
     onSubmit: async ({ value }) => {
+      posthog.capture("signup_started");
       await authClient.signUp.email(
         {
           email: value.email,
@@ -27,10 +30,15 @@ export default function SignUpForm({
         },
         {
           onSuccess: () => {
+            posthog.capture("signup_completed");
             setSubmittedEmail(value.email);
           },
-          onError: (err) =>
-            toast.error(err.error.message || err.error.statusText),
+          onError: (err) => {
+            posthog.capture("signup_failed", {
+              error: err.error.message || err.error.statusText,
+            });
+            toast.error(err.error.message || err.error.statusText);
+          },
         },
       );
     },
