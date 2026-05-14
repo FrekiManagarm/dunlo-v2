@@ -1,6 +1,5 @@
 {
   "buildCommand": "turbo build --filter=web",
   "installCommand": "bun install --frozen-lockfile",
-  "outputDirectory": "apps/web/.vercel/output",
-  "framework": null
+"framework": null
 }
