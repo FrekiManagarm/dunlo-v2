@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { motion, useScroll, useSpring } from "framer-motion";
 import { ArrowLeft, Clock, Copy, Check } from "lucide-react";
@@ -32,6 +32,54 @@ export const Route = createFileRoute("/blog/$slug")({
   component: BlogPostPage,
 });
 
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type TOCItem = { id: string; text: string; level: number };
+
+// ─── Hooks ────────────────────────────────────────────────────────────────────
+
+function useTOC(containerRef: React.RefObject<HTMLDivElement | null>) {
+  const [items, setItems] = useState<TOCItem[]>([]);
+  const [activeId, setActiveId] = useState<string>("");
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const headings = Array.from(container.querySelectorAll("h2, h3"));
+
+    const toc: TOCItem[] = headings.map((el) => {
+      const text = el.textContent ?? "";
+      const id = text
+        .toLowerCase()
+        .replace(/[^a-z0-9\s]/g, "")
+        .replace(/\s+/g, "-")
+        .trim();
+      el.id = id;
+      return { id, text, level: parseInt(el.tagName[1]!) };
+    });
+
+    setItems(toc);
+    if (toc[0]) setActiveId(toc[0].id);
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) setActiveId(entry.target.id);
+        }
+      },
+      { rootMargin: "-80px 0px -70% 0px" },
+    );
+
+    headings.forEach((h) => observer.observe(h));
+    return () => observer.disconnect();
+  }, [containerRef]);
+
+  return { items, activeId };
+}
+
+// ─── Sub-components ───────────────────────────────────────────────────────────
+
 function ReadingProgress() {
   const { scrollYProgress } = useScroll();
   const scaleX = useSpring(scrollYProgress, {
@@ -44,6 +92,62 @@ function ReadingProgress() {
       className="fixed top-0 left-0 right-0 h-[2px] bg-dunlo origin-left"
       style={{ scaleX, zIndex: 60 }}
     />
+  );
+}
+
+function TableOfContents({
+  containerRef,
+}: {
+  containerRef: React.RefObject<HTMLDivElement | null>;
+}) {
+  const { items, activeId } = useTOC(containerRef);
+
+  if (items.length < 2) return null;
+
+  return (
+    <aside className="hidden lg:block">
+      <div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto">
+        <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
+          Sur cette page
+        </p>
+        <nav className="space-y-0.5">
+          {items.map((item) => (
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              onClick={(e) => {
+                e.preventDefault();
+                document
+                  .getElementById(item.id)
+                  ?.scrollIntoView({ behavior: "smooth", block: "start" });
+              }}
+              className={[
+                "block text-sm py-1 transition-colors duration-150 leading-snug",
+                item.level === 3 ? "pl-3" : "",
+                activeId === item.id
+                  ? "text-dunlo-dim font-medium"
+                  : "text-muted-foreground hover:text-foreground",
+              ].join(" ")}
+            >
+              {item.text}
+            </a>
+          ))}
+        </nav>
+
+        <div className="mt-6 pt-6 border-t border-border">
+          <Link
+            to="/blog"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-muted-foreground hover:text-dunlo-dim transition-colors duration-200 group"
+          >
+            <ArrowLeft
+              size={12}
+              className="group-hover:-translate-x-0.5 transition-transform duration-200"
+            />
+            Retour au blog
+          </Link>
+        </div>
+      </div>
+    </aside>
   );
 }
 
@@ -82,9 +186,12 @@ function estimateReadingTime(description: string) {
 
 const spring = { type: "spring" as const, stiffness: 100, damping: 20 };
 
+// ─── Page ─────────────────────────────────────────────────────────────────────
+
 function BlogPostPage() {
   const { slug } = Route.useParams();
   const { title, date, tags, description, keywords } = Route.useLoaderData();
+  const articleRef = useRef<HTMLDivElement>(null);
 
   const MDX = getBlogBody(slug);
   if (!MDX) return null;
@@ -102,11 +209,7 @@ function BlogPostPage() {
     description,
     datePublished: date,
     keywords: keywords?.join(", "),
-    publisher: {
-      "@type": "Organization",
-      name: "Dunlo",
-      url: "https://dunlo.io",
-    },
+    publisher: { "@type": "Organization", name: "Dunlo", url: "https://dunlo.io" },
   });
 
   return (
@@ -119,7 +222,7 @@ function BlogPostPage() {
         dangerouslySetInnerHTML={{ __html: jsonLd }}
       />
 
-      <main className="max-w-3xl mx-auto px-6 pt-28 pb-24">
+      <main className="max-w-5xl mx-auto px-6 pt-28 pb-24">
         {/* Top nav row */}
         <motion.div
           className="flex items-center justify-between mb-12"
@@ -146,7 +249,7 @@ function BlogPostPage() {
 
         {/* Article header */}
         <motion.header
-          className="mb-8"
+          className="mb-8 max-w-3xl"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ ...spring, delay: 0.06 }}
@@ -172,51 +275,49 @@ function BlogPostPage() {
           transition={{ type: "spring", stiffness: 60, damping: 20, delay: 0.14 }}
         />
 
-        {/* Article body */}
-        <motion.article
-          className="prose prose-zinc prose-lg max-w-none"
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ ...spring, delay: 0.18 }}
-        >
-          <MDX components={mdxComponents} />
-        </motion.article>
-
-        {/* Footer */}
-        <motion.div
-          className="mt-16 pt-8 border-t border-border"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3, duration: 0.4 }}
-        >
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div className="flex flex-wrap gap-1.5">
-              {tags.map((tag) => (
-                <TagPill key={tag} tag={tag} />
-              ))}
-            </div>
-            <CopyLinkButton />
-          </div>
-        </motion.div>
-
-        {/* Back link */}
-        <motion.div
-          className="mt-10"
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.35, duration: 0.4 }}
-        >
-          <Link
-            to="/blog"
-            className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-dunlo-dim transition-colors duration-200 group"
+        {/* Content + TOC grid */}
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_220px] gap-12 items-start">
+          {/* Article body */}
+          <motion.div
+            initial={{ opacity: 0, y: 16 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ ...spring, delay: 0.18 }}
           >
-            <ArrowLeft
-              size={14}
-              className="group-hover:-translate-x-0.5 transition-transform duration-200"
-            />
-            Retour au blog
-          </Link>
-        </motion.div>
+            <div ref={articleRef}>
+              <article className="prose prose-zinc prose-lg max-w-none">
+                <MDX components={mdxComponents} />
+              </article>
+            </div>
+
+            {/* Footer */}
+            <div className="mt-16 pt-8 border-t border-border">
+              <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+                <div className="flex flex-wrap gap-1.5">
+                  {tags.map((tag) => (
+                    <TagPill key={tag} tag={tag} />
+                  ))}
+                </div>
+                <CopyLinkButton />
+              </div>
+            </div>
+
+            <div className="mt-10 lg:hidden">
+              <Link
+                to="/blog"
+                className="inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground hover:text-dunlo-dim transition-colors duration-200 group"
+              >
+                <ArrowLeft
+                  size={14}
+                  className="group-hover:-translate-x-0.5 transition-transform duration-200"
+                />
+                Retour au blog
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* TOC sidebar */}
+          <TableOfContents containerRef={articleRef} />
+        </div>
       </main>
     </>
   );
