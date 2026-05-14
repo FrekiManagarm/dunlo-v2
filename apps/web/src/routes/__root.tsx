@@ -1,3 +1,4 @@
+import { AutumnProvider } from "autumn-js/react";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { Toaster } from "@dunlo-v2/ui/components/sonner";
@@ -6,10 +7,15 @@ import {
   Outlet,
   Scripts,
   createRootRouteWithContext,
+  useRouter,
 } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/react-router-devtools";
 import { createMiddleware } from "@tanstack/react-start";
 import { evlogErrorHandler } from "evlog/nitro/v3";
+import posthog from "posthog-js";
+import { PostHogProvider } from "posthog-js/react";
+import { useEffect } from "react";
+import { env } from "@dunlo-v2/env/web";
 import appCss from "../index.css?url";
 
 export interface RouterAppContext {
@@ -82,21 +88,43 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
 
 function RootDocument() {
   const { queryClient } = Route.useRouteContext();
+  const router = useRouter();
+
+  useEffect(() => {
+    posthog.init(env.VITE_POSTHOG_KEY, {
+      api_host: env.VITE_POSTHOG_HOST,
+      capture_pageview: false,
+      autocapture: false,
+      disable_session_recording: false,
+    });
+
+    posthog.capture("$pageview");
+
+    const unsubscribe = router.subscribe("onResolved", () => {
+      posthog.capture("$pageview");
+    });
+
+    return unsubscribe;
+  }, []);
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <html lang="en">
-        <head>
-          <HeadContent />
-        </head>
-        <body>
-          <Outlet />
-          <Toaster richColors position="bottom-right" />
-          <TanStackRouterDevtools position="bottom-left" />
-          <ReactQueryDevtools initialIsOpen={false} />
-          <Scripts />
-        </body>
-      </html>
-    </QueryClientProvider>
+    <PostHogProvider client={posthog}>
+      <QueryClientProvider client={queryClient}>
+        <AutumnProvider useBetterAuth>
+          <html lang="en">
+            <head>
+              <HeadContent />
+            </head>
+            <body>
+              <Outlet />
+              <Toaster richColors position="bottom-right" />
+              <TanStackRouterDevtools position="bottom-left" />
+              <ReactQueryDevtools initialIsOpen={false} />
+              <Scripts />
+            </body>
+          </html>
+        </AutumnProvider>
+      </QueryClientProvider>
+    </PostHogProvider>
   );
 }
