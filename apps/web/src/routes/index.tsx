@@ -5,10 +5,9 @@ import { Features } from "@/components/landing/features";
 import { Footer } from "@/components/landing/footer";
 import { Hero } from "@/components/landing/hero";
 import { HowItWorks } from "@/components/landing/how-it-works";
-import { LogoMarquee } from "@/components/landing/logo-marquee";
 import { Nav } from "@/components/landing/nav";
 import { Pricing } from "@/components/landing/pricing";
-import { Testimonials } from "@/components/landing/testimonials";
+import { StatsBanner } from "@/components/landing/stats-banner";
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_TITLE,
@@ -110,10 +109,9 @@ function LandingPage() {
     <div className="min-h-dvh bg-[#e9eaeb] font-sans">
       <Nav />
       <Hero />
-      <LogoMarquee />
       <div className="mx-auto max-w-6xl space-y-3 px-3 pb-6 md:space-y-4 md:px-4">
+        <StatsBanner />
         <Features />
-        <Testimonials />
         <HowItWorks />
         <Pricing />
         <Faq />

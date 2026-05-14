@@ -11,5 +11,6 @@ export const blog = defineCollections({
     published: z.boolean().default(true),
     tags: z.array(z.string()).default([]),
     keywords: z.array(z.string()).default([]),
+    author: z.string().optional(),
   }),
 });

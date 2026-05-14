@@ -107,7 +107,9 @@
       "Read(//Users/mathieuchambaud/.agents/skills/**)",
       "Bash(mkdir -p /Users/mathieuchambaud/.agents)",
       "Bash(cp /Users/mathieuchambaud/.claude/CLAUDE.md /Users/mathieuchambaud/.agents/AGENTS.md)",
-      "Read(//Users/mathieuchambaud/.agents/**)"
+      "Read(//Users/mathieuchambaud/.agents/**)",
+      "Skill(seo-audit)",
+      "Skill(design-taste-frontend)"
     ]
   },
   "hooks": {

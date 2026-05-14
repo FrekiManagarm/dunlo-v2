@@ -1,0 +1,110 @@
+---
+title: "Stripe Smart Retries: an honest review"
+description: "A founder-to-founder review of Stripe Smart Retries: what it actually does, what it gets right, what it misses, and when you need to build (or buy) something more."
+author: "Dunlo team"
+date: "2026-05-04"
+published: true
+tags: [
+  stripe,
+  stripe smart retries,
+  dunlo,
+]
+keywords: [
+  stripe smart retries,
+  stripe dunning,
+  failed payment recovery,
+  involuntary churn,
+]
+---
+
+## The shortest possible summary
+
+Stripe Smart Retries is a free machine-learning feature that automatically reschedules failed subscription payments at times the model predicts will succeed. It's built into Stripe Billing. It's enabled by default for new accounts. And it is, for most early-stage SaaS, both the easiest place to start and the wrong place to stop.
+
+This review walks through what it does well, what it doesn't, and how to know whether you've outgrown it.
+
+## What Smart Retries actually does
+
+When an invoice payment fails on Stripe, you have two retry options. The legacy mode runs a fixed schedule (e.g., 3 days, 5 days, 7 days). Smart Retries replaces this with Stripe's machine learning model, which picks retry timestamps based on patterns it has learned across billions of transactions.
+
+Specifically, Smart Retries:
+
+- Automatically retries failed invoice payments up to four times over a configurable window (default: ~3 weeks)
+- Picks retry times the ML model predicts will be more likely to succeed (e.g., immediately after a likely paycheck date)
+- Marks the subscription as `past_due` during retries and `unpaid` or `canceled` after the final attempt
+- Sends Stripe's default "payment failed" email if you've enabled customer emails
+
+It does **not**:
+
+- Retry differently based on decline code — soft declines and hard declines get the same treatment
+- Send escalation emails on a custom schedule
+- Surface recovery analytics in a way that's useful for forecasting
+- Give you control over retry amount, time of day, or per-customer logic
+- Notify you in real time when high-value customers fail
+
+## What it gets right
+
+Three things, and they matter.
+
+**First, it's free.** Stripe doesn't charge a percentage of recovered revenue. For early SaaS, the marginal cost of having Smart Retries on is zero, and the recovery rate is meaningfully better than the legacy fixed schedule — Stripe publishes around 11% recovery for legacy retries vs 25–35% for Smart Retries, and our own beta data confirms the same direction.
+
+**Second, it's frictionless.** You don't deploy anything, you don't write code, you don't have to think about it. For a founder at €5k MRR who has never thought about involuntary churn, turning on Smart Retries captures most of the easy revenue without spending an evening reading docs.
+
+**Third, the ML genuinely works on retry timing.** Stripe's data advantage is real — they see more declines per second than any single SaaS will see in a year. The model picks better retry times than a fixed schedule, especially for soft declines.
+
+## Where it falls short
+
+### It treats all failures the same
+
+This is the big one. A card that's expired, a card with insufficient funds, and a card that's been reported stolen are three completely different problems with three different correct responses. Smart Retries runs the same playbook for all of them. The expired-card customer gets four pointless retries before an email; the stolen-card customer gets four retries that hurt your processor reputation; the insufficient-funds customer might have been recovered by simply waiting for payday.
+
+### The default emails are forgettable
+
+Stripe's default dunning email is technically functional and emotionally absent. It says "your payment failed, please update your method" with a generic link. It doesn't reference the product. It doesn't explain what will happen next. It doesn't carry your tone. We've seen open rates 2–3x higher and recovery rates 50% higher with custom emails. Stripe gives you no way to customize them beyond very basic branding.
+
+### No real-time alerting
+
+If a €1,500/month customer fails, you find out by checking the dashboard. There's no "hey, your biggest account just failed" notification anywhere. For SaaS where a few accounts represent disproportionate revenue, this is a structural visibility problem.
+
+### Recovery analytics are anemic
+
+You can see that Smart Retries is on. You can see your subscription churn rate. You cannot easily see, in one place, how much MRR was at risk this month, how much was recovered, what the recovery rate was by failure type, or which customers are still in the dunning funnel. Founders end up exporting CSVs and rebuilding this in Sheets.
+
+### No customer-side experience improvements
+
+The customer who needs to update their card has to dig through a customer portal that, until recently, looked like a 2014 admin panel. Stripe has improved this, but you still can't surface a one-click update link in your own product UI without writing code.
+
+## When Smart Retries is enough
+
+Honestly: when you're under €5k MRR or your involuntary churn rate is below 2%, the default Smart Retries setup recovers most of the cheap wins. Spending mental cycles on a more sophisticated solution is a misuse of founder time at that stage.
+
+The break-even point is roughly: if 0.5% of MRR being recovered would pay for a dedicated tool, you've outgrown Smart Retries.
+
+## When you've outgrown it
+
+Five signs:
+
+- Your involuntary churn rate is above 3% and you don't know why
+- You've had at least one "high-value account silently disappeared" moment in the last quarter
+- You can't tell me, off the top of your head, what your recovery rate was last month
+- Your dunning emails are still Stripe's defaults
+- You're spending more than 30 minutes a week reconciling failed payments manually
+
+If three or more of these are true, you're paying a hidden tax to keep the status quo.
+
+## How to extend Smart Retries without replacing it
+
+If you want to stay on Smart Retries but plug its biggest gaps, here's the minimum:
+
+1. Listen to `invoice.payment_failed` and `payment_intent.payment_failed` webhooks and pipe them to Slack, with the failure reason
+2. Build a simple table that maps decline codes to next actions (retry, email, escalate, write off) and run it as a cron
+3. Replace Stripe's default emails with your own templated sequence triggered from the webhook events
+4. Set up a weekly "recovery report" that pulls Stripe data and surfaces the top 10 failed accounts to your inbox
+
+This is a real engineering project — typically two to four weeks for a careful implementation, plus ongoing maintenance. Most founders we've talked to either build this and resent the upkeep, or buy a dedicated tool for less than the cost of the engineering time.
+
+## The verdict
+
+Smart Retries is a good free baseline that you should absolutely have on. It is also, by design, a generic solution to a problem that has nothing generic about it. The companies recovering the most revenue treat it as a starting point, not an endpoint.
+
+If you want categorized retries, custom emails, real-time alerts, and proper recovery analytics without writing the code yourself, that's literally what [Dunlo](https://dunlo.io) does. We layer on top of Stripe — Smart Retries can stay on or off — and the setup takes about 5 minutes.

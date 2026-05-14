@@ -12,14 +12,32 @@
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://dunlo.io/blog/guide-dunning-saas</loc>
+    <loc>https://dunlo.io/blog/dunning-guide-for-saas</loc>
     <lastmod>2026-05-14</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://dunlo.io/blog/5-raisons-echec-paiement-stripe</loc>
+    <loc>https://dunlo.io/blog/5-reasons-stripe-payments-fail</loc>
     <lastmod>2026-05-10</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://dunlo.io/blog/stripe-smart-retries-review</loc>
+    <lastmod>2026-05-04</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://dunlo.io/blog/how-to-build-a-dunning-strategy</loc>
+    <lastmod>2026-04-20</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://dunlo.io/blog/complete-guide-involuntary-churn-saas</loc>
+    <lastmod>2026-05-04</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.7</priority>
   </url>

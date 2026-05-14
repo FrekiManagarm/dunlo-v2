@@ -109,7 +109,7 @@ function TableOfContents({
     <aside className="hidden lg:block">
       <div className="sticky top-28 max-h-[calc(100vh-8rem)] overflow-y-auto">
         <p className="text-xs font-semibold uppercase tracking-widest text-muted-foreground mb-4">
-          Sur cette page
+          On this page
         </p>
         <nav className="space-y-0.5">
           {items.map((item) => (
@@ -144,7 +144,7 @@ function TableOfContents({
               size={12}
               className="group-hover:-translate-x-0.5 transition-transform duration-200"
             />
-            Retour au blog
+            Back to blog
           </Link>
         </div>
       </div>
@@ -167,7 +167,7 @@ function CopyLinkButton() {
       className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-4 py-2 text-sm font-medium text-muted-foreground transition-all duration-200 hover:border-dunlo/40 hover:text-dunlo-dim active:scale-[0.97]"
     >
       {copied ? <Check size={14} /> : <Copy size={14} />}
-      {copied ? "Copié !" : "Copier le lien"}
+      {copied ? "Copied!" : "Copy link"}
     </button>
   );
 }
@@ -197,7 +197,7 @@ function BlogPostPage() {
   const MDX = getBlogBody(slug);
   if (!MDX) return null;
 
-  const formattedDate = new Date(date).toLocaleDateString("fr-FR", {
+  const formattedDate = new Date(date).toLocaleDateString("en-US", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -240,7 +240,7 @@ function BlogPostPage() {
               size={14}
               className="group-hover:-translate-x-0.5 transition-transform duration-200"
             />
-            Retour au blog
+            Back to blog
           </Link>
           <div className="flex flex-wrap gap-1.5">
             {tags.map((tag) => (
@@ -264,7 +264,7 @@ function BlogPostPage() {
             <span className="w-1 h-1 rounded-full bg-border" />
             <span className="inline-flex items-center gap-1.5">
               <Clock size={13} />
-              {estimateReadingTime(description)} de lecture
+              {estimateReadingTime(description)} read
             </span>
           </div>
         </motion.header>
@@ -312,7 +312,7 @@ function BlogPostPage() {
                   size={14}
                   className="group-hover:-translate-x-0.5 transition-transform duration-200"
                 />
-                Retour au blog
+                Back to blog
               </Link>
             </div>
           </motion.div>

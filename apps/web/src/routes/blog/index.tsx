@@ -31,7 +31,7 @@ type Post = Awaited<ReturnType<typeof getAllPosts>>[number];
 const spring = { type: "spring" as const, stiffness: 100, damping: 20 };
 
 function formatDate(date: string) {
-  return new Date(date).toLocaleDateString("fr-FR", {
+  return new Date(date).toLocaleDateString("en-US", {
     day: "numeric",
     month: "long",
     year: "numeric",
@@ -81,7 +81,7 @@ function FeaturedCard({ post }: { post: Post }) {
             {formatDate(post.date)}
           </time>
           <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-dunlo-dim group-hover:gap-2.5 transition-all duration-200">
-            Lire l'article
+            Read article
             <ArrowRight
               size={14}
               className="group-hover:translate-x-0.5 transition-transform duration-200"
@@ -149,10 +149,10 @@ function EmptyState() {
         <div className="w-4 h-4 rounded-sm border-2 border-dunlo/50" />
       </div>
       <p className="font-semibold text-foreground mb-1">
-        Aucun article pour l'instant
+        No articles yet
       </p>
       <p className="text-sm text-muted-foreground">
-        Les guides arrivent bientôt.
+        Guides coming soon.
       </p>
     </div>
   );
@@ -175,14 +175,14 @@ function BlogPage() {
           <div className="flex items-center gap-3 mb-5">
             <span className="block w-6 h-[2px] bg-dunlo rounded-full" />
             <span className="text-xs font-semibold uppercase tracking-widest text-dunlo-dim">
-              Ressources
+              Resources
             </span>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-none mb-4">
             Blog
           </h1>
           <p className="text-muted-foreground text-lg max-w-[48ch]">
-            Guides pratiques pour récupérer vos paiements Stripe échoués.
+            Practical guides for recovering failed Stripe payments and reducing involuntary churn.
           </p>
         </motion.div>
 
