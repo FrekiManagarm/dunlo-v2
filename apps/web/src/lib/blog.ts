@@ -7,7 +7,7 @@ const mdxModules = import.meta.glob<{ default: MDXContent }>(
 );
 
 export function getBlogBody(slug: string): MDXContent | null {
-  return mdxModules[`../../../content/blog/${slug}.mdx`]?.default ?? null;
+  return mdxModules[`../../content/blog/${slug}.mdx`]?.default ?? null;
 }
 
 export const getAllPosts = createServerFn({ method: "GET" }).handler(
