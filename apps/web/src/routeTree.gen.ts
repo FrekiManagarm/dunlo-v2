@@ -15,6 +15,7 @@ import { Route as LoginRouteImport } from './routes/login'
 import { Route as BlogRouteImport } from './routes/blog'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as DashboardSettingsRouteImport } from './routes/_dashboard/settings'
 import { Route as DashboardSequencesRouteImport } from './routes/_dashboard/sequences'
@@ -58,6 +59,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const BlogIndexRoute = BlogIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => BlogRoute,
 } as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
@@ -143,6 +149,7 @@ export interface FileRoutesByFullPath {
   '/sequences': typeof DashboardSequencesRoute
   '/settings': typeof DashboardSettingsRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/payments/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
@@ -153,7 +160,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/blog': typeof BlogRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
@@ -164,6 +170,7 @@ export interface FileRoutesByTo {
   '/sequences': typeof DashboardSequencesRoute
   '/settings': typeof DashboardSettingsRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog': typeof BlogIndexRoute
   '/payments/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
@@ -187,6 +194,7 @@ export interface FileRoutesById {
   '/_dashboard/sequences': typeof DashboardSequencesRoute
   '/_dashboard/settings': typeof DashboardSettingsRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/blog/': typeof BlogIndexRoute
   '/_dashboard/payments_/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
@@ -210,6 +218,7 @@ export interface FileRouteTypes {
     | '/sequences'
     | '/settings'
     | '/blog/$slug'
+    | '/blog/'
     | '/payments/$id'
     | '/api/auth/$'
     | '/api/cron/process-emails'
@@ -220,7 +229,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/blog'
     | '/login'
     | '/onboarding'
     | '/reset-password'
@@ -231,6 +239,7 @@ export interface FileRouteTypes {
     | '/sequences'
     | '/settings'
     | '/blog/$slug'
+    | '/blog'
     | '/payments/$id'
     | '/api/auth/$'
     | '/api/cron/process-emails'
@@ -253,6 +262,7 @@ export interface FileRouteTypes {
     | '/_dashboard/sequences'
     | '/_dashboard/settings'
     | '/blog/$slug'
+    | '/blog/'
     | '/_dashboard/payments_/$id'
     | '/api/auth/$'
     | '/api/cron/process-emails'
@@ -320,6 +330,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/blog/': {
+      id: '/blog/'
+      path: '/'
+      fullPath: '/blog/'
+      preLoaderRoute: typeof BlogIndexRouteImport
+      parentRoute: typeof BlogRoute
     }
     '/blog/$slug': {
       id: '/blog/$slug'
@@ -448,10 +465,12 @@ const DashboardRouteWithChildren = DashboardRoute._addFileChildren(
 
 interface BlogRouteChildren {
   BlogSlugRoute: typeof BlogSlugRoute
+  BlogIndexRoute: typeof BlogIndexRoute
 }
 
 const BlogRouteChildren: BlogRouteChildren = {
   BlogSlugRoute: BlogSlugRoute,
+  BlogIndexRoute: BlogIndexRoute,
 }
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
