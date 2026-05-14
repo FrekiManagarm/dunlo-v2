@@ -1,20 +1,13 @@
-import { type ComponentType } from "react";
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { getPost } from "@/lib/blog";
+import { getPostMeta, getBlogBody } from "@/lib/blog";
 import { mdxComponents } from "@/components/mdx-components";
 import { BlogNav } from "@/components/blog-nav";
 
 export const Route = createFileRoute("/blog/$slug")({
-  loader: ({ params }) => {
-    const post = getPost(params.slug);
-    if (!post) throw notFound();
-    return {
-      title: post.data.title,
-      description: post.data.description,
-      date: post.data.date,
-      tags: post.data.tags,
-      keywords: post.data.keywords,
-    };
+  loader: async ({ params }) => {
+    const meta = await getPostMeta({ data: params.slug });
+    if (!meta) throw notFound();
+    return meta;
   },
   head: ({ loaderData }) => ({
     meta: [
@@ -30,8 +23,7 @@ function BlogPostPage() {
   const { slug } = Route.useParams();
   const { title, date, tags } = Route.useLoaderData();
 
-  const post = getPost(slug)!;
-  const MDX = post.data.body as ComponentType;
+  const MDX = getBlogBody(slug)!;
 
   return (
     <>

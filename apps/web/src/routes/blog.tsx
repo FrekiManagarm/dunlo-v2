@@ -3,16 +3,7 @@ import { getAllPosts } from "@/lib/blog";
 import { BlogNav } from "@/components/blog-nav";
 
 export const Route = createFileRoute("/blog")({
-  loader: () => {
-    const posts = getAllPosts();
-    return posts.map((p) => ({
-      slug: p.slugs[0]!,
-      title: p.data.title,
-      description: p.data.description,
-      date: p.data.date,
-      tags: p.data.tags,
-    }));
-  },
+  loader: async () => getAllPosts(),
   head: () => ({
     meta: [
       { title: "Blog — Dunlo" },
