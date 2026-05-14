@@ -1,4 +1,5 @@
 {
+  "framework": null,
   "installCommand": "cd ../.. && bun install --frozen-lockfile",
   "buildCommand": "cd ../.. && turbo build --filter=web"
 }
