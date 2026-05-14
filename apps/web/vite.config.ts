@@ -15,6 +15,7 @@ export default defineConfig({
     tanstackStart({
       nitro: {
         plugins: ["./server/plugins/email-scheduler.ts"],
+        ...(process.env.NITRO_PRESET && { preset: process.env.NITRO_PRESET }),
       },
     }),
     viteReact(),

@@ -68,7 +68,11 @@
       "Bash(grep 'dashboard.tsx\\\\|payments.tsx\\\\|payments.$id')",
       "Bash(grep -E 'payments\\\\.$id')",
       "Bash(grep -nB1 -A6 \"export const getPayments \\\\|export const getPaymentDetail \" payments.ts)",
-      "Bash(grep -nB1 -A4 \"getPaymentsInput\" payments.ts)"
+      "Bash(grep -nB1 -A4 \"getPaymentsInput\" payments.ts)",
+      "Skill(vercel:deploy)",
+      "Skill(tanstack-start)",
+      "Bash(xargs ls -la)",
+      "Skill(commit)"
     ]
   },
   "hooks": {
