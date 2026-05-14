@@ -1,5 +1,5 @@
 {
-  "buildCommand": "turbo build --filter=web",
+  "buildCommand": "turbo build --filter=web && cp -r apps/web/.vercel/output .vercel/output",
   "installCommand": "bun install --frozen-lockfile",
-"framework": null
+  "framework": null
 }
