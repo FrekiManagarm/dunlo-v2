@@ -94,7 +94,7 @@ function RouteComponent() {
 
   useEffect(() => {
     posthog.capture("payment_viewed", { payment_id: id });
-  }, [id]);
+  }, [id, posthog]);
   const [recovering, setRecovering] = useState(false);
   const [escalating, setEscalating] = useState(false);
 
