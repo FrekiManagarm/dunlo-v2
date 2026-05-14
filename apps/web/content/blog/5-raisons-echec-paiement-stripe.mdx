@@ -1,0 +1,40 @@
+---
+title: "5 raisons pour lesquelles vos paiements Stripe échouent"
+description: "Comprendre les causes fréquentes d'échec de paiements Stripe pour mieux les anticiper et les récupérer automatiquement."
+date: "2026-05-10"
+published: true
+tags: ["stripe", "paiements", "guide"]
+keywords: ["stripe échec paiement", "failed payment stripe", "card declined"]
+---
+
+## Pourquoi les paiements échouent
+
+Les paiements Stripe peuvent échouer pour de nombreuses raisons, souvent indépendantes de votre produit. Identifier la cause est la première étape pour récupérer ces revenus perdus.
+
+## 1. Carte expirée
+
+La raison la plus courante. Le client a changé de carte bancaire sans mettre à jour ses informations de facturation. Stripe renvoie le code `card_expired`.
+
+**Comment récupérer :** Envoyer un email automatique avec un lien de mise à jour de paiement dans les 24h.
+
+## 2. Fonds insuffisants
+
+Le prélèvement a échoué par manque de provision. Stripe renvoie `insufficient_funds`. Ce type d'échec est souvent temporaire.
+
+**Comment récupérer :** Attendre 3-5 jours et relancer. Le taux de récupération sur ce type d'échec dépasse 60%.
+
+## 3. Carte bloquée par la banque
+
+La banque a refusé la transaction pour suspicion de fraude. Code : `card_declined`. Une simple vérification auprès de la banque suffit souvent à débloquer la situation.
+
+## 4. Paiement 3DS requis
+
+Certaines banques européennes imposent une authentification forte. Si votre flow ne gère pas le 3DS correctement, le paiement est refusé silencieusement.
+
+## 5. Carte perdue ou volée
+
+Le client a déclaré sa carte perdue ou volée. Dans ce cas, seul un nouveau moyen de paiement permettra de récupérer l'abonnement.
+
+## Conclusion
+
+Chacun de ces échecs peut être récupéré avec la bonne stratégie d'automatisation. C'est exactement ce que Dunlo fait pour vous.
