@@ -24,7 +24,8 @@ function BlogPostPage() {
   const { slug } = Route.useParams();
   const { title, date, tags } = Route.useLoaderData();
 
-  const MDX = getBlogBody(slug) as MDXContent;
+  const MDX = getBlogBody(slug);
+  if (!MDX) return null;
 
   return (
     <>

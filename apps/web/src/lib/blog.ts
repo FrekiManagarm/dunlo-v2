@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import type { MDXContent } from "mdx/types";
 
 const mdxModules = import.meta.glob<{ default: MDXContent }>(
-  "../../../content/blog/*.mdx",
+  "../../content/blog/*.mdx",
   { eager: true },
 );
 
