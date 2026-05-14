@@ -21,7 +21,7 @@ import {
 } from "@/functions/payments";
 import { paymentDetailQueryOptions } from "@/lib/queries";
 
-export const Route = createFileRoute("/_dashboard/payments/$id")({
+export const Route = createFileRoute("/_dashboard/payments_/$id")({
   head: () => ({
     meta: [
       { name: "robots", content: "noindex, nofollow" },
@@ -92,8 +92,10 @@ function RouteComponent() {
   const [recovering, setRecovering] = useState(false);
   const [escalating, setEscalating] = useState(false);
 
-  const isDone = payment.status === "recovered" || payment.status === "dismissed";
-  const isEscalated = payment.status === "escalated" || Boolean(payment.escalation);
+  const isDone =
+    payment.status === "recovered" || payment.status === "dismissed";
+  const isEscalated =
+    payment.status === "escalated" || Boolean(payment.escalation);
 
   const isTestPayment = payment.stripePaymentIntentId.startsWith("pi_test_");
   const stripeUrl =
@@ -188,7 +190,7 @@ function RouteComponent() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-2xl space-y-4 p-6">
+      <div className="mx-auto space-y-4 p-6">
         {/* Summary card */}
         <motion.div
           initial={{ opacity: 0, y: 8 }}
@@ -205,7 +207,9 @@ function RouteComponent() {
                 <p className="text-xl font-bold tracking-tight text-zinc-900 font-mono">
                   {payment.formattedAmount}
                 </p>
-                <p className="mt-0.5 text-xs text-zinc-400">{payment.customerEmail}</p>
+                <p className="mt-0.5 text-xs text-zinc-400">
+                  {payment.customerEmail}
+                </p>
               </div>
             </div>
             <span
@@ -224,7 +228,10 @@ function RouteComponent() {
                 {payment.failureLabel}
               </p>
               {payment.failureMessage && (
-                <p className="mt-0.5 text-[11px] text-zinc-400 truncate" title={payment.failureMessage}>
+                <p
+                  className="mt-0.5 text-[11px] text-zinc-400 truncate"
+                  title={payment.failureMessage}
+                >
                   {payment.failureMessage}
                 </p>
               )}
@@ -242,7 +249,9 @@ function RouteComponent() {
                 {payment.lastFour ? "Card" : "ID"}
               </p>
               <p className="mt-1 text-sm font-mono text-zinc-800">
-                {payment.lastFour ? `•••• ${payment.lastFour}` : payment.stripePaymentIntentId.slice(0, 16) + "…"}
+                {payment.lastFour
+                  ? `•••• ${payment.lastFour}`
+                  : payment.stripePaymentIntentId.slice(0, 16) + "…"}
               </p>
             </div>
           </div>
@@ -266,7 +275,9 @@ function RouteComponent() {
               <div className="mb-3 flex size-10 items-center justify-center rounded-xl bg-zinc-50">
                 <Mail size={16} className="text-zinc-300" />
               </div>
-              <p className="text-sm font-medium text-zinc-500">No emails scheduled</p>
+              <p className="text-sm font-medium text-zinc-500">
+                No emails scheduled
+              </p>
               <p className="mt-1 text-xs text-zinc-400">
                 {isEscalated
                   ? "This payment is escalated — check the Escalations page."
@@ -278,8 +289,11 @@ function RouteComponent() {
               <div className="absolute left-[2.5rem] top-8 bottom-8 w-px bg-zinc-100" />
               <div className="space-y-1">
                 {payment.attempts.map((attempt, i) => {
-                  const meta: { icon: React.ElementType; label: string; style: string } =
-                    ATTEMPT_META[attempt.status] ?? ATTEMPT_META.scheduled!;
+                  const meta: {
+                    icon: React.ElementType;
+                    label: string;
+                    style: string;
+                  } = ATTEMPT_META[attempt.status] ?? ATTEMPT_META.scheduled!;
                   const Icon = meta.icon;
                   const isCancelled = attempt.status === "dismissed";
 
@@ -296,7 +310,15 @@ function RouteComponent() {
                       className={`flex items-start gap-4 rounded-xl px-2 py-3 transition-colors ${isCancelled ? "opacity-40" : ""}`}
                     >
                       <div className="relative z-10 flex size-7 shrink-0 items-center justify-center rounded-full border border-white bg-white shadow-[0_0_0_3px_#f4f4f5]">
-                        <Icon size={12} className={meta.style.split(" ").find((c) => c.startsWith("text-")) ?? "text-zinc-400"} />
+                        <Icon
+                          size={12}
+                          className={
+                            meta.style
+                              .split(" ")
+                              .find((c) => c.startsWith("text-")) ??
+                            "text-zinc-400"
+                          }
+                        />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-center gap-2">
@@ -335,12 +357,18 @@ function RouteComponent() {
             transition={{ delay: 0.1, duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
             className="flex items-start gap-3 rounded-2xl border border-amber-100 bg-amber-50 px-5 py-4"
           >
-            <AlertTriangle size={14} className="mt-0.5 shrink-0 text-amber-500" />
+            <AlertTriangle
+              size={14}
+              className="mt-0.5 shrink-0 text-amber-500"
+            />
             <div>
               <p className="text-sm font-semibold text-amber-800">Escalated</p>
               <p className="mt-0.5 text-xs text-amber-700">
                 This payment is in the escalation queue.{" "}
-                <Link to="/escalations" className="underline underline-offset-2">
+                <Link
+                  to="/escalations"
+                  className="underline underline-offset-2"
+                >
                   View in Escalations →
                 </Link>
               </p>
