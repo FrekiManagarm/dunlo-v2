@@ -4,8 +4,10 @@ import { encrypt } from "@dunlo-v2/db/encrypt";
 import { stripeConnection } from "@dunlo-v2/db/schema/domain";
 import { env } from "@dunlo-v2/env/server";
 import { createFileRoute } from "@tanstack/react-router";
+import { eq } from "drizzle-orm";
 
 import { seedDefaultSequences, importExistingFailedPayments, getStripeConnection } from "@/functions/stripe";
+import { getConnectedStripe } from "@/lib/stripe";
 
 const STATE_COOKIE = "stripe_oauth_state";
 
@@ -115,8 +117,10 @@ export const Route = createFileRoute("/api/stripe/callback")({
 
           const token = (await tokenRes.json()) as StripeOAuthTokenResponse;
 
+          const connectionId = crypto.randomUUID();
+
           await db.insert(stripeConnection).values({
-            id: crypto.randomUUID(),
+            id: connectionId,
             userId: session.user.id,
             stripeAccountId: token.stripe_user_id,
             accessToken: encrypt(token.access_token),
@@ -127,6 +131,30 @@ export const Route = createFileRoute("/api/stripe/callback")({
             escalationThreshold: 50000,
             escalationCurrency: "eur",
           });
+
+          try {
+            const connectedStripe = getConnectedStripe(token.access_token);
+            const webhook = await connectedStripe.webhookEndpoints.create({
+              url: `${env.APP_URL}/api/stripe/webhook?cid=${connectionId}`,
+              enabled_events: [
+                "payment_intent.payment_failed",
+                "payment_intent.succeeded",
+                "invoice.payment_failed",
+                "invoice.payment_succeeded",
+                "customer.updated",
+              ],
+              description: "Dunlo payment recovery",
+            });
+            await db
+              .update(stripeConnection)
+              .set({
+                webhookEndpointId: webhook.id,
+                webhookSecret: encrypt(webhook.secret!),
+              })
+              .where(eq(stripeConnection.id, connectionId));
+          } catch (err) {
+            console.error("[stripe/callback] webhook registration failed:", err);
+          }
 
           await seedDefaultSequences(session.user.id);
 

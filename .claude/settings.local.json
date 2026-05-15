@@ -109,7 +109,8 @@
       "Bash(cp /Users/mathieuchambaud/.claude/CLAUDE.md /Users/mathieuchambaud/.agents/AGENTS.md)",
       "Read(//Users/mathieuchambaud/.agents/**)",
       "Skill(seo-audit)",
-      "Skill(design-taste-frontend)"
+      "Skill(design-taste-frontend)",
+      "WebFetch(domain:support.stripe.com)"
     ]
   },
   "hooks": {

@@ -12,10 +12,11 @@ import type Stripe from "stripe";
 
 import {
   getStripeConnectionByAccountId,
+  getStripeConnectionById,
   type DecryptedStripeConnection,
 } from "@/functions/stripe";
 import { generateEscalationDraft } from "@/functions/escalations";
-import { getPlatformStripe } from "@/lib/stripe";
+import { getPlatformStripe, getConnectedStripe } from "@/lib/stripe";
 import { sendAlertNotification } from "@/lib/notifications";
 import { env } from "@dunlo-v2/env/server";
 
@@ -27,6 +28,10 @@ const FAILURE_EVENTS = new Set<string>([
 const SUCCESS_EVENTS = new Set<string>([
   "payment_intent.succeeded",
   "invoice.payment_succeeded",
+]);
+
+const PAYMENT_METHOD_EVENTS = new Set<string>([
+  "customer.updated",
 ]);
 
 function pickFailureCode(
@@ -318,6 +323,48 @@ export async function processRecoveredPayment(
   };
 }
 
+export async function processPaymentMethodUpdate(
+  event: Stripe.Event,
+  connection: DecryptedStripeConnection,
+): Promise<void> {
+  const customer = event.data.object as Stripe.Customer;
+  const prev = (event.data.previous_attributes ?? {}) as Record<string, unknown>;
+
+  const paymentMethodChanged = "invoice_settings" in prev || "default_source" in prev;
+  if (!paymentMethodChanged) return;
+
+  const payments = await db
+    .select()
+    .from(failedPayment)
+    .where(
+      and(
+        eq(failedPayment.userId, connection.userId),
+        eq(failedPayment.stripeCustomerId, customer.id),
+        eq(failedPayment.status, "in_recovery"),
+      ),
+    );
+
+  const invoicePayments = payments.filter((p) => p.stripeInvoiceId !== null);
+  if (invoicePayments.length === 0) return;
+
+  const stripe = getConnectedStripe(connection.accessToken);
+
+  for (const payment of invoicePayments) {
+    try {
+      await stripe.invoices.pay(payment.stripeInvoiceId!);
+    } catch (err: unknown) {
+      const code = (err as { code?: string })?.code;
+      if (code !== "invoice_already_paid") {
+        console.warn(
+          "[stripe/webhook] immediate retry failed for invoice",
+          payment.stripeInvoiceId,
+          code,
+        );
+      }
+    }
+  }
+}
+
 export const Route = createFileRoute("/api/stripe/webhook")({
   server: {
     handlers: {
@@ -331,27 +378,40 @@ export const Route = createFileRoute("/api/stripe/webhook")({
           });
         }
 
+        const url = new URL(request.url);
+        const cid = url.searchParams.get("cid");
+
+        let connection: DecryptedStripeConnection | null = null;
+        let webhookSecret: string;
+
+        if (cid) {
+          connection = await getStripeConnectionById(cid);
+          if (!connection) {
+            return new Response("Unknown connection", { status: 400 });
+          }
+          webhookSecret = connection.webhookSecret;
+        } else {
+          webhookSecret = env.STRIPE_WEBHOOK_SECRET;
+        }
+
         const stripe = getPlatformStripe();
         let event: Stripe.Event;
         try {
-          event = stripe.webhooks.constructEvent(
-            rawBody,
-            sig,
-            env.STRIPE_WEBHOOK_SECRET,
-          );
+          event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
         } catch (err) {
           console.error("[stripe/webhook] signature verification failed", err);
           return new Response("Invalid signature", { status: 400 });
         }
 
-        const accountId = (event as { account?: string }).account;
-        if (!accountId) {
-          return new Response("Missing account on event", { status: 400 });
-        }
-
-        const connection = await getStripeConnectionByAccountId(accountId);
         if (!connection) {
-          return new Response("Unknown connected account", { status: 400 });
+          const accountId = (event as { account?: string }).account;
+          if (!accountId) {
+            return new Response("Missing account on event", { status: 400 });
+          }
+          connection = await getStripeConnectionByAccountId(accountId);
+          if (!connection) {
+            return new Response("Unknown connected account", { status: 400 });
+          }
         }
 
         try {
@@ -383,6 +443,8 @@ export const Route = createFileRoute("/api/stripe/webhook")({
                 console.error("[webhook] alert notification failed", e),
               );
             }
+          } else if (PAYMENT_METHOD_EVENTS.has(event.type)) {
+            await processPaymentMethodUpdate(event, connection);
           }
         } catch (err) {
           console.error(
