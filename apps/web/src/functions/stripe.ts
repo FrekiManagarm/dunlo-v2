@@ -54,6 +54,32 @@ export async function getStripeConnection(
   };
 }
 
+export async function getStripeConnectionById(
+  id: string,
+): Promise<DecryptedStripeConnection | null> {
+  const [row] = await db
+    .select()
+    .from(stripeConnection)
+    .where(eq(stripeConnection.id, id))
+    .limit(1);
+
+  if (!row) return null;
+
+  const { decrypt } = await import("@dunlo-v2/db/encrypt");
+  return {
+    id: row.id,
+    userId: row.userId,
+    stripeAccountId: row.stripeAccountId,
+    accessToken: decrypt(row.accessToken),
+    publishableKey: row.publishableKey,
+    webhookEndpointId: row.webhookEndpointId,
+    webhookSecret: decrypt(row.webhookSecret),
+    scope: row.scope,
+    escalationThreshold: row.escalationThreshold,
+    escalationCurrency: row.escalationCurrency,
+  };
+}
+
 export async function getStripeConnectionByAccountId(
   stripeAccountId: string,
 ): Promise<DecryptedStripeConnection | null> {

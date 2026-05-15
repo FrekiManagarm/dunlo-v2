@@ -4,8 +4,10 @@ import { encrypt } from "@dunlo-v2/db/encrypt";
 import { stripeConnection } from "@dunlo-v2/db/schema/domain";
 import { env } from "@dunlo-v2/env/server";
 import { createFileRoute } from "@tanstack/react-router";
+import { and, eq } from "drizzle-orm";
 
 import { seedDefaultSequences, importExistingFailedPayments, getStripeConnection } from "@/functions/stripe";
+import { setupWebhooks } from "@/lib/stripe-webhooks";
 
 const STATE_COOKIE = "stripe_oauth_state";
 
@@ -96,9 +98,7 @@ export const Route = createFileRoute("/api/stripe/callback")({
             "https://connect.stripe.com/oauth/token",
             {
               method: "POST",
-              headers: {
-                "Content-Type": "application/x-www-form-urlencoded",
-              },
+              headers: { "Content-Type": "application/x-www-form-urlencoded" },
               body: new URLSearchParams({
                 grant_type: "authorization_code",
                 code,
@@ -115,18 +115,42 @@ export const Route = createFileRoute("/api/stripe/callback")({
 
           const token = (await tokenRes.json()) as StripeOAuthTokenResponse;
 
-          await db.insert(stripeConnection).values({
-            id: crypto.randomUUID(),
-            userId: session.user.id,
-            stripeAccountId: token.stripe_user_id,
-            accessToken: encrypt(token.access_token),
-            publishableKey: token.stripe_publishable_key ?? null,
-            webhookEndpointId: null,
-            webhookSecret: encrypt("placeholder"),
-            scope: token.scope ?? "read_write",
-            escalationThreshold: 50000,
-            escalationCurrency: "eur",
-          });
+          const [existing] = await db
+            .select()
+            .from(stripeConnection)
+            .where(
+              and(
+                eq(stripeConnection.userId, session.user.id),
+                eq(stripeConnection.stripeAccountId, token.stripe_user_id),
+              ),
+            )
+            .limit(1);
+
+          if (existing) {
+            await db
+              .update(stripeConnection)
+              .set({
+                accessToken: encrypt(token.access_token),
+                publishableKey: token.stripe_publishable_key ?? null,
+                scope: token.scope ?? "read_write",
+              })
+              .where(eq(stripeConnection.id, existing.id));
+          } else {
+            await db.insert(stripeConnection).values({
+              id: crypto.randomUUID(),
+              userId: session.user.id,
+              stripeAccountId: token.stripe_user_id,
+              accessToken: encrypt(token.access_token),
+              publishableKey: token.stripe_publishable_key ?? null,
+              webhookEndpointId: null,
+              webhookSecret: encrypt("placeholder"),
+              scope: token.scope ?? "read_write",
+              escalationThreshold: 50000,
+              escalationCurrency: "eur",
+            });
+          }
+
+          await setupWebhooks(token.stripe_user_id, token.access_token);
 
           await seedDefaultSequences(session.user.id);
 

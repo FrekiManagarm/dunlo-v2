@@ -1,5 +1,12 @@
 import { Input } from "@dunlo-v2/ui/components/input";
 import { Label } from "@dunlo-v2/ui/components/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@dunlo-v2/ui/components/select";
 import { useForm } from "@tanstack/react-form";
 import { usePostHog } from "posthog-js/react";
 import { useSuspenseQuery } from "@tanstack/react-query";
@@ -663,20 +670,24 @@ function EscalationTab({
                   <Label className="text-xs font-medium text-zinc-500">
                     Currency
                   </Label>
-                  <select
+                  <Select
                     value={field.state.value}
-                    onBlur={field.handleBlur}
-                    onChange={(e) =>
-                      field.handleChange(
-                        e.target.value as "eur" | "usd" | "gbp",
-                      )
+                    onValueChange={(value) =>
+                      field.handleChange(value as "eur" | "usd" | "gbp")
                     }
-                    className="h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-900 focus:border-dunlo/40 focus:bg-white focus:outline-none focus:ring-2 focus:ring-dunlo/10"
                   >
-                    <option value="eur">EUR</option>
-                    <option value="usd">USD</option>
-                    <option value="gbp">GBP</option>
-                  </select>
+                    <SelectTrigger
+                      className="h-10 w-full rounded-xl border-zinc-200 bg-zinc-50 text-sm text-zinc-900 focus:border-dunlo/40 focus:bg-white focus:ring-dunlo/10"
+                      onBlur={field.handleBlur}
+                    >
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="eur">EUR</SelectItem>
+                      <SelectItem value="usd">USD</SelectItem>
+                      <SelectItem value="gbp">GBP</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
               )}
             </form.Field>
