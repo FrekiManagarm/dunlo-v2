@@ -12,7 +12,6 @@ import type Stripe from "stripe";
 
 import {
   getStripeConnectionByAccountId,
-  getStripeConnectionById,
   type DecryptedStripeConnection,
 } from "@/functions/stripe";
 import { generateEscalationDraft } from "@/functions/escalations";
@@ -378,40 +377,27 @@ export const Route = createFileRoute("/api/stripe/webhook")({
           });
         }
 
-        const url = new URL(request.url);
-        const cid = url.searchParams.get("cid");
-
-        let connection: DecryptedStripeConnection | null = null;
-        let webhookSecret: string;
-
-        if (cid) {
-          connection = await getStripeConnectionById(cid);
-          if (!connection) {
-            return new Response("Unknown connection", { status: 400 });
-          }
-          webhookSecret = connection.webhookSecret;
-        } else {
-          webhookSecret = env.STRIPE_WEBHOOK_SECRET;
-        }
-
         const stripe = getPlatformStripe();
         let event: Stripe.Event;
         try {
-          event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
+          event = stripe.webhooks.constructEvent(
+            rawBody,
+            sig,
+            env.STRIPE_WEBHOOK_SECRET,
+          );
         } catch (err) {
           console.error("[stripe/webhook] signature verification failed", err);
           return new Response("Invalid signature", { status: 400 });
         }
 
+        const accountId = (event as { account?: string }).account;
+        if (!accountId) {
+          return new Response("Missing account on event", { status: 400 });
+        }
+
+        const connection = await getStripeConnectionByAccountId(accountId);
         if (!connection) {
-          const accountId = (event as { account?: string }).account;
-          if (!accountId) {
-            return new Response("Missing account on event", { status: 400 });
-          }
-          connection = await getStripeConnectionByAccountId(accountId);
-          if (!connection) {
-            return new Response("Unknown connected account", { status: 400 });
-          }
+          return new Response("Unknown connected account", { status: 400 });
         }
 
         try {

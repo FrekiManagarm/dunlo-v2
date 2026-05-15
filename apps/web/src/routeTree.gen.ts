@@ -30,6 +30,7 @@ import { Route as ApiStripeCallbackRouteImport } from './routes/api/stripe/callb
 import { Route as ApiCronProcessEmailsRouteImport } from './routes/api/cron/process-emails'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as DashboardPaymentsIdRouteImport } from './routes/_dashboard/payments_.$id'
+import { Route as ApiStripeWebhookAccountIdRouteImport } from './routes/api/stripe/webhook.$accountId'
 
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
@@ -135,6 +136,12 @@ const DashboardPaymentsIdRoute = DashboardPaymentsIdRouteImport.update({
   path: '/payments/$id',
   getParentRoute: () => DashboardRoute,
 } as any)
+const ApiStripeWebhookAccountIdRoute =
+  ApiStripeWebhookAccountIdRouteImport.update({
+    id: '/$accountId',
+    path: '/$accountId',
+    getParentRoute: () => ApiStripeWebhookRoute,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -156,7 +163,8 @@ export interface FileRoutesByFullPath {
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
   '/api/stripe/connect': typeof ApiStripeConnectRoute
   '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
-  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRouteWithChildren
+  '/api/stripe/webhook/$accountId': typeof ApiStripeWebhookAccountIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -177,7 +185,8 @@ export interface FileRoutesByTo {
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
   '/api/stripe/connect': typeof ApiStripeConnectRoute
   '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
-  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRouteWithChildren
+  '/api/stripe/webhook/$accountId': typeof ApiStripeWebhookAccountIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -201,7 +210,8 @@ export interface FileRoutesById {
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
   '/api/stripe/connect': typeof ApiStripeConnectRoute
   '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
-  '/api/stripe/webhook': typeof ApiStripeWebhookRoute
+  '/api/stripe/webhook': typeof ApiStripeWebhookRouteWithChildren
+  '/api/stripe/webhook/$accountId': typeof ApiStripeWebhookAccountIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -226,6 +236,7 @@ export interface FileRouteTypes {
     | '/api/stripe/connect'
     | '/api/stripe/disconnect'
     | '/api/stripe/webhook'
+    | '/api/stripe/webhook/$accountId'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -247,6 +258,7 @@ export interface FileRouteTypes {
     | '/api/stripe/connect'
     | '/api/stripe/disconnect'
     | '/api/stripe/webhook'
+    | '/api/stripe/webhook/$accountId'
   id:
     | '__root__'
     | '/'
@@ -270,6 +282,7 @@ export interface FileRouteTypes {
     | '/api/stripe/connect'
     | '/api/stripe/disconnect'
     | '/api/stripe/webhook'
+    | '/api/stripe/webhook/$accountId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -284,7 +297,7 @@ export interface RootRouteChildren {
   ApiStripeCallbackRoute: typeof ApiStripeCallbackRoute
   ApiStripeConnectRoute: typeof ApiStripeConnectRoute
   ApiStripeDisconnectRoute: typeof ApiStripeDisconnectRoute
-  ApiStripeWebhookRoute: typeof ApiStripeWebhookRoute
+  ApiStripeWebhookRoute: typeof ApiStripeWebhookRouteWithChildren
 }
 
 declare module '@tanstack/react-router' {
@@ -436,6 +449,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardPaymentsIdRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/api/stripe/webhook/$accountId': {
+      id: '/api/stripe/webhook/$accountId'
+      path: '/$accountId'
+      fullPath: '/api/stripe/webhook/$accountId'
+      preLoaderRoute: typeof ApiStripeWebhookAccountIdRouteImport
+      parentRoute: typeof ApiStripeWebhookRoute
+    }
   }
 }
 
@@ -475,6 +495,17 @@ const BlogRouteChildren: BlogRouteChildren = {
 
 const BlogRouteWithChildren = BlogRoute._addFileChildren(BlogRouteChildren)
 
+interface ApiStripeWebhookRouteChildren {
+  ApiStripeWebhookAccountIdRoute: typeof ApiStripeWebhookAccountIdRoute
+}
+
+const ApiStripeWebhookRouteChildren: ApiStripeWebhookRouteChildren = {
+  ApiStripeWebhookAccountIdRoute: ApiStripeWebhookAccountIdRoute,
+}
+
+const ApiStripeWebhookRouteWithChildren =
+  ApiStripeWebhookRoute._addFileChildren(ApiStripeWebhookRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
@@ -487,7 +518,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiStripeCallbackRoute: ApiStripeCallbackRoute,
   ApiStripeConnectRoute: ApiStripeConnectRoute,
   ApiStripeDisconnectRoute: ApiStripeDisconnectRoute,
-  ApiStripeWebhookRoute: ApiStripeWebhookRoute,
+  ApiStripeWebhookRoute: ApiStripeWebhookRouteWithChildren,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

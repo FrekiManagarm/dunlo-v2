@@ -5,7 +5,7 @@ import { stripeConnection } from "@dunlo-v2/db/schema/domain";
 import { createFileRoute } from "@tanstack/react-router";
 import { eq } from "drizzle-orm";
 
-import { getConnectedStripe } from "@/lib/stripe";
+import { deleteWebhooks } from "@/lib/stripe-webhooks";
 
 export const Route = createFileRoute("/api/stripe/disconnect")({
   server: {
@@ -36,16 +36,12 @@ export const Route = createFileRoute("/api/stripe/disconnect")({
         }
 
         if (connection.webhookEndpointId) {
-          try {
-            const accessToken = decrypt(connection.accessToken);
-            const stripe = getConnectedStripe(accessToken);
-            await stripe.webhookEndpoints.del(connection.webhookEndpointId);
-          } catch (err) {
-            console.error(
-              "[stripe.disconnect] webhook cleanup failed (continuing):",
-              err,
-            );
-          }
+          const accessToken = decrypt(connection.accessToken);
+          await deleteWebhooks(
+            connection.webhookEndpointId,
+            accessToken,
+            connection.stripeAccountId,
+          );
         }
 
         await db
