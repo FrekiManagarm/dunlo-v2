@@ -9,10 +9,10 @@ const PLANS = [
   {
     name: "Solo",
     price: 19,
-    mrr: "< €5k MRR",
+    mrr: "< $5k MRR",
     features: [
       "1 email sequence",
-      "Up to €5k MRR",
+      "Up to $5k MRR",
       "Basic dashboard",
       "Email support",
     ],
@@ -21,10 +21,10 @@ const PLANS = [
   {
     name: "Starter",
     price: 49,
-    mrr: "€5k–€20k MRR",
+    mrr: "$5k–$20k MRR",
     features: [
       "2 email sequences",
-      "Up to €20k MRR",
+      "Up to $20k MRR",
       "Priority scoring",
       "All Solo features",
     ],
@@ -33,11 +33,11 @@ const PLANS = [
   {
     name: "Growth",
     price: 149,
-    mrr: "€20k–€80k MRR",
+    mrr: "$20k–$80k MRR",
     badge: "Most popular",
     features: [
       "Unlimited sequences",
-      "Up to €80k MRR",
+      "Up to $80k MRR",
       "Founder escalation drafts",
       "High-value account alerts",
       "Recovery insights",
@@ -122,7 +122,7 @@ export function Pricing() {
                     <span
                       className={`text-4xl font-bold ${plan.featured ? "text-white" : "text-gray-900"}`}
                     >
-                      €{plan.price}
+                      ${plan.price}
                     </span>
                     <span
                       className={`text-sm ${plan.featured ? "text-white/40" : "text-gray-400"}`}
@@ -151,7 +151,9 @@ export function Pricing() {
 
                 <Link
                   to="/login"
-                  onClick={() => posthog.capture("cta_clicked", { location: "pricing" })}
+                  onClick={() =>
+                    posthog.capture("cta_clicked", { location: "pricing" })
+                  }
                   className={`mt-8 flex items-center justify-center rounded-full py-2.5 text-sm font-semibold transition-all active:scale-[0.97] ${
                     plan.featured
                       ? "bg-dunlo text-white hover:bg-dunlo-hover"

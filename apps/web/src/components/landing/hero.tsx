@@ -134,7 +134,7 @@ function DashboardMockup() {
       abbr: "MA",
       color: "bg-violet-100 text-violet-700",
       name: "Meridian Analytics",
-      amount: "€890",
+      amount: "$890",
       detail: "Card expired",
       status: "recovered" as const,
     },
@@ -142,7 +142,7 @@ function DashboardMockup() {
       abbr: "VC",
       color: "bg-sky-100 text-sky-700",
       name: "Volta Cloud",
-      amount: "€2,340",
+      amount: "$2.340",
       detail: "Bank declined",
       status: "escalated" as const,
     },
@@ -150,7 +150,7 @@ function DashboardMockup() {
       abbr: "PL",
       color: "bg-amber-100 text-amber-700",
       name: "Praxis Labs",
-      amount: "€415",
+      amount: "$415",
       detail: "Insufficient funds",
       status: "recovering" as const,
     },
@@ -158,7 +158,7 @@ function DashboardMockup() {
       abbr: "HS",
       color: "bg-emerald-100 text-emerald-800",
       name: "Helix Software",
-      amount: "€1,200",
+      amount: "$1.200",
       detail: "Card expired",
       status: "recovered" as const,
     },
@@ -204,7 +204,7 @@ function DashboardMockup() {
               Recovered this month
             </p>
             <p className="mt-1 font-mono text-[22px] font-bold leading-none text-gray-900">
-              €12,480
+              $12,480
             </p>
             <p className="mt-1.5 text-[11px] font-semibold text-dunlo-dim">
               ↑ +18.4% vs last month
@@ -215,7 +215,7 @@ function DashboardMockup() {
               [
                 { v: "72.3%", l: "success rate" },
                 { v: "34", l: "in recovery" },
-                { v: "€3,240", l: "MRR at risk", red: true },
+                { v: "$3.240", l: "MRR at risk", red: true },
               ] as { v: string; l: string; red?: boolean }[]
             ).map((s) => (
               <div key={s.l} className="text-right">
@@ -423,7 +423,7 @@ export function Hero() {
               className="absolute -left-14 top-6 z-10 hidden rounded-2xl border border-gray-100 bg-white px-4 py-2.5 shadow-[0_8px_24px_rgba(0,0,0,0.07)] md:block"
             >
               <p className="text-[11px] font-semibold text-gray-900">
-                €12,480 recovered
+                $12,480 recovered
               </p>
               <p className="mt-0.5 text-[10px] text-dunlo-dim">
                 this month · +18%
