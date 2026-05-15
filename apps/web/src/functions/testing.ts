@@ -7,6 +7,7 @@ import {
   sequenceStep,
   stripeConnection,
 } from "@dunlo-v2/db/schema/domain";
+import { env } from "@dunlo-v2/env/server";
 import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq } from "drizzle-orm";
 
@@ -21,6 +22,12 @@ const TEST_CUSTOMERS = [
 ];
 
 const TEST_FAILURE_CODES = ["card_declined", "expired_card", "insufficient_funds", "do_not_honor"];
+
+function assertDevelopment() {
+  if (env.NODE_ENV !== "development") {
+    throw new Error("Testing actions are only available in development");
+  }
+}
 
 function pickRandom<T>(arr: readonly T[]): T {
   return arr[Math.floor(Math.random() * arr.length)]!;
@@ -57,6 +64,7 @@ async function findSequence(userId: string, failureCode: string) {
 export const simulateFailedPayment = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
+    assertDevelopment();
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 
@@ -105,6 +113,7 @@ export const simulateFailedPayment = createServerFn({ method: "POST" })
 export const simulateEscalation = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
+    assertDevelopment();
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 
@@ -153,6 +162,7 @@ export const simulateEscalation = createServerFn({ method: "POST" })
 export const simulateRecovery = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
+    assertDevelopment();
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 

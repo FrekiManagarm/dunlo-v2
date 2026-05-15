@@ -16,7 +16,7 @@ import {
   humanizeFailureCode,
   renderTemplate,
 } from "@/lib/template";
-import { sendUserEmail } from "@/lib/resend";
+import { sendUserEmail } from "@/lib/email-providers";
 import { wrapEmail } from "@/lib/email-wrapper";
 import { sendAlertNotification } from "@/lib/notifications";
 
@@ -155,6 +155,8 @@ export async function processScheduledEmails(): Promise<SchedulerResult> {
       const resendId = await sendUserEmail({
         provider: {
           apiKey: provider.apiKey,
+          provider: provider.provider,
+          domain: provider.domain,
           fromEmail: provider.fromEmail,
           fromName: provider.fromName,
         },

@@ -20,7 +20,15 @@ export const env = createEnv({
     AUTUMN_SECRET_KEY: z.string().min(1).optional(),
 
     ANTHROPIC_API_KEY: z.string().min(1),
-    RESEND_API_KEY: z.string().min(1),
+    AUTH_EMAIL_PROVIDER: z
+      .enum(["resend", "postmark", "mailgun", "sendgrid"])
+      .default("resend"),
+    RESEND_API_KEY: z.string().min(1).optional(),
+    POSTMARK_SERVER_TOKEN: z.string().min(1).optional(),
+    MAILGUN_API_KEY: z.string().min(1).optional(),
+    MAILGUN_DOMAIN: z.string().min(1).optional(),
+    SENDGRID_API_KEY: z.string().min(1).optional(),
+    PLATFORM_EMAIL_FROM: z.string().min(1).default("Dunlo <noreply@dunlo.io>"),
 
     APP_URL: z.url(),
     CRON_SECRET: z.string().min(16),

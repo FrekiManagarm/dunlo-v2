@@ -10,7 +10,7 @@ import { and, desc, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 
 import { authMiddleware } from "@/middleware/auth";
-import { getResendClient } from "@/lib/resend";
+import { sendUserEmail } from "@/lib/email-providers";
 import { ANTHROPIC_MODEL, getAnthropic } from "@/lib/anthropic";
 import { formatAmount, humanizeFailureCode } from "@/lib/template";
 import { wrapEmail } from "@/lib/email-wrapper";
@@ -146,12 +146,14 @@ export const sendEscalationEmail = createServerFn({ method: "POST" })
 
     if (!provider) throw new Error("Configure your email provider first");
 
-    const { decrypt } = await import("@dunlo-v2/db/encrypt");
-    const apiKey = decrypt(provider.apiKey);
-    const resend = getResendClient(apiKey);
-
-    await resend.emails.send({
-      from: `${provider.fromName} <${provider.fromEmail}>`,
+    await sendUserEmail({
+      provider: {
+        provider: provider.provider,
+        apiKey: provider.apiKey,
+        domain: provider.domain,
+        fromEmail: provider.fromEmail,
+        fromName: provider.fromName,
+      },
       to: row.failed_payment.customerEmail,
       subject: row.escalation.draftSubject,
       html: wrapEmail(`<p style="font-size:14px;line-height:1.65;color:#475569;margin:0;">${row.escalation.draftBody.replace(/\n/g, "<br />")}</p>`),
