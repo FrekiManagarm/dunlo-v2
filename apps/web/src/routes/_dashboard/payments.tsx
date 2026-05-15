@@ -4,6 +4,14 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, ChevronRight, CreditCard } from "lucide-react";
 import { z } from "zod";
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@dunlo-v2/ui/components/select";
+
 import { paymentsListQueryOptions } from "@/lib/queries";
 
 const PAGE_SIZE = 50;
@@ -76,12 +84,11 @@ function RouteComponent() {
 
   const currentPage = page ?? 1;
 
-  const handleStatusChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value;
+  const handleStatusChange = (value: string | null) => {
     navigate({
       to: "/payments",
       search: {
-        status: value === "all" ? undefined : (value as StatusFilter),
+        status: !value || value === "all" ? undefined : (value as StatusFilter),
         page: 1,
       },
     });
@@ -99,18 +106,19 @@ function RouteComponent() {
           <p className="text-xs text-zinc-400">All failed payments</p>
         </div>
         <div className="flex items-center gap-3">
-          <select
-            value={status ?? "all"}
-            onChange={handleStatusChange}
-            className="rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-zinc-700 focus:border-dunlo/40 focus:outline-none"
-          >
-            <option value="all">All statuses</option>
-            <option value="in_recovery">In recovery</option>
-            <option value="recovered">Recovered</option>
-            <option value="escalated">Escalated</option>
-            <option value="failed">Failed</option>
-            <option value="dismissed">Dismissed</option>
-          </select>
+          <Select value={status ?? "all"} onValueChange={handleStatusChange}>
+            <SelectTrigger className="rounded-full border border-zinc-200 bg-white px-3 py-1.5 text-[11px] font-semibold text-zinc-700 focus:border-dunlo/40 focus:outline-none">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="all">All statuses</SelectItem>
+              <SelectItem value="in_recovery">In recovery</SelectItem>
+              <SelectItem value="recovered">Recovered</SelectItem>
+              <SelectItem value="escalated">Escalated</SelectItem>
+              <SelectItem value="failed">Failed</SelectItem>
+              <SelectItem value="dismissed">Dismissed</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
       </div>
 
