@@ -5,7 +5,7 @@ import { eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { authMiddleware } from "@/middleware/auth";
-import { getResendClient } from "@/lib/resend";
+import { EMAIL_PROVIDERS, sendUserEmail, type EmailProviderType } from "@/lib/email-providers";
 import { wrapEmail } from "@/lib/email-wrapper";
 
 function maskKey(plain: string): string {
@@ -15,7 +15,9 @@ function maskKey(plain: string): string {
 }
 
 export type EmailProviderState = {
+  provider: EmailProviderType;
   apiKey: string | null;
+  domain: string;
   fromEmail: string;
   fromName: string;
   configured: boolean;
@@ -34,7 +36,14 @@ export const getEmailProvider = createServerFn({ method: "GET" })
       .limit(1);
 
     if (!row) {
-      return { apiKey: null, fromEmail: "", fromName: "", configured: false };
+      return {
+        provider: "postmark",
+        apiKey: null,
+        domain: "",
+        fromEmail: "",
+        fromName: "",
+        configured: false,
+      };
     }
 
     let masked: string | null = null;
@@ -47,7 +56,11 @@ export const getEmailProvider = createServerFn({ method: "GET" })
     }
 
     return {
+      provider: EMAIL_PROVIDERS.includes(row.provider as EmailProviderType)
+        ? (row.provider as EmailProviderType)
+        : "resend",
       apiKey: masked,
+      domain: row.domain ?? "",
       fromEmail: row.fromEmail ?? "",
       fromName: row.fromName ?? "",
       configured: Boolean(masked && row.fromEmail && row.fromName),
@@ -55,9 +68,14 @@ export const getEmailProvider = createServerFn({ method: "GET" })
   });
 
 const saveSchema = z.object({
-  apiKey: z.string().max(200),
+  provider: z.enum(EMAIL_PROVIDERS),
+  apiKey: z.string().max(500),
+  domain: z.string().max(200).optional(),
   fromEmail: z.email("Invalid email"),
   fromName: z.string().min(1).max(100),
+}).refine((value) => value.provider !== "mailgun" || Boolean(value.domain?.trim()), {
+  message: "Mailgun sending domain is required",
+  path: ["domain"],
 });
 
 export const saveEmailProvider = createServerFn({ method: "POST" })
@@ -83,13 +101,16 @@ export const saveEmailProvider = createServerFn({ method: "POST" })
       await db.insert(emailProvider).values({
         id: crypto.randomUUID(),
         userId,
-        provider: "resend",
+        provider: data.provider,
         apiKey: encrypt(trimmedKey),
+        domain: data.domain?.trim() || null,
         fromEmail: data.fromEmail,
         fromName: data.fromName,
       });
     } else {
       const patch: Record<string, unknown> = {
+        provider: data.provider,
+        domain: data.domain?.trim() || null,
         fromEmail: data.fromEmail,
         fromName: data.fromName,
         updatedAt: new Date(),
@@ -121,27 +142,25 @@ export const sendTestEmail = createServerFn({ method: "POST" })
 
     if (!row) throw new Error("Configure your email provider first");
 
-    const { decrypt } = await import("@dunlo-v2/db/encrypt");
-    const apiKey = decrypt(row.apiKey);
-    const resend = getResendClient(apiKey);
-
-    const result = await resend.emails.send({
-      from: `${row.fromName} <${row.fromEmail}>`,
+    await sendUserEmail({
+      provider: {
+        provider: row.provider,
+        apiKey: row.apiKey,
+        domain: row.domain,
+        fromEmail: row.fromEmail,
+        fromName: row.fromName,
+      },
       to: userEmail,
       subject: "Hello from Dunlo — your email setup is working",
       html: wrapEmail(`
         <h1 style="margin:0 0 12px;font-size:20px;color:#0f172a;">Your email setup is working</h1>
         <p style="margin:0 0 24px;font-size:14px;line-height:1.55;color:#475569;">
-          Nice work. Your Resend API key, sending domain, and from name are all wired up correctly.
+          Nice work. Your email provider, sending domain, and from name are all wired up correctly.
           You can now run recovery sequences from this address.
         </p>
         <p style="margin:0;font-size:14px;color:#475569;">— The Dunlo team</p>
       `),
     });
-
-    if ("error" in result && result.error) {
-      throw new Error(result.error.message ?? "Resend failed");
-    }
 
     return { ok: true };
   });

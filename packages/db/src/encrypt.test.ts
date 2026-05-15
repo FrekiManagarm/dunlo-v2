@@ -19,6 +19,7 @@ beforeAll(() => {
     process.env.ANTHROPIC_API_KEY = "sk-ant-test";
   if (!process.env.RESEND_API_KEY) process.env.RESEND_API_KEY = "re_test";
   if (!process.env.APP_URL) process.env.APP_URL = "http://localhost:3000";
+  if (!process.env.CRON_SECRET) process.env.CRON_SECRET = "x".repeat(16);
 });
 
 describe("encrypt / decrypt (AES-256-GCM)", () => {

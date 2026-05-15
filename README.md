@@ -100,6 +100,12 @@ BETTER_AUTH_SECRET=...                 # Random 32+ character secret
 BETTER_AUTH_URL=http://localhost:3001
 CORS_ORIGIN=http://localhost:3001
 
+# Platform email for auth + alerts
+AUTH_EMAIL_PROVIDER=postmark           # postmark | resend | mailgun | sendgrid
+PLATFORM_EMAIL_FROM="Dunlo <noreply@yourdomain.com>"
+POSTMARK_SERVER_TOKEN=...
+# Or use RESEND_API_KEY / MAILGUN_API_KEY + MAILGUN_DOMAIN / SENDGRID_API_KEY
+
 # Stripe
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...

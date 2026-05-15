@@ -13,6 +13,15 @@ import { saveEmailProvider } from "@/functions/email-provider";
 import { getUser } from "@/functions/get-user";
 import { onboardingStateQueryOptions } from "@/lib/queries";
 
+const EMAIL_PROVIDER_OPTIONS = [
+  { value: "postmark", label: "Postmark" },
+  { value: "resend", label: "Resend" },
+  { value: "mailgun", label: "Mailgun" },
+  { value: "sendgrid", label: "SendGrid" },
+] as const;
+
+type EmailProviderValue = (typeof EMAIL_PROVIDER_OPTIONS)[number]["value"];
+
 const searchSchema = z.object({
   step: z.coerce.number().int().min(1).max(3).catch(1),
   error: z.string().optional(),
@@ -87,7 +96,13 @@ function RouteComponent() {
   }, [search.error, search.msg]);
 
   const form = useForm({
-    defaultValues: { apiKey: "", fromEmail: "", fromName: "" },
+    defaultValues: {
+      provider: "postmark" as EmailProviderValue,
+      apiKey: "",
+      domain: "",
+      fromEmail: "",
+      fromName: "",
+    },
     onSubmit: async ({ value }) => {
       try {
         await saveEmailProvider({ data: value });
@@ -99,9 +114,14 @@ function RouteComponent() {
     },
     validators: {
       onSubmit: z.object({
+        provider: z.enum(["resend", "postmark", "mailgun", "sendgrid"]),
         apiKey: z.string().min(1, "Required"),
+        domain: z.string().max(200),
         fromEmail: z.email("Invalid email"),
         fromName: z.string().min(1, "Required"),
+      }).refine((value) => value.provider !== "mailgun" || Boolean(value.domain.trim()), {
+        message: "Mailgun sending domain is required",
+        path: ["domain"],
       }),
     },
   });
@@ -171,8 +191,8 @@ function RouteComponent() {
                 Configure email sending
               </h1>
               <p className="mt-2 text-sm text-gray-500">
-                Recovery emails are sent from your own Resend account so they
-                land in inboxes, not spam.
+                Recovery emails are sent from your own email provider so you
+                control the sending domain and deliverability.
               </p>
 
               <form
@@ -183,6 +203,40 @@ function RouteComponent() {
                 }}
                 className="mt-8 space-y-5"
               >
+                <form.Field name="provider">
+                  {(field) => (
+                    <div className="space-y-1.5">
+                      <Label
+                        htmlFor={field.name}
+                        className="text-sm font-medium text-gray-700"
+                      >
+                        Provider
+                      </Label>
+                      <select
+                        id={field.name}
+                        name={field.name}
+                        value={field.state.value}
+                        onBlur={field.handleBlur}
+                        onChange={(e) =>
+                          field.handleChange(e.target.value as typeof field.state.value)
+                        }
+                        className="h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-900 outline-none transition-colors focus:border-dunlo focus:ring-2 focus:ring-dunlo/20"
+                      >
+                        {EMAIL_PROVIDER_OPTIONS.map((option) => (
+                          <option key={option.value} value={option.value}>
+                            {option.label}
+                          </option>
+                        ))}
+                      </select>
+                      {field.state.meta.errors.map((err) => (
+                        <p key={err?.message} className="text-xs text-red-500">
+                          {err?.message}
+                        </p>
+                      ))}
+                    </div>
+                  )}
+                </form.Field>
+
                 <form.Field name="apiKey">
                   {(field) => (
                     <div className="space-y-1.5">
@@ -190,14 +244,14 @@ function RouteComponent() {
                         htmlFor={field.name}
                         className="text-sm font-medium text-gray-700"
                       >
-                        Resend API key
+                        API key
                       </Label>
                       <Input
                         id={field.name}
                         name={field.name}
                         type="password"
                         autoComplete="off"
-                        placeholder="re_..."
+                        placeholder="Paste provider API key"
                         value={field.state.value}
                         onBlur={field.handleBlur}
                         onChange={(e) => field.handleChange(e.target.value)}
@@ -211,6 +265,39 @@ function RouteComponent() {
                     </div>
                   )}
                 </form.Field>
+
+                <form.Subscribe selector={(s) => s.values.provider}>
+                  {(provider) =>
+                    provider === "mailgun" ? (
+                      <form.Field name="domain">
+                        {(field) => (
+                          <div className="space-y-1.5">
+                            <Label
+                              htmlFor={field.name}
+                              className="text-sm font-medium text-gray-700"
+                            >
+                              Mailgun domain
+                            </Label>
+                            <Input
+                              id={field.name}
+                              name={field.name}
+                              placeholder="mg.yourdomain.com"
+                              value={field.state.value}
+                              onBlur={field.handleBlur}
+                              onChange={(e) => field.handleChange(e.target.value)}
+                              className="h-11 rounded-xl border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:border-dunlo focus:ring-dunlo/20"
+                            />
+                            {field.state.meta.errors.map((err) => (
+                              <p key={err?.message} className="text-xs text-red-500">
+                                {err?.message}
+                              </p>
+                            ))}
+                          </div>
+                        )}
+                      </form.Field>
+                    ) : null
+                  }
+                </form.Subscribe>
 
                 <form.Field name="fromEmail">
                   {(field) => (

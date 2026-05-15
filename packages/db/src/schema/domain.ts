@@ -73,6 +73,7 @@ export const emailProvider = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     provider: text("provider").default("resend").notNull(),
     apiKey: text("api_key").notNull(),
+    domain: text("domain"),
     fromEmail: text("from_email").notNull(),
     fromName: text("from_name").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),

@@ -136,6 +136,9 @@ DATABASE_URL=postgresql://...          # Neon connection string
 BETTER_AUTH_SECRET=...                 # Random 32+ char secret
 BETTER_AUTH_URL=http://localhost:3000  # App origin
 CORS_ORIGIN=http://localhost:3000
+AUTH_EMAIL_PROVIDER=postmark           # postmark | resend | mailgun | sendgrid
+PLATFORM_EMAIL_FROM="Dunlo <noreply@yourdomain.com>"
+POSTMARK_SERVER_TOKEN=...              # Or RESEND_API_KEY / MAILGUN_* / SENDGRID_API_KEY
 NODE_ENV=development
 ```
 

@@ -56,12 +56,23 @@ import {
 
 type Tab = "account" | "billing" | "email" | "escalation" | "testing";
 
+const EMAIL_PROVIDER_OPTIONS = [
+  { value: "postmark", label: "Postmark" },
+  { value: "resend", label: "Resend" },
+  { value: "mailgun", label: "Mailgun" },
+  { value: "sendgrid", label: "SendGrid" },
+] as const;
+
+const IS_DEVELOPMENT = import.meta.env.MODE === "development";
+
 const TABS = [
   { id: "account" as const, label: "Account", icon: UserIcon },
   { id: "billing" as const, label: "Billing", icon: CreditCard },
   { id: "email" as const, label: "Email provider", icon: Mail },
   { id: "escalation" as const, label: "Escalation", icon: AlertCircle },
-  { id: "testing" as const, label: "Testing", icon: FlaskConical },
+  ...(IS_DEVELOPMENT
+    ? [{ id: "testing" as const, label: "Testing", icon: FlaskConical }]
+    : []),
 ];
 
 export const Route = createFileRoute("/_dashboard/settings")({
@@ -156,7 +167,7 @@ function RouteComponent() {
               {tab === "escalation" && (
                 <EscalationTab initial={escalationState} />
               )}
-              {tab === "testing" && <TestingTab />}
+              {IS_DEVELOPMENT && tab === "testing" && <TestingTab />}
             </motion.div>
           </AnimatePresence>
         </div>
@@ -265,7 +276,9 @@ function EmailTab({
 
   const form = useForm({
     defaultValues: {
+      provider: initial.provider,
       apiKey: "",
+      domain: initial.domain,
       fromEmail: initial.fromEmail,
       fromName: initial.fromName,
     },
@@ -280,9 +293,14 @@ function EmailTab({
     },
     validators: {
       onSubmit: z.object({
-        apiKey: z.string().max(200),
+        provider: z.enum(["resend", "postmark", "mailgun", "sendgrid"]),
+        apiKey: z.string().max(500),
+        domain: z.string().max(200),
         fromEmail: z.email("Invalid email"),
         fromName: z.string().min(1, "Required").max(100),
+      }).refine((value) => value.provider !== "mailgun" || Boolean(value.domain.trim()), {
+        message: "Mailgun sending domain is required",
+        path: ["domain"],
       }),
     },
   });
@@ -304,7 +322,7 @@ function EmailTab({
       <div className="flex items-center justify-between px-6 py-5 border-b border-zinc-50">
         <div>
           <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
-            Resend integration
+            Provider integration
           </p>
           <p className="mt-1 text-sm font-semibold tracking-tight text-zinc-900">
             Email provider
@@ -335,12 +353,41 @@ function EmailTab({
         }}
         className="px-6 py-5 space-y-5"
       >
+        <form.Field name="provider">
+          {(field) => (
+            <div className="space-y-1.5">
+              <Label className="text-xs font-medium text-zinc-500">
+                Provider
+              </Label>
+              <select
+                value={field.state.value}
+                onBlur={field.handleBlur}
+                onChange={(e) =>
+                  field.handleChange(e.target.value as typeof field.state.value)
+                }
+                className="h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-900 outline-none transition-colors focus:border-dunlo/40 focus:bg-white focus:ring-2 focus:ring-dunlo/10"
+              >
+                {EMAIL_PROVIDER_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+              {field.state.meta.errors.map((err) => (
+                <p key={err?.message} className="text-xs text-red-500">
+                  {err?.message}
+                </p>
+              ))}
+            </div>
+          )}
+        </form.Field>
+
         <form.Field name="apiKey">
           {(field) => (
             <div className="space-y-1.5">
               <div className="flex items-center justify-between">
                 <Label className="text-xs font-medium text-zinc-500">
-                  Resend API key
+                  API key
                 </Label>
                 {initial.apiKey && (
                   <span className="text-[10px] text-dunlo-dim font-medium">
@@ -351,7 +398,7 @@ function EmailTab({
               <Input
                 type="password"
                 autoComplete="off"
-                placeholder={initial.apiKey ? "••••••••••••••••" : "re_..."}
+                placeholder={initial.apiKey ? "••••••••••••••••" : "Paste provider API key"}
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
@@ -360,7 +407,7 @@ function EmailTab({
               <p className="text-[11px] text-zinc-400">
                 {initial.apiKey
                   ? "Leave blank to keep the existing key."
-                  : "Generate a key at resend.com/api-keys with send permissions."}
+                  : "Use a sending-capable API key from your selected provider."}
               </p>
               {field.state.meta.errors.map((err) => (
                 <p key={err?.message} className="text-xs text-red-500">
@@ -370,6 +417,34 @@ function EmailTab({
             </div>
           )}
         </form.Field>
+
+        <form.Subscribe selector={(s) => s.values.provider}>
+          {(provider) =>
+            provider === "mailgun" ? (
+              <form.Field name="domain">
+                {(field) => (
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium text-zinc-500">
+                      Mailgun domain
+                    </Label>
+                    <Input
+                      placeholder="mg.yourdomain.com"
+                      value={field.state.value}
+                      onBlur={field.handleBlur}
+                      onChange={(e) => field.handleChange(e.target.value)}
+                      className="h-10 rounded-xl border-zinc-200 bg-zinc-50 text-sm placeholder:text-zinc-300 focus:border-dunlo/40 focus:bg-white focus:ring-dunlo/10"
+                    />
+                    {field.state.meta.errors.map((err) => (
+                      <p key={err?.message} className="text-xs text-red-500">
+                        {err?.message}
+                      </p>
+                    ))}
+                  </div>
+                )}
+              </form.Field>
+            ) : null
+          }
+        </form.Subscribe>
 
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-[1fr_1fr]">
           <form.Field name="fromEmail">

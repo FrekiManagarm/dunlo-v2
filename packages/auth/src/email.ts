@@ -1,9 +1,5 @@
 import { env } from "@dunlo-v2/env/server";
-import { Resend } from "resend";
 
-const resend = new Resend(env.RESEND_API_KEY);
-
-const FROM = "Dunlo <noreply@dunlo.io>";
 const ACCENT = "#00e87b";
 
 const LOGO_SVG = `<svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:inline-block;vertical-align:middle;">
@@ -21,15 +17,121 @@ export async function sendAuthEmail({
   subject: string;
   html: string;
 }) {
-  const { error } = await resend.emails.send({
-    from: FROM,
-    to,
-    subject,
-    html,
-  });
-  if (error) {
-    console.error("[auth-email] resend error", error);
-    throw new Error(error.message ?? "Failed to send auth email");
+  await sendPlatformEmail({ to, subject, html });
+}
+
+async function parseJson(response: Response): Promise<Record<string, unknown>> {
+  try {
+    return (await response.json()) as Record<string, unknown>;
+  } catch {
+    return {};
+  }
+}
+
+async function assertOk(response: Response, fallback: string): Promise<Record<string, unknown>> {
+  const body = await parseJson(response);
+  if (!response.ok) {
+    const message =
+      typeof body.message === "string"
+        ? body.message
+        : typeof body.error === "string"
+          ? body.error
+          : fallback;
+    throw new Error(message);
+  }
+  return body;
+}
+
+async function sendPlatformEmail(args: {
+  to: string;
+  subject: string;
+  html: string;
+}) {
+  const from = env.PLATFORM_EMAIL_FROM;
+
+  try {
+    switch (env.AUTH_EMAIL_PROVIDER) {
+      case "postmark": {
+        if (!env.POSTMARK_SERVER_TOKEN) throw new Error("POSTMARK_SERVER_TOKEN is required");
+        const response = await fetch("https://api.postmarkapp.com/email", {
+          method: "POST",
+          headers: {
+            "X-Postmark-Server-Token": env.POSTMARK_SERVER_TOKEN,
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({
+            From: from,
+            To: args.to,
+            Subject: args.subject,
+            HtmlBody: args.html,
+            MessageStream: "outbound",
+          }),
+        });
+        await assertOk(response, "Postmark auth email failed");
+        return;
+      }
+      case "mailgun": {
+        if (!env.MAILGUN_API_KEY) throw new Error("MAILGUN_API_KEY is required");
+        if (!env.MAILGUN_DOMAIN) throw new Error("MAILGUN_DOMAIN is required");
+        const form = new FormData();
+        form.set("from", from);
+        form.set("to", args.to);
+        form.set("subject", args.subject);
+        form.set("html", args.html);
+        const response = await fetch(`https://api.mailgun.net/v3/${env.MAILGUN_DOMAIN}/messages`, {
+          method: "POST",
+          headers: {
+            Authorization: `Basic ${btoa(`api:${env.MAILGUN_API_KEY}`)}`,
+          },
+          body: form,
+        });
+        await assertOk(response, "Mailgun auth email failed");
+        return;
+      }
+      case "sendgrid": {
+        if (!env.SENDGRID_API_KEY) throw new Error("SENDGRID_API_KEY is required");
+        const match = from.match(/^(.*)<([^>]+)>$/);
+        const email = match?.[2]?.trim() ?? from;
+        const name = match?.[1]?.trim() || "Dunlo";
+        const response = await fetch("https://api.sendgrid.com/v3/mail/send", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${env.SENDGRID_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            personalizations: [{ to: [{ email: args.to }] }],
+            from: { email, name },
+            subject: args.subject,
+            content: [{ type: "text/html", value: args.html }],
+          }),
+        });
+        if (!response.ok) throw new Error("SendGrid auth email failed");
+        return;
+      }
+      case "resend":
+      default: {
+        if (!env.RESEND_API_KEY) throw new Error("RESEND_API_KEY is required");
+        const response = await fetch("https://api.resend.com/emails", {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${env.RESEND_API_KEY}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            from,
+            to: args.to,
+            subject: args.subject,
+            html: args.html,
+          }),
+        });
+        await assertOk(response, "Resend auth email failed");
+      }
+    }
+  } catch (error) {
+    console.error("[auth-email] delivery failed", error);
+    throw error;
   }
 }
 

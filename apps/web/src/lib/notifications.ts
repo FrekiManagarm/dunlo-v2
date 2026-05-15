@@ -38,14 +38,14 @@ export function buildAlertMessage(
 }
 
 export async function sendAlertNotification(payload: AlertPayload): Promise<void> {
-  const [{ db }, { notificationSettings }, { user }, { eq }, { env }, { Resend }] =
+  const [{ db }, { notificationSettings }, { user }, { eq }, { env }, { sendAuthEmail }] =
     await Promise.all([
       import("@dunlo-v2/db"),
       import("@dunlo-v2/db/schema/domain"),
       import("@dunlo-v2/db/schema/auth"),
       import("drizzle-orm"),
       import("@dunlo-v2/env/server"),
-      import("resend"),
+      import("@dunlo-v2/auth/email"),
     ]);
 
   const [settings] = await db
@@ -95,9 +95,7 @@ export async function sendAlertNotification(payload: AlertPayload): Promise<void
 
     if (ownerRow?.email) {
       try {
-        const resend = new Resend(env.RESEND_API_KEY);
-        await resend.emails.send({
-          from: "Dunlo Alerts <alerts@dunlo.co>",
+        await sendAuthEmail({
           to: ownerRow.email,
           subject,
           html: `<p>${message}</p><p style="margin-top:16px"><a href="${env.APP_URL}/dashboard">View dashboard →</a></p>`,
