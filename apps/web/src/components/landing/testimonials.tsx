@@ -3,7 +3,7 @@ import { FadeIn } from "./shared";
 
 const TESTIMONIALS = [
   {
-    name: "Raphaël Bernstein",
+    name: "Raphael Bernstein",
     role: "CTO, Meridian Analytics",
     avatar: "RB",
     text: "We were losing roughly €8k/month to failed cards. Within two weeks of activating Dunlo, we recovered over €6,200. The founder escalation feature alone paid for the tool ten times over.",

@@ -1,13 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { CtaBanner } from "@/components/landing/cta-banner";
-import { Faq } from "@/components/landing/faq";
-import { Features } from "@/components/landing/features";
-import { Footer } from "@/components/landing/footer";
-import { Hero } from "@/components/landing/hero";
-import { HowItWorks } from "@/components/landing/how-it-works";
-import { Nav } from "@/components/landing/nav";
-import { Pricing } from "@/components/landing/pricing";
-import { StatsBanner } from "@/components/landing/stats-banner";
+import { LandingExperience } from "@/components/landing/landing-experience";
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_TITLE,
@@ -105,19 +97,5 @@ export const Route = createFileRoute("/")({
 });
 
 function LandingPage() {
-  return (
-    <div className="min-h-dvh bg-[#e9eaeb] font-sans">
-      <Nav />
-      <Hero />
-      <div className="mx-auto max-w-6xl space-y-3 px-3 pb-6 md:space-y-4 md:px-4">
-        <StatsBanner />
-        <Features />
-        <HowItWorks />
-        <Pricing />
-        <Faq />
-        <CtaBanner />
-      </div>
-      <Footer />
-    </div>
-  );
+  return <LandingExperience />;
 }
