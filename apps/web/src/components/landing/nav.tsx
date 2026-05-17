@@ -15,7 +15,6 @@ export function Nav() {
 
         <nav className="hidden items-center gap-1 md:flex">
           {[
-            { label: "Product", href: "#product" },
             { label: "Features", href: "#features" },
             { label: "Pricing", href: "#pricing" },
             { label: "FAQ", href: "#faq" },

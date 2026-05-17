@@ -2,18 +2,16 @@ import { Link, createFileRoute } from "@tanstack/react-router";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
-  BellRing,
   Check,
-  CreditCard,
   FileText,
   Gauge,
   MailCheck,
-  ShieldCheck,
   Sparkles,
 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
+import { StatsBanner } from "@/components/landing/stats-banner";
 import { LogoMark } from "@/components/logo";
 import {
   DEFAULT_DESCRIPTION,
@@ -24,59 +22,24 @@ import {
   ogMeta,
 } from "@/lib/seo";
 
-const RECOVERY_STEPS = [
-  {
-    label: "Read the code",
-    title: "Dunlo starts with the Stripe failure reason.",
-    body: "Expired card, insufficient funds, bank decline, and do-not-honor should not receive the same message.",
-    icon: CreditCard,
-  },
-  {
-    label: "Send the right nudge",
-    title: "Each customer gets a short recovery email.",
-    body: "The message matches the failure, links to payment update, and lands while the intent is still warm.",
-    icon: MailCheck,
-  },
-  {
-    label: "Escalate carefully",
-    title: "High-value accounts get a founder draft.",
-    body: "When the payment matters, automation pauses and Dunlo drafts the personal follow-up for you.",
-    icon: BellRing,
-  },
-] as const;
-
 const FEATURE_ITEMS = [
   {
-    label: "Failure routing",
-    word: "Route",
-    title: "Map the Stripe code before writing.",
-    body: "Expired cards, bank declines, insufficient funds, and do-not-honor events stop sharing the same generic path.",
-    signal: "expired_card -> update link",
+    label: "Detect",
+    title: "Reads the Stripe failure code",
+    body: "Expired card, insufficient funds, bank decline, or do-not-honor.",
     icon: MailCheck,
   },
   {
-    label: "Recovery sequences",
-    word: "Nudge",
-    title: "Send the right message at the right moment.",
-    body: "Each failure type gets its own timing, copy, and CTA, so the customer gets a clear next step.",
-    signal: "3-step sequence",
+    label: "Recover",
+    title: "Sends the matching message",
+    body: "A payment update link, retry timing, or softer customer nudge.",
     icon: Gauge,
   },
   {
-    label: "Founder escalation",
-    word: "Pause",
-    title: "Stop automation when the account matters.",
-    body: "For high-value failures, Dunlo prepares a personal draft and lets you decide what goes out.",
-    signal: "draft ready",
+    label: "Escalate",
+    title: "Drafts the human follow-up",
+    body: "High-value failures pause before they feel automated.",
     icon: FileText,
-  },
-  {
-    label: "Ownership",
-    word: "Own",
-    title: "Keep the relationship and the economics clean.",
-    body: "Send from your provider, keep Stripe as the source of truth, and avoid recovered-revenue fees.",
-    signal: "your domain",
-    icon: ShieldCheck,
   },
 ] as const;
 
@@ -157,6 +120,9 @@ const FAQS = [
   },
 ] as const;
 
+const SECTION_SURFACE =
+  "mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-gray-200 bg-white/75 p-6 shadow-[0_30px_70px_-48px_rgba(28,25,23,0.5)] backdrop-blur-md md:p-8 lg:p-10";
+
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
@@ -220,10 +186,12 @@ function LandingPage() {
   return (
     <div className="min-h-[100dvh] overflow-hidden bg-stone-100 font-sans text-gray-950">
       <Nav />
-      <main>
-        <section className="relative min-h-[100dvh] px-4 pt-28 pb-10 md:px-6 md:pt-32">
+      <main className="space-y-4 px-3 pb-4 pt-24 md:space-y-5 md:px-4 md:pb-6 md:pt-28">
+        <section className="relative -mx-3 px-3 md:-mx-4 md:px-4">
           <OrganicBackdrop />
-          <div className="relative mx-auto grid max-w-6xl gap-14 md:grid-cols-[0.92fr_1.08fr] md:items-center">
+          <div
+            className="relative mx-auto grid min-h-[calc(100dvh-8rem)] max-w-6xl gap-14 py-6 md:grid-cols-[0.92fr_1.08fr] md:items-center md:py-8"
+          >
             <div className="max-w-xl">
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
@@ -285,7 +253,7 @@ function LandingPage() {
                   href="#product"
                   className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white/60 px-5 py-3 text-sm font-semibold text-gray-800 transition-all hover:border-gray-400 hover:bg-white active:scale-[0.98]"
                 >
-                  View the recovery path
+                  View the recovery stats
                 </a>
               </motion.div>
             </div>
@@ -305,120 +273,86 @@ function LandingPage() {
           </div>
         </section>
 
-        <section id="product" className="px-4 py-10 md:px-6 md:py-16">
-          <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.75fr_1.25fr]">
-            <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-                Recovery path
-              </p>
-              <h2 className="mt-4 max-w-sm text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
-                One calm system for the messy part of SaaS billing.
-              </h2>
-            </div>
-
-            <div className="space-y-5">
-              {RECOVERY_STEPS.map((step, index) => {
-                const Icon = step.icon;
-                return (
-                  <motion.article
-                    key={step.label}
-                    initial={{ opacity: 0, y: 18 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true, margin: "-80px" }}
-                    transition={{
-                      duration: 0.5,
-                      delay: index * 0.08,
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    className="grid gap-5 border-t border-gray-300/70 py-6 md:grid-cols-[120px_1fr]"
-                  >
-                    <div className="flex items-center gap-3 md:block">
-                      <span className="flex size-11 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-950 shadow-sm">
-                        <Icon size={18} strokeWidth={1.8} />
-                      </span>
-                      <p className="mt-0 font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-400 md:mt-4">
-                        0{index + 1}
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-dunlo-deep">
-                        {step.label}
-                      </p>
-                      <h3 className="mt-2 text-2xl font-semibold tracking-tight text-gray-950">
-                        {step.title}
-                      </h3>
-                      <p className="mt-3 max-w-xl text-sm leading-6 text-gray-600">
-                        {step.body}
-                      </p>
-                    </div>
-                  </motion.article>
-                );
-              })}
-            </div>
+        <section id="product" className="scroll-mt-24">
+          <div className="mx-auto max-w-6xl">
+            <StatsBanner />
           </div>
         </section>
 
-        <section id="features" className="px-4 py-10 md:px-6 md:py-16">
-          <div className="mx-auto max-w-6xl">
-            <div className="border-y border-gray-300/70 py-10 md:py-14">
-              <div className="grid gap-10 md:grid-cols-[0.72fr_1.28fr]">
-                <div>
-                  <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-                    Features
-                  </p>
-                  <h2 className="mt-4 max-w-sm text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
-                    Four useful controls. Nothing ornamental.
-                  </h2>
-                  <p className="mt-5 max-w-sm text-sm leading-6 text-gray-600">
-                    Dunlo stays narrow on purpose: understand the failure, move
-                    the customer, surface the account, keep ownership clear.
-                  </p>
+        <section id="features" className="scroll-mt-24">
+          <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-gray-900 bg-gray-950 p-6 text-white shadow-[0_30px_70px_-48px_rgba(3,7,18,0.8)] md:p-8 lg:p-10">
+            <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
+              <div>
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo">
+                  Features
+                </p>
+                <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-[0.95] tracking-tight md:text-5xl">
+                  From failed payment to the right recovery move.
+                </h2>
+                <p className="mt-5 max-w-md text-base leading-7 text-white/60">
+                  Dunlo reads the reason Stripe gives you, chooses the next
+                  action, and keeps the customer message precise.
+                </p>
+              </div>
+
+              <div>
+                <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
+                  <div className="rounded-full border border-white/10 bg-white/8 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+                    <p className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-white/35">
+                      Stripe reason
+                    </p>
+                    <p className="mt-1 font-mono text-sm font-semibold text-white">
+                      insufficient_funds
+                    </p>
+                  </div>
+                  <ArrowRight
+                    size={18}
+                    strokeWidth={1.8}
+                    className="hidden text-dunlo sm:block"
+                  />
+                  <div className="rounded-full bg-dunlo px-4 py-3">
+                    <p className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-white/70">
+                      Dunlo action
+                    </p>
+                    <p className="mt-1 text-sm font-semibold text-white">
+                      Timed recovery email
+                    </p>
+                  </div>
                 </div>
 
-                <div className="divide-y divide-gray-300/70">
+                <div className="mt-8 divide-y divide-white/10 border-y border-white/10">
                   {FEATURE_ITEMS.map((feature, index) => {
                     const Icon = feature.icon;
                     return (
-                      <motion.article
+                      <motion.div
                         key={feature.label}
-                        initial={{ opacity: 0, y: 14 }}
+                        initial={{ opacity: 0, y: 12 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-70px" }}
                         transition={{
-                          duration: 0.42,
-                          delay: index * 0.04,
+                          duration: 0.38,
+                          delay: index * 0.05,
                           ease: [0.16, 1, 0.3, 1],
                         }}
-                        className="grid gap-5 py-7 md:grid-cols-[0.38fr_1fr]"
+                        className="grid gap-4 py-5 sm:grid-cols-[132px_1fr]"
                       >
-                        <div>
-                          <div className="flex items-center gap-3">
-                            <span className="flex size-9 items-center justify-center rounded-full border border-gray-200 bg-white text-gray-950">
-                              <Icon size={16} strokeWidth={1.8} />
-                            </span>
-                            <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
-                              {feature.label}
-                            </p>
-                          </div>
-                          <p className="mt-5 text-3xl font-semibold tracking-tight text-gray-950 md:text-4xl">
-                            {feature.word}
+                        <div className="flex items-center gap-3">
+                          <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/8 text-white">
+                            <Icon size={17} strokeWidth={1.8} />
+                          </span>
+                          <p className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-white/40">
+                            {feature.label}
                           </p>
                         </div>
-
-                        <div className="md:pt-1">
-                          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                            <h3 className="max-w-md text-xl font-semibold tracking-tight text-gray-950">
-                              {feature.title}
-                            </h3>
-                            <span className="w-fit rounded-full border border-dunlo/20 bg-dunlo/8 px-3 py-1 font-mono text-[11px] font-semibold text-dunlo-deep">
-                              {feature.signal}
-                            </span>
-                          </div>
-                          <p className="mt-3 max-w-xl text-sm leading-6 text-gray-600">
+                        <div>
+                          <h4 className="text-lg font-semibold tracking-tight text-white">
+                            {feature.title}
+                          </h4>
+                          <p className="mt-1 max-w-lg text-sm leading-6 text-white/55">
                             {feature.body}
                           </p>
                         </div>
-                      </motion.article>
+                      </motion.div>
                     );
                   })}
                 </div>
@@ -427,8 +361,8 @@ function LandingPage() {
           </div>
         </section>
 
-        <section id="pricing" className="px-4 py-10 md:px-6 md:py-16">
-          <div className="mx-auto max-w-6xl rounded-[2rem] border border-gray-200 bg-white/75 p-5 shadow-[0_30px_70px_-45px_rgba(28,25,23,0.45)] backdrop-blur-md md:p-8">
+        <section id="pricing" className="scroll-mt-24">
+          <div className={SECTION_SURFACE}>
             <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
               <div>
                 <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
@@ -647,8 +581,8 @@ function LandingPage() {
           </div>
         </section>
 
-        <section id="faq" className="px-4 py-10 md:px-6 md:py-16">
-          <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[0.7fr_1.3fr]">
+        <section id="faq" className="scroll-mt-24">
+          <div className={`${SECTION_SURFACE} grid gap-10 md:grid-cols-[0.7fr_1.3fr]`}>
             <h2 className="text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
               A few clean answers.
             </h2>
@@ -667,8 +601,8 @@ function LandingPage() {
           </div>
         </section>
 
-        <section className="px-4 pt-10 pb-16 md:px-6 md:pt-16">
-          <div className="mx-auto flex max-w-6xl flex-col gap-8 rounded-[2rem] bg-gray-950 p-6 text-white md:flex-row md:items-end md:justify-between md:p-10">
+        <section>
+          <div className="mx-auto flex max-w-6xl flex-col gap-8 rounded-[2rem] border border-gray-900 bg-gray-950 p-6 text-white shadow-[0_30px_70px_-48px_rgba(3,7,18,0.8)] md:flex-row md:items-end md:justify-between md:p-8 lg:p-10">
             <div>
               <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo">
                 Beta access
