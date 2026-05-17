@@ -2,7 +2,7 @@ export const SITE_URL = "https://dunlo.io";
 export const SITE_NAME = "Dunlo";
 export const DEFAULT_TITLE = "Dunlo - Stripe Payment Recovery for SaaS";
 export const DEFAULT_DESCRIPTION =
-  "Recover failed Stripe payments automatically with dunning emails, smart recovery sequences, and revenue tracking built for SaaS teams.";
+  "Recover failed Stripe payments with failure-code precision, AI-drafted founder escalation, and revenue tracking built for Stripe-first SaaS teams.";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/brand/dunlo-logo.png`;
 
 export function absoluteUrl(path = "/") {

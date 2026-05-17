@@ -14,21 +14,20 @@ export function Nav() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {["Features", "Pricing", "FAQ"].map((label) => (
+          {[
+            { label: "Product", href: "#product" },
+            { label: "Features", href: "#features" },
+            { label: "Pricing", href: "#pricing" },
+            { label: "FAQ", href: "#faq" },
+          ].map((link) => (
             <a
-              key={label}
-              href={`#${label.toLowerCase()}`}
+              key={link.label}
+              href={link.href}
               className="rounded-full px-3.5 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
             >
-              {label}
+              {link.label}
             </a>
           ))}
-          <Link
-            to="/benchmark"
-            className="rounded-full px-3.5 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-          >
-            Benchmark
-          </Link>
           <Link
             to="/blog"
             className="rounded-full px-3.5 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
@@ -49,7 +48,7 @@ export function Nav() {
             className="flex items-center gap-1.5 rounded-full bg-gray-900 px-4 py-1.5 text-sm font-semibold text-white transition-all hover:bg-gray-700 active:scale-[0.97]"
             onClick={() => posthog.capture("cta_clicked", { location: "nav" })}
           >
-            See benchmark
+            Start free
             <ChevronRight size={14} />
           </Link>
         </div>

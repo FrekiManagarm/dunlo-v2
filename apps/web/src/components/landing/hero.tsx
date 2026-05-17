@@ -156,7 +156,7 @@ function DashboardMockup() {
     },
     {
       abbr: "HS",
-      color: "bg-emerald-100 text-emerald-800",
+      color: "bg-dunlo/15 text-dunlo-deep",
       name: "Helix Software",
       amount: "$1.200",
       detail: "Card expired",
@@ -367,16 +367,17 @@ export function Hero() {
             </div>
 
             <h1 className="anim-2 text-5xl font-bold leading-[1.04] tracking-tight text-gray-900 lg:text-6xl xl:text-[68px]">
-              Stop losing
+              Failed payments
               <br />
-              revenue to
+              need more than
               <br />
-              failed payments.
+              one recovery email.
             </h1>
 
             <p className="anim-3 mt-6 max-w-sm text-lg leading-relaxed text-gray-500">
-              Connect Stripe. See how your failed payment rate compares to
-              similar SaaS. Fix what's costing you the most.
+              Dunlo reads the Stripe failure code first, then sends the right
+              message for expired cards, insufficient funds, bank declines, and
+              high-value accounts that need your personal touch.
             </p>
 
             <div className="anim-4 mt-8">

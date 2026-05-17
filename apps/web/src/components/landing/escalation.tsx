@@ -115,13 +115,13 @@ export function Escalation() {
           <div>
             <SectionPill>Escalate</SectionPill>
             <h2 className="mt-6 max-w-3xl text-4xl font-bold leading-[0.98] tracking-tight text-gray-900 md:text-6xl">
-              Your most valuable customers deserve a personal touch. Dunlo
-              drafts it for you.
+              Automated recovery for the small ones. Your personal touch,
+              drafted by AI, for the ones that matter.
             </h2>
             <p className="mt-6 max-w-xl text-base leading-8 text-gray-500">
-              Set a threshold. When a failed payment crosses it, Dunlo writes
-              the recovery email, personalized from you and ready to send. You
-              review, send, or regenerate in one click.
+              Set a threshold. When a failed payment crosses it, Dunlo stops
+              the automation and drafts a founder email from you instead.
+              Review, regenerate, dismiss, or send in one click.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
