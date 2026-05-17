@@ -9,14 +9,18 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as StateOfStripePayments2026RouteImport } from './routes/state-of-stripe-payments-2026'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as BlogRouteImport } from './routes/blog'
+import { Route as BenchmarkRouteImport } from './routes/benchmark'
 import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
+import { Route as DashboardBenchmarkRouteImport } from './routes/dashboard.benchmark'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AlternativesTrigglaRouteImport } from './routes/alternatives/triggla'
 import { Route as AlternativesStripeSmartRetriesRouteImport } from './routes/alternatives/stripe-smart-retries'
 import { Route as AlternativesPaddleRetainRouteImport } from './routes/alternatives/paddle-retain'
 import { Route as AlternativesChurnBusterRouteImport } from './routes/alternatives/churn-buster'
@@ -35,6 +39,12 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as DashboardPaymentsIdRouteImport } from './routes/_dashboard/payments_.$id'
 import { Route as ApiStripeWebhookAccountIdRouteImport } from './routes/api/stripe/webhook.$accountId'
 
+const StateOfStripePayments2026Route =
+  StateOfStripePayments2026RouteImport.update({
+    id: '/state-of-stripe-payments-2026',
+    path: '/state-of-stripe-payments-2026',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
@@ -55,6 +65,11 @@ const BlogRoute = BlogRouteImport.update({
   path: '/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
+const BenchmarkRoute = BenchmarkRouteImport.update({
+  id: '/benchmark',
+  path: '/benchmark',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const DashboardRoute = DashboardRouteImport.update({
   id: '/_dashboard',
   getParentRoute: () => rootRouteImport,
@@ -69,10 +84,20 @@ const BlogIndexRoute = BlogIndexRouteImport.update({
   path: '/',
   getParentRoute: () => BlogRoute,
 } as any)
+const DashboardBenchmarkRoute = DashboardBenchmarkRouteImport.update({
+  id: '/dashboard/benchmark',
+  path: '/dashboard/benchmark',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => BlogRoute,
+} as any)
+const AlternativesTrigglaRoute = AlternativesTrigglaRouteImport.update({
+  id: '/alternatives/triggla',
+  path: '/alternatives/triggla',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AlternativesStripeSmartRetriesRoute =
   AlternativesStripeSmartRetriesRouteImport.update({
@@ -165,10 +190,12 @@ const ApiStripeWebhookAccountIdRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/benchmark': typeof BenchmarkRoute
   '/blog': typeof BlogRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/state-of-stripe-payments-2026': typeof StateOfStripePayments2026Route
   '/alerts': typeof DashboardAlertsRoute
   '/dashboard': typeof DashboardDashboardRoute
   '/escalations': typeof DashboardEscalationsRoute
@@ -178,7 +205,9 @@ export interface FileRoutesByFullPath {
   '/alternatives/churn-buster': typeof AlternativesChurnBusterRoute
   '/alternatives/paddle-retain': typeof AlternativesPaddleRetainRoute
   '/alternatives/stripe-smart-retries': typeof AlternativesStripeSmartRetriesRoute
+  '/alternatives/triggla': typeof AlternativesTrigglaRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/dashboard/benchmark': typeof DashboardBenchmarkRoute
   '/blog/': typeof BlogIndexRoute
   '/payments/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -191,9 +220,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/benchmark': typeof BenchmarkRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/state-of-stripe-payments-2026': typeof StateOfStripePayments2026Route
   '/alerts': typeof DashboardAlertsRoute
   '/dashboard': typeof DashboardDashboardRoute
   '/escalations': typeof DashboardEscalationsRoute
@@ -203,7 +234,9 @@ export interface FileRoutesByTo {
   '/alternatives/churn-buster': typeof AlternativesChurnBusterRoute
   '/alternatives/paddle-retain': typeof AlternativesPaddleRetainRoute
   '/alternatives/stripe-smart-retries': typeof AlternativesStripeSmartRetriesRoute
+  '/alternatives/triggla': typeof AlternativesTrigglaRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/dashboard/benchmark': typeof DashboardBenchmarkRoute
   '/blog': typeof BlogIndexRoute
   '/payments/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -218,10 +251,12 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_dashboard': typeof DashboardRouteWithChildren
+  '/benchmark': typeof BenchmarkRoute
   '/blog': typeof BlogRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
   '/reset-password': typeof ResetPasswordRoute
+  '/state-of-stripe-payments-2026': typeof StateOfStripePayments2026Route
   '/_dashboard/alerts': typeof DashboardAlertsRoute
   '/_dashboard/dashboard': typeof DashboardDashboardRoute
   '/_dashboard/escalations': typeof DashboardEscalationsRoute
@@ -231,7 +266,9 @@ export interface FileRoutesById {
   '/alternatives/churn-buster': typeof AlternativesChurnBusterRoute
   '/alternatives/paddle-retain': typeof AlternativesPaddleRetainRoute
   '/alternatives/stripe-smart-retries': typeof AlternativesStripeSmartRetriesRoute
+  '/alternatives/triggla': typeof AlternativesTrigglaRoute
   '/blog/$slug': typeof BlogSlugRoute
+  '/dashboard/benchmark': typeof DashboardBenchmarkRoute
   '/blog/': typeof BlogIndexRoute
   '/_dashboard/payments_/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -246,10 +283,12 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/benchmark'
     | '/blog'
     | '/login'
     | '/onboarding'
     | '/reset-password'
+    | '/state-of-stripe-payments-2026'
     | '/alerts'
     | '/dashboard'
     | '/escalations'
@@ -259,7 +298,9 @@ export interface FileRouteTypes {
     | '/alternatives/churn-buster'
     | '/alternatives/paddle-retain'
     | '/alternatives/stripe-smart-retries'
+    | '/alternatives/triggla'
     | '/blog/$slug'
+    | '/dashboard/benchmark'
     | '/blog/'
     | '/payments/$id'
     | '/api/auth/$'
@@ -272,9 +313,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/benchmark'
     | '/login'
     | '/onboarding'
     | '/reset-password'
+    | '/state-of-stripe-payments-2026'
     | '/alerts'
     | '/dashboard'
     | '/escalations'
@@ -284,7 +327,9 @@ export interface FileRouteTypes {
     | '/alternatives/churn-buster'
     | '/alternatives/paddle-retain'
     | '/alternatives/stripe-smart-retries'
+    | '/alternatives/triggla'
     | '/blog/$slug'
+    | '/dashboard/benchmark'
     | '/blog'
     | '/payments/$id'
     | '/api/auth/$'
@@ -298,10 +343,12 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_dashboard'
+    | '/benchmark'
     | '/blog'
     | '/login'
     | '/onboarding'
     | '/reset-password'
+    | '/state-of-stripe-payments-2026'
     | '/_dashboard/alerts'
     | '/_dashboard/dashboard'
     | '/_dashboard/escalations'
@@ -311,7 +358,9 @@ export interface FileRouteTypes {
     | '/alternatives/churn-buster'
     | '/alternatives/paddle-retain'
     | '/alternatives/stripe-smart-retries'
+    | '/alternatives/triggla'
     | '/blog/$slug'
+    | '/dashboard/benchmark'
     | '/blog/'
     | '/_dashboard/payments_/$id'
     | '/api/auth/$'
@@ -326,13 +375,17 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DashboardRoute: typeof DashboardRouteWithChildren
+  BenchmarkRoute: typeof BenchmarkRoute
   BlogRoute: typeof BlogRouteWithChildren
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  StateOfStripePayments2026Route: typeof StateOfStripePayments2026Route
   AlternativesChurnBusterRoute: typeof AlternativesChurnBusterRoute
   AlternativesPaddleRetainRoute: typeof AlternativesPaddleRetainRoute
   AlternativesStripeSmartRetriesRoute: typeof AlternativesStripeSmartRetriesRoute
+  AlternativesTrigglaRoute: typeof AlternativesTrigglaRoute
+  DashboardBenchmarkRoute: typeof DashboardBenchmarkRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCronProcessEmailsRoute: typeof ApiCronProcessEmailsRoute
   ApiStripeCallbackRoute: typeof ApiStripeCallbackRoute
@@ -343,6 +396,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/state-of-stripe-payments-2026': {
+      id: '/state-of-stripe-payments-2026'
+      path: '/state-of-stripe-payments-2026'
+      fullPath: '/state-of-stripe-payments-2026'
+      preLoaderRoute: typeof StateOfStripePayments2026RouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/reset-password': {
       id: '/reset-password'
       path: '/reset-password'
@@ -371,6 +431,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/benchmark': {
+      id: '/benchmark'
+      path: '/benchmark'
+      fullPath: '/benchmark'
+      preLoaderRoute: typeof BenchmarkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/_dashboard': {
       id: '/_dashboard'
       path: ''
@@ -392,12 +459,26 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof BlogIndexRouteImport
       parentRoute: typeof BlogRoute
     }
+    '/dashboard/benchmark': {
+      id: '/dashboard/benchmark'
+      path: '/dashboard/benchmark'
+      fullPath: '/dashboard/benchmark'
+      preLoaderRoute: typeof DashboardBenchmarkRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/blog/$slug': {
       id: '/blog/$slug'
       path: '/$slug'
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
+    }
+    '/alternatives/triggla': {
+      id: '/alternatives/triggla'
+      path: '/alternatives/triggla'
+      fullPath: '/alternatives/triggla'
+      preLoaderRoute: typeof AlternativesTrigglaRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/alternatives/stripe-smart-retries': {
       id: '/alternatives/stripe-smart-retries'
@@ -571,13 +652,17 @@ const ApiStripeWebhookRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DashboardRoute: DashboardRouteWithChildren,
+  BenchmarkRoute: BenchmarkRoute,
   BlogRoute: BlogRouteWithChildren,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  StateOfStripePayments2026Route: StateOfStripePayments2026Route,
   AlternativesChurnBusterRoute: AlternativesChurnBusterRoute,
   AlternativesPaddleRetainRoute: AlternativesPaddleRetainRoute,
   AlternativesStripeSmartRetriesRoute: AlternativesStripeSmartRetriesRoute,
+  AlternativesTrigglaRoute: AlternativesTrigglaRoute,
+  DashboardBenchmarkRoute: DashboardBenchmarkRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCronProcessEmailsRoute: ApiCronProcessEmailsRoute,
   ApiStripeCallbackRoute: ApiStripeCallbackRoute,

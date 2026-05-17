@@ -12,6 +12,20 @@ type SourceLink = {
   href: string;
 };
 
+type FailureCodeProof = {
+  title: string;
+  intro: string;
+  genericLabel: string;
+  dunloLabel: string;
+  genericCaption: string;
+  dunloCaption: string;
+  rows: {
+    code: string;
+    generic: string;
+    dunlo: string;
+  }[];
+};
+
 export type AlternativePageData = {
   slug: string;
   path: string;
@@ -25,6 +39,7 @@ export type AlternativePageData = {
   competitorSummary: string;
   dunloSummary: string;
   comparisonRows: ComparisonRow[];
+  failureCodeProof?: FailureCodeProof;
   competitorUseCases: string[];
   dunloUseCases: string[];
   sourceLinks: SourceLink[];
@@ -66,8 +81,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Payment stack",
         competitor:
           "Built as a standalone recovery layer for subscription teams.",
-        dunlo:
-          "Built around Stripe data and Stripe-first SaaS operations.",
+        dunlo: "Built around Stripe data and Stripe-first SaaS operations.",
       },
       {
         label: "Setup time",
@@ -78,14 +92,16 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
       },
       {
         label: "Percent of MRR",
-        competitor: "Plans are publicly described as based on monthly recurring revenue.",
+        competitor:
+          "Plans are publicly described as based on monthly recurring revenue.",
         dunlo: "No percentage of MRR or recovered revenue during beta.",
       },
       {
-        label: "Founder escalation",
-        competitor: "Automation-first recovery workflows.",
+        label: "AI-drafted founder escalation",
+        competitor:
+          "No. Churn Buster focuses on automation-first recovery workflows.",
         dunlo:
-          "High-value failures can be turned into founder-ready outreach instead of generic reminders.",
+          "Yes. Dunlo drafts a personal founder email for high-value failures so you can review and send in one click.",
       },
     ],
     competitorUseCases: [
@@ -130,8 +146,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
       },
       {
         label: "Recovery focus",
-        competitor:
-          "Optimizes when Stripe retries an invoice payment method.",
+        competitor: "Optimizes when Stripe retries an invoice payment method.",
         dunlo:
           "Pairs Stripe failure context with recovery emails, customer follow-up, and founder escalation.",
       },
@@ -154,11 +169,11 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         dunlo: "No percentage of MRR or recovered revenue during beta.",
       },
       {
-        label: "Founder escalation",
+        label: "AI-drafted founder escalation",
         competitor:
-          "Focused on automated retry timing rather than founder-led customer recovery.",
+          "No. Stripe Smart Retries focuses on automated retry timing rather than founder-led customer recovery.",
         dunlo:
-          "Flags important failures and supports more human follow-up when automation is not enough.",
+          "Yes. Dunlo drafts a personal founder email for high-value failures so you can review and send in one click.",
       },
     ],
     competitorUseCases: [
@@ -235,11 +250,11 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         dunlo: "No percentage of MRR or recovered revenue during beta.",
       },
       {
-        label: "Founder escalation",
+        label: "AI-drafted founder escalation",
         competitor:
-          "Built around Paddle-managed retention and billing workflows.",
+          "No. Paddle Retain is built around Paddle-managed retention and billing workflows.",
         dunlo:
-          "Built to give founders visibility and direct follow-up paths for important Stripe failures.",
+          "Yes. Dunlo drafts a personal founder email for high-value failures so you can review and send in one click.",
       },
     ],
     competitorUseCases: [
@@ -262,6 +277,126 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         href: "https://www.paddle.com/help/start/intro-to-paddle/what-is-paddle-retain",
       },
       { label: "Paddle pricing", href: "https://www.paddle.com/pricing" },
+    ],
+  },
+  triggla: {
+    slug: "triggla",
+    path: "/alternatives/triggla",
+    competitorName: "Triggla",
+    metaTitle: "Dunlo vs Triggla - Failed Payment Recovery Comparison",
+    metaDescription:
+      "Compare Dunlo and Triggla for Stripe failed payment recovery, failure-code messaging, trial rescue, churn recovery, pricing, and setup.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs Triggla",
+    intro:
+      "Triggla is a useful revenue recovery product for teams that want one tool across failed payments, trials, cancellations, refunds, and repeat purchase flows. Dunlo is narrower by design: it focuses on failed Stripe payments and writes the recovery path around the exact failure code.",
+    verdict:
+      "Choose Triggla if you want broad revenue lifecycle automation across several payment platforms. Choose Dunlo if failed Stripe payment recovery is the leak you want to fix first, and you care about emails that change by failure reason instead of sending the same message every time.",
+    competitorSummary:
+      "A multi-platform revenue recovery tool covering failed payments, trial rescue, churn recovery, repeat purchase, onboarding, and refund follow-up flows.",
+    dunloSummary:
+      "A Stripe-only failed payment recovery tool that segments by failure code, recovery timing, and founder-visible escalation.",
+    failureCodeProof: {
+      title:
+        "Not all failed payments are the same. Dunlo knows the difference.",
+      intro:
+        "The practical difference is not the dashboard. It is the email your customer receives after Stripe says why the charge failed.",
+      genericLabel: "Generic recovery email",
+      dunloLabel: "Dunlo failure-code email",
+      genericCaption:
+        "Same email every time, regardless of why the payment failed.",
+      dunloCaption:
+        "The right message, for the right reason, at the right time.",
+      rows: [
+        {
+          code: "expired_card",
+          generic: "Your payment failed. Please update your card.",
+          dunlo:
+            "Looks like your card expired. Here is your one-click update link.",
+        },
+        {
+          code: "insufficient_funds",
+          generic: "Your payment failed. Please update your card.",
+          dunlo: "We will retry in a few days. No action needed right now.",
+        },
+        {
+          code: "do_not_honor",
+          generic: "Your payment failed. Please update your card.",
+          dunlo:
+            "Your bank blocked the charge. Here is what usually fixes this in 2 minutes.",
+        },
+      ],
+    },
+    comparisonRows: [
+      {
+        label: "Failed payment recovery",
+        competitor:
+          "Yes, with editable transactional recovery emails. In our signup test, the failed-payment template was generic across failure reasons.",
+        dunlo:
+          "Yes, with sequences and copy adapted to the Stripe failure code.",
+      },
+      {
+        label: "Trial rescue",
+        competitor:
+          "Yes. Triggla includes trial conversion flows for expiring trials.",
+        dunlo: "Roadmap. Dunlo is focused on failed payments first.",
+      },
+      {
+        label: "Churn recovery",
+        competitor: "Yes. Triggla includes cancellation and win-back flows.",
+        dunlo: "Roadmap. Dunlo currently prioritizes involuntary churn.",
+      },
+      {
+        label: "Failure code segmentation",
+        competitor: "Not visible in the tested failed-payment email flow.",
+        dunlo:
+          "Built around Stripe decline codes such as expired_card, insufficient_funds, and do_not_honor.",
+      },
+      {
+        label: "AI-drafted founder escalation",
+        competitor:
+          "No. Triggla is broader lifecycle automation rather than AI-drafted founder review for high-value failures.",
+        dunlo:
+          "Yes. Dunlo drafts a personal founder email for high-value failures so you can review and send in one click.",
+      },
+      {
+        label: "Pricing",
+        competitor: "Starts at $12/mo, with tiers based on monthly events.",
+        dunlo:
+          "Starts at $19/mo after beta, with flat MRR-based tiers and no cut of recovered revenue.",
+      },
+      {
+        label: "Stripe-native",
+        competitor:
+          "Partial. Triggla supports Stripe plus Shopify, Gumroad, Paddle, and LemonSqueezy.",
+        dunlo: "Stripe-only by design.",
+      },
+      {
+        label: "Setup time",
+        competitor: "Positioned as a 60-second setup.",
+        dunlo: "Designed for a 5-minute Stripe setup.",
+      },
+    ],
+    competitorUseCases: [
+      "You want one automation layer for the full post-payment lifecycle.",
+      "You sell across Stripe, Shopify, Gumroad, Paddle, or LemonSqueezy.",
+      "You care about trial rescue, churn recovery, refunds, and repeat purchases as much as failed payments.",
+    ],
+    dunloUseCases: [
+      "You run a Stripe-first SaaS and failed payments are the specific leak.",
+      "You want recovery emails tailored to each failure reason.",
+      "You prefer a focused tool with simple flat tiers and no recovered-revenue cut.",
+    ],
+    sourceLinks: [
+      { label: "Triggla product", href: "https://triggla.com/" },
+      {
+        label: "Triggla churn recovery",
+        href: "https://triggla.com/stripe-churn-recovery",
+      },
+      {
+        label: "Stripe decline codes",
+        href: "https://docs.stripe.com/declines/codes",
+      },
     ],
   },
 };
@@ -327,6 +462,10 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
           </div>
         </section>
 
+        {page.failureCodeProof && (
+          <FailureCodeProofSection proof={page.failureCodeProof} />
+        )}
+
         <section
           id="comparison"
           className="rounded-3xl border border-gray-200 bg-white px-4 py-6 md:px-8 md:py-8"
@@ -341,8 +480,8 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-gray-500">
-              This comparison is based on public product pages and documentation.
-              Dunlo details reflect the current beta offer.
+              This comparison is based on public product pages and
+              documentation. Dunlo details reflect the current beta offer.
             </p>
           </div>
 
@@ -385,7 +524,10 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             title={`Who should use ${page.competitorName}`}
             items={page.competitorUseCases}
           />
-          <UseCasePanel title="Who should use Dunlo" items={page.dunloUseCases} />
+          <UseCasePanel
+            title="Who should use Dunlo"
+            items={page.dunloUseCases}
+          />
         </section>
 
         <section className="rounded-3xl border border-gray-200 bg-gray-950 px-6 py-8 text-white md:px-10 md:py-10">
@@ -447,7 +589,9 @@ function SummaryBlock({ label, text }: { label: string; text: string }) {
 function UseCasePanel({ title, items }: { title: string; items: string[] }) {
   return (
     <article className="rounded-3xl border border-gray-200 bg-white px-6 py-7 md:px-8">
-      <h2 className="text-xl font-bold tracking-tight text-gray-950">{title}</h2>
+      <h2 className="text-xl font-bold tracking-tight text-gray-950">
+        {title}
+      </h2>
       <ul className="mt-6 space-y-4">
         {items.map((item) => (
           <li key={item} className="flex gap-3 text-sm leading-6 text-gray-600">
@@ -457,5 +601,111 @@ function UseCasePanel({ title, items }: { title: string; items: string[] }) {
         ))}
       </ul>
     </article>
+  );
+}
+
+function FailureCodeProofSection({ proof }: { proof: FailureCodeProof }) {
+  return (
+    <section className="overflow-hidden rounded-3xl border border-gray-200 bg-gray-950 text-white">
+      <div className="grid gap-0 lg:grid-cols-[0.82fr_1.18fr]">
+        <div className="border-b border-white/10 px-6 py-8 md:px-10 lg:border-b-0 lg:border-r lg:px-12 lg:py-12">
+          <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo">
+            Failure code intelligence
+          </p>
+          <h2 className="mt-4 max-w-xl text-3xl font-bold leading-tight tracking-tight md:text-4xl">
+            {proof.title}
+          </h2>
+          <p className="mt-5 max-w-lg text-sm leading-7 text-gray-300 md:text-base">
+            {proof.intro}
+          </p>
+        </div>
+
+        <div className="grid gap-0 md:grid-cols-2">
+          <FailureCodeColumn
+            caption={proof.genericCaption}
+            label={proof.genericLabel}
+            tone="generic"
+            rows={proof.rows.map((row) => ({
+              code: row.code,
+              message: row.generic,
+            }))}
+          />
+          <FailureCodeColumn
+            caption={proof.dunloCaption}
+            label={proof.dunloLabel}
+            tone="dunlo"
+            rows={proof.rows.map((row) => ({
+              code: row.code,
+              message: row.dunlo,
+            }))}
+          />
+        </div>
+      </div>
+    </section>
+  );
+}
+
+function FailureCodeColumn({
+  label,
+  caption,
+  rows,
+  tone,
+}: {
+  label: string;
+  caption: string;
+  rows: { code: string; message: string }[];
+  tone: "generic" | "dunlo";
+}) {
+  const isDunlo = tone === "dunlo";
+
+  return (
+    <div
+      className={`px-5 py-6 md:px-6 md:py-8 ${
+        isDunlo
+          ? "bg-dunlo/10"
+          : "border-b border-white/10 bg-white/[0.03] md:border-b-0 md:border-r"
+      }`}
+    >
+      <div className="flex items-center justify-between gap-4">
+        <p className="text-sm font-semibold text-white">{label}</p>
+        <span
+          className={`rounded-full border px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] ${
+            isDunlo
+              ? "border-dunlo/30 bg-dunlo/15 text-dunlo"
+              : "border-white/10 bg-white/5 text-gray-400"
+          }`}
+        >
+          {isDunlo ? "Tailored" : "Generic"}
+        </span>
+      </div>
+
+      <div className="mt-6 space-y-3">
+        {rows.map((row) => (
+          <div
+            key={row.code}
+            className={`rounded-2xl border p-4 ${
+              isDunlo
+                ? "border-dunlo/20 bg-gray-950/70"
+                : "border-white/10 bg-gray-900/80"
+            }`}
+          >
+            <p className="font-mono text-[11px] font-semibold text-gray-400">
+              {row.code}
+            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-100">
+              "{row.message}"
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <p
+        className={`mt-5 text-sm leading-6 ${
+          isDunlo ? "text-dunlo" : "text-gray-400"
+        }`}
+      >
+        {caption}
+      </p>
+    </div>
   );
 }

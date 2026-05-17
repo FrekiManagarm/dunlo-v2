@@ -1,0 +1,1630 @@
+- generic [active] [ref=e1]:
+  - link "Skip to main content" [ref=e2] [cursor=pointer]:
+    - /url: "#main-content"
+    - generic [ref=e4]: Skip to main content
+  - generic [ref=e6]:
+    - generic:
+      - generic [ref=e7]:
+        - generic: "80% of my Stripe payments are failing… : r/stripe"
+      - banner [ref=e10]:
+        - navigation [ref=e11]:
+          - link "Home" [ref=e15] [cursor=pointer]:
+            - /url: /
+            - img [ref=e17]
+          - search [ref=e34]:
+            - generic [ref=e36]:
+              - img [ref=e39]
+              - generic "Remove r/stripe filter and expand search to all of Reddit" [ref=e42] [cursor=pointer]:
+                - button [pressed] [ref=e43]:
+                  - generic [ref=e47]: r/stripe
+                  - img [ref=e49]
+              - textbox "Remove r/stripe filter and expand search to all of Reddit" [ref=e52]:
+                - /placeholder: Search in ⁨r/stripe⁩
+          - generic [ref=e53]:
+            - link "Sign Up" [ref=e59] [cursor=pointer]:
+              - /url: https://www.reddit.com/register/
+              - generic [ref=e61]: Sign Up
+            - link "Log In" [ref=e65] [cursor=pointer]:
+              - /url: https://www.reddit.com/login/
+              - generic [ref=e67]: Log In
+            - button "Expand user menu" [ref=e72] [cursor=pointer]:
+              - img [ref=e75]
+              - generic [ref=e77]:
+                - generic: Expand user menu
+      - generic [ref=e79]:
+        - img [ref=e82]
+        - generic [ref=e85]: This comment no longer exists
+        - button [ref=e88] [cursor=pointer]:
+          - img [ref=e91]
+      - generic [ref=e93]:
+        - generic [ref=e94]:
+          - generic [ref=e95]:
+            - generic:
+              - generic:
+                - link "Skip to Navigation" [ref=e96] [cursor=pointer]:
+                  - /url: "#left-sidebar-container"
+                - link "Skip to Right Sidebar" [ref=e97] [cursor=pointer]:
+                  - /url: "#right-sidebar-container"
+          - generic [ref=e98]:
+            - main [ref=e99]:
+              - 'generic "80% of my Stripe payments are failing… : r/stripe"'
+              - generic [ref=e100]:
+                - generic [ref=e101]:
+                  - generic [ref=e102]:
+                    - button "Back" [ref=e104] [cursor=pointer]:
+                      - img [ref=e107]
+                      - generic [ref=e109]:
+                        - generic: Back
+                    - link "Go to stripe" [ref=e112] [cursor=pointer]:
+                      - /url: /r/stripe/
+                      - generic [ref=e116]:
+                        - generic: Go to stripe
+                    - group [ref=e117]:
+                      - generic [ref=e118]:
+                        - link "r/stripe" [ref=e122] [cursor=pointer]:
+                          - /url: /r/stripe/
+                        - generic [ref=e123]: •
+                        - time [ref=e124]: 2mo ago
+                      - 'link "Author: Jazzlike-Film9274" [ref=e130] [cursor=pointer]':
+                        - /url: /user/Jazzlike-Film9274/
+                        - generic [ref=e131]: Jazzlike-Film9274
+                  - button "Open user actions" [ref=e135] [cursor=pointer]:
+                    - img [ref=e138]
+                - generic [ref=e141]:
+                  - 'heading "Post Title: 80% of my Stripe payments are failing…" [level=1] [ref=e142]': 80% of my Stripe payments are failing…
+                  - 'link "Flair: Payments" [ref=e145] [cursor=pointer]':
+                    - /url: /r/stripe/?f=flair_name%3A%22Payments%22
+                    - 'generic "Flair: Payments" [ref=e147]': Payments
+                - img "r/stripe - 80% of my Stripe payments are failing…" [ref=e153] [cursor=pointer]
+                - paragraph [ref=e158]: I’m running a web app that helps beginners create AI influencers / content. About 80% of my payment attempts are failing. Most declines are insufficient funds or blocked by the bank, and sometimes velocity exceeded. Most of these failures happen when a 7-day free trial converts to a paid subscription, but it’s also happening with customers who successfully pay for the first month. Out of roughly 50 recent attempts, only about 7 succeeded, and only 2 worked on the first try, the rest were from retries / reminder emails. Frustrating as my revenue would likely double or triple if more of these payments went through. I’m planning to improve retry logic, send better reminder emails, and possibly enable 3D Secure, but I’m trying to understand whether this is just a part of doing buisness, low-quality traffic or if there are Stripe settings or billing changes that could help. Thanks!
+                - generic "Actions available for this post" [ref=e160]:
+                  - generic [ref=e163]:
+                    - button "Upvote" [ref=e164] [cursor=pointer]:
+                      - img [ref=e166]
+                      - generic [ref=e168]:
+                        - generic: Upvote
+                    - generic [ref=e170]: "72"
+                    - button "Downvote" [ref=e171] [cursor=pointer]:
+                      - img [ref=e173]
+                      - generic [ref=e175]:
+                        - generic: Downvote
+                  - button "75 Go to comments" [ref=e176] [cursor=pointer]:
+                    - generic [ref=e177]:
+                      - img [ref=e179]
+                      - generic [ref=e182]: "75"
+                    - generic [ref=e183]:
+                      - generic: Go to comments
+                  - button "Give award" [ref=e185] [cursor=pointer]:
+                    - img [ref=e188]
+                  - button "Share" [ref=e193] [cursor=pointer]:
+                    - generic [ref=e194]:
+                      - img [ref=e196]
+                      - generic [ref=e199]: Share
+              - generic "Project updates everywhere except where you need them? ClickUp keeps tasks, timelines, and progress in one place." [ref=e200]:
+                - generic [ref=e201]:
+                  - 'generic "Advertisement: Project updates everywhere except where you need them? ClickUp keeps tasks, timelines, and progress in one place." [ref=e202]':
+                    - 'link "Advertisement: Project updates everywhere except where you need them? ClickUp keeps tasks, timelines, and progress in one place." [ref=e203] [cursor=pointer]':
+                      - /url: https://alb.reddit.com/cr?za=cwVDQDsr7lYetVLHg5CZKv1Xe6voLOIpKaNAlL71pqnXjR94DAEwE4rAYYTSmNW_5qT6WDFa5mjSPslgvGhj6JLtvlfbh_vQ2kVqoDCMkMoy69OCSwDTWVeza-it2IbGGjqOFeD45Uy-_mqHs_QfYBdyn4vqba9Pn5Cx2TL6Ex7pl_zdC6WBsQsRKQaun46q88gaOD54cm50MG9S1wfHH406TJsh9VWGZSCripxlx8HP2JEYDQMpuEFyvMd1mfij3xy9XHV6v-Ei4Iu9xYinlhTJFIT2xq1r4GnrB2MwtcxJv5C7D28_10gACpFQnhn35OaQwZoRYMphDeiI52qVNr1DQ6Mazjp4LuFav4tH4Q19DLvqCizoOVOuFlUTyFPVf223lUvdtcCq92ydALPNwpr4K50fqaDHfb85yimOCcirguufA-xVwxP3h7xRpgHq3Rzyo_YqaZn2vtL6wbdEN5a1iA-LyuKjsUtasq6KqBXsf69fpLubpKyuZ9kX8KRwtzaJwEecPM5vz_33_5Zq0HT0sV6xTmuamp5fCWjHTuY2xuEeRKC1d9F95qRW2TxD-OtDPeuLjy3fdKeqIXpuPvpXjMCIcD6oYjSyYThsdl_qQIS7YNzxWpdKBVHDe_fB2OweNBSOmxuqToqmdHEdhshhWQY3GHn-PrwEGrmU3PI8Or_J1fcDefO5Ps8JlwX6rm1pwUy12q6tRgVTCa7vIbiZyD3UlWDSAeOT7EVj7X0vPI3P4U4JSj9fHHTvUQk_dV52juODRrEChg&zp=dKbhsPgh9TldCxI4DNsLQwSMOUxm68JVBDsEbBn0Om9XMPxX2sS15m_PitAxy1WV9GOxTSGXG6wEkyLrSp0Qy9i_hFfEWUdrEGIDz897q8JYhK5gG5TJXH0a5csp11bS8lZ3uw9eLoOCofOuiFpkbavEOyyjk4Ve8tvFNo-90c2qerBjtcBsObuGH1cqsaDWPLD2nNfYUJjwOioEMc8pfMgvdkRY3p418kXO7WXFISd1kMuYTk4ae9sKubZ0DhKSuE7MYsFEqfeMiAWJLgLXFfA-CVjbT-G3g6k6VDHhHkUMAeQO9waTJy4DhDj-sV6DFkPJkK7KVUbB6lLU4hVuSS_AfnYog6YvCOMfxY5L4h5xdwnJPZuw1PYpk8LiUBu7YdtLW5XVFuRFmxHUnBbI5rdijqX5WHCX8ZO-97PEYO4fgNtrlsogdYhtkKNtA5LWPogPuOEN8DkcMVBg4ywgc_JwjTrHeSW-Daw5VFv4K3z7R1_O9-cNM1vsVgNnkzSxB00p1fqeB4BTj8J31RqkN92j3A1hjxdNsVVDO635b0PZhzHo11qEIay34SDPmvKw1TQZu5kqh_VA4Q6qDPJ_CPYecG1EbmX259ZZ8rQ6BBMTlbtWPCghiW9E
+                  - generic [ref=e204]:
+                    - generic [ref=e205]:
+                      - link "u/ClickUp_App avatar ClickUp_App" [ref=e208] [cursor=pointer]:
+                        - /url: /user/ClickUp_App/
+                        - img "u/ClickUp_App avatar" [ref=e211]
+                        - generic [ref=e212]: ClickUp_App
+                      - generic [ref=e213]: •
+                      - link "Promoted" [ref=e215] [cursor=pointer]:
+                        - /url: /user/ClickUp_App/
+                        - generic [ref=e216]: Promoted
+                      - link [ref=e218] [cursor=pointer]:
+                        - /url: https://alb.reddit.com/cr?za=cwVDQDsr7lYetVLHg5CZKv1Xe6voLOIpKaNAlL71pqnXjR94DAEwE4rAYYTSmNW_5qT6WDFa5mjSPslgvGhj6JLtvlfbh_vQ2kVqoDCMkMoy69OCSwDTWVeza-it2IbGGjqOFeD45Uy-_mqHs_QfYBdyn4vqba9Pn5Cx2TL6Ex7pl_zdC6WBsQsRKQaun46q88gaOD54cm50MG9S1wfHH406TJsh9VWGZSCripxlx8HP2JEYDQMpuEFyvMd1mfij3xy9XHV6v-Ei4Iu9xYinlhTJFIT2xq1r4GnrB2MwtcxJv5C7D28_10gACpFQnhn35OaQwZoRYMphDeiI52qVNr1DQ6Mazjp4LuFav4tH4Q19DLvqCizoOVOuFlUTyFPVf223lUvdtcCq92ydALPNwpr4K50fqaDHfb85yimOCcirguufA-xVwxP3h7xRpgHq3Rzyo_YqaZn2vtL6wbdEN5a1iA-LyuKjsUtasq6KqBXsf69fpLubpKyuZ9kX8KRwtzaJwEecPM5vz_33_5Zq0HT0sV6xTmuamp5fCWjHTuY2xuEeRKC1d9F95qRW2TxD-OtDPeuLjy3fdKeqIXpuPvpXjMCIcD6oYjSyYThsdl_qQIS7YNzxWpdKBVHDe_fB2OweNBSOmxuqToqmdHEdhshhWQY3GHn-PrwEGrmU3PI8Or_J1fcDefO5Ps8JlwX6rm1pwUy12q6tRgVTCa7vIbiZyD3UlWDSAeOT7EVj7X0vPI3P4U4JSj9fHHTvUQk_dV52juODRrEChg&zp=dKbhsPgh9TldCxI4DNsLQwSMOUxm68JVBDsEbBn0Om9XMPxX2sS15m_PitAxy1WV9GOxTSGXG6wEkyLrSp0Qy9i_hFfEWUdrEGIDz897q8JYhK5gG5TJXH0a5csp11bS8lZ3uw9eLoOCofOuiFpkbavEOyyjk4Ve8tvFNo-90c2qerBjtcBsObuGH1cqsaDWPLD2nNfYUJjwOioEMc8pfMgvdkRY3p418kXO7WXFISd1kMuYTk4ae9sKubZ0DhKSuE7MYsFEqfeMiAWJLgLXFfA-CVjbT-G3g6k6VDHhHkUMAeQO9waTJy4DhDj-sV6DFkPJkK7KVUbB6lLU4hVuSS_AfnYog6YvCOMfxY5L4h5xdwnJPZuw1PYpk8LiUBu7YdtLW5XVFuRFmxHUnBbI5rdijqX5WHCX8ZO-97PEYO4fgNtrlsogdYhtkKNtA5LWPogPuOEN8DkcMVBg4ywgc_JwjTrHeSW-Daw5VFv4K3z7R1_O9-cNM1vsVgNnkzSxB00p1fqeB4BTj8J31RqkN92j3A1hjxdNsVVDO635b0PZhzHo11qEIay34SDPmvKw1TQZu5kqh_VA4Q6qDPJ_CPYecG1EbmX259ZZ8rQ6BBMTlbtWPCghiW9E
+                    - button "Open user actions" [ref=e223] [cursor=pointer]:
+                      - img [ref=e226]
+                  - generic [ref=e229]:
+                    - generic [ref=e230]:
+                      - link "Project updates everywhere except where you need them? ClickUp keeps tasks, timelines, and progress in one place." [ref=e232] [cursor=pointer]:
+                        - /url: https://alb.reddit.com/cr?za=cwVDQDsr7lYetVLHg5CZKv1Xe6voLOIpKaNAlL71pqnXjR94DAEwE4rAYYTSmNW_5qT6WDFa5mjSPslgvGhj6JLtvlfbh_vQ2kVqoDCMkMoy69OCSwDTWVeza-it2IbGGjqOFeD45Uy-_mqHs_QfYBdyn4vqba9Pn5Cx2TL6Ex7pl_zdC6WBsQsRKQaun46q88gaOD54cm50MG9S1wfHH406TJsh9VWGZSCripxlx8HP2JEYDQMpuEFyvMd1mfij3xy9XHV6v-Ei4Iu9xYinlhTJFIT2xq1r4GnrB2MwtcxJv5C7D28_10gACpFQnhn35OaQwZoRYMphDeiI52qVNr1DQ6Mazjp4LuFav4tH4Q19DLvqCizoOVOuFlUTyFPVf223lUvdtcCq92ydALPNwpr4K50fqaDHfb85yimOCcirguufA-xVwxP3h7xRpgHq3Rzyo_YqaZn2vtL6wbdEN5a1iA-LyuKjsUtasq6KqBXsf69fpLubpKyuZ9kX8KRwtzaJwEecPM5vz_33_5Zq0HT0sV6xTmuamp5fCWjHTuY2xuEeRKC1d9F95qRW2TxD-OtDPeuLjy3fdKeqIXpuPvpXjMCIcD6oYjSyYThsdl_qQIS7YNzxWpdKBVHDe_fB2OweNBSOmxuqToqmdHEdhshhWQY3GHn-PrwEGrmU3PI8Or_J1fcDefO5Ps8JlwX6rm1pwUy12q6tRgVTCa7vIbiZyD3UlWDSAeOT7EVj7X0vPI3P4U4JSj9fHHTvUQk_dV52juODRrEChg&zp=dKbhsPgh9TldCxI4DNsLQwSMOUxm68JVBDsEbBn0Om9XMPxX2sS15m_PitAxy1WV9GOxTSGXG6wEkyLrSp0Qy9i_hFfEWUdrEGIDz897q8JYhK5gG5TJXH0a5csp11bS8lZ3uw9eLoOCofOuiFpkbavEOyyjk4Ve8tvFNo-90c2qerBjtcBsObuGH1cqsaDWPLD2nNfYUJjwOioEMc8pfMgvdkRY3p418kXO7WXFISd1kMuYTk4ae9sKubZ0DhKSuE7MYsFEqfeMiAWJLgLXFfA-CVjbT-G3g6k6VDHhHkUMAeQO9waTJy4DhDj-sV6DFkPJkK7KVUbB6lLU4hVuSS_AfnYog6YvCOMfxY5L4h5xdwnJPZuw1PYpk8LiUBu7YdtLW5XVFuRFmxHUnBbI5rdijqX5WHCX8ZO-97PEYO4fgNtrlsogdYhtkKNtA5LWPogPuOEN8DkcMVBg4ywgc_JwjTrHeSW-Daw5VFv4K3z7R1_O9-cNM1vsVgNnkzSxB00p1fqeB4BTj8J31RqkN92j3A1hjxdNsVVDO635b0PZhzHo11qEIay34SDPmvKw1TQZu5kqh_VA4Q6qDPJ_CPYecG1EbmX259ZZ8rQ6BBMTlbtWPCghiW9E
+                        - generic: Project updates everywhere except where you need them? ClickUp keeps tasks, timelines, and progress in one place.
+                      - generic [ref=e233]:
+                        - link [ref=e235] [cursor=pointer]:
+                          - /url: https://alb.reddit.com/cr?za=cwVDQDsr7lYetVLHg5CZKv1Xe6voLOIpKaNAlL71pqnXjR94DAEwE4rAYYTSmNW_5qT6WDFa5mjSPslgvGhj6JLtvlfbh_vQ2kVqoDCMkMoy69OCSwDTWVeza-it2IbGGjqOFeD45Uy-_mqHs_QfYBdyn4vqba9Pn5Cx2TL6Ex7pl_zdC6WBsQsRKQaun46q88gaOD54cm50MG9S1wfHH406TJsh9VWGZSCripxlx8HP2JEYDQMpuEFyvMd1mfij3xy9XHV6v-Ei4Iu9xYinlhTJFIT2xq1r4GnrB2MwtcxJv5C7D28_10gACpFQnhn35OaQwZoRYMphDeiI52qVNr1DQ6Mazjp4LuFav4tH4Q19DLvqCizoOVOuFlUTyFPVf223lUvdtcCq92ydALPNwpr4K50fqaDHfb85yimOCcirguufA-xVwxP3h7xRpgHq3Rzyo_YqaZn2vtL6wbdEN5a1iA-LyuKjsUtasq6KqBXsf69fpLubpKyuZ9kX8KRwtzaJwEecPM5vz_33_5Zq0HT0sV6xTmuamp5fCWjHTuY2xuEeRKC1d9F95qRW2TxD-OtDPeuLjy3fdKeqIXpuPvpXjMCIcD6oYjSyYThsdl_qQIS7YNzxWpdKBVHDe_fB2OweNBSOmxuqToqmdHEdhshhWQY3GHn-PrwEGrmU3PI8Or_J1fcDefO5Ps8JlwX6rm1pwUy12q6tRgVTCa7vIbiZyD3UlWDSAeOT7EVj7X0vPI3P4U4JSj9fHHTvUQk_dV52juODRrEChg&zp=dKbhsPgh9TldCxI4DNsLQwSMOUxm68JVBDsEbBn0Om9XMPxX2sS15m_PitAxy1WV9GOxTSGXG6wEkyLrSp0Qy9i_hFfEWUdrEGIDz897q8JYhK5gG5TJXH0a5csp11bS8lZ3uw9eLoOCofOuiFpkbavEOyyjk4Ve8tvFNo-90c2qerBjtcBsObuGH1cqsaDWPLD2nNfYUJjwOioEMc8pfMgvdkRY3p418kXO7WXFISd1kMuYTk4ae9sKubZ0DhKSuE7MYsFEqfeMiAWJLgLXFfA-CVjbT-G3g6k6VDHhHkUMAeQO9waTJy4DhDj-sV6DFkPJkK7KVUbB6lLU4hVuSS_AfnYog6YvCOMfxY5L4h5xdwnJPZuw1PYpk8LiUBu7YdtLW5XVFuRFmxHUnBbI5rdijqX5WHCX8ZO-97PEYO4fgNtrlsogdYhtkKNtA5LWPogPuOEN8DkcMVBg4ywgc_JwjTrHeSW-Daw5VFv4K3z7R1_O9-cNM1vsVgNnkzSxB00p1fqeB4BTj8J31RqkN92j3A1hjxdNsVVDO635b0PZhzHo11qEIay34SDPmvKw1TQZu5kqh_VA4Q6qDPJ_CPYecG1EbmX259ZZ8rQ6BBMTlbtWPCghiW9E
+                        - generic [ref=e236]:
+                          - link "Learn More" [ref=e238] [cursor=pointer]:
+                            - /url: https://alb.reddit.com/cr?za=cwVDQDsr7lYetVLHg5CZKv1Xe6voLOIpKaNAlL71pqnXjR94DAEwE4rAYYTSmNW_5qT6WDFa5mjSPslgvGhj6JLtvlfbh_vQ2kVqoDCMkMoy69OCSwDTWVeza-it2IbGGjqOFeD45Uy-_mqHs_QfYBdyn4vqba9Pn5Cx2TL6Ex7pl_zdC6WBsQsRKQaun46q88gaOD54cm50MG9S1wfHH406TJsh9VWGZSCripxlx8HP2JEYDQMpuEFyvMd1mfij3xy9XHV6v-Ei4Iu9xYinlhTJFIT2xq1r4GnrB2MwtcxJv5C7D28_10gACpFQnhn35OaQwZoRYMphDeiI52qVNr1DQ6Mazjp4LuFav4tH4Q19DLvqCizoOVOuFlUTyFPVf223lUvdtcCq92ydALPNwpr4K50fqaDHfb85yimOCcirguufA-xVwxP3h7xRpgHq3Rzyo_YqaZn2vtL6wbdEN5a1iA-LyuKjsUtasq6KqBXsf69fpLubpKyuZ9kX8KRwtzaJwEecPM5vz_33_5Zq0HT0sV6xTmuamp5fCWjHTuY2xuEeRKC1d9F95qRW2TxD-OtDPeuLjy3fdKeqIXpuPvpXjMCIcD6oYjSyYThsdl_qQIS7YNzxWpdKBVHDe_fB2OweNBSOmxuqToqmdHEdhshhWQY3GHn-PrwEGrmU3PI8Or_J1fcDefO5Ps8JlwX6rm1pwUy12q6tRgVTCa7vIbiZyD3UlWDSAeOT7EVj7X0vPI3P4U4JSj9fHHTvUQk_dV52juODRrEChg&zp=dKbhsPgh9TldCxI4DNsLQwSMOUxm68JVBDsEbBn0Om9XMPxX2sS15m_PitAxy1WV9GOxTSGXG6wEkyLrSp0Qy9i_hFfEWUdrEGIDz897q8JYhK5gG5TJXH0a5csp11bS8lZ3uw9eLoOCofOuiFpkbavEOyyjk4Ve8tvFNo-90c2qerBjtcBsObuGH1cqsaDWPLD2nNfYUJjwOioEMc8pfMgvdkRY3p418kXO7WXFISd1kMuYTk4ae9sKubZ0DhKSuE7MYsFEqfeMiAWJLgLXFfA-CVjbT-G3g6k6VDHhHkUMAeQO9waTJy4DhDj-sV6DFkPJkK7KVUbB6lLU4hVuSS_AfnYog6YvCOMfxY5L4h5xdwnJPZuw1PYpk8LiUBu7YdtLW5XVFuRFmxHUnBbI5rdijqX5WHCX8ZO-97PEYO4fgNtrlsogdYhtkKNtA5LWPogPuOEN8DkcMVBg4ywgc_JwjTrHeSW-Daw5VFv4K3z7R1_O9-cNM1vsVgNnkzSxB00p1fqeB4BTj8J31RqkN92j3A1hjxdNsVVDO635b0PZhzHo11qEIay34SDPmvKw1TQZu5kqh_VA4Q6qDPJ_CPYecG1EbmX259ZZ8rQ6BBMTlbtWPCghiW9E
+                            - generic [ref=e240]:
+                              - generic: Learn More
+                          - link "clickup.com" [ref=e243] [cursor=pointer]:
+                            - /url: https://alb.reddit.com/cr?za=cwVDQDsr7lYetVLHg5CZKv1Xe6voLOIpKaNAlL71pqnXjR94DAEwE4rAYYTSmNW_5qT6WDFa5mjSPslgvGhj6JLtvlfbh_vQ2kVqoDCMkMoy69OCSwDTWVeza-it2IbGGjqOFeD45Uy-_mqHs_QfYBdyn4vqba9Pn5Cx2TL6Ex7pl_zdC6WBsQsRKQaun46q88gaOD54cm50MG9S1wfHH406TJsh9VWGZSCripxlx8HP2JEYDQMpuEFyvMd1mfij3xy9XHV6v-Ei4Iu9xYinlhTJFIT2xq1r4GnrB2MwtcxJv5C7D28_10gACpFQnhn35OaQwZoRYMphDeiI52qVNr1DQ6Mazjp4LuFav4tH4Q19DLvqCizoOVOuFlUTyFPVf223lUvdtcCq92ydALPNwpr4K50fqaDHfb85yimOCcirguufA-xVwxP3h7xRpgHq3Rzyo_YqaZn2vtL6wbdEN5a1iA-LyuKjsUtasq6KqBXsf69fpLubpKyuZ9kX8KRwtzaJwEecPM5vz_33_5Zq0HT0sV6xTmuamp5fCWjHTuY2xuEeRKC1d9F95qRW2TxD-OtDPeuLjy3fdKeqIXpuPvpXjMCIcD6oYjSyYThsdl_qQIS7YNzxWpdKBVHDe_fB2OweNBSOmxuqToqmdHEdhshhWQY3GHn-PrwEGrmU3PI8Or_J1fcDefO5Ps8JlwX6rm1pwUy12q6tRgVTCa7vIbiZyD3UlWDSAeOT7EVj7X0vPI3P4U4JSj9fHHTvUQk_dV52juODRrEChg&zp=dKbhsPgh9TldCxI4DNsLQwSMOUxm68JVBDsEbBn0Om9XMPxX2sS15m_PitAxy1WV9GOxTSGXG6wEkyLrSp0Qy9i_hFfEWUdrEGIDz897q8JYhK5gG5TJXH0a5csp11bS8lZ3uw9eLoOCofOuiFpkbavEOyyjk4Ve8tvFNo-90c2qerBjtcBsObuGH1cqsaDWPLD2nNfYUJjwOioEMc8pfMgvdkRY3p418kXO7WXFISd1kMuYTk4ae9sKubZ0DhKSuE7MYsFEqfeMiAWJLgLXFfA-CVjbT-G3g6k6VDHhHkUMAeQO9waTJy4DhDj-sV6DFkPJkK7KVUbB6lLU4hVuSS_AfnYog6YvCOMfxY5L4h5xdwnJPZuw1PYpk8LiUBu7YdtLW5XVFuRFmxHUnBbI5rdijqX5WHCX8ZO-97PEYO4fgNtrlsogdYhtkKNtA5LWPogPuOEN8DkcMVBg4ywgc_JwjTrHeSW-Daw5VFv4K3z7R1_O9-cNM1vsVgNnkzSxB00p1fqeB4BTj8J31RqkN92j3A1hjxdNsVVDO635b0PZhzHo11qEIay34SDPmvKw1TQZu5kqh_VA4Q6qDPJ_CPYecG1EbmX259ZZ8rQ6BBMTlbtWPCghiW9E
+                            - generic: clickup.com
+                    - 'link "Thumbnail image: Project updates everywhere except where you need them? ClickUp keeps tasks, timelines, and progress in one place." [ref=e246] [cursor=pointer]':
+                      - /url: https://alb.reddit.com/cr?za=cwVDQDsr7lYetVLHg5CZKv1Xe6voLOIpKaNAlL71pqnXjR94DAEwE4rAYYTSmNW_5qT6WDFa5mjSPslgvGhj6JLtvlfbh_vQ2kVqoDCMkMoy69OCSwDTWVeza-it2IbGGjqOFeD45Uy-_mqHs_QfYBdyn4vqba9Pn5Cx2TL6Ex7pl_zdC6WBsQsRKQaun46q88gaOD54cm50MG9S1wfHH406TJsh9VWGZSCripxlx8HP2JEYDQMpuEFyvMd1mfij3xy9XHV6v-Ei4Iu9xYinlhTJFIT2xq1r4GnrB2MwtcxJv5C7D28_10gACpFQnhn35OaQwZoRYMphDeiI52qVNr1DQ6Mazjp4LuFav4tH4Q19DLvqCizoOVOuFlUTyFPVf223lUvdtcCq92ydALPNwpr4K50fqaDHfb85yimOCcirguufA-xVwxP3h7xRpgHq3Rzyo_YqaZn2vtL6wbdEN5a1iA-LyuKjsUtasq6KqBXsf69fpLubpKyuZ9kX8KRwtzaJwEecPM5vz_33_5Zq0HT0sV6xTmuamp5fCWjHTuY2xuEeRKC1d9F95qRW2TxD-OtDPeuLjy3fdKeqIXpuPvpXjMCIcD6oYjSyYThsdl_qQIS7YNzxWpdKBVHDe_fB2OweNBSOmxuqToqmdHEdhshhWQY3GHn-PrwEGrmU3PI8Or_J1fcDefO5Ps8JlwX6rm1pwUy12q6tRgVTCa7vIbiZyD3UlWDSAeOT7EVj7X0vPI3P4U4JSj9fHHTvUQk_dV52juODRrEChg&zp=dKbhsPgh9TldCxI4DNsLQwSMOUxm68JVBDsEbBn0Om9XMPxX2sS15m_PitAxy1WV9GOxTSGXG6wEkyLrSp0Qy9i_hFfEWUdrEGIDz897q8JYhK5gG5TJXH0a5csp11bS8lZ3uw9eLoOCofOuiFpkbavEOyyjk4Ve8tvFNo-90c2qerBjtcBsObuGH1cqsaDWPLD2nNfYUJjwOioEMc8pfMgvdkRY3p418kXO7WXFISd1kMuYTk4ae9sKubZ0DhKSuE7MYsFEqfeMiAWJLgLXFfA-CVjbT-G3g6k6VDHhHkUMAeQO9waTJy4DhDj-sV6DFkPJkK7KVUbB6lLU4hVuSS_AfnYog6YvCOMfxY5L4h5xdwnJPZuw1PYpk8LiUBu7YdtLW5XVFuRFmxHUnBbI5rdijqX5WHCX8ZO-97PEYO4fgNtrlsogdYhtkKNtA5LWPogPuOEN8DkcMVBg4ywgc_JwjTrHeSW-Daw5VFv4K3z7R1_O9-cNM1vsVgNnkzSxB00p1fqeB4BTj8J31RqkN92j3A1hjxdNsVVDO635b0PZhzHo11qEIay34SDPmvKw1TQZu5kqh_VA4Q6qDPJ_CPYecG1EbmX259ZZ8rQ6BBMTlbtWPCghiW9E
+                      - 'img "Thumbnail image: Project updates everywhere except where you need them? ClickUp keeps tasks, timelines, and progress in one place." [ref=e247]'
+              - generic [ref=e249]:
+                - generic:
+                  - generic [ref=e250]:
+                    - button "Button to add a comment" [disabled]:
+                      - generic:
+                        - generic:
+                          - generic:
+                            - generic:
+                              - generic:
+                                - textbox [disabled]:
+                                  - /placeholder: Join the conversation
+                  - generic [ref=e255]:
+                    - generic [ref=e257]:
+                      - generic [ref=e258]: "Sort by:"
+                      - button "Sort by Best" [ref=e263] [cursor=pointer]:
+                        - generic [ref=e265]: Best
+                    - button "Search Comments Expand comment search" [ref=e272] [cursor=pointer]:
+                      - generic [ref=e273]:
+                        - img [ref=e276]
+                        - generic [ref=e279]: Search Comments
+                      - generic [ref=e280]:
+                        - generic: Expand comment search
+              - region "Comments" [ref=e284]:
+                - heading "Comments Section" [level=1] [ref=e285]
+                - generic:
+                  - article "Comment from FirmAndSquishyTomato 2 months ago" [ref=e287]:
+                    - generic "Metadata for FirmAndSquishyTomato's comment" [ref=e288]:
+                      - link "FirmAndSquishyTomato's profile --- avatar" [ref=e295] [cursor=pointer]:
+                        - /url: /user/FirmAndSquishyTomato/
+                        - img "u/FirmAndSquishyTomato avatar" [ref=e298]
+                      - generic [ref=e303]:
+                        - link "FirmAndSquishyTomato's profile" [ref=e308] [cursor=pointer]:
+                          - /url: /user/FirmAndSquishyTomato/
+                          - text: FirmAndSquishyTomato
+                        - generic [ref=e309]: •
+                        - link "2mo ago" [ref=e310] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/ocbbbep/
+                          - time [ref=e311]: 2mo ago
+                    - generic [ref=e312]:
+                      - paragraph [ref=e321]: Maybe the type of people that want "AI influencer/ content" are not likely to be quality customers?
+                      - generic [ref=e322]:
+                        - button "Toggle Comment Thread" [expanded] [ref=e324] [cursor=pointer]:
+                          - img [ref=e327]
+                        - generic [ref=e334]:
+                          - generic [ref=e336]:
+                            - button "Upvote" [ref=e337] [cursor=pointer]:
+                              - img [ref=e339]
+                              - generic [ref=e341]:
+                                - generic: Upvote
+                            - generic [ref=e343]: "34"
+                            - button "Downvote" [ref=e344] [cursor=pointer]:
+                              - img [ref=e346]
+                              - generic [ref=e348]:
+                                - generic: Downvote
+                          - button "Reply" [ref=e350] [cursor=pointer]:
+                            - generic [ref=e351]:
+                              - img [ref=e353]
+                              - generic [ref=e355]: Reply
+                          - button "Give award" [ref=e357] [cursor=pointer]:
+                            - generic [ref=e358]:
+                              - img [ref=e360]
+                              - generic [ref=e363]: Award
+                          - button "Share" [ref=e366] [cursor=pointer]:
+                            - generic [ref=e367]:
+                              - img [ref=e369]
+                              - generic [ref=e371]: Share
+                          - button "Open user actions" [ref=e375] [cursor=pointer]:
+                            - img [ref=e378]
+                      - generic [ref=e380]:
+                        - 'article "Comment thread level 1: Reply from [deleted] 1 month ago" [ref=e382]':
+                          - generic "Metadata for [deleted]'s comment" [ref=e383]:
+                            - img [ref=e393]
+                            - generic [ref=e399]:
+                              - generic [ref=e403]: "[deleted]"
+                              - generic [ref=e404]: •
+                              - link "1mo ago" [ref=e405] [cursor=pointer]:
+                                - /url: /r/stripe/comments/1s2wp37/comment/og9ss44/
+                                - time [ref=e406]: 1mo ago
+                          - generic [ref=e407]:
+                            - paragraph [ref=e414]: Comment removed by moderator
+                            - generic [ref=e415]:
+                              - button "Toggle Comment Thread" [expanded] [ref=e417] [cursor=pointer]:
+                                - img [ref=e420]
+                              - generic [ref=e427]:
+                                - generic [ref=e429]:
+                                  - button "Upvote" [disabled]:
+                                    - generic:
+                                      - img
+                                    - generic:
+                                      - generic: Upvote
+                                  - generic [ref=e431]: "1"
+                                  - button "Downvote" [disabled]:
+                                    - generic:
+                                      - img
+                                    - generic:
+                                      - generic: Downvote
+                                - generic [ref=e432]:
+                                  - button "Reply" [disabled]:
+                                    - generic:
+                                      - generic:
+                                        - img
+                                      - generic: Reply
+                                - generic [ref=e434]:
+                                  - generic:
+                                    - button "Share" [disabled]:
+                                      - generic:
+                                        - generic:
+                                          - img
+                                        - generic: Share
+                                - generic [ref=e437]:
+                                  - button "Open user actions" [disabled]:
+                                    - generic:
+                                      - generic:
+                                        - img
+                            - 'article "Comment thread level 2: Reply from stripe-ModTeam 1 month ago" [ref=e442]':
+                              - generic "Metadata for stripe-ModTeam's comment" [ref=e443]:
+                                - link "stripe-ModTeam's profile --- avatar" [ref=e450] [cursor=pointer]:
+                                  - /url: /user/stripe-ModTeam/
+                                  - img "u/stripe-ModTeam avatar" [ref=e453]
+                                - generic [ref=e458]:
+                                  - link "stripe-ModTeam's profile" [ref=e463] [cursor=pointer]:
+                                    - /url: /user/stripe-ModTeam/
+                                    - text: stripe-ModTeam
+                                  - generic "Comment distinguished by moderator" [ref=e466]: MOD
+                                  - generic [ref=e467]: •
+                                  - link "1mo ago" [ref=e468] [cursor=pointer]:
+                                    - /url: /r/stripe/comments/1s2wp37/comment/ogal7ci/
+                                    - time [ref=e469]: 1mo ago
+                                  - generic [ref=e470]:
+                                    - generic [ref=e471]: •
+                                    - img "Locked comment" [ref=e472]
+                              - generic [ref=e474]:
+                                - paragraph [ref=e481]: Your post has been removed. This subreddit is intended for discussions about Stripe. Harassment, bigotry and racism will not be tolerated.
+                                - generic [ref=e489]:
+                                  - generic [ref=e491]:
+                                    - button "Upvote" [ref=e492] [cursor=pointer]:
+                                      - img [ref=e494]
+                                      - generic [ref=e496]:
+                                        - generic: Upvote
+                                    - generic [ref=e498]: "1"
+                                    - button "Downvote" [ref=e499] [cursor=pointer]:
+                                      - img [ref=e501]
+                                      - generic [ref=e503]:
+                                        - generic: Downvote
+                                  - button "Give award" [ref=e505] [cursor=pointer]:
+                                    - generic [ref=e506]:
+                                      - img [ref=e508]
+                                      - generic [ref=e511]: Award
+                                  - button "Share" [ref=e514] [cursor=pointer]:
+                                    - generic [ref=e515]:
+                                      - img [ref=e517]
+                                      - generic [ref=e519]: Share
+                                  - button "Open user actions" [ref=e523] [cursor=pointer]:
+                                    - img [ref=e526]
+                        - button "2 more replies" [ref=e534] [cursor=pointer]:
+                          - img [ref=e536]
+                          - generic [ref=e539]:
+                            - generic [ref=e540]: "2"
+                            - text: more replies
+                  - article "Comment from Sea-Tale1722 2 months ago" [ref=e542]:
+                    - generic "Metadata for Sea-Tale1722's comment" [ref=e543]:
+                      - link "Sea-Tale1722's profile --- avatar" [ref=e550] [cursor=pointer]:
+                        - /url: /user/Sea-Tale1722/
+                        - img [ref=e555]
+                      - generic [ref=e561]:
+                        - link "Sea-Tale1722's profile" [ref=e566] [cursor=pointer]:
+                          - /url: /user/Sea-Tale1722/
+                          - text: Sea-Tale1722
+                        - generic [ref=e567]: •
+                        - link "2mo ago" [ref=e568] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/ocbge92/
+                          - time [ref=e569]: 2mo ago
+                    - generic [ref=e570]:
+                      - generic [ref=e578]:
+                        - paragraph [ref=e579]: It means people are likely using prepaid cards to register for the free trial/paying for the first month and then blocking you, locking their cards, or they don’t actually keep cash on the card they use for signups.
+                        - paragraph [ref=e580]: This is what I do with apps I’m only testing out.
+                      - generic [ref=e581]:
+                        - button "Toggle Comment Thread" [expanded] [ref=e583] [cursor=pointer]:
+                          - img [ref=e586]
+                        - generic [ref=e593]:
+                          - generic [ref=e595]:
+                            - button "Upvote" [ref=e596] [cursor=pointer]:
+                              - img [ref=e598]
+                              - generic [ref=e600]:
+                                - generic: Upvote
+                            - generic [ref=e602]: "22"
+                            - button "Downvote" [ref=e603] [cursor=pointer]:
+                              - img [ref=e605]
+                              - generic [ref=e607]:
+                                - generic: Downvote
+                          - button "Reply" [ref=e609] [cursor=pointer]:
+                            - generic [ref=e610]:
+                              - img [ref=e612]
+                              - generic [ref=e614]: Reply
+                          - button "Give award" [ref=e616] [cursor=pointer]:
+                            - generic [ref=e617]:
+                              - img [ref=e619]
+                              - generic [ref=e622]: Award
+                          - button "Share" [ref=e625] [cursor=pointer]:
+                            - generic [ref=e626]:
+                              - img [ref=e628]
+                              - generic [ref=e630]: Share
+                          - button "Open user actions" [ref=e634] [cursor=pointer]:
+                            - img [ref=e637]
+                      - generic [ref=e639]:
+                        - 'article "Comment thread level 1: Reply from Due-Age727 2 months ago" [ref=e641]':
+                          - generic "Metadata for Due-Age727's comment" [ref=e642]:
+                            - link "Due-Age727's profile --- avatar" [ref=e649] [cursor=pointer]:
+                              - /url: /user/Due-Age727/
+                              - img "u/Due-Age727 avatar" [ref=e652]
+                            - generic [ref=e657]:
+                              - link "Due-Age727's profile" [ref=e662] [cursor=pointer]:
+                                - /url: /user/Due-Age727/
+                                - text: Due-Age727
+                              - generic [ref=e663]: •
+                              - link "2mo ago" [ref=e664] [cursor=pointer]:
+                                - /url: /r/stripe/comments/1s2wp37/comment/occ7io2/
+                                - time [ref=e665]: 2mo ago
+                          - generic [ref=e666]:
+                            - paragraph [ref=e675]: That's a really good idea
+                            - button "2 more replies" [ref=e687] [cursor=pointer]:
+                              - img [ref=e689]
+                              - generic [ref=e692]:
+                                - generic [ref=e693]: "2"
+                                - text: more replies
+                        - 'article "Comment thread level 1: Reply from piratedengineer 2 months ago" [ref=e695]':
+                          - generic "Metadata for piratedengineer's comment" [ref=e696]:
+                            - link "piratedengineer's profile --- avatar" [ref=e703] [cursor=pointer]:
+                              - /url: /user/piratedengineer/
+                              - img [ref=e708]
+                            - generic [ref=e714]:
+                              - link "piratedengineer's profile" [ref=e719] [cursor=pointer]:
+                                - /url: /user/piratedengineer/
+                                - text: piratedengineer
+                              - generic [ref=e720]: •
+                              - link "2mo ago" [ref=e721] [cursor=pointer]:
+                                - /url: /r/stripe/comments/1s2wp37/comment/ocdl222/
+                                - time [ref=e722]: 2mo ago
+                          - paragraph [ref=e730]: +1 here. I usually use a one time use virtual card to start free trials of any app. Setup a threshold at 1 cent so that any payment running on it will fail.
+                        - 'article "Comment thread level 1: Reply from Wooden-Pen8606 2 months ago" [ref=e736]':
+                          - generic "Metadata for Wooden-Pen8606's comment" [ref=e737]:
+                            - link "Wooden-Pen8606's profile --- avatar" [ref=e744] [cursor=pointer]:
+                              - /url: /user/Wooden-Pen8606/
+                              - img [ref=e749]
+                            - generic [ref=e755]:
+                              - link "Wooden-Pen8606's profile" [ref=e760] [cursor=pointer]:
+                                - /url: /user/Wooden-Pen8606/
+                                - text: Wooden-Pen8606
+                              - generic [ref=e761]: •
+                              - link "2mo ago" [ref=e762] [cursor=pointer]:
+                                - /url: /r/stripe/comments/1s2wp37/comment/ocdz8ja/
+                                - time [ref=e763]: 2mo ago
+                          - paragraph [ref=e771]:
+                            - text: Post this to
+                            - link "r/LifeProTips" [ref=e772] [cursor=pointer]:
+                              - /url: /r/LifeProTips/
+                            - text: "! Thank you for the idea!"
+                        - 'article "Comment thread level 1: Reply from KingdomOfAngel 2 months ago" [ref=e778]':
+                          - generic "Metadata for KingdomOfAngel's comment" [ref=e779]:
+                            - link "KingdomOfAngel's profile --- avatar" [ref=e786] [cursor=pointer]:
+                              - /url: /user/KingdomOfAngel/
+                              - img [ref=e791]
+                            - generic [ref=e797]:
+                              - link "KingdomOfAngel's profile" [ref=e802] [cursor=pointer]:
+                                - /url: /user/KingdomOfAngel/
+                                - text: KingdomOfAngel
+                              - generic [ref=e803]: •
+                              - link "2mo ago" [ref=e804] [cursor=pointer]:
+                                - /url: /r/stripe/comments/1s2wp37/comment/ocfomvv/
+                                - time [ref=e805]: 2mo ago
+                          - paragraph [ref=e813]: I used to do this until Stripe blocked basically most of the prepaid cards, even when I want to actually pay for a service for a few months.
+                        - 'article "Comment thread level 1: Reply from darko777 2 months ago" [ref=e819]':
+                          - generic "Metadata for darko777's comment" [ref=e820]:
+                            - link "darko777's profile --- avatar" [ref=e827] [cursor=pointer]:
+                              - /url: /user/darko777/
+                              - img [ref=e832]
+                            - generic [ref=e838]:
+                              - link "darko777's profile" [ref=e843] [cursor=pointer]:
+                                - /url: /user/darko777/
+                                - text: darko777
+                              - generic [ref=e844]: •
+                              - link "2mo ago" [ref=e845] [cursor=pointer]:
+                                - /url: /r/stripe/comments/1s2wp37/comment/ocjona6/
+                                - time [ref=e846]: 2mo ago
+                          - generic [ref=e847]:
+                            - paragraph [ref=e856]: But is it possible to block those cards? How?
+                            - button "Toggle Comment Thread" [expanded] [ref=e859] [cursor=pointer]:
+                              - img [ref=e862]
+                            - 'article "Comment thread level 2: Reply from MaddogITB 2 months ago" [ref=e870]':
+                              - generic "Metadata for MaddogITB's comment" [ref=e871]:
+                                - link "MaddogITB's profile --- avatar" [ref=e878] [cursor=pointer]:
+                                  - /url: /user/MaddogITB/
+                                  - img [ref=e883]
+                                - generic [ref=e889]:
+                                  - link "MaddogITB's profile" [ref=e894] [cursor=pointer]:
+                                    - /url: /user/MaddogITB/
+                                    - text: MaddogITB
+                                  - generic [ref=e895]: •
+                                  - link "2mo ago" [ref=e896] [cursor=pointer]:
+                                    - /url: /r/stripe/comments/1s2wp37/comment/ockvgrd/
+                                    - time [ref=e897]: 2mo ago
+                              - paragraph [ref=e905]: Don't think so, you can require a small amount for a trial (e.g. $1), or just don't do them.
+                        - button "1 more reply" [ref=e916] [cursor=pointer]:
+                          - img [ref=e918]
+                          - generic [ref=e921]:
+                            - generic [ref=e922]: "1"
+                            - text: more reply
+                  - article "Comment from alexohno 2 months ago" [ref=e924]:
+                    - generic "Metadata for alexohno's comment" [ref=e925]:
+                      - link "alexohno's profile --- avatar" [ref=e932] [cursor=pointer]:
+                        - /url: /user/alexohno/
+                        - img "u/alexohno avatar" [ref=e935]
+                      - generic [ref=e940]:
+                        - link "alexohno's profile" [ref=e945] [cursor=pointer]:
+                          - /url: /user/alexohno/
+                          - text: alexohno
+                        - generic [ref=e946]: •
+                        - link "2mo ago" [ref=e947] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/ocbj25w/
+                          - time [ref=e948]: 2mo ago
+                    - generic [ref=e949]:
+                      - generic [ref=e957]:
+                        - paragraph [ref=e958]: Make sure Radar is enabled for setup intents. That was our first mistake.
+                        - paragraph [ref=e959]: Block all prepaid - out of hundreds of attempts I literally saw one work. That’s the biggie
+                        - paragraph [ref=e960]: Block anonymous IPs. Another “literally one” discovery.
+                        - paragraph [ref=e961]: Block card and computer distance being thousands of miles apart.
+                        - paragraph [ref=e962]: If you’re advertising, make sure you have some CAPI event for bad user to show the algorithm an audience you don’t want.
+                        - paragraph [ref=e963]: You might feel bad blocking a small handful of good users lumped into those categories but I’ve found no reliable way to account for that.
+                        - paragraph [ref=e964]: Happy to provide more input. We weren’t 80% but we were pushing it. Infuriating so I just wanna see others get past it too lol
+                        - paragraph [ref=e965]: "Edit: one thing to note is at first you think “well there goes my subscribers.” But you’ll have quality over quantity quickly. Additionally, if you are using data for advertising, you will retrain algorithms to not find as many of the bad ones."
+                      - button "Toggle Comment Thread" [expanded] [ref=e968] [cursor=pointer]:
+                        - img [ref=e971]
+                      - generic [ref=e975]:
+                        - 'article "Comment thread level 1: Reply from Meaxis 2 months ago" [ref=e977]':
+                          - generic "Metadata for Meaxis's comment" [ref=e978]:
+                            - link "Meaxis's profile --- avatar" [ref=e985] [cursor=pointer]:
+                              - /url: /user/Meaxis/
+                              - generic [ref=e987]:
+                                - img [ref=e989]
+                                - img [ref=e993]
+                                - img [ref=e996]
+                            - generic [ref=e1002]:
+                              - link "Meaxis's profile" [ref=e1007] [cursor=pointer]:
+                                - /url: /user/Meaxis/
+                                - text: Meaxis
+                              - generic [ref=e1008]: •
+                              - link "2mo ago" [ref=e1009] [cursor=pointer]:
+                                - /url: /r/stripe/comments/1s2wp37/comment/ocbjfi2/
+                                - time [ref=e1010]: 2mo ago
+                          - generic [ref=e1011]:
+                            - paragraph [ref=e1020]: The good users will usually go the extra mile and reach out to support where the bad actors would just give up anyways.
+                            - button "Toggle Comment Thread" [expanded] [ref=e1023] [cursor=pointer]:
+                              - img [ref=e1026]
+                            - 'article "Comment thread level 2: Reply from LatvianCake 2 months ago" [ref=e1034]':
+                              - generic "Metadata for LatvianCake's comment" [ref=e1035]:
+                                - link "LatvianCake's profile --- avatar" [ref=e1042] [cursor=pointer]:
+                                  - /url: /user/LatvianCake/
+                                  - img "u/LatvianCake avatar" [ref=e1045]
+                                - generic [ref=e1050]:
+                                  - link "LatvianCake's profile" [ref=e1055] [cursor=pointer]:
+                                    - /url: /user/LatvianCake/
+                                    - text: LatvianCake
+                                  - generic [ref=e1056]: •
+                                  - link "2mo ago" [ref=e1057] [cursor=pointer]:
+                                    - /url: /r/stripe/comments/1s2wp37/comment/occnfvu/
+                                    - time [ref=e1058]: 2mo ago
+                              - generic [ref=e1065]:
+                                - paragraph [ref=e1066]: Being digitally discriminated sucks. I move a lot to weird countries and regularly deal with it. I imagine those who are affected by the measures are also regularly dealing with it.
+                                - paragraph [ref=e1067]: I have to be pretty desperate to contact support. When multiple attempts at payments fail, I give up and move on.
+                                - paragraph [ref=e1068]: Of course I get the need for the measures. But you can also imagine the lack of willpower to contact a company to convince them to accept my money.
+                        - button "2 more replies" [ref=e1079] [cursor=pointer]:
+                          - img [ref=e1081]
+                          - generic [ref=e1084]:
+                            - generic [ref=e1085]: "2"
+                            - text: more replies
+                  - article "Comment from UrStockDaddy 2 months ago" [ref=e1087]:
+                    - generic "Metadata for UrStockDaddy's comment" [ref=e1088]:
+                      - link "UrStockDaddy's profile --- avatar" [ref=e1095] [cursor=pointer]:
+                        - /url: /user/UrStockDaddy/
+                        - generic [ref=e1097]:
+                          - img [ref=e1099]
+                          - img [ref=e1103]
+                          - img [ref=e1106]
+                      - generic [ref=e1112]:
+                        - link "UrStockDaddy's profile" [ref=e1117] [cursor=pointer]:
+                          - /url: /user/UrStockDaddy/
+                          - text: UrStockDaddy
+                        - generic [ref=e1118]: •
+                        - link "2mo ago" [ref=e1119] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/ocbla6a/
+                          - time [ref=e1120]: 2mo ago
+                    - generic [ref=e1121]:
+                      - paragraph [ref=e1130]: Trial to paid is always a lower quality funnel. Try offering a 30 day or 7 day refund guarantee
+                      - button "6 more replies" [ref=e1142] [cursor=pointer]:
+                        - img [ref=e1144]
+                        - generic [ref=e1147]:
+                          - generic [ref=e1148]: "6"
+                          - text: more replies
+                  - article "Comment from LittleLoquat 2 months ago" [ref=e1150]:
+                    - generic "Metadata for LittleLoquat's comment" [ref=e1151]:
+                      - link "LittleLoquat's profile --- avatar" [ref=e1158] [cursor=pointer]:
+                        - /url: /user/LittleLoquat/
+                        - img [ref=e1163]
+                      - generic [ref=e1169]:
+                        - link "LittleLoquat's profile" [ref=e1174] [cursor=pointer]:
+                          - /url: /user/LittleLoquat/
+                          - text: LittleLoquat
+                        - generic [ref=e1175]: •
+                        - link "2mo ago" [ref=e1176] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/ocbbsf5/
+                          - time [ref=e1177]: 2mo ago
+                    - generic [ref=e1178]:
+                      - paragraph [ref=e1187]: Low quality users
+                      - button "Toggle Comment Thread" [expanded] [ref=e1190] [cursor=pointer]:
+                        - img [ref=e1193]
+                      - 'article "Comment thread level 1: Reply from roulettewiz 2 months ago" [ref=e1201]':
+                        - generic "Metadata for roulettewiz's comment" [ref=e1202]:
+                          - link "roulettewiz's profile --- avatar" [ref=e1209] [cursor=pointer]:
+                            - /url: /user/roulettewiz/
+                            - img "u/roulettewiz avatar" [ref=e1212]
+                          - generic [ref=e1217]:
+                            - link "roulettewiz's profile" [ref=e1222] [cursor=pointer]:
+                              - /url: /user/roulettewiz/
+                              - text: roulettewiz
+                            - generic [ref=e1223]: •
+                            - link "2mo ago" [ref=e1224] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1s2wp37/comment/occjie3/
+                              - time [ref=e1225]: 2mo ago
+                        - generic [ref=e1226]:
+                          - paragraph [ref=e1235]: Nah, it's not the users, people see what the product is about, doesn't add value, cancel before or use a burner credit card
+                          - button "Toggle Comment Thread" [expanded] [ref=e1238] [cursor=pointer]:
+                            - img [ref=e1241]
+                          - 'article "Comment thread level 2: Reply from MexicanJello 2 months ago" [ref=e1249]':
+                            - generic "Metadata for MexicanJello's comment" [ref=e1250]:
+                              - link "MexicanJello's profile --- avatar" [ref=e1257] [cursor=pointer]:
+                                - /url: /user/MexicanJello/
+                                - img "u/MexicanJello avatar" [ref=e1260]
+                              - generic [ref=e1265]:
+                                - link "MexicanJello's profile" [ref=e1270] [cursor=pointer]:
+                                  - /url: /user/MexicanJello/
+                                  - text: MexicanJello
+                                - generic [ref=e1271]: •
+                                - link "2mo ago" [ref=e1272] [cursor=pointer]:
+                                  - /url: /r/stripe/comments/1s2wp37/comment/ocg8tzd/
+                                  - time [ref=e1273]: 2mo ago
+                            - paragraph [ref=e1281]: If they cancelled it wouldn't be a failed payment. 80% of this guy's users are using burner cards. Which is probably a handful of people exploiting it in some way rather than each being an individual user
+                  - generic "Paddle is the Merchant of Record for SaaS & Apps. Grow faster globally without the risk and pain and cost and hassle of building your own payment stack." [ref=e1287]:
+                    - generic [ref=e1288]:
+                      - 'generic "Advertisement: Paddle is the Merchant of Record for SaaS & Apps. Grow faster globally without the risk and pain and cost and hassle of building your own payment stack." [ref=e1289]':
+                        - 'link "Advertisement: Paddle is the Merchant of Record for SaaS & Apps. Grow faster globally without the risk and pain and cost and hassle of building your own payment stack." [ref=e1290] [cursor=pointer]':
+                          - /url: https://alb.reddit.com/cr?za=ComiMdQ5jGaWnKc9LrkKGkAzHRvtG5Jwiy3U3UDEU-UK5UFseyDpeJCdkOCwcJXjwklfPB_-HwfJ678TjayPQL-2cv6OAzyUp-Eg1A86v-DjDdPf0aZ9nYEjjMkXyUPs9cOkV-U6FAf3GLJL5P19fsFkCKBz9rV4A83XAXfAXlPfEoizNg0onDxgk3cJxNmLN58xTcW7nB8WX-o_XXfDSnpJfYUZO_gdydFIOgb9xG9E5gZvtJ5MsuW_NlnvMfqiygyjOim4rtwR_Z1PO9cBiS7-C691KDpxMfCy8yZjW0dXgSvw-shlRWeu4v4cB4nSPORUWbhAeb4TcGdYSeoY0-RQKvW98BY6AZV0oO0fFy1ZO0R6s-078Ywk8MrcoqqQ1AaZKoDhUbroY6yIdkh5PYXK50iGpWqY0qw5c1OdSwlbAz9TH2iw87nXotdrgqMMWFPQM6NUd4y9J9rdKbUoyJMDcT8k9bHlXz8V1lzcixlydQY0YsK92gYhYLT4HwLO6et7FFttZuUh0JxgdjmVPoNk82TulPvwuahkBGEyvARvc-XfX5FHH80yQkDq6tnBI4JxPzM3MZl8zQfayFjSjJcNGAvmwX2MvHy0eYxcekn28Zmc8oaz-ELRzwV55hHQONm9_dqm4qQ4th0GVug4Wz0yYInMuVfqKVbvzJHfgVr4BgaBfBOUVvmr_pL9Ugr-dNpF7GAdJrgH6pKmj7dhEh4GMq6sYXzK4XBOAOlea-YJRr_XpEZoZyhmsL0xsyirtTnwAMhVoZILFAca3wO-&zp=2IpiGczzZmddmdysy4DP1WB3j2UrQoCGLGYzvXQ3dHEN7oxVkEprrp6SbF_GNiSrGRWkP2Eeg2PYawMhgTPD-RRk3itVdSKinD4OVp6NXrwFmmkos7NIZg_GUzmtu8VqHJ-PwnRby10CUnejSO_GyNELzZJiKhkBg6YkXJyNLOQLk2qSg4Q91JyPiWvTiJQo-Ew5Quaywq0ZRJ1Mo54fy3hX3H9nLs5995ap6zOR9uof78oWu-rRkVE3D6yvVtjHh7jAiVQFBmr8gEn9km1Iyq0waUVt-XS3r3W8cDZUPInUJn-uUne2d7SXJC2soyGwLKi_RGzzjyTlbeX36xUTgnopvjFgjKkjswyZPb3IYUzbN1-GXs2rEYEQVfaKzkagBTmjq55E0vY7
+                      - generic [ref=e1291]:
+                        - generic [ref=e1292]:
+                          - link "u/Paddle_Billing avatar u/Paddle_Billing" [ref=e1295] [cursor=pointer]:
+                            - /url: /user/Paddle_Billing/
+                            - img "u/Paddle_Billing avatar" [ref=e1298]
+                            - generic [ref=e1299]: u/Paddle_Billing
+                          - generic [ref=e1300]: •
+                          - link "Promoted" [ref=e1302] [cursor=pointer]:
+                            - /url: /user/Paddle_Billing/
+                            - generic [ref=e1303]: Promoted
+                          - link [ref=e1305] [cursor=pointer]:
+                            - /url: https://alb.reddit.com/cr?za=ComiMdQ5jGaWnKc9LrkKGkAzHRvtG5Jwiy3U3UDEU-UK5UFseyDpeJCdkOCwcJXjwklfPB_-HwfJ678TjayPQL-2cv6OAzyUp-Eg1A86v-DjDdPf0aZ9nYEjjMkXyUPs9cOkV-U6FAf3GLJL5P19fsFkCKBz9rV4A83XAXfAXlPfEoizNg0onDxgk3cJxNmLN58xTcW7nB8WX-o_XXfDSnpJfYUZO_gdydFIOgb9xG9E5gZvtJ5MsuW_NlnvMfqiygyjOim4rtwR_Z1PO9cBiS7-C691KDpxMfCy8yZjW0dXgSvw-shlRWeu4v4cB4nSPORUWbhAeb4TcGdYSeoY0-RQKvW98BY6AZV0oO0fFy1ZO0R6s-078Ywk8MrcoqqQ1AaZKoDhUbroY6yIdkh5PYXK50iGpWqY0qw5c1OdSwlbAz9TH2iw87nXotdrgqMMWFPQM6NUd4y9J9rdKbUoyJMDcT8k9bHlXz8V1lzcixlydQY0YsK92gYhYLT4HwLO6et7FFttZuUh0JxgdjmVPoNk82TulPvwuahkBGEyvARvc-XfX5FHH80yQkDq6tnBI4JxPzM3MZl8zQfayFjSjJcNGAvmwX2MvHy0eYxcekn28Zmc8oaz-ELRzwV55hHQONm9_dqm4qQ4th0GVug4Wz0yYInMuVfqKVbvzJHfgVr4BgaBfBOUVvmr_pL9Ugr-dNpF7GAdJrgH6pKmj7dhEh4GMq6sYXzK4XBOAOlea-YJRr_XpEZoZyhmsL0xsyirtTnwAMhVoZILFAca3wO-&zp=2IpiGczzZmddmdysy4DP1WB3j2UrQoCGLGYzvXQ3dHEN7oxVkEprrp6SbF_GNiSrGRWkP2Eeg2PYawMhgTPD-RRk3itVdSKinD4OVp6NXrwFmmkos7NIZg_GUzmtu8VqHJ-PwnRby10CUnejSO_GyNELzZJiKhkBg6YkXJyNLOQLk2qSg4Q91JyPiWvTiJQo-Ew5Quaywq0ZRJ1Mo54fy3hX3H9nLs5995ap6zOR9uof78oWu-rRkVE3D6yvVtjHh7jAiVQFBmr8gEn9km1Iyq0waUVt-XS3r3W8cDZUPInUJn-uUne2d7SXJC2soyGwLKi_RGzzjyTlbeX36xUTgnopvjFgjKkjswyZPb3IYUzbN1-GXs2rEYEQVfaKzkagBTmjq55E0vY7
+                        - button "Open user actions" [ref=e1310] [cursor=pointer]:
+                          - img [ref=e1313]
+                      - generic [ref=e1316]:
+                        - generic [ref=e1317]:
+                          - link "Paddle is the Merchant of Record for SaaS & Apps. Grow faster globally without the risk and pain and cost and hassle of building your own payment stack." [ref=e1319] [cursor=pointer]:
+                            - /url: https://alb.reddit.com/cr?za=ComiMdQ5jGaWnKc9LrkKGkAzHRvtG5Jwiy3U3UDEU-UK5UFseyDpeJCdkOCwcJXjwklfPB_-HwfJ678TjayPQL-2cv6OAzyUp-Eg1A86v-DjDdPf0aZ9nYEjjMkXyUPs9cOkV-U6FAf3GLJL5P19fsFkCKBz9rV4A83XAXfAXlPfEoizNg0onDxgk3cJxNmLN58xTcW7nB8WX-o_XXfDSnpJfYUZO_gdydFIOgb9xG9E5gZvtJ5MsuW_NlnvMfqiygyjOim4rtwR_Z1PO9cBiS7-C691KDpxMfCy8yZjW0dXgSvw-shlRWeu4v4cB4nSPORUWbhAeb4TcGdYSeoY0-RQKvW98BY6AZV0oO0fFy1ZO0R6s-078Ywk8MrcoqqQ1AaZKoDhUbroY6yIdkh5PYXK50iGpWqY0qw5c1OdSwlbAz9TH2iw87nXotdrgqMMWFPQM6NUd4y9J9rdKbUoyJMDcT8k9bHlXz8V1lzcixlydQY0YsK92gYhYLT4HwLO6et7FFttZuUh0JxgdjmVPoNk82TulPvwuahkBGEyvARvc-XfX5FHH80yQkDq6tnBI4JxPzM3MZl8zQfayFjSjJcNGAvmwX2MvHy0eYxcekn28Zmc8oaz-ELRzwV55hHQONm9_dqm4qQ4th0GVug4Wz0yYInMuVfqKVbvzJHfgVr4BgaBfBOUVvmr_pL9Ugr-dNpF7GAdJrgH6pKmj7dhEh4GMq6sYXzK4XBOAOlea-YJRr_XpEZoZyhmsL0xsyirtTnwAMhVoZILFAca3wO-&zp=2IpiGczzZmddmdysy4DP1WB3j2UrQoCGLGYzvXQ3dHEN7oxVkEprrp6SbF_GNiSrGRWkP2Eeg2PYawMhgTPD-RRk3itVdSKinD4OVp6NXrwFmmkos7NIZg_GUzmtu8VqHJ-PwnRby10CUnejSO_GyNELzZJiKhkBg6YkXJyNLOQLk2qSg4Q91JyPiWvTiJQo-Ew5Quaywq0ZRJ1Mo54fy3hX3H9nLs5995ap6zOR9uof78oWu-rRkVE3D6yvVtjHh7jAiVQFBmr8gEn9km1Iyq0waUVt-XS3r3W8cDZUPInUJn-uUne2d7SXJC2soyGwLKi_RGzzjyTlbeX36xUTgnopvjFgjKkjswyZPb3IYUzbN1-GXs2rEYEQVfaKzkagBTmjq55E0vY7
+                            - generic: Paddle is the Merchant of Record for SaaS & Apps. Grow faster globally without the risk and pain and cost and hassle of building your own payment stack.
+                          - generic [ref=e1320]:
+                            - link [ref=e1322] [cursor=pointer]:
+                              - /url: https://alb.reddit.com/cr?za=ComiMdQ5jGaWnKc9LrkKGkAzHRvtG5Jwiy3U3UDEU-UK5UFseyDpeJCdkOCwcJXjwklfPB_-HwfJ678TjayPQL-2cv6OAzyUp-Eg1A86v-DjDdPf0aZ9nYEjjMkXyUPs9cOkV-U6FAf3GLJL5P19fsFkCKBz9rV4A83XAXfAXlPfEoizNg0onDxgk3cJxNmLN58xTcW7nB8WX-o_XXfDSnpJfYUZO_gdydFIOgb9xG9E5gZvtJ5MsuW_NlnvMfqiygyjOim4rtwR_Z1PO9cBiS7-C691KDpxMfCy8yZjW0dXgSvw-shlRWeu4v4cB4nSPORUWbhAeb4TcGdYSeoY0-RQKvW98BY6AZV0oO0fFy1ZO0R6s-078Ywk8MrcoqqQ1AaZKoDhUbroY6yIdkh5PYXK50iGpWqY0qw5c1OdSwlbAz9TH2iw87nXotdrgqMMWFPQM6NUd4y9J9rdKbUoyJMDcT8k9bHlXz8V1lzcixlydQY0YsK92gYhYLT4HwLO6et7FFttZuUh0JxgdjmVPoNk82TulPvwuahkBGEyvARvc-XfX5FHH80yQkDq6tnBI4JxPzM3MZl8zQfayFjSjJcNGAvmwX2MvHy0eYxcekn28Zmc8oaz-ELRzwV55hHQONm9_dqm4qQ4th0GVug4Wz0yYInMuVfqKVbvzJHfgVr4BgaBfBOUVvmr_pL9Ugr-dNpF7GAdJrgH6pKmj7dhEh4GMq6sYXzK4XBOAOlea-YJRr_XpEZoZyhmsL0xsyirtTnwAMhVoZILFAca3wO-&zp=2IpiGczzZmddmdysy4DP1WB3j2UrQoCGLGYzvXQ3dHEN7oxVkEprrp6SbF_GNiSrGRWkP2Eeg2PYawMhgTPD-RRk3itVdSKinD4OVp6NXrwFmmkos7NIZg_GUzmtu8VqHJ-PwnRby10CUnejSO_GyNELzZJiKhkBg6YkXJyNLOQLk2qSg4Q91JyPiWvTiJQo-Ew5Quaywq0ZRJ1Mo54fy3hX3H9nLs5995ap6zOR9uof78oWu-rRkVE3D6yvVtjHh7jAiVQFBmr8gEn9km1Iyq0waUVt-XS3r3W8cDZUPInUJn-uUne2d7SXJC2soyGwLKi_RGzzjyTlbeX36xUTgnopvjFgjKkjswyZPb3IYUzbN1-GXs2rEYEQVfaKzkagBTmjq55E0vY7
+                            - generic [ref=e1323]:
+                              - link "Learn More" [ref=e1325] [cursor=pointer]:
+                                - /url: https://alb.reddit.com/cr?za=ComiMdQ5jGaWnKc9LrkKGkAzHRvtG5Jwiy3U3UDEU-UK5UFseyDpeJCdkOCwcJXjwklfPB_-HwfJ678TjayPQL-2cv6OAzyUp-Eg1A86v-DjDdPf0aZ9nYEjjMkXyUPs9cOkV-U6FAf3GLJL5P19fsFkCKBz9rV4A83XAXfAXlPfEoizNg0onDxgk3cJxNmLN58xTcW7nB8WX-o_XXfDSnpJfYUZO_gdydFIOgb9xG9E5gZvtJ5MsuW_NlnvMfqiygyjOim4rtwR_Z1PO9cBiS7-C691KDpxMfCy8yZjW0dXgSvw-shlRWeu4v4cB4nSPORUWbhAeb4TcGdYSeoY0-RQKvW98BY6AZV0oO0fFy1ZO0R6s-078Ywk8MrcoqqQ1AaZKoDhUbroY6yIdkh5PYXK50iGpWqY0qw5c1OdSwlbAz9TH2iw87nXotdrgqMMWFPQM6NUd4y9J9rdKbUoyJMDcT8k9bHlXz8V1lzcixlydQY0YsK92gYhYLT4HwLO6et7FFttZuUh0JxgdjmVPoNk82TulPvwuahkBGEyvARvc-XfX5FHH80yQkDq6tnBI4JxPzM3MZl8zQfayFjSjJcNGAvmwX2MvHy0eYxcekn28Zmc8oaz-ELRzwV55hHQONm9_dqm4qQ4th0GVug4Wz0yYInMuVfqKVbvzJHfgVr4BgaBfBOUVvmr_pL9Ugr-dNpF7GAdJrgH6pKmj7dhEh4GMq6sYXzK4XBOAOlea-YJRr_XpEZoZyhmsL0xsyirtTnwAMhVoZILFAca3wO-&zp=2IpiGczzZmddmdysy4DP1WB3j2UrQoCGLGYzvXQ3dHEN7oxVkEprrp6SbF_GNiSrGRWkP2Eeg2PYawMhgTPD-RRk3itVdSKinD4OVp6NXrwFmmkos7NIZg_GUzmtu8VqHJ-PwnRby10CUnejSO_GyNELzZJiKhkBg6YkXJyNLOQLk2qSg4Q91JyPiWvTiJQo-Ew5Quaywq0ZRJ1Mo54fy3hX3H9nLs5995ap6zOR9uof78oWu-rRkVE3D6yvVtjHh7jAiVQFBmr8gEn9km1Iyq0waUVt-XS3r3W8cDZUPInUJn-uUne2d7SXJC2soyGwLKi_RGzzjyTlbeX36xUTgnopvjFgjKkjswyZPb3IYUzbN1-GXs2rEYEQVfaKzkagBTmjq55E0vY7
+                                - generic [ref=e1327]:
+                                  - generic: Learn More
+                              - link "mor.paddle.com" [ref=e1330] [cursor=pointer]:
+                                - /url: https://alb.reddit.com/cr?za=ComiMdQ5jGaWnKc9LrkKGkAzHRvtG5Jwiy3U3UDEU-UK5UFseyDpeJCdkOCwcJXjwklfPB_-HwfJ678TjayPQL-2cv6OAzyUp-Eg1A86v-DjDdPf0aZ9nYEjjMkXyUPs9cOkV-U6FAf3GLJL5P19fsFkCKBz9rV4A83XAXfAXlPfEoizNg0onDxgk3cJxNmLN58xTcW7nB8WX-o_XXfDSnpJfYUZO_gdydFIOgb9xG9E5gZvtJ5MsuW_NlnvMfqiygyjOim4rtwR_Z1PO9cBiS7-C691KDpxMfCy8yZjW0dXgSvw-shlRWeu4v4cB4nSPORUWbhAeb4TcGdYSeoY0-RQKvW98BY6AZV0oO0fFy1ZO0R6s-078Ywk8MrcoqqQ1AaZKoDhUbroY6yIdkh5PYXK50iGpWqY0qw5c1OdSwlbAz9TH2iw87nXotdrgqMMWFPQM6NUd4y9J9rdKbUoyJMDcT8k9bHlXz8V1lzcixlydQY0YsK92gYhYLT4HwLO6et7FFttZuUh0JxgdjmVPoNk82TulPvwuahkBGEyvARvc-XfX5FHH80yQkDq6tnBI4JxPzM3MZl8zQfayFjSjJcNGAvmwX2MvHy0eYxcekn28Zmc8oaz-ELRzwV55hHQONm9_dqm4qQ4th0GVug4Wz0yYInMuVfqKVbvzJHfgVr4BgaBfBOUVvmr_pL9Ugr-dNpF7GAdJrgH6pKmj7dhEh4GMq6sYXzK4XBOAOlea-YJRr_XpEZoZyhmsL0xsyirtTnwAMhVoZILFAca3wO-&zp=2IpiGczzZmddmdysy4DP1WB3j2UrQoCGLGYzvXQ3dHEN7oxVkEprrp6SbF_GNiSrGRWkP2Eeg2PYawMhgTPD-RRk3itVdSKinD4OVp6NXrwFmmkos7NIZg_GUzmtu8VqHJ-PwnRby10CUnejSO_GyNELzZJiKhkBg6YkXJyNLOQLk2qSg4Q91JyPiWvTiJQo-Ew5Quaywq0ZRJ1Mo54fy3hX3H9nLs5995ap6zOR9uof78oWu-rRkVE3D6yvVtjHh7jAiVQFBmr8gEn9km1Iyq0waUVt-XS3r3W8cDZUPInUJn-uUne2d7SXJC2soyGwLKi_RGzzjyTlbeX36xUTgnopvjFgjKkjswyZPb3IYUzbN1-GXs2rEYEQVfaKzkagBTmjq55E0vY7
+                                - generic: mor.paddle.com
+                        - 'link "Thumbnail image: Paddle is the Merchant of Record for SaaS & Apps. Grow faster globally without the risk and pain and cost and hassle of building your own payment stack." [ref=e1333] [cursor=pointer]':
+                          - /url: https://alb.reddit.com/cr?za=ComiMdQ5jGaWnKc9LrkKGkAzHRvtG5Jwiy3U3UDEU-UK5UFseyDpeJCdkOCwcJXjwklfPB_-HwfJ678TjayPQL-2cv6OAzyUp-Eg1A86v-DjDdPf0aZ9nYEjjMkXyUPs9cOkV-U6FAf3GLJL5P19fsFkCKBz9rV4A83XAXfAXlPfEoizNg0onDxgk3cJxNmLN58xTcW7nB8WX-o_XXfDSnpJfYUZO_gdydFIOgb9xG9E5gZvtJ5MsuW_NlnvMfqiygyjOim4rtwR_Z1PO9cBiS7-C691KDpxMfCy8yZjW0dXgSvw-shlRWeu4v4cB4nSPORUWbhAeb4TcGdYSeoY0-RQKvW98BY6AZV0oO0fFy1ZO0R6s-078Ywk8MrcoqqQ1AaZKoDhUbroY6yIdkh5PYXK50iGpWqY0qw5c1OdSwlbAz9TH2iw87nXotdrgqMMWFPQM6NUd4y9J9rdKbUoyJMDcT8k9bHlXz8V1lzcixlydQY0YsK92gYhYLT4HwLO6et7FFttZuUh0JxgdjmVPoNk82TulPvwuahkBGEyvARvc-XfX5FHH80yQkDq6tnBI4JxPzM3MZl8zQfayFjSjJcNGAvmwX2MvHy0eYxcekn28Zmc8oaz-ELRzwV55hHQONm9_dqm4qQ4th0GVug4Wz0yYInMuVfqKVbvzJHfgVr4BgaBfBOUVvmr_pL9Ugr-dNpF7GAdJrgH6pKmj7dhEh4GMq6sYXzK4XBOAOlea-YJRr_XpEZoZyhmsL0xsyirtTnwAMhVoZILFAca3wO-&zp=2IpiGczzZmddmdysy4DP1WB3j2UrQoCGLGYzvXQ3dHEN7oxVkEprrp6SbF_GNiSrGRWkP2Eeg2PYawMhgTPD-RRk3itVdSKinD4OVp6NXrwFmmkos7NIZg_GUzmtu8VqHJ-PwnRby10CUnejSO_GyNELzZJiKhkBg6YkXJyNLOQLk2qSg4Q91JyPiWvTiJQo-Ew5Quaywq0ZRJ1Mo54fy3hX3H9nLs5995ap6zOR9uof78oWu-rRkVE3D6yvVtjHh7jAiVQFBmr8gEn9km1Iyq0waUVt-XS3r3W8cDZUPInUJn-uUne2d7SXJC2soyGwLKi_RGzzjyTlbeX36xUTgnopvjFgjKkjswyZPb3IYUzbN1-GXs2rEYEQVfaKzkagBTmjq55E0vY7
+                          - 'img "Thumbnail image: Paddle is the Merchant of Record for SaaS & Apps. Grow faster globally without the risk and pain and cost and hassle of building your own payment stack." [ref=e1334]'
+                  - article "Comment from GameCodeBB 2 months ago" [ref=e1336]:
+                    - generic "Metadata for GameCodeBB's comment" [ref=e1337]:
+                      - link "GameCodeBB's profile --- avatar" [ref=e1344] [cursor=pointer]:
+                        - /url: /user/GameCodeBB/
+                        - img [ref=e1349]
+                      - generic [ref=e1355]:
+                        - link "GameCodeBB's profile" [ref=e1360] [cursor=pointer]:
+                          - /url: /user/GameCodeBB/
+                          - text: GameCodeBB
+                        - generic [ref=e1361]: •
+                        - link "2mo ago" [ref=e1362] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/ocbqqdq/
+                          - time [ref=e1363]: 2mo ago
+                    - paragraph [ref=e1371]: 80% failed means your account is getting limited soon or later
+                  - article "Comment from whitepalladin 2 months ago" [ref=e1377]:
+                    - generic "Metadata for whitepalladin's comment" [ref=e1378]:
+                      - link "whitepalladin's profile --- avatar" [ref=e1385] [cursor=pointer]:
+                        - /url: /user/whitepalladin/
+                        - generic [ref=e1387]:
+                          - img [ref=e1389]
+                          - img [ref=e1393]
+                          - img [ref=e1396]
+                      - generic [ref=e1402]:
+                        - link "whitepalladin's profile" [ref=e1407] [cursor=pointer]:
+                          - /url: /user/whitepalladin/
+                          - text: whitepalladin
+                        - generic [ref=e1408]: •
+                        - link "2mo ago" [ref=e1409] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/occ7nsp/
+                          - time [ref=e1410]: 2mo ago
+                    - list [ref=e1418]:
+                      - listitem [ref=e1419]:
+                        - paragraph [ref=e1420]: Get rid of trial.
+                      - listitem [ref=e1421]:
+                        - paragraph [ref=e1422]: Focus on more quality traffic sources.
+                      - listitem [ref=e1423]:
+                        - paragraph [ref=e1424]: Look into details of these failed payments and your Stripe rules.
+                  - article "Comment from BrickInfinite6169 2 months ago" [ref=e1430]:
+                    - generic "Metadata for BrickInfinite6169's comment" [ref=e1431]:
+                      - link "BrickInfinite6169's profile --- avatar" [ref=e1438] [cursor=pointer]:
+                        - /url: /user/BrickInfinite6169/
+                        - img "u/BrickInfinite6169 avatar" [ref=e1441]
+                      - generic [ref=e1446]:
+                        - link "BrickInfinite6169's profile" [ref=e1451] [cursor=pointer]:
+                          - /url: /user/BrickInfinite6169/
+                          - text: BrickInfinite6169
+                        - generic [ref=e1452]: •
+                        - link "2mo ago" [ref=e1453] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/ocbddq0/
+                          - time [ref=e1454]: 2mo ago
+                    - generic [ref=e1455]:
+                      - paragraph [ref=e1464]: Check your currency, I think you can only get usd if you have a US entity (LLC, C-Corp, etc) but if you are international, try charging with your local currency. International user can still pay you in another currency, for example £ to ₹
+                      - button "Toggle Comment Thread" [expanded] [ref=e1467] [cursor=pointer]:
+                        - img [ref=e1470]
+                      - 'article "Comment thread level 1: Reply from rafatacion 2 months ago" [ref=e1478]':
+                        - generic "Metadata for rafatacion's comment" [ref=e1479]:
+                          - link "rafatacion's profile --- avatar" [ref=e1486] [cursor=pointer]:
+                            - /url: /user/rafatacion/
+                            - generic [ref=e1488]:
+                              - img [ref=e1490]
+                              - img [ref=e1494]
+                              - img [ref=e1497]
+                          - generic [ref=e1503]:
+                            - link "rafatacion's profile" [ref=e1508] [cursor=pointer]:
+                              - /url: /user/rafatacion/
+                              - text: rafatacion
+                            - generic [ref=e1509]: •
+                            - link "2mo ago" [ref=e1510] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1s2wp37/comment/occwywf/
+                              - time [ref=e1511]: 2mo ago
+                        - paragraph [ref=e1519]: I get USD payments with no issues without a US entity
+                  - article "Comment from soundboy5010 2 months ago" [ref=e1525]:
+                    - generic "Metadata for soundboy5010's comment" [ref=e1526]:
+                      - link "soundboy5010's profile --- avatar" [ref=e1533] [cursor=pointer]:
+                        - /url: /user/soundboy5010/
+                        - img [ref=e1538]
+                      - generic [ref=e1544]:
+                        - link "soundboy5010's profile" [ref=e1549] [cursor=pointer]:
+                          - /url: /user/soundboy5010/
+                          - text: soundboy5010
+                        - generic [ref=e1550]: •
+                        - link "2mo ago" [ref=e1551] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/ocbflee/
+                          - time [ref=e1552]: 2mo ago
+                    - generic [ref=e1559]:
+                      - paragraph [ref=e1560]: Dont think there’s much you can do on Stripes end. The issue is your users and/or the product you sell.
+                      - paragraph [ref=e1561]: Spend your efforts giving value to those customers that don’t convert. Give them a little discount as an incentive, or send nurturing emails during the free trial period so your users don’t forget about the trial ending and what features they’ll miss out on.
+                      - paragraph [ref=e1562]: Ask friends and family to sign up to your product and give feedback too. This one helped me out when I first started as my only vision of my product was in my eyes as a dev (rather than a customer). I got some handy advice to make things more obvious, offer help where needed (linking to support articles, adding tips/hints around my UI) and to fix my customer journey upon signup.
+                      - paragraph [ref=e1563]: That fixed most of my issues of my conversions after free trials. I fixed it even further by making my front facing website more detailed to ensure any new customers know exactly what they’re signing up for.
+                  - article "Comment from bhat_aanya 2 months ago" [ref=e1569]:
+                    - generic "Metadata for bhat_aanya's comment" [ref=e1570]:
+                      - link "bhat_aanya's profile --- avatar" [ref=e1577] [cursor=pointer]:
+                        - /url: /user/bhat_aanya/
+                        - img "u/bhat_aanya avatar" [ref=e1580]
+                      - generic [ref=e1585]:
+                        - link "bhat_aanya's profile" [ref=e1590] [cursor=pointer]:
+                          - /url: /user/bhat_aanya/
+                          - text: bhat_aanya
+                        - generic [ref=e1591]: •
+                        - link "2mo ago" [ref=e1592] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/occgtti/
+                          - time [ref=e1593]: 2mo ago
+                    - paragraph [ref=e1601]: You should focus on filtering low-quality users.. Right now your funnel looks low-intent fixing that will help more than changing Stripe settings.
+                  - article "Comment from petertje4585 2 months ago" [ref=e1607]:
+                    - generic "Metadata for petertje4585's comment" [ref=e1608]:
+                      - link "petertje4585's profile --- avatar" [ref=e1615] [cursor=pointer]:
+                        - /url: /user/petertje4585/
+                        - img "u/petertje4585 avatar" [ref=e1618]
+                      - generic [ref=e1623]:
+                        - link "petertje4585's profile" [ref=e1628] [cursor=pointer]:
+                          - /url: /user/petertje4585/
+                          - text: petertje4585
+                        - generic [ref=e1629]: •
+                        - link "2mo ago" [ref=e1630] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/occxxwv/
+                          - time [ref=e1631]: 2mo ago
+                    - generic [ref=e1638]:
+                      - paragraph [ref=e1639]: Stop forcing Stripe Link.
+                      - paragraph [ref=e1640]: I’m using a prepaid credit card. I have subscriptions with both Cursor (uses Link) and OpenAI (does not use Link). I’ve never had any issues paying OpenAI, but with Cursor it’s a mess every single month.
+                      - paragraph [ref=e1641]: Payments fail, subscriptions get cancelled, and invoices end up voided. It feels like Link is blocking payments for no clear reason.
+                      - paragraph [ref=e1642]: "If you’re building a SaaS: please don’t force Link."
+                  - article "Comment from Funny_Dirt_6952 2 months ago" [ref=e1648]:
+                    - generic "Metadata for Funny_Dirt_6952's comment" [ref=e1649]:
+                      - link "Funny_Dirt_6952's profile --- avatar" [ref=e1656] [cursor=pointer]:
+                        - /url: /user/Funny_Dirt_6952/
+                        - img "u/Funny_Dirt_6952 avatar" [ref=e1659]
+                      - generic [ref=e1664]:
+                        - link "Funny_Dirt_6952's profile" [ref=e1669] [cursor=pointer]:
+                          - /url: /user/Funny_Dirt_6952/
+                          - text: Funny_Dirt_6952
+                        - generic [ref=e1670]: •
+                        - link "2mo ago" [ref=e1671] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1s2wp37/comment/ocdie9s/
+                          - time [ref=e1672]: 2mo ago
+                    - paragraph [ref=e1680]: Who's feeding you that traffic? Affiliate network perhaps????
+            - generic [ref=e1688]:
+              - generic [ref=e1689]:
+                - complementary [ref=e1692]:
+                  - generic [ref=e1693]:
+                    - generic [ref=e1694]: New to Reddit?
+                    - paragraph [ref=e1695]: Create your account and connect with a world of communities.
+                  - generic [ref=e1696]:
+                    - generic [ref=e1704]:
+                      - button "Continuer avec Google. S'ouvre dans un nouvel onglet." [ref=e1706] [cursor=pointer]:
+                        - generic [ref=e1708]:
+                          - img [ref=e1710]
+                          - generic [ref=e1717]: Continuer avec Google
+                      - generic:
+                        - iframe
+                        - button "Se connecter avec Google. S'ouvre dans un nouvel onglet."
+                    - link "Continue with Email" [ref=e1719] [cursor=pointer]:
+                      - /url: https://www.reddit.com/register/
+                      - generic [ref=e1722]:
+                        - img [ref=e1723]
+                        - generic [ref=e1725]: Continue with Email
+                  - link "Continue with Phone Number" [ref=e1728] [cursor=pointer]:
+                    - /url: https://www.reddit.com/login/
+                    - generic [ref=e1731]:
+                      - img [ref=e1732]
+                      - generic [ref=e1735]: Continue with Phone Number
+                  - generic [ref=e1736]:
+                    - text: By continuing, you agree to our
+                    - link "User Agreement" [ref=e1737] [cursor=pointer]:
+                      - /url: https://www.redditinc.com/policies/user-agreement
+                    - text: and acknowledge that you understand the
+                    - link "Privacy Policy" [ref=e1738] [cursor=pointer]:
+                      - /url: https://www.redditinc.com/policies/privacy-policy
+                    - text: .
+                - complementary "Related Answers Section" [ref=e1740]:
+                  - heading "Related Answers Section" [level=1] [ref=e1741]
+                  - generic [ref=e1742]:
+                    - img [ref=e1744]
+                    - generic [ref=e1746]: Related Answers
+                  - generic [ref=e1747]:
+                    - link "Comparing PayPal and Stripe for business use" [ref=e1749] [cursor=pointer]:
+                      - /url: https://www.reddit.com/answers/2085baa3-4ec9-4fe1-8f74-afbdb2d0afa4/?q=Comparing+PayPal+and+Stripe+for+business+use&source=PDP
+                      - generic [ref=e1752]: Comparing PayPal and Stripe for business use
+                      - img [ref=e1755]
+                    - link "Stripe fees and payout structure" [ref=e1758] [cursor=pointer]:
+                      - /url: https://www.reddit.com/answers/8df4737b-7925-4892-a94a-df16f524ee3f/?q=Stripe+fees+and+payout+structure&source=PDP
+                      - generic [ref=e1761]: Stripe fees and payout structure
+                      - img [ref=e1764]
+                    - link "Reviewing Stripe payment experiences" [ref=e1767] [cursor=pointer]:
+                      - /url: https://www.reddit.com/answers/dbc2884d-2fa6-4e27-8364-48bd49db1480/?q=Reviewing+Stripe+payment+experiences&source=PDP
+                      - generic [ref=e1770]: Reviewing Stripe payment experiences
+                      - img [ref=e1773]
+                    - link "Exploring AI-powered tools for therapy" [ref=e1776] [cursor=pointer]:
+                      - /url: https://www.reddit.com/answers/a8cb4d5f-909e-4509-9bb9-0add49b93026/?q=Exploring+AI-powered+tools+for+therapy&source=PDP
+                      - generic [ref=e1779]: Exploring AI-powered tools for therapy
+                      - img [ref=e1782]
+                    - link "Top features of Stripe that boost sales" [ref=e1785] [cursor=pointer]:
+                      - /url: https://www.reddit.com/answers/8d32fd18-89e7-4354-a062-ffb795c11d60/?q=Top+features+of+Stripe+that+boost+sales&source=PDP
+                      - generic [ref=e1788]: Top features of Stripe that boost sales
+                      - img [ref=e1791]
+                - complementary "Related Posts Section" [ref=e1793]:
+                  - list [ref=e1799]:
+                    - listitem [ref=e1800]:
+                      - generic [ref=e1801]:
+                        - generic [ref=e1802]:
+                          - link "Will stripe process 7500$ payment for me?" [ref=e1803] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1mckiww/will_stripe_process_7500_payment_for_me/
+                            - generic [ref=e1804]:
+                              - generic: Will stripe process 7500$ payment for me?
+                          - generic [ref=e1806]:
+                            - generic [ref=e1809]:
+                              - link "r/stripe" [ref=e1810] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e1814]: r/stripe
+                              - generic [ref=e1815]: •
+                              - time [ref=e1817]: 10mo ago
+                            - link "List item post - Will stripe process 7500$ payment for me?" [ref=e1819] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1mckiww/will_stripe_process_7500_payment_for_me/
+                              - heading "List item post - Will stripe process 7500$ payment for me?" [level=3] [ref=e1822]: Will stripe process 7500$ payment for me?
+                          - generic [ref=e1824]:
+                            - generic [ref=e1825]: "6"
+                            - text: upvotes ·
+                            - generic [ref=e1826]: "36"
+                            - text: comments
+                        - separator [ref=e1827]
+                    - listitem [ref=e1828]:
+                      - generic [ref=e1830]:
+                        - generic:
+                          - 'generic "Advertisement: Heatgear Elite est conçu pour les athlètes qui refusent de se cacher et qui jouent pour se démarquer." [ref=e1831]':
+                            - 'link "Advertisement: Heatgear Elite est conçu pour les athlètes qui refusent de se cacher et qui jouent pour se démarquer." [ref=e1832] [cursor=pointer]':
+                              - /url: https://alb.reddit.com/cr?za=Kyec2htbPXs55OBMwviX-82MzOiHiha_i2Nyg3ql-wVHtnAYNoR8thjER8v3N1IqSeszXs6jhLxhiMCI58eXxdt1KNqMTzYorYCb8lRIDqrYh6ezZKVPbRkuBq-LrYU-gC8rlwHa4IbAkHjDqgIyEOgGbT2Ocmi-z8ZeBMesSxraux-BGLtwnUNkNne2VaBiGrvvR2S0enjIscd61ASaOfuDwvqaPImDvokHNNJfYrf-xlMpPs_4ta8yWsMuSVNXJsjGgjY-LlWxDxu72u8vfQVGudGAgURhMFO1-O13YMAVzjNiYMZImvsqwIOw1eX8638EsWEKc1pwPN3wQcidpdSjIFJwRRpuoT-F-It8MNwqonAVz6dT2TTIVc5cvWIb_P6BenU8Ue9CmoNIqs-zhHxbaaR0Old9jxhClsMTR_HWtLykHtjTFOyIxgPLeVO7-WdQCoZ4KnuVJHWh3Jfi0bVuIAoz2nCFq5DKb17c7hr7hbACwcc51UJYI84MyOiALUnFG3lSW41VOEybUTkyp4A_AFVbelGx1l89j3gcJzr__am-GSICI8JX9mLWT9tbklP_9EwENFg8B74khSvX-xAGqjrv1_nXu6HzOPneLfs3mj7C6FUuTYJ69aza6qR6suZOiqIZiV8emNbkveellugmr75owMcbedd-c-xxYLJu64dbkHQRf8VH4b-NSjrMZR3Rx3f463aC9VIfMqPHPxpD8fSqchQI3r1ZLbIt4HV7Dvn04qPIn5mETUXR5a0kPOUn&zp=0kLKum3yXQPDl1r7wo2GPiSwoITRtGU7uDsR70sf6gRsu5HurrmM0yvWeC6zuPTOeLHtKrXVHNqyfCKZmPaUwdu4tZC6v9rXe6Wp2jpDbcKxFyS8x2_C0sAgAY69vQ2Uz-eG94SUOl2KmWH9DRw0i7tl2WxJ7T14tgY5eaz05o70R3iUL6znbLKQc7q20nfl_UBIBW-WY2Rf3jg5wmPVLxO9VXe4N2hWSGP_JfQb5RUG6mar8xUtuG5CFXAADcb8q2rqskkSrgHYU3yFPC6l7x6JZAl4m5zAP85Hh4nQLW4ak3KxwuC3cCSpaqYyu-KNtOg-27z7Zqs2GDnVetc_80cVJidE4Uz7RSbdZXHKSdn1cK_fBwqwT4XeeT9WRMiHco_HNNvxS4bOOXo
+                          - generic [ref=e1833]:
+                            - generic [ref=e1834]:
+                              - generic [ref=e1835]:
+                                - generic [ref=e1836]:
+                                  - generic [ref=e1837]:
+                                    - link "u/UnderArmour avatar UnderArmour" [ref=e1840] [cursor=pointer]:
+                                      - /url: /user/UnderArmour/
+                                      - img "u/UnderArmour avatar" [ref=e1843]
+                                      - generic [ref=e1844]: UnderArmour
+                                    - generic [ref=e1845]: •
+                                    - link "Promoted" [ref=e1847] [cursor=pointer]:
+                                      - /url: /user/UnderArmour/
+                                      - generic [ref=e1848]: Promoted
+                                    - link [ref=e1850] [cursor=pointer]:
+                                      - /url: https://alb.reddit.com/cr?za=Kyec2htbPXs55OBMwviX-82MzOiHiha_i2Nyg3ql-wVHtnAYNoR8thjER8v3N1IqSeszXs6jhLxhiMCI58eXxdt1KNqMTzYorYCb8lRIDqrYh6ezZKVPbRkuBq-LrYU-gC8rlwHa4IbAkHjDqgIyEOgGbT2Ocmi-z8ZeBMesSxraux-BGLtwnUNkNne2VaBiGrvvR2S0enjIscd61ASaOfuDwvqaPImDvokHNNJfYrf-xlMpPs_4ta8yWsMuSVNXJsjGgjY-LlWxDxu72u8vfQVGudGAgURhMFO1-O13YMAVzjNiYMZImvsqwIOw1eX8638EsWEKc1pwPN3wQcidpdSjIFJwRRpuoT-F-It8MNwqonAVz6dT2TTIVc5cvWIb_P6BenU8Ue9CmoNIqs-zhHxbaaR0Old9jxhClsMTR_HWtLykHtjTFOyIxgPLeVO7-WdQCoZ4KnuVJHWh3Jfi0bVuIAoz2nCFq5DKb17c7hr7hbACwcc51UJYI84MyOiALUnFG3lSW41VOEybUTkyp4A_AFVbelGx1l89j3gcJzr__am-GSICI8JX9mLWT9tbklP_9EwENFg8B74khSvX-xAGqjrv1_nXu6HzOPneLfs3mj7C6FUuTYJ69aza6qR6suZOiqIZiV8emNbkveellugmr75owMcbedd-c-xxYLJu64dbkHQRf8VH4b-NSjrMZR3Rx3f463aC9VIfMqPHPxpD8fSqchQI3r1ZLbIt4HV7Dvn04qPIn5mETUXR5a0kPOUn&zp=0kLKum3yXQPDl1r7wo2GPiSwoITRtGU7uDsR70sf6gRsu5HurrmM0yvWeC6zuPTOeLHtKrXVHNqyfCKZmPaUwdu4tZC6v9rXe6Wp2jpDbcKxFyS8x2_C0sAgAY69vQ2Uz-eG94SUOl2KmWH9DRw0i7tl2WxJ7T14tgY5eaz05o70R3iUL6znbLKQc7q20nfl_UBIBW-WY2Rf3jg5wmPVLxO9VXe4N2hWSGP_JfQb5RUG6mar8xUtuG5CFXAADcb8q2rqskkSrgHYU3yFPC6l7x6JZAl4m5zAP85Hh4nQLW4ak3KxwuC3cCSpaqYyu-KNtOg-27z7Zqs2GDnVetc_80cVJidE4Uz7RSbdZXHKSdn1cK_fBwqwT4XeeT9WRMiHco_HNNvxS4bOOXo
+                                  - button "Open user actions" [ref=e1855] [cursor=pointer]:
+                                    - img [ref=e1858]
+                                - link "Heatgear Elite est conçu pour les athlètes qui refusent de se cacher et qui jouent pour se démarquer." [ref=e1862] [cursor=pointer]:
+                                  - /url: https://alb.reddit.com/cr?za=Kyec2htbPXs55OBMwviX-82MzOiHiha_i2Nyg3ql-wVHtnAYNoR8thjER8v3N1IqSeszXs6jhLxhiMCI58eXxdt1KNqMTzYorYCb8lRIDqrYh6ezZKVPbRkuBq-LrYU-gC8rlwHa4IbAkHjDqgIyEOgGbT2Ocmi-z8ZeBMesSxraux-BGLtwnUNkNne2VaBiGrvvR2S0enjIscd61ASaOfuDwvqaPImDvokHNNJfYrf-xlMpPs_4ta8yWsMuSVNXJsjGgjY-LlWxDxu72u8vfQVGudGAgURhMFO1-O13YMAVzjNiYMZImvsqwIOw1eX8638EsWEKc1pwPN3wQcidpdSjIFJwRRpuoT-F-It8MNwqonAVz6dT2TTIVc5cvWIb_P6BenU8Ue9CmoNIqs-zhHxbaaR0Old9jxhClsMTR_HWtLykHtjTFOyIxgPLeVO7-WdQCoZ4KnuVJHWh3Jfi0bVuIAoz2nCFq5DKb17c7hr7hbACwcc51UJYI84MyOiALUnFG3lSW41VOEybUTkyp4A_AFVbelGx1l89j3gcJzr__am-GSICI8JX9mLWT9tbklP_9EwENFg8B74khSvX-xAGqjrv1_nXu6HzOPneLfs3mj7C6FUuTYJ69aza6qR6suZOiqIZiV8emNbkveellugmr75owMcbedd-c-xxYLJu64dbkHQRf8VH4b-NSjrMZR3Rx3f463aC9VIfMqPHPxpD8fSqchQI3r1ZLbIt4HV7Dvn04qPIn5mETUXR5a0kPOUn&zp=0kLKum3yXQPDl1r7wo2GPiSwoITRtGU7uDsR70sf6gRsu5HurrmM0yvWeC6zuPTOeLHtKrXVHNqyfCKZmPaUwdu4tZC6v9rXe6Wp2jpDbcKxFyS8x2_C0sAgAY69vQ2Uz-eG94SUOl2KmWH9DRw0i7tl2WxJ7T14tgY5eaz05o70R3iUL6znbLKQc7q20nfl_UBIBW-WY2Rf3jg5wmPVLxO9VXe4N2hWSGP_JfQb5RUG6mar8xUtuG5CFXAADcb8q2rqskkSrgHYU3yFPC6l7x6JZAl4m5zAP85Hh4nQLW4ak3KxwuC3cCSpaqYyu-KNtOg-27z7Zqs2GDnVetc_80cVJidE4Uz7RSbdZXHKSdn1cK_fBwqwT4XeeT9WRMiHco_HNNvxS4bOOXo
+                                  - generic "Heatgear Elite est conçu pour les athlètes qui refusent de se cacher et qui jouent pour se démarquer." [ref=e1863]
+                              - 'link "Thumbnail image: Heatgear Elite est conçu pour les athlètes qui refusent de se cacher et qui jouent pour se démarquer. Play video" [ref=e1866] [cursor=pointer]':
+                                - /url: /user/UnderArmour/comments/1t65680/heatgear_elite_est_con%C3%A7u_pour_les_athl%C3%A8tes_qui/?p=1&impressionid=5921905164073453934
+                                - 'img "Thumbnail image: Heatgear Elite est conçu pour les athlètes qui refusent de se cacher et qui jouent pour se démarquer." [ref=e1867]'
+                                - generic "Play video":
+                                  - img
+                            - generic [ref=e1868]:
+                              - link [ref=e1870] [cursor=pointer]:
+                                - /url: https://alb.reddit.com/cr?za=Kyec2htbPXs55OBMwviX-82MzOiHiha_i2Nyg3ql-wVHtnAYNoR8thjER8v3N1IqSeszXs6jhLxhiMCI58eXxdt1KNqMTzYorYCb8lRIDqrYh6ezZKVPbRkuBq-LrYU-gC8rlwHa4IbAkHjDqgIyEOgGbT2Ocmi-z8ZeBMesSxraux-BGLtwnUNkNne2VaBiGrvvR2S0enjIscd61ASaOfuDwvqaPImDvokHNNJfYrf-xlMpPs_4ta8yWsMuSVNXJsjGgjY-LlWxDxu72u8vfQVGudGAgURhMFO1-O13YMAVzjNiYMZImvsqwIOw1eX8638EsWEKc1pwPN3wQcidpdSjIFJwRRpuoT-F-It8MNwqonAVz6dT2TTIVc5cvWIb_P6BenU8Ue9CmoNIqs-zhHxbaaR0Old9jxhClsMTR_HWtLykHtjTFOyIxgPLeVO7-WdQCoZ4KnuVJHWh3Jfi0bVuIAoz2nCFq5DKb17c7hr7hbACwcc51UJYI84MyOiALUnFG3lSW41VOEybUTkyp4A_AFVbelGx1l89j3gcJzr__am-GSICI8JX9mLWT9tbklP_9EwENFg8B74khSvX-xAGqjrv1_nXu6HzOPneLfs3mj7C6FUuTYJ69aza6qR6suZOiqIZiV8emNbkveellugmr75owMcbedd-c-xxYLJu64dbkHQRf8VH4b-NSjrMZR3Rx3f463aC9VIfMqPHPxpD8fSqchQI3r1ZLbIt4HV7Dvn04qPIn5mETUXR5a0kPOUn&zp=0kLKum3yXQPDl1r7wo2GPiSwoITRtGU7uDsR70sf6gRsu5HurrmM0yvWeC6zuPTOeLHtKrXVHNqyfCKZmPaUwdu4tZC6v9rXe6Wp2jpDbcKxFyS8x2_C0sAgAY69vQ2Uz-eG94SUOl2KmWH9DRw0i7tl2WxJ7T14tgY5eaz05o70R3iUL6znbLKQc7q20nfl_UBIBW-WY2Rf3jg5wmPVLxO9VXe4N2hWSGP_JfQb5RUG6mar8xUtuG5CFXAADcb8q2rqskkSrgHYU3yFPC6l7x6JZAl4m5zAP85Hh4nQLW4ak3KxwuC3cCSpaqYyu-KNtOg-27z7Zqs2GDnVetc_80cVJidE4Uz7RSbdZXHKSdn1cK_fBwqwT4XeeT9WRMiHco_HNNvxS4bOOXo
+                              - generic [ref=e1871]:
+                                - link "underarmour.fr" [ref=e1874] [cursor=pointer]:
+                                  - /url: https://alb.reddit.com/cr?za=Kyec2htbPXs55OBMwviX-82MzOiHiha_i2Nyg3ql-wVHtnAYNoR8thjER8v3N1IqSeszXs6jhLxhiMCI58eXxdt1KNqMTzYorYCb8lRIDqrYh6ezZKVPbRkuBq-LrYU-gC8rlwHa4IbAkHjDqgIyEOgGbT2Ocmi-z8ZeBMesSxraux-BGLtwnUNkNne2VaBiGrvvR2S0enjIscd61ASaOfuDwvqaPImDvokHNNJfYrf-xlMpPs_4ta8yWsMuSVNXJsjGgjY-LlWxDxu72u8vfQVGudGAgURhMFO1-O13YMAVzjNiYMZImvsqwIOw1eX8638EsWEKc1pwPN3wQcidpdSjIFJwRRpuoT-F-It8MNwqonAVz6dT2TTIVc5cvWIb_P6BenU8Ue9CmoNIqs-zhHxbaaR0Old9jxhClsMTR_HWtLykHtjTFOyIxgPLeVO7-WdQCoZ4KnuVJHWh3Jfi0bVuIAoz2nCFq5DKb17c7hr7hbACwcc51UJYI84MyOiALUnFG3lSW41VOEybUTkyp4A_AFVbelGx1l89j3gcJzr__am-GSICI8JX9mLWT9tbklP_9EwENFg8B74khSvX-xAGqjrv1_nXu6HzOPneLfs3mj7C6FUuTYJ69aza6qR6suZOiqIZiV8emNbkveellugmr75owMcbedd-c-xxYLJu64dbkHQRf8VH4b-NSjrMZR3Rx3f463aC9VIfMqPHPxpD8fSqchQI3r1ZLbIt4HV7Dvn04qPIn5mETUXR5a0kPOUn&zp=0kLKum3yXQPDl1r7wo2GPiSwoITRtGU7uDsR70sf6gRsu5HurrmM0yvWeC6zuPTOeLHtKrXVHNqyfCKZmPaUwdu4tZC6v9rXe6Wp2jpDbcKxFyS8x2_C0sAgAY69vQ2Uz-eG94SUOl2KmWH9DRw0i7tl2WxJ7T14tgY5eaz05o70R3iUL6znbLKQc7q20nfl_UBIBW-WY2Rf3jg5wmPVLxO9VXe4N2hWSGP_JfQb5RUG6mar8xUtuG5CFXAADcb8q2rqskkSrgHYU3yFPC6l7x6JZAl4m5zAP85Hh4nQLW4ak3KxwuC3cCSpaqYyu-KNtOg-27z7Zqs2GDnVetc_80cVJidE4Uz7RSbdZXHKSdn1cK_fBwqwT4XeeT9WRMiHco_HNNvxS4bOOXo
+                                  - generic: underarmour.fr
+                                - link "En savoir plus" [ref=e1876] [cursor=pointer]:
+                                  - /url: https://alb.reddit.com/cr?za=Kyec2htbPXs55OBMwviX-82MzOiHiha_i2Nyg3ql-wVHtnAYNoR8thjER8v3N1IqSeszXs6jhLxhiMCI58eXxdt1KNqMTzYorYCb8lRIDqrYh6ezZKVPbRkuBq-LrYU-gC8rlwHa4IbAkHjDqgIyEOgGbT2Ocmi-z8ZeBMesSxraux-BGLtwnUNkNne2VaBiGrvvR2S0enjIscd61ASaOfuDwvqaPImDvokHNNJfYrf-xlMpPs_4ta8yWsMuSVNXJsjGgjY-LlWxDxu72u8vfQVGudGAgURhMFO1-O13YMAVzjNiYMZImvsqwIOw1eX8638EsWEKc1pwPN3wQcidpdSjIFJwRRpuoT-F-It8MNwqonAVz6dT2TTIVc5cvWIb_P6BenU8Ue9CmoNIqs-zhHxbaaR0Old9jxhClsMTR_HWtLykHtjTFOyIxgPLeVO7-WdQCoZ4KnuVJHWh3Jfi0bVuIAoz2nCFq5DKb17c7hr7hbACwcc51UJYI84MyOiALUnFG3lSW41VOEybUTkyp4A_AFVbelGx1l89j3gcJzr__am-GSICI8JX9mLWT9tbklP_9EwENFg8B74khSvX-xAGqjrv1_nXu6HzOPneLfs3mj7C6FUuTYJ69aza6qR6suZOiqIZiV8emNbkveellugmr75owMcbedd-c-xxYLJu64dbkHQRf8VH4b-NSjrMZR3Rx3f463aC9VIfMqPHPxpD8fSqchQI3r1ZLbIt4HV7Dvn04qPIn5mETUXR5a0kPOUn&zp=0kLKum3yXQPDl1r7wo2GPiSwoITRtGU7uDsR70sf6gRsu5HurrmM0yvWeC6zuPTOeLHtKrXVHNqyfCKZmPaUwdu4tZC6v9rXe6Wp2jpDbcKxFyS8x2_C0sAgAY69vQ2Uz-eG94SUOl2KmWH9DRw0i7tl2WxJ7T14tgY5eaz05o70R3iUL6znbLKQc7q20nfl_UBIBW-WY2Rf3jg5wmPVLxO9VXe4N2hWSGP_JfQb5RUG6mar8xUtuG5CFXAADcb8q2rqskkSrgHYU3yFPC6l7x6JZAl4m5zAP85Hh4nQLW4ak3KxwuC3cCSpaqYyu-KNtOg-27z7Zqs2GDnVetc_80cVJidE4Uz7RSbdZXHKSdn1cK_fBwqwT4XeeT9WRMiHco_HNNvxS4bOOXo
+                                  - generic [ref=e1878]:
+                                    - generic: En savoir plus
+                      - separator [ref=e1879]
+                    - listitem [ref=e1880]:
+                      - generic [ref=e1881]:
+                        - generic [ref=e1882]:
+                          - link "Stripe payments other than into Wise" [ref=e1883] [cursor=pointer]:
+                            - /url: /r/Cambly/comments/1t410kj/stripe_payments_other_than_into_wise/
+                            - generic [ref=e1884]:
+                              - generic: Stripe payments other than into Wise
+                          - generic [ref=e1886]:
+                            - generic [ref=e1889]:
+                              - link "r/Cambly" [ref=e1890] [cursor=pointer]:
+                                - /url: /r/Cambly/
+                                - generic [ref=e1894]: r/Cambly
+                              - generic [ref=e1895]: •
+                              - time [ref=e1897]: 13d ago
+                            - link "List item post - Stripe payments other than into Wise" [ref=e1899] [cursor=pointer]:
+                              - /url: /r/Cambly/comments/1t410kj/stripe_payments_other_than_into_wise/
+                              - heading "List item post - Stripe payments other than into Wise" [level=3] [ref=e1902]: Stripe payments other than into Wise
+                          - generic [ref=e1904]:
+                            - generic [ref=e1905]: "5"
+                            - text: upvotes ·
+                            - generic [ref=e1906]: "22"
+                            - text: comments
+                        - separator [ref=e1907]
+                    - listitem [ref=e1908]:
+                      - generic [ref=e1909]:
+                        - generic [ref=e1910]:
+                          - link "Failed Stripe Payments" [ref=e1911] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1sfgg23/failed_stripe_payments/
+                            - generic [ref=e1912]:
+                              - generic: Failed Stripe Payments
+                          - generic [ref=e1913]:
+                            - generic [ref=e1914]:
+                              - generic [ref=e1917]:
+                                - link "r/stripe" [ref=e1918] [cursor=pointer]:
+                                  - /url: /r/stripe/
+                                  - generic [ref=e1922]: r/stripe
+                                - generic [ref=e1923]: •
+                                - time [ref=e1925]: 1mo ago
+                              - link "List item post - Failed Stripe Payments" [ref=e1927] [cursor=pointer]:
+                                - /url: /r/stripe/comments/1sfgg23/failed_stripe_payments/
+                                - heading "List item post - Failed Stripe Payments" [level=3] [ref=e1930]: Failed Stripe Payments
+                            - link "r/stripe - Failed Stripe Payments" [ref=e1933] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1sfgg23/failed_stripe_payments/
+                              - img "r/stripe - Failed Stripe Payments" [ref=e1934]
+                          - generic [ref=e1936]:
+                            - generic [ref=e1937]: "8"
+                            - text: upvotes ·
+                            - generic [ref=e1938]: "24"
+                            - text: comments
+                        - separator [ref=e1939]
+                    - listitem
+                    - listitem [ref=e1940]:
+                      - generic [ref=e1941]:
+                        - generic [ref=e1942]:
+                          - link "Do not use Stripe, especially in middle east, they will steal your money" [ref=e1943] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1oe1scs/do_not_use_stripe_especially_in_middle_east_they/
+                            - generic [ref=e1944]:
+                              - generic: Do not use Stripe, especially in middle east, they will steal your money
+                          - generic [ref=e1945]:
+                            - generic [ref=e1946]:
+                              - generic [ref=e1949]:
+                                - link "r/stripe" [ref=e1950] [cursor=pointer]:
+                                  - /url: /r/stripe/
+                                  - generic [ref=e1954]: r/stripe
+                                - generic [ref=e1955]: •
+                                - time [ref=e1957]: 7mo ago
+                              - link "List item post - Do not use Stripe, especially in middle east, they will ste..." [ref=e1959] [cursor=pointer]:
+                                - /url: /r/stripe/comments/1oe1scs/do_not_use_stripe_especially_in_middle_east_they/
+                                - heading "List item post - Do not use Stripe, especially in middle east, they will ste..." [level=3] [ref=e1962]: Do not use Stripe, especially in middle east, they will steal your money
+                            - link "r/stripe - Do not use Stripe, especially in middle east, they will steal your money" [ref=e1965] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1oe1scs/do_not_use_stripe_especially_in_middle_east_they/
+                              - img "r/stripe - Do not use Stripe, especially in middle east, they will steal your money" [ref=e1966]
+                          - generic [ref=e1968]:
+                            - generic [ref=e1969]: "4"
+                            - text: upvotes ·
+                            - generic [ref=e1970]: "10"
+                            - text: comments
+                        - separator [ref=e1971]
+                    - listitem [ref=e1972]:
+                      - generic [ref=e1973]:
+                        - generic [ref=e1974]:
+                          - link "BS with Stripe and the merchant MATCH list" [ref=e1975] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1sy2t7p/bs_with_stripe_and_the_merchant_match_list/
+                            - generic [ref=e1976]:
+                              - generic: BS with Stripe and the merchant MATCH list
+                          - generic [ref=e1978]:
+                            - generic [ref=e1981]:
+                              - link "r/stripe" [ref=e1982] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e1986]: r/stripe
+                              - generic [ref=e1987]: •
+                              - time [ref=e1989]: 19d ago
+                            - link "List item post - BS with Stripe and the merchant MATCH list" [ref=e1991] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1sy2t7p/bs_with_stripe_and_the_merchant_match_list/
+                              - heading "List item post - BS with Stripe and the merchant MATCH list" [level=3] [ref=e1994]: BS with Stripe and the merchant MATCH list
+                          - generic [ref=e1996]:
+                            - generic [ref=e1997]: "15"
+                            - text: upvotes ·
+                            - generic [ref=e1998]: "33"
+                            - text: comments
+                        - separator [ref=e1999]
+                    - listitem [ref=e2000]:
+                      - generic [ref=e2001]:
+                        - generic [ref=e2002]:
+                          - link "Stripe suddenly blocking all my payments as “high risk” — need alternatives or advice" [ref=e2003] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1oxze25/stripe_suddenly_blocking_all_my_payments_as_high/
+                            - generic [ref=e2004]:
+                              - generic: Stripe suddenly blocking all my payments as “high risk” — need alternatives or advice
+                          - generic [ref=e2006]:
+                            - generic [ref=e2009]:
+                              - link "r/stripe" [ref=e2010] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2014]: r/stripe
+                              - generic [ref=e2015]: •
+                              - time [ref=e2017]: 6mo ago
+                            - link "List item post - Stripe suddenly blocking all my payments as “high risk” — n..." [ref=e2019] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1oxze25/stripe_suddenly_blocking_all_my_payments_as_high/
+                              - heading "List item post - Stripe suddenly blocking all my payments as “high risk” — n..." [level=3] [ref=e2022]: Stripe suddenly blocking all my payments as “high risk” — need alternatives or advice
+                          - generic [ref=e2024]:
+                            - generic [ref=e2025]: "5"
+                            - text: upvotes ·
+                            - generic [ref=e2026]: "69"
+                            - text: comments
+                        - separator [ref=e2027]
+                    - listitem [ref=e2028]:
+                      - generic [ref=e2029]:
+                        - generic [ref=e2030]:
+                          - 'link "Beware of Stripe Connect: Over $180k+ lost in fraud" [ref=e2031] [cursor=pointer]':
+                            - /url: /r/stripe/comments/1mg7o89/beware_of_stripe_connect_over_180k_lost_in_fraud/
+                            - generic [ref=e2032]:
+                              - generic: "Beware of Stripe Connect: Over $180k+ lost in fraud"
+                          - generic [ref=e2034]:
+                            - generic [ref=e2037]:
+                              - link "r/stripe" [ref=e2038] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2042]: r/stripe
+                              - generic [ref=e2043]: •
+                              - time [ref=e2045]: 10mo ago
+                            - 'link "List item post - Beware of Stripe Connect: Over $180k+ lost in fraud" [ref=e2047] [cursor=pointer]':
+                              - /url: /r/stripe/comments/1mg7o89/beware_of_stripe_connect_over_180k_lost_in_fraud/
+                              - 'heading "List item post - Beware of Stripe Connect: Over $180k+ lost in fraud" [level=3] [ref=e2050]': "Beware of Stripe Connect: Over $180k+ lost in fraud"
+                          - generic [ref=e2052]:
+                            - generic [ref=e2053]: "41"
+                            - text: upvotes ·
+                            - generic [ref=e2054]: "52"
+                            - text: comments
+                        - separator [ref=e2055]
+                    - listitem [ref=e2056]:
+                      - generic [ref=e2057]:
+                        - generic [ref=e2058]:
+                          - link "How do i contact a real person at stripe?" [ref=e2059] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1pbagmc/how_do_i_contact_a_real_person_at_stripe/
+                            - generic [ref=e2060]:
+                              - generic: How do i contact a real person at stripe?
+                          - generic [ref=e2061]:
+                            - generic [ref=e2062]:
+                              - generic [ref=e2065]:
+                                - link "r/stripe" [ref=e2066] [cursor=pointer]:
+                                  - /url: /r/stripe/
+                                  - generic [ref=e2070]: r/stripe
+                                - generic [ref=e2071]: •
+                                - time [ref=e2073]: 6mo ago
+                              - link "List item post - How do i contact a real person at stripe?" [ref=e2075] [cursor=pointer]:
+                                - /url: /r/stripe/comments/1pbagmc/how_do_i_contact_a_real_person_at_stripe/
+                                - heading "List item post - How do i contact a real person at stripe?" [level=3] [ref=e2078]: How do i contact a real person at stripe?
+                            - link "r/stripe - How do i contact a real person at stripe?" [ref=e2081] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1pbagmc/how_do_i_contact_a_real_person_at_stripe/
+                              - img "r/stripe - How do i contact a real person at stripe?" [ref=e2082]
+                          - generic [ref=e2084]:
+                            - generic [ref=e2085]: "6"
+                            - text: upvotes ·
+                            - generic [ref=e2086]: "14"
+                            - text: comments
+                        - separator [ref=e2087]
+                    - listitem
+                    - listitem [ref=e2088]:
+                      - generic [ref=e2089]:
+                        - generic [ref=e2090]:
+                          - link "I work in payment risk & compliance — AMA (Stripe, PayPal, bans, freezes, high risk transactions, subscriptions)" [ref=e2091] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1pagugh/i_work_in_payment_risk_compliance_ama_stripe/
+                            - generic [ref=e2092]:
+                              - generic: I work in payment risk & compliance — AMA (Stripe, PayPal, bans, freezes, high risk transactions, subscriptions)
+                          - generic [ref=e2094]:
+                            - generic [ref=e2097]:
+                              - link "r/stripe" [ref=e2098] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2102]: r/stripe
+                              - generic [ref=e2103]: •
+                              - time [ref=e2105]: 6mo ago
+                            - link "List item post - I work in payment risk & compliance — AMA (Stripe, PayPal, ..." [ref=e2107] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1pagugh/i_work_in_payment_risk_compliance_ama_stripe/
+                              - heading "List item post - I work in payment risk & compliance — AMA (Stripe, PayPal, ..." [level=3] [ref=e2110]: I work in payment risk & compliance — AMA (Stripe, PayPal, bans, freezes, high risk transactions, subscriptions)
+                          - generic [ref=e2112]:
+                            - generic [ref=e2113]: "40"
+                            - text: upvotes ·
+                            - generic [ref=e2114]: "75"
+                            - text: comments
+                        - separator [ref=e2115]
+                    - listitem [ref=e2116]:
+                      - generic [ref=e2117]:
+                        - generic [ref=e2118]:
+                          - link "Can stripe supports large payments for subscriptions?" [ref=e2119] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1pk0vlc/can_stripe_supports_large_payments_for/
+                            - generic [ref=e2120]:
+                              - generic: Can stripe supports large payments for subscriptions?
+                          - generic [ref=e2122]:
+                            - generic [ref=e2125]:
+                              - link "r/stripe" [ref=e2126] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2130]: r/stripe
+                              - generic [ref=e2131]: •
+                              - time [ref=e2133]: 5mo ago
+                            - link "List item post - Can stripe supports large payments for subscriptions?" [ref=e2135] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1pk0vlc/can_stripe_supports_large_payments_for/
+                              - heading "List item post - Can stripe supports large payments for subscriptions?" [level=3] [ref=e2138]: Can stripe supports large payments for subscriptions?
+                          - generic [ref=e2140]:
+                            - generic [ref=e2141]: "12"
+                            - text: upvotes ·
+                            - generic [ref=e2142]: "24"
+                            - text: comments
+                        - separator [ref=e2143]
+                    - listitem [ref=e2144]:
+                      - generic [ref=e2145]:
+                        - generic [ref=e2146]:
+                          - link "\"Principal Balance Reduction for 12 On-Time Payments\" showing on two of my Nelnet loans" [ref=e2147] [cursor=pointer]:
+                            - /url: /r/StudentLoans/comments/1rymsmv/principal_balance_reduction_for_12_ontime/
+                            - generic [ref=e2148]:
+                              - generic: "\"Principal Balance Reduction for 12 On-Time Payments\" showing on two of my Nelnet loans"
+                          - generic [ref=e2150]:
+                            - generic [ref=e2153]:
+                              - link "r/StudentLoans" [ref=e2154] [cursor=pointer]:
+                                - /url: /r/StudentLoans/
+                                - img [ref=e2158]
+                                - generic [ref=e2160]: r/StudentLoans
+                              - generic [ref=e2161]: •
+                              - time [ref=e2163]: 2mo ago
+                            - link "List item post - \"Principal Balance Reduction for 12 On-Time Payments\" showi..." [ref=e2165] [cursor=pointer]:
+                              - /url: /r/StudentLoans/comments/1rymsmv/principal_balance_reduction_for_12_ontime/
+                              - heading "List item post - \"Principal Balance Reduction for 12 On-Time Payments\" showi..." [level=3] [ref=e2168]: "\"Principal Balance Reduction for 12 On-Time Payments\" showing on two of my Nelnet loans"
+                          - generic [ref=e2170]:
+                            - generic [ref=e2171]: "4"
+                            - text: upvotes ·
+                            - generic [ref=e2172]: "8"
+                            - text: comments
+                        - separator [ref=e2173]
+                    - listitem [ref=e2174]:
+                      - generic [ref=e2175]:
+                        - generic [ref=e2176]:
+                          - link "I purchased something on buy.stripe.com, and they charged me over €2,000 during the night." [ref=e2177] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1suhigu/i_purchased_something_on_buystripecom_and_they/
+                            - generic [ref=e2178]:
+                              - generic: I purchased something on buy.stripe.com, and they charged me over €2,000 during the night.
+                          - generic [ref=e2180]:
+                            - generic [ref=e2183]:
+                              - link "r/stripe" [ref=e2184] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2188]: r/stripe
+                              - generic [ref=e2189]: •
+                              - time [ref=e2191]: 23d ago
+                            - link "List item post - I purchased something on buy.stripe.com, and they charged m..." [ref=e2193] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1suhigu/i_purchased_something_on_buystripecom_and_they/
+                              - heading "List item post - I purchased something on buy.stripe.com, and they charged m..." [level=3] [ref=e2196]: I purchased something on buy.stripe.com, and they charged me over €2,000 during the night.
+                          - generic [ref=e2198]:
+                            - generic [ref=e2199]: "2"
+                            - text: upvotes ·
+                            - generic [ref=e2200]: "14"
+                            - text: comments
+                        - separator [ref=e2201]
+                    - listitem [ref=e2202]:
+                      - generic [ref=e2203]:
+                        - generic [ref=e2204]:
+                          - link "Stripe payout paused" [ref=e2205] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1o056cd/stripe_payout_paused/
+                            - generic [ref=e2206]:
+                              - generic: Stripe payout paused
+                          - generic [ref=e2207]:
+                            - generic [ref=e2208]:
+                              - generic [ref=e2211]:
+                                - link "r/stripe" [ref=e2212] [cursor=pointer]:
+                                  - /url: /r/stripe/
+                                  - generic [ref=e2216]: r/stripe
+                                - generic [ref=e2217]: •
+                                - time [ref=e2219]: 7mo ago
+                              - link "List item post - Stripe payout paused" [ref=e2221] [cursor=pointer]:
+                                - /url: /r/stripe/comments/1o056cd/stripe_payout_paused/
+                                - heading "List item post - Stripe payout paused" [level=3] [ref=e2224]: Stripe payout paused
+                            - link "r/stripe - Stripe payout paused" [ref=e2227] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1o056cd/stripe_payout_paused/
+                              - img "r/stripe - Stripe payout paused" [ref=e2228]
+                          - generic [ref=e2230]:
+                            - generic [ref=e2231]: "8"
+                            - text: upvotes ·
+                            - generic [ref=e2232]: "25"
+                            - text: comments
+                        - separator [ref=e2233]
+                    - listitem [ref=e2234]:
+                      - generic [ref=e2235]:
+                        - generic [ref=e2236]:
+                          - link "Great alternatives to Stripe?" [ref=e2237] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1phnfj4/great_alternatives_to_stripe/
+                            - generic [ref=e2238]:
+                              - generic: Great alternatives to Stripe?
+                          - generic [ref=e2240]:
+                            - generic [ref=e2243]:
+                              - link "r/stripe" [ref=e2244] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2248]: r/stripe
+                              - generic [ref=e2249]: •
+                              - time [ref=e2251]: 5mo ago
+                            - link "List item post - Great alternatives to Stripe?" [ref=e2253] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1phnfj4/great_alternatives_to_stripe/
+                              - heading "List item post - Great alternatives to Stripe?" [level=3] [ref=e2256]: Great alternatives to Stripe?
+                          - generic [ref=e2258]:
+                            - generic [ref=e2259]: "79"
+                            - text: upvotes ·
+                            - generic [ref=e2260]: "62"
+                            - text: comments
+                        - separator [ref=e2261]
+                    - listitem [ref=e2262]:
+                      - generic [ref=e2263]:
+                        - generic [ref=e2264]:
+                          - link "Stripe has hold my funds for over 2 years - Anyone faced this and got paid ?" [ref=e2265] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1mgljwl/stripe_has_hold_my_funds_for_over_2_years_anyone/
+                            - generic [ref=e2266]:
+                              - generic: Stripe has hold my funds for over 2 years - Anyone faced this and got paid ?
+                          - generic [ref=e2268]:
+                            - generic [ref=e2271]:
+                              - link "r/stripe" [ref=e2272] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2276]: r/stripe
+                              - generic [ref=e2277]: •
+                              - time [ref=e2279]: 10mo ago
+                            - link "List item post - Stripe has hold my funds for over 2 years - Anyone faced th..." [ref=e2281] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1mgljwl/stripe_has_hold_my_funds_for_over_2_years_anyone/
+                              - heading "List item post - Stripe has hold my funds for over 2 years - Anyone faced th..." [level=3] [ref=e2284]: Stripe has hold my funds for over 2 years - Anyone faced this and got paid ?
+                          - generic [ref=e2286]:
+                            - generic [ref=e2287]: "5"
+                            - text: upvotes ·
+                            - generic [ref=e2288]: "14"
+                            - text: comments
+                        - separator [ref=e2289]
+                    - listitem [ref=e2290]:
+                      - generic [ref=e2291]:
+                        - generic [ref=e2292]:
+                          - 'link "Found a Validated Problem: 65% of Freelancers Lose $1,028+ to Preventable Payment Disputes (Seeking Validation)" [ref=e2293] [cursor=pointer]':
+                            - /url: /r/SaaS/comments/1q83war/found_a_validated_problem_65_of_freelancers_lose/
+                            - generic [ref=e2294]:
+                              - generic: "Found a Validated Problem: 65% of Freelancers Lose $1,028+ to Preventable Payment Disputes (Seeking Validation)"
+                          - generic [ref=e2296]:
+                            - generic [ref=e2299]:
+                              - link "r/SaaS" [ref=e2300] [cursor=pointer]:
+                                - /url: /r/SaaS/
+                                - generic [ref=e2304]: r/SaaS
+                              - generic [ref=e2305]: •
+                              - time [ref=e2307]: 4mo ago
+                            - 'link "List item post - Found a Validated Problem: 65% of Freelancers Lose $1,028+ ..." [ref=e2309] [cursor=pointer]':
+                              - /url: /r/SaaS/comments/1q83war/found_a_validated_problem_65_of_freelancers_lose/
+                              - 'heading "List item post - Found a Validated Problem: 65% of Freelancers Lose $1,028+ ..." [level=3] [ref=e2312]': "Found a Validated Problem: 65% of Freelancers Lose $1,028+ to Preventable Payment Disputes (Seeking Validation)"
+                          - generic [ref=e2314]:
+                            - generic [ref=e2315]: "1"
+                            - text: upvote ·
+                            - generic [ref=e2316]: "3"
+                            - text: comments
+                        - separator [ref=e2317]
+                    - listitem [ref=e2318]:
+                      - generic [ref=e2319]:
+                        - generic [ref=e2320]:
+                          - link "Can i just charge back Money from stripe?" [ref=e2321] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1lup0es/can_i_just_charge_back_money_from_stripe/
+                            - generic [ref=e2322]:
+                              - generic: Can i just charge back Money from stripe?
+                          - generic [ref=e2324]:
+                            - generic [ref=e2327]:
+                              - link "r/stripe" [ref=e2328] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2332]: r/stripe
+                              - generic [ref=e2333]: •
+                              - time [ref=e2335]: 10mo ago
+                            - link "List item post - Can i just charge back Money from stripe?" [ref=e2337] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1lup0es/can_i_just_charge_back_money_from_stripe/
+                              - heading "List item post - Can i just charge back Money from stripe?" [level=3] [ref=e2340]: Can i just charge back Money from stripe?
+                          - generic [ref=e2342]:
+                            - generic [ref=e2343]: "7"
+                            - text: upvotes ·
+                            - generic [ref=e2344]: "10"
+                            - text: comments
+                        - separator [ref=e2345]
+                    - listitem [ref=e2346]:
+                      - generic [ref=e2347]:
+                        - generic [ref=e2348]:
+                          - link "Stripe closed my account, what happens to my money?" [ref=e2349] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1m1hlfn/stripe_closed_my_account_what_happens_to_my_money/
+                            - generic [ref=e2350]:
+                              - generic: Stripe closed my account, what happens to my money?
+                          - generic [ref=e2352]:
+                            - generic [ref=e2355]:
+                              - link "r/stripe" [ref=e2356] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2360]: r/stripe
+                              - generic [ref=e2361]: •
+                              - time [ref=e2363]: 10mo ago
+                            - link "List item post - Stripe closed my account, what happens to my money?" [ref=e2365] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1m1hlfn/stripe_closed_my_account_what_happens_to_my_money/
+                              - heading "List item post - Stripe closed my account, what happens to my money?" [level=3] [ref=e2368]: Stripe closed my account, what happens to my money?
+                          - generic [ref=e2370]:
+                            - generic [ref=e2371]: "13"
+                            - text: upvotes ·
+                            - generic [ref=e2372]: "45"
+                            - text: comments
+                        - separator [ref=e2373]
+                    - listitem [ref=e2374]:
+                      - generic [ref=e2375]:
+                        - generic [ref=e2376]:
+                          - link "Stripe Held My Funds — Then How They Finally Released Them" [ref=e2377] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1qdx7fb/stripe_held_my_funds_then_how_they_finally/
+                            - generic [ref=e2378]:
+                              - generic: Stripe Held My Funds — Then How They Finally Released Them
+                          - generic [ref=e2380]:
+                            - generic [ref=e2383]:
+                              - link "r/stripe" [ref=e2384] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2388]: r/stripe
+                              - generic [ref=e2389]: •
+                              - time [ref=e2391]: 4mo ago
+                            - link "List item post - Stripe Held My Funds — Then How They Finally Released Them" [ref=e2393] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1qdx7fb/stripe_held_my_funds_then_how_they_finally/
+                              - heading "List item post - Stripe Held My Funds — Then How They Finally Released Them" [level=3] [ref=e2396]: Stripe Held My Funds — Then How They Finally Released Them
+                          - generic [ref=e2398]:
+                            - generic [ref=e2399]: "7"
+                            - text: upvotes ·
+                            - generic [ref=e2400]: "19"
+                            - text: comments
+                        - separator [ref=e2401]
+                    - listitem [ref=e2402]:
+                      - generic [ref=e2403]:
+                        - generic [ref=e2404]:
+                          - link "📢 Stripe Capital Update for Fellow Business Owners 📢" [ref=e2405] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1n8c0as/stripe_capital_update_for_fellow_business_owners/
+                            - generic [ref=e2406]:
+                              - generic: 📢 Stripe Capital Update for Fellow Business Owners 📢
+                          - generic [ref=e2408]:
+                            - generic [ref=e2411]:
+                              - link "r/stripe" [ref=e2412] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2416]: r/stripe
+                              - generic [ref=e2417]: •
+                              - time [ref=e2419]: 9mo ago
+                            - link "List item post - 📢 Stripe Capital Update for Fellow Business Owners 📢" [ref=e2421] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1n8c0as/stripe_capital_update_for_fellow_business_owners/
+                              - heading "List item post - 📢 Stripe Capital Update for Fellow Business Owners 📢" [level=3] [ref=e2424]: 📢 Stripe Capital Update for Fellow Business Owners 📢
+                          - generic [ref=e2426]:
+                            - generic [ref=e2427]: "9"
+                            - text: upvotes ·
+                            - generic [ref=e2428]: "14"
+                            - text: comments
+                        - separator [ref=e2429]
+                    - listitem [ref=e2430]:
+                      - generic [ref=e2431]:
+                        - generic [ref=e2432]:
+                          - link "GHL charged me $5,500 for workflow executions (in 45 minutes) that never completed & support refuses any refund" [ref=e2433] [cursor=pointer]:
+                            - /url: /r/gohighlevel/comments/1qfjiel/ghl_charged_me_5500_for_workflow_executions_in_45/
+                            - generic [ref=e2434]:
+                              - generic: GHL charged me $5,500 for workflow executions (in 45 minutes) that never completed & support refuses any refund
+                          - generic [ref=e2436]:
+                            - generic [ref=e2439]:
+                              - link "r/gohighlevel" [ref=e2440] [cursor=pointer]:
+                                - /url: /r/gohighlevel/
+                                - generic [ref=e2444]: r/gohighlevel
+                              - generic [ref=e2445]: •
+                              - time [ref=e2447]: 4mo ago
+                            - link "List item post - GHL charged me $5,500 for workflow executions (in 45 minute..." [ref=e2449] [cursor=pointer]:
+                              - /url: /r/gohighlevel/comments/1qfjiel/ghl_charged_me_5500_for_workflow_executions_in_45/
+                              - heading "List item post - GHL charged me $5,500 for workflow executions (in 45 minute..." [level=3] [ref=e2452]: GHL charged me $5,500 for workflow executions (in 45 minutes) that never completed & support refuses any refund
+                          - generic [ref=e2454]:
+                            - generic [ref=e2455]: "5"
+                            - text: upvotes ·
+                            - generic [ref=e2456]: "24"
+                            - text: comments
+                        - separator [ref=e2457]
+                    - listitem [ref=e2458]:
+                      - generic [ref=e2459]:
+                        - generic [ref=e2460]:
+                          - link "JSS dropped to 67% after one cancellation — is this profile dead?" [ref=e2461] [cursor=pointer]:
+                            - /url: /r/Upwork/comments/1qea3s5/jss_dropped_to_67_after_one_cancellation_is_this/
+                            - generic [ref=e2462]:
+                              - generic: JSS dropped to 67% after one cancellation — is this profile dead?
+                          - generic [ref=e2464]:
+                            - generic [ref=e2467]:
+                              - link "r/Upwork" [ref=e2468] [cursor=pointer]:
+                                - /url: /r/Upwork/
+                                - img [ref=e2472]
+                                - generic [ref=e2474]: r/Upwork
+                              - generic [ref=e2475]: •
+                              - time [ref=e2477]: 4mo ago
+                            - link "List item post - JSS dropped to 67% after one cancellation — is this profile..." [ref=e2479] [cursor=pointer]:
+                              - /url: /r/Upwork/comments/1qea3s5/jss_dropped_to_67_after_one_cancellation_is_this/
+                              - heading "List item post - JSS dropped to 67% after one cancellation — is this profile..." [level=3] [ref=e2482]: JSS dropped to 67% after one cancellation — is this profile dead?
+                          - generic [ref=e2484]:
+                            - generic [ref=e2485]: "5"
+                            - text: upvotes ·
+                            - generic [ref=e2486]: "32"
+                            - text: comments
+                        - separator [ref=e2487]
+                    - listitem [ref=e2488]:
+                      - generic [ref=e2489]:
+                        - generic [ref=e2490]:
+                          - link "Do NOT Use Stripe as your payment processor." [ref=e2491] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1pxcwso/do_not_use_stripe_as_your_payment_processor/
+                            - generic [ref=e2492]:
+                              - generic: Do NOT Use Stripe as your payment processor.
+                          - generic [ref=e2494]:
+                            - generic [ref=e2497]:
+                              - link "r/stripe" [ref=e2498] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2502]: r/stripe
+                              - generic [ref=e2503]: •
+                              - time [ref=e2505]: 5mo ago
+                            - link "List item post - Do NOT Use Stripe as your payment processor." [ref=e2507] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1pxcwso/do_not_use_stripe_as_your_payment_processor/
+                              - heading "List item post - Do NOT Use Stripe as your payment processor." [level=3] [ref=e2510]: Do NOT Use Stripe as your payment processor.
+                          - generic [ref=e2512]:
+                            - generic [ref=e2513]: "23"
+                            - text: comments
+                        - separator [ref=e2514]
+                    - listitem [ref=e2515]:
+                      - generic [ref=e2516]:
+                        - generic [ref=e2517]:
+                          - link "Stripe fee that seems way higher than expected" [ref=e2518] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1t92pge/stripe_fee_that_seems_way_higher_than_expected/
+                            - generic [ref=e2519]:
+                              - generic: Stripe fee that seems way higher than expected
+                          - generic [ref=e2521]:
+                            - generic [ref=e2524]:
+                              - link "r/stripe" [ref=e2525] [cursor=pointer]:
+                                - /url: /r/stripe/
+                                - generic [ref=e2529]: r/stripe
+                              - generic [ref=e2530]: •
+                              - time [ref=e2532]: 7d ago
+                            - link "List item post - Stripe fee that seems way higher than expected" [ref=e2534] [cursor=pointer]:
+                              - /url: /r/stripe/comments/1t92pge/stripe_fee_that_seems_way_higher_than_expected/
+                              - heading "List item post - Stripe fee that seems way higher than expected" [level=3] [ref=e2537]: Stripe fee that seems way higher than expected
+                          - generic [ref=e2539]:
+                            - generic [ref=e2540]: "2"
+                            - text: upvotes ·
+                            - generic [ref=e2541]: "17"
+                            - text: comments
+                        - separator [ref=e2542]
+                    - listitem [ref=e2543]:
+                      - generic [ref=e2545]:
+                        - link "What actually happens inside your business when Stripe pauses payouts?" [ref=e2546] [cursor=pointer]:
+                          - /url: /r/stripe/comments/1pq3tf1/what_actually_happens_inside_your_business_when/
+                          - generic [ref=e2547]:
+                            - generic: What actually happens inside your business when Stripe pauses payouts?
+                        - generic [ref=e2549]:
+                          - generic [ref=e2552]:
+                            - link "r/stripe" [ref=e2553] [cursor=pointer]:
+                              - /url: /r/stripe/
+                              - generic [ref=e2557]: r/stripe
+                            - generic [ref=e2558]: •
+                            - time [ref=e2560]: 5mo ago
+                          - link "List item post - What actually happens inside your business when Stripe paus..." [ref=e2562] [cursor=pointer]:
+                            - /url: /r/stripe/comments/1pq3tf1/what_actually_happens_inside_your_business_when/
+                            - heading "List item post - What actually happens inside your business when Stripe paus..." [level=3] [ref=e2565]: What actually happens inside your business when Stripe pauses payouts?
+                        - generic [ref=e2567]:
+                          - generic [ref=e2568]: "16"
+                          - text: upvotes ·
+                          - generic [ref=e2569]: "21"
+                          - text: comments
+                - generic [ref=e2570]:
+                  - heading "View Post in" [level=2] [ref=e2572]:
+                    - generic [ref=e2573]: View Post in
+                  - generic [ref=e2574]:
+                    - link "简体中文" [ref=e2576] [cursor=pointer]:
+                      - /url: https://www.reddit.com/r/stripe/comments/1s2wp37/80_of_my_stripe_payments_are_failing/?tl=zh-hans
+                    - link "हिन्दी" [ref=e2578] [cursor=pointer]:
+                      - /url: https://www.reddit.com/r/stripe/comments/1s2wp37/80_of_my_stripe_payments_are_failing/?tl=hi
+                    - link "Português (Brasil)" [ref=e2580] [cursor=pointer]:
+                      - /url: https://www.reddit.com/r/stripe/comments/1s2wp37/80_of_my_stripe_payments_are_failing/?tl=pt-br
+                    - link "Français" [ref=e2582] [cursor=pointer]:
+                      - /url: https://www.reddit.com/r/stripe/comments/1s2wp37/80_of_my_stripe_payments_are_failing/?tl=fr
+                    - link "日本語" [ref=e2584] [cursor=pointer]:
+                      - /url: https://www.reddit.com/r/stripe/comments/1s2wp37/80_of_my_stripe_payments_are_failing/?tl=ja
+                    - group [ref=e2585]:
+                      - generic "See more" [ref=e2586] [cursor=pointer]:
+                        - generic [ref=e2587]: See more
+                        - img [ref=e2589]
+                - complementary "Community information" [ref=e2591]:
+                  - generic [ref=e2593]:
+                    - heading "Community Info Section" [level=1] [ref=e2594]
+                    - generic [ref=e2595]:
+                      - link "r/stripe" [ref=e2597] [cursor=pointer]:
+                        - /url: /r/stripe/
+                        - generic [ref=e2598]: r/stripe
+                      - button "Join" [ref=e2602] [cursor=pointer]
+                    - generic [ref=e2603]:
+                      - generic [ref=e2604]: Stripe
+                      - generic [ref=e2605]: Stripe is a technology company that builds economic infrastructure for the internet. Businesses of every size—from new startups to public companies—use Stripe to accept payments and manage their businesses online. This is an unofficial community subreddit—if you're looking for help, reach out to Stripe at https://support.stripe.com/contact.
+                      - button "Show more" [ref=e2606] [cursor=pointer]:
+                        - generic [ref=e2608]: Show more
+                      - generic [ref=e2611]:
+                        - img [ref=e2612]
+                        - text: Public
+              - generic [ref=e2615]:
+                - link "Reddit Rules" [ref=e2618] [cursor=pointer]:
+                  - /url: https://www.redditinc.com/policies/content-policy
+                - link "Privacy Policy" [ref=e2621] [cursor=pointer]:
+                  - /url: https://www.reddit.com/policies/privacy-policy
+                - link "User Agreement" [ref=e2624] [cursor=pointer]:
+                  - /url: https://www.redditinc.com/policies/user-agreement
+                - link "Accessibility" [ref=e2627] [cursor=pointer]:
+                  - /url: https://support.reddithelp.com/hc/sections/38303584022676-Accessibility
+                - link "Reddit, Inc. © 2026. All rights reserved." [ref=e2629] [cursor=pointer]:
+                  - /url: https://redditinc.com
+        - generic [ref=e2631]:
+          - button "Collapse Navigation" [ref=e2634] [cursor=pointer]:
+            - img [ref=e2637]
+            - generic [ref=e2639]:
+              - generic: Collapse Navigation
+          - navigation "Primary" [ref=e2644]:
+            - generic [ref=e2646]:
+              - link "Popular" [ref=e2648] [cursor=pointer]:
+                - /url: /r/popular/
+                - generic [ref=e2649]:
+                  - img [ref=e2651]
+                  - generic [ref=e2654]: Popular
+              - link "News" [ref=e2655] [cursor=pointer]:
+                - /url: /news/
+                - generic [ref=e2656]:
+                  - img [ref=e2658]
+                  - generic [ref=e2662]: News
+              - link "Explore" [ref=e2664] [cursor=pointer]:
+                - /url: /explore/
+                - generic [ref=e2665]:
+                  - img [ref=e2667]
+                  - generic [ref=e2670]: Explore
+            - separator [ref=e2671]
+            - navigation "Reddit resources" [ref=e2672]:
+              - group [ref=e2674]:
+                - generic "RESOURCES" [ref=e2675] [cursor=pointer]:
+                  - generic [ref=e2677]:
+                    - generic [ref=e2680]: RESOURCES
+                    - img [ref=e2683]
+                - generic [ref=e2686]:
+                  - link "About Reddit" [ref=e2688] [cursor=pointer]:
+                    - /url: https://www.redditinc.com
+                    - generic [ref=e2689]:
+                      - img [ref=e2691]
+                      - generic [ref=e2695]: About Reddit
+                  - link "Advertise" [ref=e2697] [cursor=pointer]:
+                    - /url: https://ads.reddit.com/register?utm_source=web3x_consumer&utm_name=left_nav_cta
+                    - generic [ref=e2698]:
+                      - img [ref=e2700]
+                      - generic [ref=e2704]: Advertise
+                  - link "Developer Platform" [ref=e2706] [cursor=pointer]:
+                    - /url: https://developers.reddit.com/?utm_source=reddit&utm_medium=left_nav_resources
+                    - generic [ref=e2707]:
+                      - img [ref=e2709]
+                      - generic [ref=e2713]: Developer Platform
+                  - link "Reddit Pro BETA" [ref=e2715] [cursor=pointer]:
+                    - /url: /reddit-pro?utm_source=reddit&utm_medium=left_nav_resources
+                    - generic [ref=e2716]:
+                      - img [ref=e2718]
+                      - generic [ref=e2722]:
+                        - generic [ref=e2723]: Reddit Pro
+                        - generic [ref=e2724]: BETA
+                  - link "Help" [ref=e2726] [cursor=pointer]:
+                    - /url: https://support.reddithelp.com/hc?utm_source=reddit&utm_medium=footer&utm_campaign=evergreen
+                    - generic [ref=e2727]:
+                      - img [ref=e2729]
+                      - generic [ref=e2733]: Help
+                  - link "Blog" [ref=e2735] [cursor=pointer]:
+                    - /url: https://redditblog.com/
+                    - generic [ref=e2736]:
+                      - img [ref=e2738]
+                      - generic [ref=e2742]: Blog
+                  - link "Careers" [ref=e2744] [cursor=pointer]:
+                    - /url: https://www.redditinc.com/careers
+                    - generic [ref=e2745]:
+                      - img [ref=e2747]
+                      - generic [ref=e2751]: Careers
+                  - link "Press" [ref=e2753] [cursor=pointer]:
+                    - /url: https://www.redditinc.com/press
+                    - generic [ref=e2754]:
+                      - img [ref=e2756]
+                      - generic [ref=e2760]: Press
+                  - separator [ref=e2761]
+                  - link "Best of Reddit" [ref=e2763] [cursor=pointer]:
+                    - /url: https://www.reddit.com/posts/2026/global/
+                    - generic [ref=e2764]:
+                      - img [ref=e2766]
+                      - generic [ref=e2771]: Best of Reddit
+                  - separator [ref=e2772]
+                  - link "Reddit Rules" [ref=e2774] [cursor=pointer]:
+                    - /url: https://www.redditinc.com/policies/content-policy
+                    - generic [ref=e2775]:
+                      - img [ref=e2777]
+                      - generic [ref=e2781]: Reddit Rules
+                  - link "Privacy Policy" [ref=e2783] [cursor=pointer]:
+                    - /url: https://www.reddit.com/policies/privacy-policy
+                    - generic [ref=e2784]:
+                      - img [ref=e2786]
+                      - generic [ref=e2790]: Privacy Policy
+                  - link "User Agreement" [ref=e2792] [cursor=pointer]:
+                    - /url: https://www.redditinc.com/policies/user-agreement
+                    - generic [ref=e2793]:
+                      - img [ref=e2795]
+                      - generic [ref=e2799]: User Agreement
+                  - link "Accessibility" [ref=e2801] [cursor=pointer]:
+                    - /url: https://support.reddithelp.com/hc/sections/38303584022676-Accessibility
+                    - generic [ref=e2802]:
+                      - img [ref=e2804]
+                      - generic [ref=e2809]: Accessibility
+            - link "Reddit, Inc. © 2026. All rights reserved." [ref=e2811] [cursor=pointer]:
+              - /url: https://redditinc.com
+      - dialog "Data Protection Consent" [ref=e2813]:
+        - generic [ref=e2814]:
+          - generic [ref=e2816]:
+            - generic:
+              - button "Close" [ref=e2820] [cursor=pointer]:
+                - img [ref=e2823]
+              - generic [ref=e2825]:
+                - generic [ref=e2827]: Let us know your cookie preferences
+                - generic [ref=e2829]:
+                  - paragraph [ref=e2830]: "Reddit uses cookies and similar technologies to:"
+                  - list [ref=e2831]:
+                    - listitem [ref=e2832]: Keep the website operational and running properly
+                    - listitem [ref=e2833]: Prevent fraud and abuse
+                    - listitem [ref=e2834]: Monitor site usage and performance metrics
+                  - paragraph [ref=e2835]: "If you choose “Accept All” we’ll also use cookies to:"
+                  - list [ref=e2836]:
+                    - listitem [ref=e2837]: Personalize your recommendations and ads
+                    - listitem [ref=e2838]: Measure the performance of ads
+                    - listitem [ref=e2839]: Develop and improve new features and services
+                  - paragraph [ref=e2840]: If you choose “Reject Optional Cookies” we won’t use cookies for these additional uses. You can update your cookie preference from your settings.
+                  - paragraph [ref=e2841]:
+                    - text: Learn more about
+                    - link "how Reddit uses cookies" [ref=e2842] [cursor=pointer]:
+                      - /url: /en-us/policies/cookies
+                    - text: .
+          - generic [ref=e2844]:
+            - button "Reject Optional Cookies" [ref=e2845] [cursor=pointer]:
+              - generic [ref=e2847]: Reject Optional Cookies
+            - button "Accept All" [ref=e2848] [cursor=pointer]:
+              - generic [ref=e2850]: Accept All

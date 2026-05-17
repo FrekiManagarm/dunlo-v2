@@ -12,6 +12,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { and, eq } from "drizzle-orm";
 
 import { generateEscalationDraft } from "@/functions/escalations";
+import { storeBenchmarkSnapshotFromPaymentIntents } from "@/functions/benchmark";
 import { authMiddleware } from "@/middleware/auth";
 import { getConnectedStripe } from "@/lib/stripe";
 
@@ -269,6 +270,11 @@ export async function importExistingFailedPayments(
   const piList = await stripe.paymentIntents.list({
     limit: 100,
     created: { gte: since },
+  });
+
+  await storeBenchmarkSnapshotFromPaymentIntents({
+    userId,
+    paymentIntents: piList.data,
   });
 
   const failedPIs = piList.data.filter(

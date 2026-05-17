@@ -1,6 +1,10 @@
 import { queryOptions } from "@tanstack/react-query";
 
 import { getAlertFeed, getNotificationSettings } from "@/functions/alerts";
+import {
+  getPublicBenchmarkData,
+  getUserBenchmarkData,
+} from "@/functions/benchmark";
 import { getEmailProvider } from "@/functions/email-provider";
 import { getEscalations, getEscalationSettings } from "@/functions/escalations";
 import {
@@ -82,4 +86,16 @@ export const onboardingStateQueryOptions = () =>
   queryOptions({
     queryKey: ["onboarding-state"] as const,
     queryFn: () => getOnboardingState(),
+  });
+
+export const publicBenchmarkQueryOptions = () =>
+  queryOptions({
+    queryKey: ["benchmark", "public"] as const,
+    queryFn: () => getPublicBenchmarkData(),
+  });
+
+export const userBenchmarkQueryOptions = () =>
+  queryOptions({
+    queryKey: ["benchmark", "user"] as const,
+    queryFn: () => getUserBenchmarkData(),
   });

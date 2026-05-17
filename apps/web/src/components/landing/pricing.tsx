@@ -11,9 +11,9 @@ const PLANS = [
     price: 19,
     mrr: "< $5k MRR",
     features: [
-      "1 email sequence",
+      "Core recovery sequence",
       "Up to $5k MRR",
-      "Basic dashboard",
+      "Failed-payment dashboard",
       "Email support",
     ],
     featured: false,
@@ -22,28 +22,29 @@ const PLANS = [
     name: "Starter",
     price: 49,
     mrr: "$5k–$20k MRR",
+    badge: "Most popular",
     features: [
-      "2 email sequences",
+      "3 recovery sequences",
       "Up to $20k MRR",
       "Priority scoring",
+      "Weekly recovery summary",
       "All Solo features",
     ],
-    featured: false,
+    featured: true,
   },
   {
     name: "Growth",
     price: 149,
     mrr: "$20k–$80k MRR",
-    badge: "Most popular",
     features: [
       "Unlimited sequences",
       "Up to $80k MRR",
-      "Founder escalation drafts",
+      "AI-drafted founder emails for high-value failures — review and send in one click",
       "High-value account alerts",
       "Recovery insights",
       "Unlimited team members",
     ],
-    featured: true,
+    featured: false,
   },
   {
     name: "Scale",
@@ -85,11 +86,16 @@ export function Pricing() {
           <p className="mt-3 text-base text-gray-500">
             All plans free during beta — no billing until launch.
           </p>
+          <p className="mx-auto mt-3 max-w-2xl text-sm leading-6 text-gray-500">
+            We don't take a cut of what we recover. You pay a flat monthly fee
+            based on your MRR tier — that's it. No surprises, no percentages, no
+            alignment tricks.
+          </p>
         </div>
 
         <div className="mx-auto mb-8 flex max-w-lg items-center justify-center gap-3 rounded-full border border-dunlo/25 bg-dunlo/8 px-6 py-3">
           <span className="size-2 animate-pulse rounded-full bg-dunlo" />
-          <p className="text-sm font-medium text-[#006b38]">
+          <p className="text-sm font-medium text-dunlo-deep">
             <strong>Beta:</strong> every plan is currently free — pick your tier
             for when we launch
           </p>

@@ -40,10 +40,10 @@ function MagneticCtaButton() {
         className="inline-flex items-center gap-0 rounded-full border border-gray-200 bg-white px-2 py-2 shadow-sm transition-shadow hover:shadow-md active:scale-[0.98]"
       >
         <span className="px-4 text-sm font-semibold text-gray-900">
-          Get started now
+          See your benchmark
         </span>
         <span className="flex items-center gap-1.5 rounded-full bg-dunlo px-4 py-2 text-sm font-semibold text-white">
-          for free
+          free
           <ChevronRight size={14} />
         </span>
       </Link>
@@ -375,16 +375,17 @@ export function Hero() {
             </h1>
 
             <p className="anim-3 mt-6 max-w-sm text-lg leading-relaxed text-gray-500">
-              Dunlo connects to Stripe, detects every failed payment by type,
-              and sends the right recovery email — automatically.
+              Connect Stripe. See how your failed payment rate compares to
+              similar SaaS. Fix what's costing you the most.
             </p>
 
             <div className="anim-4 mt-8">
               <MagneticCtaButton />
             </div>
 
-            <p className="anim-5 mt-4 text-xs text-gray-400">
-              No credit card required · Cancel anytime · 5 min setup
+            <p className="anim-5 mt-4 max-w-xs text-xs leading-relaxed text-gray-400">
+              Connect Stripe in 60 seconds. See how your failed payment rate
+              compares to 500+ SaaS instantly.
             </p>
 
             {/*<div className="anim-6 mt-10 flex items-center gap-8 border-t border-gray-200/50 pt-8">

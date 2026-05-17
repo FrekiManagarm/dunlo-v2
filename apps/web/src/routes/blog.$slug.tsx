@@ -180,7 +180,8 @@ function TagPill({ tag }: { tag: string }) {
   );
 }
 
-function estimateReadingTime(description: string) {
+function estimateReadingTime(description: string, readingTime?: string) {
+  if (readingTime) return readingTime;
   const mins = Math.max(3, Math.ceil((description.split(" ").length * 15) / 200));
   return `${mins} min`;
 }
@@ -191,7 +192,8 @@ const spring = { type: "spring" as const, stiffness: 100, damping: 20 };
 
 function BlogPostPage() {
   const { slug } = Route.useParams();
-  const { title, date, tags, description, keywords } = Route.useLoaderData();
+  const { title, date, tags, description, keywords, readingTime } =
+    Route.useLoaderData();
   const articleRef = useRef<HTMLDivElement>(null);
 
   const MDX = getBlogBody(slug);
@@ -264,7 +266,7 @@ function BlogPostPage() {
             <span className="w-1 h-1 rounded-full bg-border" />
             <span className="inline-flex items-center gap-1.5">
               <Clock size={13} />
-              {estimateReadingTime(description)} read
+              {estimateReadingTime(description, readingTime)} read
             </span>
           </div>
         </motion.header>

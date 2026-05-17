@@ -65,7 +65,7 @@ const FEATURE_ITEMS = [
             code: "do_not_honor",
             label: "Generic decline",
             action: "Escalate if > €500",
-            color: "bg-purple-50 border-purple-200 text-purple-700",
+            color: "bg-dunlo/8 border-dunlo/25 text-dunlo-deep",
           },
         ].map((item) => (
           <div
@@ -142,8 +142,9 @@ const FEATURE_ITEMS = [
   },
   {
     tag: "Escalate",
-    headline: "High-value accounts get your personal touch.",
-    body: "Set a threshold (e.g. €500+/mo) and Dunlo drafts a founder-ready email for each high-risk account. You review and send in one click — high-touch when MRR is on the line.",
+    headline:
+      "High-value failures get a human response — drafted by AI, sent by you.",
+    body: "Set your threshold. When a failed payment crosses it, Dunlo stops the automation and drafts a personal email from you instead. Review, regenerate, or send — your call.",
     visual: (
       <div className="space-y-3 p-6">
         <div className="rounded-2xl border border-red-100 bg-red-50 p-4">
@@ -164,7 +165,7 @@ const FEATURE_ITEMS = [
         </div>
         <div className="rounded-2xl border border-gray-100 bg-white p-4 shadow-sm">
           <p className="mb-2 text-[11px] font-semibold text-gray-500">
-            Draft ready — review & send
+            AI draft ready — review, regenerate, or send
           </p>
           <p className="text-xs leading-relaxed text-gray-800">
             "Hey Marcus, I saw your card didn't go through today. Given what
@@ -172,10 +173,13 @@ const FEATURE_ITEMS = [
           </p>
           <div className="mt-3 flex gap-2">
             <button className="flex-1 rounded-full bg-dunlo py-2 text-[11px] font-semibold text-white">
-              Send now
+              Send
             </button>
             <button className="rounded-full border border-gray-200 px-3 py-2 text-[11px] font-semibold text-gray-600">
-              Edit
+              Regenerate
+            </button>
+            <button className="rounded-full border border-gray-200 px-3 py-2 text-[11px] font-semibold text-gray-600">
+              Dismiss
             </button>
           </div>
         </div>
@@ -222,7 +226,7 @@ export function Features() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 gap-6 md:grid-cols-[2fr_3fr]">
+          <div className="grid grid-cols-1 gap-6 md:h-[438px] md:grid-cols-[2fr_3fr]">
             <div className="space-y-1">
               {FEATURE_ITEMS.map((f, i) => (
                 <button
@@ -245,31 +249,28 @@ export function Features() {
                     </span>
                   </div>
                   <h3
-                    className={`text-sm font-semibold leading-snug transition-colors ${active === i ? "text-gray-900" : "text-gray-400"}`}
+                    className={`min-h-10 text-sm font-semibold leading-snug transition-colors ${active === i ? "text-gray-900" : "text-gray-400"}`}
                   >
                     {f.headline}
                   </h3>
-                  <AnimatePresence>
-                    {active === i && (
-                      <motion.div
-                        initial={{ opacity: 0, height: 0, marginTop: 0 }}
-                        animate={{ opacity: 1, height: "auto", marginTop: 8 }}
-                        exit={{ opacity: 0, height: 0, marginTop: 0 }}
-                        transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-                        className="overflow-hidden"
-                      >
-                        <p className="text-sm leading-relaxed text-gray-500">
-                          {f.body}
-                        </p>
-                        <ProgressBar key={active} duration={CYCLE_MS} />
-                      </motion.div>
-                    )}
-                  </AnimatePresence>
+                  {active === i && (
+                    <motion.div
+                      initial={{ opacity: 0, y: 4 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                      className="mt-2 h-36 overflow-hidden md:h-32"
+                    >
+                      <p className="text-sm leading-relaxed text-gray-500">
+                        {f.body}
+                      </p>
+                      <ProgressBar key={active} duration={CYCLE_MS} />
+                    </motion.div>
+                  )}
                 </button>
               ))}
             </div>
 
-            <div className="relative min-h-95 overflow-hidden rounded-2xl border border-gray-100 bg-gray-50/70">
+            <div className="relative min-h-[380px] overflow-hidden rounded-2xl border border-gray-100 bg-gray-50/70 md:min-h-0">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={active}

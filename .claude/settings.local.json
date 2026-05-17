@@ -110,7 +110,25 @@
       "Read(//Users/mathieuchambaud/.agents/**)",
       "Skill(seo-audit)",
       "Skill(design-taste-frontend)",
-      "WebFetch(domain:support.stripe.com)"
+      "WebFetch(domain:support.stripe.com)",
+      "Skill(stripe:explain-error)",
+      "WebFetch(domain:developer.paddle.com)",
+      "WebFetch(domain:stripe.com)",
+      "WebFetch(domain:gumroad.com)",
+      "WebFetch(domain:docs.lemonsqueezy.com)",
+      "WebFetch(domain:rollout.com)",
+      "WebFetch(domain:www.paddle.com)",
+      "WebFetch(domain:help.gumroad.com)",
+      "WebFetch(domain:docs.mollie.com)",
+      "WebFetch(domain:recurly.com)",
+      "WebFetch(domain:apidocs.chargebee.com)",
+      "WebFetch(domain:developer.paypal.com)",
+      "WebFetch(domain:docs.adyen.com)",
+      "WebFetch(domain:docs.mangopay.com)",
+      "WebFetch(domain:www.chargebee.com)",
+      "WebFetch(domain:docs.recurly.com)",
+      "WebFetch(domain:help.mollie.com)",
+      "Skill(superpowers:requesting-code-review)"
     ]
   },
   "hooks": {

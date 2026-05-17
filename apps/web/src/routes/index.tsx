@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CtaBanner } from "@/components/landing/cta-banner";
 import { BuiltByMathieu } from "@/components/landing/built-by-mathieu";
+import { Escalation } from "@/components/landing/escalation";
 import { Faq } from "@/components/landing/faq";
 import { Features } from "@/components/landing/features";
 import { Footer } from "@/components/landing/footer";
@@ -115,6 +116,7 @@ function LandingPage() {
         <StatsBanner />
         <Features />
         <HowItWorks />
+        <Escalation />
         <BuiltByMathieu />
         <RoiCalculator />
         <Pricing />

@@ -220,13 +220,14 @@ export function HowItWorks() {
     return () => clearInterval(t);
   }, []);
 
-  const { Mockup } = HIW_STEPS[active];
+  const activeStep = HIW_STEPS[active];
+  const { Mockup } = activeStep;
 
   return (
     <FadeIn>
       <section
         id="how-it-works"
-        className="overflow-hidden rounded-3xl bg-gray-900"
+        className="overflow-hidden rounded-3xl bg-gray-900 [overflow-anchor:none]"
       >
         <div className="grid grid-cols-1 gap-10 px-8 py-16 md:grid-cols-[5fr_7fr] md:gap-8 md:px-14 md:py-20">
           <div className="flex flex-col">
@@ -247,6 +248,7 @@ export function HowItWorks() {
                   <button
                     key={step.n}
                     onClick={() => setActive(i)}
+                    aria-pressed={isActive}
                     className={`group w-full rounded-xl px-4 py-3.5 text-left transition-colors duration-200 ${
                       isActive ? "bg-white/8" : "hover:bg-white/4"
                     }`}
@@ -267,31 +269,39 @@ export function HowItWorks() {
                         {step.title}
                       </span>
                     </div>
-                    {isActive && (
-                      <p className="mt-1.5 pl-7 text-xs leading-relaxed text-white/45">
-                        {step.body}
-                      </p>
-                    )}
-                    {isActive && (
-                      <div className="mt-2.5 pl-7">
-                        <div className="h-px w-full overflow-hidden rounded-full bg-white/10">
-                          <motion.div
-                            key={active}
-                            initial={{ scaleX: 0 }}
-                            animate={{ scaleX: 1 }}
-                            transition={{
-                              duration: STEP_DURATION / 1000,
-                              ease: "linear",
-                            }}
-                            style={{ originX: 0 }}
-                            className="h-full bg-dunlo"
-                          />
-                        </div>
-                      </div>
-                    )}
                   </button>
                 );
               })}
+            </div>
+
+            <div className="mt-4 flex h-24 flex-col justify-between rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3.5 sm:h-[5.5rem]">
+              <AnimatePresence mode="wait" initial={false}>
+                <motion.p
+                  key={activeStep.n}
+                  initial={{ opacity: 0, y: 6 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -6 }}
+                  transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+                  className="text-xs leading-relaxed text-white/45"
+                >
+                  {activeStep.body}
+                </motion.p>
+              </AnimatePresence>
+              <div className="pt-2.5">
+                <div className="h-px w-full overflow-hidden rounded-full bg-white/10">
+                  <motion.div
+                    key={active}
+                    initial={{ scaleX: 0 }}
+                    animate={{ scaleX: 1 }}
+                    transition={{
+                      duration: STEP_DURATION / 1000,
+                      ease: "linear",
+                    }}
+                    style={{ originX: 0 }}
+                    className="h-full bg-dunlo"
+                  />
+                </div>
+              </div>
             </div>
 
             <div className="mt-auto pt-10">
@@ -305,7 +315,7 @@ export function HowItWorks() {
             </div>
           </div>
 
-          <div className="relative flex min-h-85 items-center overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] p-6 md:min-h-[420px] md:p-8">
+          <div className="relative flex h-[360px] items-center overflow-hidden rounded-2xl border border-white/8 bg-white/[0.03] p-6 md:h-[420px] md:p-8">
             <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
               <div className="size-64 rounded-full bg-dunlo/5 blur-3xl" />
             </div>

@@ -32,6 +32,14 @@ export const escalationStatus = pgEnum("escalation_status", [
   "dismissed",
 ]);
 
+export const processorEnum = pgEnum("processor", [
+  "stripe",
+  "paddle",
+  "adyen",
+  "mollie",
+  "mangopay",
+]);
+
 export const stripeConnection = pgTable(
   "stripe_connection",
   {
@@ -256,6 +264,51 @@ export const notificationSettings = pgTable(
   (table) => [index("notification_settings_user_id_idx").on(table.userId)],
 );
 
+export const benchmarkSnapshot = pgTable(
+  "benchmark_snapshot",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    userId: text("user_id")
+      .notNull()
+      .unique()
+      .references(() => user.id, { onDelete: "cascade" }),
+    sampleStartsAt: timestamp("sample_starts_at").notNull(),
+    sampleEndsAt: timestamp("sample_ends_at").notNull(),
+    totalChargeCount: integer("total_charge_count").default(0).notNull(),
+    failedChargeCount: integer("failed_charge_count").default(0).notNull(),
+    recoveredFailureCount: integer("recovered_failure_count")
+      .default(0)
+      .notNull(),
+    failedPaymentRateBps: integer("failed_payment_rate_bps")
+      .default(0)
+      .notNull(),
+    recoveryRateBps: integer("recovery_rate_bps").default(0).notNull(),
+    cardExpiredRateBps: integer("card_expired_rate_bps").default(0).notNull(),
+    insufficientFundsRateBps: integer("insufficient_funds_rate_bps")
+      .default(0)
+      .notNull(),
+    doNotHonorRateBps: integer("do_not_honor_rate_bps").default(0).notNull(),
+    cardVelocityExceededRateBps: integer("card_velocity_exceeded_rate_bps")
+      .default(0)
+      .notNull(),
+    otherRateBps: integer("other_rate_bps").default(0).notNull(),
+    mrrRange: text("mrr_range").default("unknown").notNull(),
+    benchmarkOptOut: boolean("benchmark_opt_out").default(false).notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    index("benchmark_snapshot_user_id_idx").on(table.userId),
+    index("benchmark_snapshot_opt_out_idx").on(table.benchmarkOptOut),
+    index("benchmark_snapshot_updated_at_idx").on(table.updatedAt),
+  ],
+);
+
 // ---------- Relations ----------
 
 export const stripeConnectionRelations = relations(
@@ -342,6 +395,16 @@ export const notificationSettingsRelations = relations(
   ({ one }) => ({
     user: one(user, {
       fields: [notificationSettings.userId],
+      references: [user.id],
+    }),
+  }),
+);
+
+export const benchmarkSnapshotRelations = relations(
+  benchmarkSnapshot,
+  ({ one }) => ({
+    user: one(user, {
+      fields: [benchmarkSnapshot.userId],
       references: [user.id],
     }),
   }),

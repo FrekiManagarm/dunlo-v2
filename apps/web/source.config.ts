@@ -12,5 +12,6 @@ export const blog = defineCollections({
     tags: z.array(z.string()).default([]),
     keywords: z.array(z.string()).default([]),
     author: z.string().optional(),
+    readingTime: z.string().optional(),
   }),
 });
