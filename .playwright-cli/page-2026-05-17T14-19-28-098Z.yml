@@ -1,0 +1,424 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - generic [ref=e4]:
+      - link "dunlo" [ref=e5] [cursor=pointer]:
+        - /url: /
+        - generic [ref=e6]:
+          - img [ref=e7]
+          - generic [ref=e11]: dunlo
+      - navigation [ref=e12]:
+        - link "Features" [ref=e13] [cursor=pointer]:
+          - /url: "#features"
+        - link "Pricing" [ref=e14] [cursor=pointer]:
+          - /url: "#pricing"
+        - link "FAQ" [ref=e15] [cursor=pointer]:
+          - /url: "#faq"
+        - link "Blog" [ref=e16] [cursor=pointer]:
+          - /url: /blog
+      - generic [ref=e17]:
+        - link "Sign in" [ref=e18] [cursor=pointer]:
+          - /url: /login
+        - link "Sign up" [ref=e19] [cursor=pointer]:
+          - /url: /login
+          - text: Sign up
+          - img [ref=e20]
+    - generic [ref=e24]:
+      - generic [ref=e25]:
+        - generic [ref=e26]:
+          - generic [ref=e27]: Beta — free to start
+          - link "See plans" [ref=e29] [cursor=pointer]:
+            - /url: "#pricing"
+            - text: See plans
+            - img [ref=e30]
+        - heading "Stop losing revenue to failed payments." [level=1] [ref=e33]:
+          - text: Stop losing
+          - text: revenue to
+          - text: failed payments.
+        - paragraph [ref=e34]: Dunlo connects to Stripe, detects every failed payment by type, and sends the right recovery email — automatically.
+        - link "Get started now for free" [ref=e37] [cursor=pointer]:
+          - /url: /login
+          - generic [ref=e38]: Get started now
+          - generic [ref=e39]:
+            - text: for free
+            - img [ref=e40]
+        - paragraph [ref=e42]: No credit card required · Cancel anytime · 5 min setup
+      - generic [ref=e43]:
+        - generic [ref=e44]:
+          - paragraph [ref=e45]: $12,480 recovered
+          - paragraph [ref=e46]: this month · +18%
+        - generic [ref=e47]:
+          - paragraph [ref=e48]: 72.3% success rate
+          - paragraph [ref=e49]: +4.1% vs last month
+        - generic [ref=e52]:
+          - generic [ref=e53]:
+            - generic [ref=e57]:
+              - img [ref=e58]
+              - generic [ref=e62]: dunlo.io/dashboard
+            - generic [ref=e65]: Live
+          - generic [ref=e66]:
+            - generic [ref=e67]:
+              - generic [ref=e68]:
+                - paragraph [ref=e69]: Recovered this month
+                - paragraph [ref=e70]: $12,480
+                - paragraph [ref=e71]: ↑ +18.4% vs last month
+              - generic [ref=e72]:
+                - generic [ref=e73]:
+                  - paragraph [ref=e74]: 72.3%
+                  - paragraph [ref=e75]: success rate
+                - generic [ref=e76]:
+                  - paragraph [ref=e77]: "34"
+                  - paragraph [ref=e78]: in recovery
+                - generic [ref=e79]:
+                  - paragraph [ref=e80]: $3.240
+                  - paragraph [ref=e81]: MRR at risk
+            - img [ref=e82]
+            - generic [ref=e87]:
+              - generic [ref=e88]: May 1
+              - generic [ref=e89]: Today
+          - generic [ref=e90]:
+            - generic [ref=e91]:
+              - paragraph [ref=e92]: Active recoveries
+              - generic [ref=e93]: 4 of 34
+            - generic [ref=e94]:
+              - generic [ref=e95]:
+                - generic [ref=e96]: MA
+                - generic [ref=e97]:
+                  - paragraph [ref=e98]: Meridian Analytics
+                  - paragraph [ref=e99]: Card expired
+                - generic [ref=e100]: $890
+                - generic [ref=e101]: recovered
+              - generic [ref=e103]:
+                - generic [ref=e104]: VC
+                - generic [ref=e105]:
+                  - paragraph [ref=e106]: Volta Cloud
+                  - paragraph [ref=e107]: Bank declined
+                - generic [ref=e108]: $2.340
+                - generic [ref=e109]: escalated
+              - generic [ref=e111]:
+                - generic [ref=e112]: PL
+                - generic [ref=e113]:
+                  - paragraph [ref=e114]: Praxis Labs
+                  - paragraph [ref=e115]: Insufficient funds
+                - generic [ref=e116]: $415
+                - generic [ref=e117]: recovering
+              - generic [ref=e119]:
+                - generic [ref=e120]: HS
+                - generic [ref=e121]:
+                  - paragraph [ref=e122]: Helix Software
+                  - paragraph [ref=e123]: Card expired
+                - generic [ref=e124]: $1.200
+                - generic [ref=e125]: recovered
+    - generic [ref=e127]:
+      - generic [ref=e130]:
+        - generic [ref=e131]:
+          - generic [ref=e132]: Stripe
+          - paragraph [ref=e133]:
+            - generic [ref=e134]: ~0%
+          - paragraph [ref=e135]: of recurring payments fail every month
+        - generic [ref=e136]:
+          - generic [ref=e137]: ProfitWell
+          - paragraph [ref=e138]:
+            - text: up to
+            - generic [ref=e139]: 0%
+          - paragraph [ref=e140]: of churn is involuntary, driven by failed payments
+        - generic [ref=e141]:
+          - generic [ref=e142]: Stripe
+          - paragraph [ref=e143]:
+            - generic [ref=e144]: 0%
+          - paragraph [ref=e145]: of failed payments are recoverable with the right follow-up
+      - generic [ref=e148]:
+        - generic [ref=e149]:
+          - generic [ref=e150]:
+            - generic [ref=e151]: Recovery
+            - heading "Built for real churn scenarios." [level=2] [ref=e152]
+            - paragraph [ref=e153]: Not a generic retry tool. Every feature maps to a specific Stripe failure code.
+          - link "Start recovering" [ref=e154] [cursor=pointer]:
+            - /url: /login
+            - text: Start recovering
+            - img [ref=e155]
+        - generic [ref=e157]:
+          - generic [ref=e158]:
+            - button "Detect Every failure type has a different fix. Card expired, insufficient funds, bank declined — each tells a different story. Dunlo reads the Stripe failure code and sends the exact right email at the exact right moment. Generic retries are gone." [ref=e159]:
+              - generic [ref=e162]: Detect
+              - heading "Every failure type has a different fix." [level=3] [ref=e163]
+              - paragraph [ref=e164]: Card expired, insufficient funds, bank declined — each tells a different story. Dunlo reads the Stripe failure code and sends the exact right email at the exact right moment. Generic retries are gone.
+            - button "Recover Automated sequences that feel human." [ref=e165]:
+              - generic [ref=e168]: Recover
+              - heading "Automated sequences that feel human." [level=3] [ref=e169]
+            - button "Escalate High-value accounts get your personal touch." [ref=e170]:
+              - generic [ref=e173]: Escalate
+              - heading "High-value accounts get your personal touch." [level=3] [ref=e174]
+          - generic [ref=e177]:
+            - generic [ref=e178]:
+              - generic [ref=e179]:
+                - paragraph [ref=e180]: Bank declined
+                - paragraph [ref=e181]: card_declined
+              - generic [ref=e182]: Send bank update template
+            - generic [ref=e183]:
+              - generic [ref=e184]:
+                - paragraph [ref=e185]: Card expired
+                - paragraph [ref=e186]: expired_card
+              - generic [ref=e187]: Send secure update link
+            - generic [ref=e188]:
+              - generic [ref=e189]:
+                - paragraph [ref=e190]: Insufficient funds
+                - paragraph [ref=e191]: insufficient_funds
+              - generic [ref=e192]: Schedule timed retry
+            - generic [ref=e193]:
+              - generic [ref=e194]:
+                - paragraph [ref=e195]: Generic decline
+                - paragraph [ref=e196]: do_not_honor
+              - generic [ref=e197]: Escalate if > €500
+      - generic [ref=e200]:
+        - generic [ref=e201]:
+          - generic [ref=e202]: How it works
+          - heading "Up and running in 5 minutes." [level=2] [ref=e203]:
+            - text: Up and running
+            - text: in 5 minutes.
+          - paragraph [ref=e204]: No code. No webhooks. No engineering team.
+          - generic [ref=e205]:
+            - button "01 Connect Stripe OAuth in 30 seconds. Read-only access — no write permissions, ever." [ref=e206]:
+              - generic [ref=e207]:
+                - generic [ref=e208]: "01"
+                - generic [ref=e209]: Connect Stripe
+              - paragraph [ref=e210]: OAuth in 30 seconds. Read-only access — no write permissions, ever.
+            - button "02 Review sequences" [ref=e213]:
+              - generic [ref=e214]:
+                - generic [ref=e215]: "02"
+                - generic [ref=e216]: Review sequences
+            - button "03 Watch revenue return" [ref=e217]:
+              - generic [ref=e218]:
+                - generic [ref=e219]: "03"
+                - generic [ref=e220]: Watch revenue return
+          - link "Connect Stripe now" [ref=e222] [cursor=pointer]:
+            - /url: /login
+            - text: Connect Stripe now
+            - img [ref=e223]
+        - generic [ref=e227]:
+          - generic [ref=e228]:
+            - generic [ref=e230]: S
+            - generic [ref=e231]:
+              - generic [ref=e232]: stripe.com
+              - generic [ref=e233]: Awaiting authorization…
+          - generic [ref=e235]:
+            - generic [ref=e236]: Requesting read-only access to
+            - generic [ref=e237]:
+              - img [ref=e238]
+              - generic [ref=e240]: Payment Intents
+            - generic [ref=e241]:
+              - img [ref=e242]
+              - generic [ref=e244]: Customers
+            - generic [ref=e245]:
+              - img [ref=e246]
+              - generic [ref=e248]: Charges
+            - generic [ref=e249]:
+              - img [ref=e250]
+              - generic [ref=e252]: Subscriptions
+          - button "Authorize Dunlo" [ref=e253]
+      - generic [ref=e256]:
+        - img "Mathieu Chambaud" [ref=e258]
+        - generic [ref=e259]:
+          - paragraph [ref=e260]: Founder story
+          - generic [ref=e261]:
+            - heading "Built by Mathieu Chambaud." [level=2] [ref=e262]
+            - paragraph [ref=e263]: Solo founder of Dunlo
+          - paragraph [ref=e264]: I lost my first SaaS users to silent churn. I didn't understand why until too late. That's why I built Dunlo, so founders can catch failed payments before good customers quietly disappear.
+        - link "@mathchambaud" [ref=e265] [cursor=pointer]:
+          - /url: https://x.com/mathchambaud
+          - text: "@mathchambaud"
+          - img [ref=e266]
+      - generic [ref=e271]:
+        - generic [ref=e272]:
+          - generic [ref=e273]: ROI calculator
+          - heading "See what failed payments are quietly costing you." [level=2] [ref=e274]
+          - paragraph [ref=e275]: Move the slider to match your monthly recurring revenue. Dunlo estimates recoverable revenue using 5% failed payments and 63% recoverability.
+          - generic [ref=e276]:
+            - generic [ref=e277]:
+              - generic [ref=e278]:
+                - generic [ref=e279]: Estimated MRR
+                - paragraph [ref=e280]: From $1,000 to $20,000
+              - paragraph [ref=e282]: $6,000
+            - slider "Estimated MRR" [ref=e286] [cursor=pointer]: "6000"
+            - generic [ref=e287]:
+              - generic [ref=e288]: 1K
+              - generic [ref=e289]: 20K
+        - generic [ref=e292]:
+          - generic [ref=e293]:
+            - generic [ref=e294]: 30-day estimate
+            - paragraph [ref=e296]:
+              - text: Dunlo could recover ~
+              - generic [ref=e297]: $189
+              - text: /mo for you — for $19/mo
+          - generic [ref=e298]:
+            - generic [ref=e299]:
+              - paragraph [ref=e300]: Failed MRR at risk
+              - paragraph [ref=e301]: $300
+            - generic [ref=e302]:
+              - paragraph [ref=e303]: ROI in 30 days
+              - paragraph [ref=e304]: 9.9x
+          - generic [ref=e305]:
+            - paragraph [ref=e306]: That's 9.9x ROI in 30 days, before counting the customers who stay subscribed next month.
+            - link "Calculate my recovery" [ref=e307] [cursor=pointer]:
+              - /url: /login
+      - generic [ref=e309]:
+        - generic [ref=e310]:
+          - generic [ref=e311]: Pricing
+          - heading "Simple pricing. No % of MRR." [level=2] [ref=e312]
+          - paragraph [ref=e313]: All plans free during beta — no billing until launch.
+        - paragraph [ref=e316]:
+          - strong [ref=e317]: "Beta:"
+          - text: every plan is currently free — pick your tier for when we launch
+        - generic [ref=e318]:
+          - generic [ref=e320]:
+            - generic [ref=e321]:
+              - paragraph [ref=e322]: Solo
+              - generic [ref=e323]:
+                - generic [ref=e324]: $19
+                - generic [ref=e325]: /mo
+              - paragraph [ref=e326]: < $5k MRR
+            - list [ref=e327]:
+              - listitem [ref=e328]:
+                - img [ref=e329]
+                - text: 1 email sequence
+              - listitem [ref=e331]:
+                - img [ref=e332]
+                - text: Up to $5k MRR
+              - listitem [ref=e334]:
+                - img [ref=e335]
+                - text: Basic dashboard
+              - listitem [ref=e337]:
+                - img [ref=e338]
+                - text: Email support
+            - link "Get started free" [ref=e340] [cursor=pointer]:
+              - /url: /login
+          - generic [ref=e342]:
+            - generic [ref=e343]:
+              - paragraph [ref=e344]: Starter
+              - generic [ref=e345]:
+                - generic [ref=e346]: $49
+                - generic [ref=e347]: /mo
+              - paragraph [ref=e348]: $5k–$20k MRR
+            - list [ref=e349]:
+              - listitem [ref=e350]:
+                - img [ref=e351]
+                - text: 2 email sequences
+              - listitem [ref=e353]:
+                - img [ref=e354]
+                - text: Up to $20k MRR
+              - listitem [ref=e356]:
+                - img [ref=e357]
+                - text: Priority scoring
+              - listitem [ref=e359]:
+                - img [ref=e360]
+                - text: All Solo features
+            - link "Get started free" [ref=e362] [cursor=pointer]:
+              - /url: /login
+          - generic [ref=e364]:
+            - generic [ref=e365]: Most popular
+            - generic [ref=e366]:
+              - paragraph [ref=e367]: Growth
+              - generic [ref=e368]:
+                - generic [ref=e369]: $149
+                - generic [ref=e370]: /mo
+              - paragraph [ref=e371]: $20k–$80k MRR
+            - list [ref=e372]:
+              - listitem [ref=e373]:
+                - img [ref=e374]
+                - text: Unlimited sequences
+              - listitem [ref=e376]:
+                - img [ref=e377]
+                - text: Up to $80k MRR
+              - listitem [ref=e379]:
+                - img [ref=e380]
+                - text: Founder escalation drafts
+              - listitem [ref=e382]:
+                - img [ref=e383]
+                - text: High-value account alerts
+              - listitem [ref=e385]:
+                - img [ref=e386]
+                - text: Recovery insights
+              - listitem [ref=e388]:
+                - img [ref=e389]
+                - text: Unlimited team members
+            - link "Get started free" [ref=e391] [cursor=pointer]:
+              - /url: /login
+          - generic [ref=e393]:
+            - generic [ref=e394]:
+              - paragraph [ref=e395]: Scale
+              - generic [ref=e396]:
+                - generic [ref=e397]: $399
+                - generic [ref=e398]: /mo
+              - paragraph [ref=e399]: Unlimited MRR
+            - list [ref=e400]:
+              - listitem [ref=e401]:
+                - img [ref=e402]
+                - text: All Growth features
+              - listitem [ref=e404]:
+                - img [ref=e405]
+                - text: Unlimited MRR
+              - listitem [ref=e407]:
+                - img [ref=e408]
+                - text: Custom integrations
+              - listitem [ref=e410]:
+                - img [ref=e411]
+                - text: Priority SLA
+            - link "Get started free" [ref=e413] [cursor=pointer]:
+              - /url: /login
+      - generic [ref=e416]:
+        - generic [ref=e417]:
+          - heading "Still have questions? We have the answers." [level=2] [ref=e418]:
+            - text: Still have questions?
+            - text: We have the answers.
+          - paragraph [ref=e419]:
+            - text: Can't find what you're looking for?
+            - link "Email us" [ref=e420] [cursor=pointer]:
+              - /url: mailto:hello@dunlo.io
+        - generic [ref=e421]:
+          - generic [ref=e422]:
+            - button "Does Dunlo work with Stripe Connect?" [expanded] [ref=e423]:
+              - generic [ref=e424]: Does Dunlo work with Stripe Connect?
+              - img [ref=e425]
+            - paragraph [ref=e427]: Yes. Dunlo connects to both standard Stripe accounts and Stripe Connect platforms. We read your payment intents and customer data to detect failed payments and trigger recovery flows.
+          - button "What happens after the beta?" [ref=e429]:
+            - generic [ref=e430]: What happens after the beta?
+            - img [ref=e431]
+          - button "Will my recovery emails go to spam?" [ref=e434]:
+            - generic [ref=e435]: Will my recovery emails go to spam?
+            - img [ref=e436]
+          - button "How long does setup take?" [ref=e439]:
+            - generic [ref=e440]: How long does setup take?
+            - img [ref=e441]
+          - button "Can I cancel anytime?" [ref=e444]:
+            - generic [ref=e445]: Can I cancel anytime?
+            - img [ref=e446]
+      - generic [ref=e449]:
+        - paragraph [ref=e450]: Beta · Free to join
+        - heading "Your next payment failure doesn't have to be lost revenue." [level=2] [ref=e452]:
+          - text: Your next payment failure
+          - text: doesn't have to be lost revenue.
+        - paragraph [ref=e453]: Join the beta. Free until launch. 5-minute setup.
+        - link "Get started now for free" [ref=e455] [cursor=pointer]:
+          - /url: /login
+          - generic [ref=e456]: Get started now
+          - generic [ref=e457]:
+            - text: for free
+            - img [ref=e458]
+    - contentinfo [ref=e460]:
+      - generic [ref=e461]:
+        - generic [ref=e462]:
+          - generic [ref=e463]:
+            - img [ref=e464]
+            - generic [ref=e468]: dunlo
+          - generic [ref=e469]: Stop losing revenue to failed payments.
+        - generic [ref=e470]:
+          - link "Privacy" [ref=e471] [cursor=pointer]:
+            - /url: "#"
+          - link "Terms" [ref=e472] [cursor=pointer]:
+            - /url: "#"
+          - link "Contact" [ref=e473] [cursor=pointer]:
+            - /url: "#"
+          - link "Follow on X" [ref=e474] [cursor=pointer]:
+            - /url: https://x.com/mathchambaud
+            - img [ref=e475]
+          - generic [ref=e477]: © 2026 Dunlo
+  - region "Notifications alt+T"

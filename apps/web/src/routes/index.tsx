@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { CtaBanner } from "@/components/landing/cta-banner";
+import { BuiltByMathieu } from "@/components/landing/built-by-mathieu";
 import { Faq } from "@/components/landing/faq";
 import { Features } from "@/components/landing/features";
 import { Footer } from "@/components/landing/footer";
@@ -7,6 +8,7 @@ import { Hero } from "@/components/landing/hero";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { Nav } from "@/components/landing/nav";
 import { Pricing } from "@/components/landing/pricing";
+import { RoiCalculator } from "@/components/landing/roi-calculator";
 import { StatsBanner } from "@/components/landing/stats-banner";
 import {
   DEFAULT_DESCRIPTION,
@@ -113,6 +115,8 @@ function LandingPage() {
         <StatsBanner />
         <Features />
         <HowItWorks />
+        <BuiltByMathieu />
+        <RoiCalculator />
         <Pricing />
         <Faq />
         <CtaBanner />

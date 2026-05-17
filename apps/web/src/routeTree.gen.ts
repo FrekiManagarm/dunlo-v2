@@ -17,6 +17,9 @@ import { Route as DashboardRouteImport } from './routes/_dashboard'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as BlogIndexRouteImport } from './routes/blog/index'
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
+import { Route as AlternativesStripeSmartRetriesRouteImport } from './routes/alternatives/stripe-smart-retries'
+import { Route as AlternativesPaddleRetainRouteImport } from './routes/alternatives/paddle-retain'
+import { Route as AlternativesChurnBusterRouteImport } from './routes/alternatives/churn-buster'
 import { Route as DashboardSettingsRouteImport } from './routes/_dashboard/settings'
 import { Route as DashboardSequencesRouteImport } from './routes/_dashboard/sequences'
 import { Route as DashboardPaymentsRouteImport } from './routes/_dashboard/payments'
@@ -70,6 +73,23 @@ const BlogSlugRoute = BlogSlugRouteImport.update({
   id: '/$slug',
   path: '/$slug',
   getParentRoute: () => BlogRoute,
+} as any)
+const AlternativesStripeSmartRetriesRoute =
+  AlternativesStripeSmartRetriesRouteImport.update({
+    id: '/alternatives/stripe-smart-retries',
+    path: '/alternatives/stripe-smart-retries',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AlternativesPaddleRetainRoute =
+  AlternativesPaddleRetainRouteImport.update({
+    id: '/alternatives/paddle-retain',
+    path: '/alternatives/paddle-retain',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const AlternativesChurnBusterRoute = AlternativesChurnBusterRouteImport.update({
+  id: '/alternatives/churn-buster',
+  path: '/alternatives/churn-buster',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const DashboardSettingsRoute = DashboardSettingsRouteImport.update({
   id: '/settings',
@@ -155,6 +175,9 @@ export interface FileRoutesByFullPath {
   '/payments': typeof DashboardPaymentsRoute
   '/sequences': typeof DashboardSequencesRoute
   '/settings': typeof DashboardSettingsRoute
+  '/alternatives/churn-buster': typeof AlternativesChurnBusterRoute
+  '/alternatives/paddle-retain': typeof AlternativesPaddleRetainRoute
+  '/alternatives/stripe-smart-retries': typeof AlternativesStripeSmartRetriesRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/payments/$id': typeof DashboardPaymentsIdRoute
@@ -177,6 +200,9 @@ export interface FileRoutesByTo {
   '/payments': typeof DashboardPaymentsRoute
   '/sequences': typeof DashboardSequencesRoute
   '/settings': typeof DashboardSettingsRoute
+  '/alternatives/churn-buster': typeof AlternativesChurnBusterRoute
+  '/alternatives/paddle-retain': typeof AlternativesPaddleRetainRoute
+  '/alternatives/stripe-smart-retries': typeof AlternativesStripeSmartRetriesRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog': typeof BlogIndexRoute
   '/payments/$id': typeof DashboardPaymentsIdRoute
@@ -202,6 +228,9 @@ export interface FileRoutesById {
   '/_dashboard/payments': typeof DashboardPaymentsRoute
   '/_dashboard/sequences': typeof DashboardSequencesRoute
   '/_dashboard/settings': typeof DashboardSettingsRoute
+  '/alternatives/churn-buster': typeof AlternativesChurnBusterRoute
+  '/alternatives/paddle-retain': typeof AlternativesPaddleRetainRoute
+  '/alternatives/stripe-smart-retries': typeof AlternativesStripeSmartRetriesRoute
   '/blog/$slug': typeof BlogSlugRoute
   '/blog/': typeof BlogIndexRoute
   '/_dashboard/payments_/$id': typeof DashboardPaymentsIdRoute
@@ -227,6 +256,9 @@ export interface FileRouteTypes {
     | '/payments'
     | '/sequences'
     | '/settings'
+    | '/alternatives/churn-buster'
+    | '/alternatives/paddle-retain'
+    | '/alternatives/stripe-smart-retries'
     | '/blog/$slug'
     | '/blog/'
     | '/payments/$id'
@@ -249,6 +281,9 @@ export interface FileRouteTypes {
     | '/payments'
     | '/sequences'
     | '/settings'
+    | '/alternatives/churn-buster'
+    | '/alternatives/paddle-retain'
+    | '/alternatives/stripe-smart-retries'
     | '/blog/$slug'
     | '/blog'
     | '/payments/$id'
@@ -273,6 +308,9 @@ export interface FileRouteTypes {
     | '/_dashboard/payments'
     | '/_dashboard/sequences'
     | '/_dashboard/settings'
+    | '/alternatives/churn-buster'
+    | '/alternatives/paddle-retain'
+    | '/alternatives/stripe-smart-retries'
     | '/blog/$slug'
     | '/blog/'
     | '/_dashboard/payments_/$id'
@@ -292,6 +330,9 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
+  AlternativesChurnBusterRoute: typeof AlternativesChurnBusterRoute
+  AlternativesPaddleRetainRoute: typeof AlternativesPaddleRetainRoute
+  AlternativesStripeSmartRetriesRoute: typeof AlternativesStripeSmartRetriesRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCronProcessEmailsRoute: typeof ApiCronProcessEmailsRoute
   ApiStripeCallbackRoute: typeof ApiStripeCallbackRoute
@@ -357,6 +398,27 @@ declare module '@tanstack/react-router' {
       fullPath: '/blog/$slug'
       preLoaderRoute: typeof BlogSlugRouteImport
       parentRoute: typeof BlogRoute
+    }
+    '/alternatives/stripe-smart-retries': {
+      id: '/alternatives/stripe-smart-retries'
+      path: '/alternatives/stripe-smart-retries'
+      fullPath: '/alternatives/stripe-smart-retries'
+      preLoaderRoute: typeof AlternativesStripeSmartRetriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alternatives/paddle-retain': {
+      id: '/alternatives/paddle-retain'
+      path: '/alternatives/paddle-retain'
+      fullPath: '/alternatives/paddle-retain'
+      preLoaderRoute: typeof AlternativesPaddleRetainRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alternatives/churn-buster': {
+      id: '/alternatives/churn-buster'
+      path: '/alternatives/churn-buster'
+      fullPath: '/alternatives/churn-buster'
+      preLoaderRoute: typeof AlternativesChurnBusterRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/_dashboard/settings': {
       id: '/_dashboard/settings'
@@ -513,6 +575,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
   ResetPasswordRoute: ResetPasswordRoute,
+  AlternativesChurnBusterRoute: AlternativesChurnBusterRoute,
+  AlternativesPaddleRetainRoute: AlternativesPaddleRetainRoute,
+  AlternativesStripeSmartRetriesRoute: AlternativesStripeSmartRetriesRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCronProcessEmailsRoute: ApiCronProcessEmailsRoute,
   ApiStripeCallbackRoute: ApiStripeCallbackRoute,

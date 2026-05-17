@@ -131,7 +131,7 @@ function ArticleCard({
 
       <div className="mt-auto">
         <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-dunlo-dim group-hover:gap-2 transition-all duration-200">
-          Lire l'article
+          Read article
           <ArrowRight
             size={12}
             className="group-hover:translate-x-0.5 transition-transform duration-200"
