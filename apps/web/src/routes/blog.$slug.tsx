@@ -5,7 +5,13 @@ import { ArrowLeft, Clock, Copy, Check } from "lucide-react";
 import { getBlogBody, getPostMeta } from "@/lib/blog";
 import { mdxComponents } from "@/components/mdx-components";
 import { BlogNav } from "@/components/blog-nav";
-import { SITE_NAME, absoluteUrl, canonicalLink, ogMeta } from "@/lib/seo";
+import {
+  SITE_NAME,
+  absoluteUrl,
+  breadcrumbJsonLd,
+  canonicalLink,
+  ogMeta,
+} from "@/lib/seo";
 
 export const Route = createFileRoute("/blog/$slug")({
   loader: async ({ params }) => {
@@ -27,8 +33,47 @@ export const Route = createFileRoute("/blog/$slug")({
       ...(loaderData?.date
         ? [{ property: "article:published_time", content: loaderData.date }]
         : []),
+      ...(loaderData?.author
+        ? [{ property: "article:author", content: loaderData.author }]
+        : []),
     ],
     links: [canonicalLink(`/blog/${loaderData?.slug ?? ""}`)],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Article",
+          mainEntityOfPage: absoluteUrl(`/blog/${loaderData?.slug ?? ""}`),
+          headline: loaderData?.title,
+          description: loaderData?.description,
+          datePublished: loaderData?.date,
+          author: {
+            "@type": loaderData?.author ? "Person" : "Organization",
+            name: loaderData?.author ?? SITE_NAME,
+          },
+          publisher: {
+            "@type": "Organization",
+            name: SITE_NAME,
+            url: absoluteUrl("/"),
+          },
+          keywords: loaderData?.keywords?.join(", "),
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Blog", path: "/blog" },
+            {
+              name: loaderData?.title ?? "Article",
+              path: `/blog/${loaderData?.slug ?? ""}`,
+            },
+          ]),
+        ),
+      },
+    ],
   }),
   component: BlogPostPage,
 });
@@ -192,7 +237,7 @@ const spring = { type: "spring" as const, stiffness: 100, damping: 20 };
 
 function BlogPostPage() {
   const { slug } = Route.useParams();
-  const { title, date, tags, description, keywords, readingTime } =
+  const { title, date, tags, description, readingTime } =
     Route.useLoaderData();
   const articleRef = useRef<HTMLDivElement>(null);
 
@@ -205,26 +250,10 @@ function BlogPostPage() {
     year: "numeric",
   });
 
-  const jsonLd = JSON.stringify({
-    "@context": "https://schema.org",
-    "@type": "Article",
-    mainEntityOfPage: absoluteUrl(`/blog/${slug}`),
-    headline: title,
-    description,
-    datePublished: date,
-    keywords: keywords?.join(", "),
-    publisher: { "@type": "Organization", name: SITE_NAME, url: absoluteUrl("/") },
-  });
-
   return (
     <>
       <ReadingProgress />
       <BlogNav />
-
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={{ __html: jsonLd }}
-      />
 
       <main className="max-w-5xl mx-auto px-6 pt-28 pb-24">
         {/* Top nav row */}

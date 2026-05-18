@@ -3,7 +3,7 @@ import {
   ALTERNATIVES,
   AlternativePage,
 } from "@/components/alternatives/alternative-page";
-import { SITE_URL, canonicalLink, ogMeta } from "@/lib/seo";
+import { SITE_URL, breadcrumbJsonLd, canonicalLink, ogMeta } from "@/lib/seo";
 
 const page = ALTERNATIVES["churn-buster"];
 
@@ -29,6 +29,15 @@ export const Route = createFileRoute("/alternatives/churn-buster")({
           description: page.metaDescription,
           url: `${SITE_URL}${page.path}`,
         }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: page.headline, path: page.path },
+          ]),
+        ),
       },
     ],
   }),

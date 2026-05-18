@@ -17,7 +17,7 @@ import {
   formatRate,
 } from "@/lib/benchmark";
 import { publicBenchmarkQueryOptions } from "@/lib/queries";
-import { canonicalLink, ogMeta } from "@/lib/seo";
+import { breadcrumbJsonLd, canonicalLink, ogMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/benchmark")({
   head: () => ({
@@ -32,9 +32,21 @@ export const Route = createFileRoute("/benchmark")({
         title: "Stripe Failed Payment Benchmarks — Dunlo",
         description:
           "A free benchmark and calculator for Stripe failed payment rates, decline codes, and recoverable revenue.",
+        path: "/benchmark",
       }),
     ],
     links: [canonicalLink("/benchmark")],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Stripe failed payment benchmarks", path: "/benchmark" },
+          ]),
+        ),
+      },
+    ],
   }),
   loader: ({ context }) =>
     context.queryClient.ensureQueryData(publicBenchmarkQueryOptions()),
