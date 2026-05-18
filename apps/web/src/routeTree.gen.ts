@@ -22,6 +22,7 @@ import { Route as DashboardBenchmarkRouteImport } from './routes/dashboard.bench
 import { Route as BlogSlugRouteImport } from './routes/blog.$slug'
 import { Route as AlternativesTrigglaRouteImport } from './routes/alternatives/triggla'
 import { Route as AlternativesStripeSmartRetriesRouteImport } from './routes/alternatives/stripe-smart-retries'
+import { Route as AlternativesSlickerRouteImport } from './routes/alternatives/slicker'
 import { Route as AlternativesPaddleRetainRouteImport } from './routes/alternatives/paddle-retain'
 import { Route as AlternativesChurnBusterRouteImport } from './routes/alternatives/churn-buster'
 import { Route as DashboardSettingsRouteImport } from './routes/_dashboard/settings'
@@ -105,6 +106,11 @@ const AlternativesStripeSmartRetriesRoute =
     path: '/alternatives/stripe-smart-retries',
     getParentRoute: () => rootRouteImport,
   } as any)
+const AlternativesSlickerRoute = AlternativesSlickerRouteImport.update({
+  id: '/alternatives/slicker',
+  path: '/alternatives/slicker',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AlternativesPaddleRetainRoute =
   AlternativesPaddleRetainRouteImport.update({
     id: '/alternatives/paddle-retain',
@@ -204,6 +210,7 @@ export interface FileRoutesByFullPath {
   '/settings': typeof DashboardSettingsRoute
   '/alternatives/churn-buster': typeof AlternativesChurnBusterRoute
   '/alternatives/paddle-retain': typeof AlternativesPaddleRetainRoute
+  '/alternatives/slicker': typeof AlternativesSlickerRoute
   '/alternatives/stripe-smart-retries': typeof AlternativesStripeSmartRetriesRoute
   '/alternatives/triggla': typeof AlternativesTrigglaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -233,6 +240,7 @@ export interface FileRoutesByTo {
   '/settings': typeof DashboardSettingsRoute
   '/alternatives/churn-buster': typeof AlternativesChurnBusterRoute
   '/alternatives/paddle-retain': typeof AlternativesPaddleRetainRoute
+  '/alternatives/slicker': typeof AlternativesSlickerRoute
   '/alternatives/stripe-smart-retries': typeof AlternativesStripeSmartRetriesRoute
   '/alternatives/triggla': typeof AlternativesTrigglaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -265,6 +273,7 @@ export interface FileRoutesById {
   '/_dashboard/settings': typeof DashboardSettingsRoute
   '/alternatives/churn-buster': typeof AlternativesChurnBusterRoute
   '/alternatives/paddle-retain': typeof AlternativesPaddleRetainRoute
+  '/alternatives/slicker': typeof AlternativesSlickerRoute
   '/alternatives/stripe-smart-retries': typeof AlternativesStripeSmartRetriesRoute
   '/alternatives/triggla': typeof AlternativesTrigglaRoute
   '/blog/$slug': typeof BlogSlugRoute
@@ -297,6 +306,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/alternatives/churn-buster'
     | '/alternatives/paddle-retain'
+    | '/alternatives/slicker'
     | '/alternatives/stripe-smart-retries'
     | '/alternatives/triggla'
     | '/blog/$slug'
@@ -326,6 +336,7 @@ export interface FileRouteTypes {
     | '/settings'
     | '/alternatives/churn-buster'
     | '/alternatives/paddle-retain'
+    | '/alternatives/slicker'
     | '/alternatives/stripe-smart-retries'
     | '/alternatives/triggla'
     | '/blog/$slug'
@@ -357,6 +368,7 @@ export interface FileRouteTypes {
     | '/_dashboard/settings'
     | '/alternatives/churn-buster'
     | '/alternatives/paddle-retain'
+    | '/alternatives/slicker'
     | '/alternatives/stripe-smart-retries'
     | '/alternatives/triggla'
     | '/blog/$slug'
@@ -383,6 +395,7 @@ export interface RootRouteChildren {
   StateOfStripePayments2026Route: typeof StateOfStripePayments2026Route
   AlternativesChurnBusterRoute: typeof AlternativesChurnBusterRoute
   AlternativesPaddleRetainRoute: typeof AlternativesPaddleRetainRoute
+  AlternativesSlickerRoute: typeof AlternativesSlickerRoute
   AlternativesStripeSmartRetriesRoute: typeof AlternativesStripeSmartRetriesRoute
   AlternativesTrigglaRoute: typeof AlternativesTrigglaRoute
   DashboardBenchmarkRoute: typeof DashboardBenchmarkRoute
@@ -485,6 +498,13 @@ declare module '@tanstack/react-router' {
       path: '/alternatives/stripe-smart-retries'
       fullPath: '/alternatives/stripe-smart-retries'
       preLoaderRoute: typeof AlternativesStripeSmartRetriesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/alternatives/slicker': {
+      id: '/alternatives/slicker'
+      path: '/alternatives/slicker'
+      fullPath: '/alternatives/slicker'
+      preLoaderRoute: typeof AlternativesSlickerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/alternatives/paddle-retain': {
@@ -660,6 +680,7 @@ const rootRouteChildren: RootRouteChildren = {
   StateOfStripePayments2026Route: StateOfStripePayments2026Route,
   AlternativesChurnBusterRoute: AlternativesChurnBusterRoute,
   AlternativesPaddleRetainRoute: AlternativesPaddleRetainRoute,
+  AlternativesSlickerRoute: AlternativesSlickerRoute,
   AlternativesStripeSmartRetriesRoute: AlternativesStripeSmartRetriesRoute,
   AlternativesTrigglaRoute: AlternativesTrigglaRoute,
   DashboardBenchmarkRoute: DashboardBenchmarkRoute,
