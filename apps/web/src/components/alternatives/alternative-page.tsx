@@ -46,6 +46,114 @@ export type AlternativePageData = {
 };
 
 export const ALTERNATIVES: Record<string, AlternativePageData> = {
+  slicker: {
+    slug: "slicker",
+    path: "/alternatives/slicker",
+    competitorName: "Slicker",
+    metaTitle: "Dunlo vs Slicker - Payment Recovery for Small SaaS",
+    metaDescription:
+      "Compare Dunlo and Slicker for failed payment recovery, AI retry engines, setup, pricing, and the right fit for enterprise teams vs solo founders.",
+    eyebrow: "TL;DR",
+    headline: "Dunlo vs Slicker",
+    intro:
+      "Slicker is enterprise payment recovery with AI-powered retry engines, white-glove setup, and pay-for-success pricing. Dunlo is self-serve failed payment recovery for solo founders and small SaaS teams, with failure-code precision and AI-drafted founder emails. Different tools, different stages.",
+    verdict:
+      "Try Dunlo free during beta: 5-minute setup, no sales call required. Choose Slicker if you process significant recurring revenue across multiple gateways and want a sales-led AI retry platform with success-based pricing. Choose Dunlo if you run a small Stripe SaaS and need failure-code-precise emails and founder-visible escalations.",
+    competitorSummary:
+      "Enterprise payment recovery with AI-powered retry optimization, multi-gateway routing, AABB testing, and performance-based pricing.",
+    dunloSummary:
+      "Self-serve failed payment recovery for Stripe-first founders who want precise customer emails and AI-drafted founder follow-up.",
+    comparisonRows: [
+      {
+        label: "Best fit",
+        competitor:
+          "Enterprise and scaling subscription businesses with high failed-payment volume and more complex billing operations.",
+        dunlo:
+          "Solo founders and small SaaS teams on Stripe who want a practical recovery layer before buying an enterprise platform.",
+      },
+      {
+        label: "Setup motion",
+        competitor:
+          "Sales-led and consultative, with custom analysis, integrations, and a success manager included in the plan.",
+        dunlo:
+          "Self-serve beta setup: connect Stripe, review the defaults, and start monitoring in roughly 5 minutes.",
+      },
+      {
+        label: "Pricing model",
+        competitor:
+          "Performance-based pricing with no fixed public tiers; Slicker says customers pay only when it outperforms their current solution.",
+        dunlo:
+          "Free during beta. Planned tiers are flat by MRR, starting at $19/mo, with no percentage of recovered revenue.",
+      },
+      {
+        label: "Retry engine",
+        competitor:
+          "AI-powered retry engine that can optimize timing, payment method, and gateway for each failed payment.",
+        dunlo:
+          "Uses Stripe-native retry infrastructure and focuses on customer messaging, visibility, and manual escalation workflows.",
+      },
+      {
+        label: "Payment stack",
+        competitor:
+          "Supports multi-gateway and billing integrations, including Stripe, Adyen, Braintree, Worldpay, Chargebee, Recurly, and Zuora.",
+        dunlo:
+          "Stripe-only by design, which keeps the product simpler for founders who already use Stripe Billing.",
+      },
+      {
+        label: "Failure-code emails",
+        competitor:
+          "Slicker includes smart dunning emails and says messages are tailored to failure reason and required action.",
+        dunlo:
+          "Per failure code, human-tone emails for Stripe declines such as card_expired, insufficient_funds, and do_not_honor.",
+      },
+      {
+        label: "Evaluation",
+        competitor:
+          "Promotes clinical-grade AABB testing to prove recovery lift with statistical significance.",
+        dunlo:
+          "Focuses on lightweight benchmark visibility and practical recovered-revenue tracking for small teams.",
+      },
+      {
+        label: "AI founder escalation",
+        competitor:
+          "Not positioned around founder-reviewed personal email drafts for high-value accounts.",
+        dunlo:
+          "Yes. Dunlo drafts a personal founder email for high-value failures so you can review and send in one click.",
+      },
+      {
+        label: "Minimum stage",
+        competitor:
+          "Best suited once failed-payment volume is large enough to justify custom analysis and enterprise-style recovery operations.",
+        dunlo:
+          "No minimum during beta. Built for founders who want recovery discipline before failed payments become a large leak.",
+      },
+    ],
+    competitorUseCases: [
+      "You process substantial recurring revenue and failed payments are already a material finance metric.",
+      "You use multiple gateways or enterprise billing platforms such as Chargebee, Recurly, or Zuora.",
+      "You want a proven AI retry engine, success-based pricing, and a dedicated success motion.",
+    ],
+    dunloUseCases: [
+      "You are a solo founder or small SaaS team running subscription billing on Stripe.",
+      "You want failure-code-precise customer emails without enterprise pricing or a sales call.",
+      "You want AI-drafted founder escalations for high-value failed payments before churn is final.",
+    ],
+    sourceLinks: [
+      {
+        label: "Slicker Smart Retries",
+        href: "https://www.slickerhq.com/features/retries",
+      },
+      { label: "Slicker pricing", href: "https://www.slickerhq.com/pricing" },
+      {
+        label: "Slicker integrations",
+        href: "https://docs.slickerhq.com/integrations/overview",
+      },
+      {
+        label: "Slicker introduction",
+        href: "https://docs.slickerhq.com/introduction",
+      },
+    ],
+  },
   "churn-buster": {
     slug: "churn-buster",
     path: "/alternatives/churn-buster",
