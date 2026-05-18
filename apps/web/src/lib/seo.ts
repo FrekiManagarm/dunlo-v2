@@ -13,6 +13,21 @@ export function canonicalLink(path = "/") {
   return { rel: "canonical", href: absoluteUrl(path) };
 }
 
+export function breadcrumbJsonLd(
+  items: Array<{ name: string; path: string }>,
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((item, index) => ({
+      "@type": "ListItem",
+      position: index + 1,
+      name: item.name,
+      item: absoluteUrl(item.path),
+    })),
+  };
+}
+
 export function ogMeta({
   title,
   description,

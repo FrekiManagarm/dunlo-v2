@@ -7,7 +7,7 @@ import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
 import { formatRate } from "@/lib/benchmark";
 import { publicBenchmarkQueryOptions } from "@/lib/queries";
-import { canonicalLink, ogMeta } from "@/lib/seo";
+import { breadcrumbJsonLd, canonicalLink, ogMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/state-of-stripe-payments-2026")({
   head: () => ({
@@ -22,9 +22,24 @@ export const Route = createFileRoute("/state-of-stripe-payments-2026")({
         title: "State of Stripe Failed Payments 2026 — Dunlo",
         description:
           "Public Stripe failed payment benchmarks and recovery patterns from Dunlo.",
+        path: "/state-of-stripe-payments-2026",
       }),
     ],
     links: [canonicalLink("/state-of-stripe-payments-2026")],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            {
+              name: "State of Stripe Failed Payments 2026",
+              path: "/state-of-stripe-payments-2026",
+            },
+          ]),
+        ),
+      },
+    ],
   }),
   loader: ({ context }) =>
     context.queryClient.ensureQueryData(publicBenchmarkQueryOptions()),
@@ -172,4 +187,3 @@ function ReportPage() {
     </div>
   );
 }
-

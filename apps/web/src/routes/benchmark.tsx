@@ -14,8 +14,12 @@ import {
 
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
-import { formatRate } from "@/lib/benchmark";
-import { canonicalLink, ogMeta } from "@/lib/seo";
+import {
+  estimatePercentile,
+  formatRate,
+} from "@/lib/benchmark";
+import { publicBenchmarkQueryOptions } from "@/lib/queries";
+import { breadcrumbJsonLd, canonicalLink, ogMeta } from "@/lib/seo";
 
 const GLOBAL_AVERAGE = 5;
 const RECOVERY_MULTIPLIER = 0.48;
@@ -85,12 +89,22 @@ export const Route = createFileRoute("/benchmark")({
       },
       ...ogMeta({
         title: "Stripe Failed Payment Benchmark — Dunlo",
-        description:
-          "Free benchmark calculator for Stripe failed payment rates, decline codes, and recoverable SaaS revenue.",
+        description: "A free benchmark and calculator for Stripe failed payment rates, decline codes, and recoverable revenue.",
         path: "/benchmark",
       }),
     ],
     links: [canonicalLink("/benchmark")],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Stripe failed payment benchmarks", path: "/benchmark" },
+          ]),
+        ),
+      },
+    ],
   }),
   component: BenchmarkPage,
 });

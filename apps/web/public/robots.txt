@@ -2,7 +2,14 @@
 User-agent: *
 Allow: /
 Disallow: /api/
+Disallow: /dashboard
 Disallow: /dashboard/*
+Disallow: /payments
+Disallow: /payments/*
+Disallow: /sequences
+Disallow: /escalations
+Disallow: /alerts
+Disallow: /settings
 Disallow: /onboarding
 Disallow: /reset-password
 

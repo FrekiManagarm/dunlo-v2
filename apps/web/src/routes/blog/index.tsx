@@ -3,7 +3,13 @@ import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import { BlogNav } from "@/components/blog-nav";
 import { getAllPosts } from "@/lib/blog";
-import { canonicalLink, ogMeta } from "@/lib/seo";
+import {
+  SITE_NAME,
+  absoluteUrl,
+  breadcrumbJsonLd,
+  canonicalLink,
+  ogMeta,
+} from "@/lib/seo";
 
 const BLOG_TITLE = "Stripe Payment Recovery Blog - Dunlo";
 const BLOG_DESCRIPTION =
@@ -22,6 +28,31 @@ export const Route = createFileRoute("/blog/")({
       }),
     ],
     links: [canonicalLink("/blog")],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "CollectionPage",
+          name: BLOG_TITLE,
+          description: BLOG_DESCRIPTION,
+          url: absoluteUrl("/blog"),
+          publisher: {
+            "@type": "Organization",
+            name: SITE_NAME,
+          },
+        }),
+      },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify(
+          breadcrumbJsonLd([
+            { name: "Home", path: "/" },
+            { name: "Blog", path: "/blog" },
+          ]),
+        ),
+      },
+    ],
   }),
   component: BlogPage,
 });

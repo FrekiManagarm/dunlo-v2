@@ -34,6 +34,7 @@ export const getAllPosts = createServerFn({ method: "GET" }).handler(
         description: p.data.description,
         date: p.data.date,
         tags: p.data.tags,
+        author: p.data.author,
         readingTime: p.data.readingTime,
       }));
   },
@@ -60,6 +61,7 @@ export const getPostMeta = createServerFn({ method: "GET" })
       slug,
       date: post.data.date,
       tags: post.data.tags,
+      author: post.data.author,
       keywords: post.data.keywords,
       readingTime: post.data.readingTime,
     };
