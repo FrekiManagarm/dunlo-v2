@@ -3,10 +3,11 @@ import { motion } from "framer-motion";
 import {
   ArrowRight,
   Check,
+  CreditCard,
   FileText,
   Gauge,
   MailCheck,
-  Sparkles,
+  RefreshCcw,
 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { BuiltByMathieu } from "@/components/landing/built-by-mathieu";
@@ -214,9 +215,9 @@ function LandingPage() {
         <section className="relative -mx-3 px-3 md:-mx-4 md:px-4">
           <OrganicBackdrop />
           <div
-            className="relative mx-auto grid min-h-[calc(100dvh-8rem)] max-w-6xl gap-14 py-6 md:grid-cols-[0.92fr_1.08fr] md:items-center md:py-8"
+            className="relative mx-auto grid min-h-[calc(100dvh-8rem)] max-w-6xl min-w-0 gap-12 py-6 md:grid-cols-[0.92fr_1.08fr] md:items-center md:gap-14 md:py-8"
           >
-            <div className="max-w-xl">
+            <div className="min-w-0 max-w-xl">
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -235,7 +236,7 @@ function LandingPage() {
                   delay: 0.08,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="mt-8 text-5xl font-semibold leading-[0.98] tracking-tight text-gray-950 md:text-6xl"
+                className="mt-8 max-w-[11ch] text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:max-w-xl sm:text-5xl sm:leading-[0.98] md:text-6xl"
               >
                 Recover failed Stripe payments with a lighter touch.
               </motion.h1>
@@ -290,7 +291,7 @@ function LandingPage() {
                 delay: 0.18,
                 ease: [0.16, 1, 0.3, 1],
               }}
-              className="relative md:pl-10"
+              className="relative min-w-0 md:pl-10"
             >
               <RecoveryConsole />
             </motion.div>
@@ -705,107 +706,122 @@ function OrganicBackdrop() {
 
 function RecoveryConsole() {
   return (
-    <div className="relative overflow-hidden rounded-[2rem] border border-gray-200 bg-white/80 p-4 shadow-[0_35px_90px_-50px_rgba(28,25,23,0.75)] backdrop-blur-md md:p-5">
-      <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-        <div className="flex items-center gap-3">
-          <LogoMark size={26} />
-          <div>
-            <p className="text-sm font-semibold text-gray-950">Recovery room</p>
-            <p className="text-xs text-gray-400">Stripe events flowing in</p>
-          </div>
-        </div>
-        <div className="flex items-center gap-2 rounded-full bg-dunlo/10 px-3 py-1 text-xs font-semibold text-dunlo-deep">
-          <span className="size-1.5 animate-pulse rounded-full bg-dunlo" />
-          Live
-        </div>
-      </div>
+    <div className="relative mx-auto w-full max-w-[500px] overflow-hidden rounded-[2rem] border border-gray-200 bg-white/88 p-3 shadow-[0_35px_90px_-58px_rgba(28,25,23,0.75)] backdrop-blur-md">
+      <div
+        className="absolute inset-0 bg-[linear-gradient(rgba(17,24,39,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(17,24,39,0.04)_1px,transparent_1px)] [background-size:32px_32px]"
+        aria-hidden
+      />
 
-      <div className="grid gap-4 pt-4 md:grid-cols-[1.1fr_0.9fr]">
-        <div className="space-y-3">
-          <PaymentEvent
-            company="Luma Desk"
-            code="expired_card"
-            amount="$890"
-            status="Update link sent"
-            active
-          />
-          <PaymentEvent
-            company="Northstar CRM"
-            code="insufficient_funds"
-            amount="$1,420"
-            status="Retry window set"
-          />
-          <PaymentEvent
-            company="Orbit Ledger"
-            code="do_not_honor"
-            amount="$3,280"
-            status="Founder draft"
-          />
-        </div>
-
-        <div className="rounded-[1.4rem] border border-gray-100 bg-stone-50 p-4">
-          <div className="flex items-center justify-between">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
-              This month
-            </p>
-            <Sparkles size={16} className="text-dunlo-deep" strokeWidth={1.8} />
-          </div>
-          <p className="mt-5 font-mono text-4xl font-semibold tracking-tight text-gray-950">
-            $12,480
-          </p>
-          <p className="mt-2 text-sm text-gray-500">Recovered revenue</p>
-          <div className="mt-8 space-y-3">
-            {[
-              ["Recovered", "41"],
-              ["In recovery", "17"],
-              ["Escalated", "6"],
-            ].map(([label, value]) => (
-              <div key={label} className="flex items-center justify-between">
-                <span className="text-sm text-gray-500">{label}</span>
-                <span className="font-mono text-sm font-semibold text-gray-950">
-                  {value}
-                </span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function PaymentEvent({
-  company,
-  code,
-  amount,
-  status,
-  active,
-}: {
-  company: string;
-  code: string;
-  amount: string;
-  status: string;
-  active?: boolean;
-}) {
-  return (
-    <div className="grid grid-cols-[auto_minmax(0,1fr)_96px] items-center gap-3 rounded-[1.25rem] border border-gray-100 bg-white px-4 py-3 shadow-sm">
-      <span
-        className={`flex size-9 items-center justify-center rounded-full ${
-          active ? "bg-dunlo/15 text-dunlo-deep" : "bg-gray-100 text-gray-500"
-        }`}
+      <motion.div
+        animate={{ y: [0, -5, 0] }}
+        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+        className="relative overflow-hidden rounded-[1.7rem] border border-gray-100 bg-white p-5 text-gray-950 shadow-[0_30px_70px_-52px_rgba(28,25,23,0.8)]"
       >
-        <Check size={16} strokeWidth={2} />
-      </span>
-      <div className="min-w-0">
-        <p className="truncate text-sm font-semibold text-gray-950">
-          {company}
-        </p>
-        <p className="truncate font-mono text-xs text-gray-400">{code}</p>
-      </div>
-      <div className="text-right">
-        <p className="font-mono text-sm font-semibold text-gray-950">{amount}</p>
-        <p className="truncate text-xs text-gray-400">{status}</p>
-      </div>
+        <div
+          className="absolute inset-x-0 top-0 h-px bg-white"
+          aria-hidden
+        />
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <LogoMark size={30} />
+            <div>
+              <p className="text-sm font-semibold">Recovery preview</p>
+              <p className="text-xs text-gray-400">Stripe failure handled</p>
+            </div>
+          </div>
+          <span className="flex items-center gap-2 rounded-full bg-dunlo/10 px-3 py-1 font-mono text-[11px] font-semibold uppercase tracking-[0.12em] text-dunlo-deep">
+            <span className="size-1.5 animate-pulse rounded-full bg-dunlo" />
+            Live
+          </span>
+        </div>
+
+        <div className="mt-5 rounded-[1.5rem] border border-gray-100 bg-stone-50/80 p-4">
+          <div className="flex items-center justify-between gap-3">
+            <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-400">
+              Stripe event
+            </p>
+            <span className="rounded-full border border-amber-200 bg-amber-50 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-amber-700">
+              Failed
+            </span>
+          </div>
+
+          <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between sm:gap-4">
+            <div className="min-w-0">
+              <p className="truncate font-mono text-sm font-semibold text-gray-950">
+                invoice.payment_failed
+              </p>
+              <p className="mt-1 truncate font-mono text-xs text-gray-400">
+                insufficient_funds
+              </p>
+            </div>
+            <p className="font-mono text-2xl font-semibold tracking-tight text-gray-950">
+              $1,860
+            </p>
+          </div>
+
+          <div className="my-4 h-px bg-gray-200/80" />
+
+          <div className="rounded-[1.2rem] border border-gray-100 bg-white p-3 shadow-sm">
+            <div className="flex items-start gap-3">
+              <span className="mt-0.5 flex size-8 shrink-0 items-center justify-center rounded-full bg-dunlo/12 text-dunlo-deep">
+                <MailCheck size={16} strokeWidth={1.8} />
+              </span>
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="truncate text-sm font-semibold text-gray-950">
+                    Email queued
+                  </p>
+                  <span className="shrink-0 rounded-full bg-gray-950 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-white">
+                    36h
+                  </span>
+                </div>
+                <p className="mt-1 text-sm leading-6 text-gray-500">
+                  Uses the decline code to pick tone, timing, and retry window.
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div className="mt-3 rounded-[1.2rem] border border-dunlo/25 bg-dunlo/10 p-4">
+            <div className="flex items-start justify-between gap-4">
+              <div>
+                <div className="flex items-center gap-2 text-dunlo-deep">
+                  <Check size={16} strokeWidth={2} />
+                  <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em]">
+                    Protected
+                  </p>
+                </div>
+                <p className="mt-3 font-mono text-3xl font-semibold tracking-tight text-gray-950">
+                  $1,860
+                </p>
+              </div>
+              <p className="rounded-full bg-white px-3 py-1.5 text-xs font-semibold text-dunlo-deep shadow-sm">
+                Payment safe
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 grid gap-2 sm:grid-cols-3">
+          {[
+            { icon: CreditCard, label: "Read code" },
+            { icon: RefreshCcw, label: "Time retry" },
+            { icon: MailCheck, label: "Send email" },
+          ].map(({ icon: Icon, label }) => (
+            <div
+              key={label}
+              className="flex items-center gap-2 rounded-full border border-gray-200 bg-white px-3 py-2 text-xs font-medium text-gray-500 shadow-sm"
+            >
+              <Icon
+                size={14}
+                strokeWidth={1.8}
+                className="shrink-0 text-dunlo-deep"
+              />
+              <span className="truncate">{label}</span>
+            </div>
+          ))}
+        </div>
+      </motion.div>
     </div>
   );
 }
