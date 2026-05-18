@@ -9,8 +9,12 @@ import {
   Sparkles,
 } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
+import { BuiltByMathieu } from "@/components/landing/built-by-mathieu";
+import { Escalation } from "@/components/landing/escalation";
 import { Footer } from "@/components/landing/footer";
+import { HowItWorks } from "@/components/landing/how-it-works";
 import { Nav } from "@/components/landing/nav";
+import { RoiCalculator } from "@/components/landing/roi-calculator";
 import { StatsBanner } from "@/components/landing/stats-banner";
 import { LogoMark } from "@/components/logo";
 import {
@@ -103,6 +107,26 @@ const INCLUDED_IN_EVERY_PLAN = [
 ] as const;
 
 const FAQS = [
+  {
+    question: "How is Dunlo different from Triggla or Churn Buster?",
+    answer:
+      "Dunlo is narrower: Stripe-first recovery, failure-code emails, AI founder escalation, and simple beta pricing instead of a broad lifecycle suite or a recovered-revenue cut.",
+  },
+  {
+    question: "What is the AI escalation feature exactly?",
+    answer:
+      "When a failed payment crosses your threshold, Dunlo pauses automation and drafts a short personal email from the founder with the Stripe context. You can review, regenerate, dismiss, or send it.",
+  },
+  {
+    question: "Is my Stripe data safe?",
+    answer:
+      "Dunlo uses Stripe data only to understand the failed payment context and recovery status. It does not need to move money, change charges, or store card details.",
+  },
+  {
+    question: "Can I cancel anytime?",
+    answer:
+      "Yes. The beta is free, and after billing starts you can cancel or downgrade without a long-term contract.",
+  },
   {
     question: "How much setup is involved?",
     answer:
@@ -360,6 +384,22 @@ function LandingPage() {
             </div>
           </div>
         </section>
+
+        <div className="mx-auto max-w-6xl">
+          <Escalation />
+        </div>
+
+        <div className="mx-auto max-w-6xl">
+          <BuiltByMathieu />
+        </div>
+
+        <div className="mx-auto max-w-6xl">
+          <HowItWorks />
+        </div>
+
+        <div className="mx-auto max-w-6xl">
+          <RoiCalculator />
+        </div>
 
         <section id="pricing" className="scroll-mt-24">
           <div className={SECTION_SURFACE}>
