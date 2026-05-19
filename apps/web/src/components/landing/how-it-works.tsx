@@ -23,7 +23,7 @@ function MockupConnect() {
       </div>
       <div className="space-y-2.5 rounded-xl border border-white/8 bg-white/5 p-4">
         <div className="mb-3 text-xs text-white/40">
-          Requesting read-only access to
+          Requesting Stripe access for
         </div>
         {["Payment Intents", "Customers", "Charges", "Subscriptions"].map(
           (item, i) => (
@@ -190,7 +190,7 @@ const HIW_STEPS = [
   {
     n: "01",
     title: "Connect Stripe",
-    body: "Authorize Dunlo with Stripe OAuth so it can read payment failures, customers, charges, and subscriptions for recovery context.",
+    body: "Authorize Dunlo with Stripe OAuth so it can monitor payment failures and set up the recovery plumbing around them.",
     Mockup: MockupConnect,
   },
   {

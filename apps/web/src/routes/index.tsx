@@ -130,7 +130,7 @@ const FAQS = [
   {
     question: "Is my Stripe data safe?",
     answer:
-      "Dunlo uses Stripe data to understand failed-payment context and recovery status. It does not need to move money, change charges, or store card details.",
+      "Dunlo uses Stripe data to understand failed-payment context and recovery status. It does not store card details, and payment updates happen through Stripe-hosted flows.",
   },
   {
     question: "How much setup is involved?",
