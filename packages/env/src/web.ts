@@ -6,6 +6,7 @@ export const env = createEnv({
   client: {
     VITE_POSTHOG_KEY: z.string().min(1),
     VITE_POSTHOG_HOST: z.url(),
+    VITE_POSTHOG_FEEDBACK_SURVEY_ID: z.string().min(1).optional(),
   },
   runtimeEnv: (import.meta as any).env,
   emptyStringAsUndefined: true,

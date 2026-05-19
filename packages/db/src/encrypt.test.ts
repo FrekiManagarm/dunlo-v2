@@ -11,6 +11,10 @@ beforeAll(() => {
   if (!process.env.BETTER_AUTH_URL)
     process.env.BETTER_AUTH_URL = "http://localhost:3000";
   if (!process.env.CORS_ORIGIN) process.env.CORS_ORIGIN = "http://localhost:3000";
+  if (!process.env.GOOGLE_CLIENT_ID)
+    process.env.GOOGLE_CLIENT_ID = "google-client";
+  if (!process.env.GOOGLE_CLIENT_SECRET)
+    process.env.GOOGLE_CLIENT_SECRET = "google-secret";
   if (!process.env.STRIPE_CLIENT_ID) process.env.STRIPE_CLIENT_ID = "ca_test";
   if (!process.env.STRIPE_SECRET_KEY) process.env.STRIPE_SECRET_KEY = "sk_test";
   if (!process.env.STRIPE_WEBHOOK_SECRET)

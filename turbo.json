@@ -12,6 +12,8 @@
         "BETTER_AUTH_SECRET",
         "APP_URL",
         "CORS_ORIGIN",
+        "GOOGLE_CLIENT_ID",
+        "GOOGLE_CLIENT_SECRET",
         "ENCRYPTION_KEY",
         "RESEND_API_KEY",
         "STRIPE_SECRET_KEY",
@@ -34,7 +36,8 @@
     },
     "dev": {
       "cache": false,
-      "persistent": true
+      "persistent": true,
+      "env": ["GOOGLE_CLIENT_ID", "GOOGLE_CLIENT_SECRET"]
     },
     "db:push": {
       "cache": false

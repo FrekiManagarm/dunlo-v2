@@ -99,6 +99,8 @@ DATABASE_URL=postgresql://...
 BETTER_AUTH_SECRET=...                 # Random 32+ character secret
 BETTER_AUTH_URL=http://localhost:3001
 CORS_ORIGIN=http://localhost:3001
+GOOGLE_CLIENT_ID=...                   # Google OAuth web client ID
+GOOGLE_CLIENT_SECRET=...               # Google OAuth web client secret
 
 # Platform email for auth + alerts
 AUTH_EMAIL_PROVIDER=postmark           # postmark | resend | mailgun | sendgrid
