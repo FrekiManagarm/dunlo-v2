@@ -237,7 +237,7 @@ function LandingPage() {
                 }}
                 className="mt-8 max-w-[11ch] text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:max-w-xl sm:text-5xl sm:leading-[0.98] md:text-6xl"
               >
-                Recover failed Stripe payments with a lighter touch.
+                Recover failed Stripe payments before good customers disappear.
               </motion.h1>
 
               <motion.p
@@ -250,10 +250,39 @@ function LandingPage() {
                 }}
                 className="mt-6 max-w-md text-base leading-7 text-gray-600"
               >
-                Dunlo reads the failure code, sends the right recovery email,
-                and saves founder attention for the payments that actually need
-                it.
+                Dunlo turns Stripe failure reasons into the right recovery
+                email, the right retry timing, and a founder-written follow-up
+                when the account matters.
               </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.58,
+                  delay: 0.2,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="mt-6 grid gap-2 sm:grid-cols-3"
+              >
+                {[
+                  { label: "Stripe signal", value: "failure_code" },
+                  { label: "Recovery move", value: "sequence + timing" },
+                  { label: "Human layer", value: "founder draft" },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl border border-gray-200 bg-white/70 px-4 py-3 shadow-sm backdrop-blur-md"
+                  >
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-400">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 truncate text-sm font-semibold text-gray-900">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
@@ -274,10 +303,10 @@ function LandingPage() {
                   <ArrowRight size={16} />
                 </Link>
                 <a
-                  href="#product"
+                  href="#payment-failures"
                   className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white/60 px-5 py-3 text-sm font-semibold text-gray-800 transition-all hover:border-gray-400 hover:bg-white active:scale-[0.98]"
                 >
-                  View the recovery stats
+                  Why payments fail
                 </a>
               </motion.div>
             </div>
@@ -297,6 +326,66 @@ function LandingPage() {
           </div>
         </section>
 
+        <section id="payment-failures" className="scroll-mt-24">
+          <div className={SECTION_SURFACE}>
+            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+              <div>
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+                  Payment failures
+                </p>
+                <h2 className="mt-4 max-w-lg text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
+                  A failed payment is not one problem.
+                </h2>
+                <p className="mt-5 max-w-md text-base leading-7 text-gray-600">
+                  A card can expire, a bank can decline a charge, or a customer
+                  can be short on funds for a few days. Treating all of those
+                  moments the same is how recoverable revenue turns into silent
+                  churn.
+                </p>
+              </div>
+
+              <div className="grid gap-3">
+                {[
+                  {
+                    code: "expired_card",
+                    plain: "The card needs an update.",
+                    move: "Send a secure payment update link quickly.",
+                  },
+                  {
+                    code: "insufficient_funds",
+                    plain: "The customer may need a softer retry window.",
+                    move: "Wait, retry, and phrase the email with less urgency.",
+                  },
+                  {
+                    code: "do_not_honor",
+                    plain: "The bank gave a generic refusal.",
+                    move: "Give clear context and escalate if the account value is high.",
+                  },
+                ].map((item) => (
+                  <article
+                    key={item.code}
+                    className="rounded-[1.25rem] border border-gray-100 bg-white px-4 py-4 shadow-sm"
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <p className="font-mono text-xs font-semibold text-dunlo-deep">
+                          {item.code}
+                        </p>
+                        <h3 className="mt-2 text-base font-semibold tracking-tight text-gray-950">
+                          {item.plain}
+                        </h3>
+                      </div>
+                      <p className="max-w-sm text-sm leading-6 text-gray-600">
+                        {item.move}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="product" className="scroll-mt-24">
           <div className="mx-auto max-w-6xl">
             <StatsBanner />
@@ -311,11 +400,12 @@ function LandingPage() {
                   Features
                 </p>
                 <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-[0.95] tracking-tight md:text-5xl">
-                  From failed payment to the right recovery move.
+                  From Stripe signal to recovery action.
                 </h2>
                 <p className="mt-5 max-w-md text-base leading-7 text-white/60">
-                  Dunlo reads the reason Stripe gives you, chooses the next
-                  action, and keeps the customer message precise.
+                  Dunlo keeps the simple version simple: why did the payment
+                  fail, what should the customer hear, and when should a founder
+                  step in?
                 </p>
               </div>
 
