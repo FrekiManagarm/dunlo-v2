@@ -5,7 +5,6 @@ import {
   Check,
   CreditCard,
   FileText,
-  Gauge,
   MailCheck,
   RefreshCcw,
 } from "lucide-react";
@@ -29,21 +28,21 @@ import {
 
 const FEATURE_ITEMS = [
   {
-    label: "Detect",
-    title: "Reads the Stripe failure code",
-    body: "Expired card, insufficient funds, bank decline, or do-not-honor.",
-    icon: MailCheck,
+    label: "Understand",
+    title: "Shows why the payment failed",
+    body: "Expired card, insufficient funds, bank decline, or do-not-honor are treated as different recovery paths.",
+    icon: CreditCard,
   },
   {
     label: "Recover",
-    title: "Sends the matching message",
-    body: "A payment update link, retry timing, or softer customer nudge.",
-    icon: Gauge,
+    title: "Sends the right follow-up",
+    body: "Dunlo matches the Stripe reason to a clearer message, safer timing, and the right payment update path.",
+    icon: MailCheck,
   },
   {
     label: "Escalate",
-    title: "Drafts the human follow-up",
-    body: "High-value failures pause before they feel automated.",
+    title: "Keeps important accounts human",
+    body: "High-value failures can pause automation and become a founder email draft before the customer goes quiet.",
     icon: FileText,
   },
 ] as const;
@@ -109,39 +108,39 @@ const INCLUDED_IN_EVERY_PLAN = [
 
 const FAQS = [
   {
+    question: "What is involuntary churn?",
+    answer:
+      "It is churn caused by payment failure rather than a customer choosing to cancel. A good customer can disappear because their card expired, their bank declined a charge, or they missed a payment update email.",
+  },
+  {
+    question: "How is Dunlo different from Stripe Smart Retries?",
+    answer:
+      "Stripe Smart Retries can keep retrying the card. Dunlo handles the customer communication around the failure: why it happened, what message to send, when to follow up, and when a founder should step in.",
+  },
+  {
     question: "How is Dunlo different from Triggla or Churn Buster?",
     answer:
-      "Dunlo is narrower: Stripe-first recovery, failure-code emails, AI founder escalation, and simple beta pricing instead of a broad lifecycle suite or a recovered-revenue cut.",
+      "Dunlo is narrower: Stripe-first recovery, failure-code-specific emails, AI founder escalation, and simple beta pricing instead of a broad lifecycle suite or a recovered-revenue cut.",
   },
   {
     question: "What is the AI escalation feature exactly?",
     answer:
-      "When a failed payment crosses your threshold, Dunlo pauses automation and drafts a short personal email from the founder with the Stripe context. You can review, regenerate, dismiss, or send it.",
+      "When a failed payment crosses your threshold, Dunlo pauses automation and drafts a short personal email from the founder with Stripe context and account value. You can review, regenerate, dismiss, or send it.",
   },
   {
     question: "Is my Stripe data safe?",
     answer:
-      "Dunlo uses Stripe data only to understand the failed payment context and recovery status. It does not need to move money, change charges, or store card details.",
-  },
-  {
-    question: "Can I cancel anytime?",
-    answer:
-      "Yes. The beta is free, and after billing starts you can cancel or downgrade without a long-term contract.",
+      "Dunlo uses Stripe data to understand failed-payment context and recovery status. It does not need to move money, change charges, or store card details.",
   },
   {
     question: "How much setup is involved?",
     answer:
-      "Connect Stripe, review the default sequences, and add your email provider. Most teams can see their recovery benchmark in a few minutes.",
+      "Connect Stripe, review the default sequences, and add your email provider. The baseline setup does not require an engineering team.",
   },
   {
     question: "What happens during beta?",
     answer:
-      "The product is free during beta. Pricing is visible so you know the direction before Dunlo starts billing.",
-  },
-  {
-    question: "Does Dunlo replace Stripe Smart Retries?",
-    answer:
-      "No. Stripe can keep retrying cards. Dunlo handles the customer communication and founder escalation around those failures.",
+      "The product is free during beta. Pricing is visible now so you know the direction before Dunlo starts billing.",
   },
 ] as const;
 
@@ -165,7 +164,7 @@ export const Route = createFileRoute("/")({
           name: "Dunlo",
           applicationCategory: "BusinessApplication",
           description:
-            "Stripe payment recovery SaaS that reads the failure code first, sends precise recovery emails, and drafts founder escalation emails for high-value failures.",
+            "Stripe payment recovery SaaS that reads failed-payment reasons, sends failure-code-specific recovery emails, and drafts founder escalation emails for high-value accounts.",
           operatingSystem: "Web",
           offers: {
             "@type": "Offer",
