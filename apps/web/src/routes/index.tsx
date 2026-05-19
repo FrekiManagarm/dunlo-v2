@@ -503,9 +503,9 @@ function LandingPage() {
                 </h2>
               </div>
               <p className="max-w-xl text-sm leading-6 text-gray-600 lg:justify-self-end">
-                Every tier gets failure-code sequences and AI-drafted
-                escalations. The tier only follows your MRR when Dunlo starts
-                billing.
+                Every tier includes Stripe failure-code detection, recovery
+                emails, secure update links, and recovered-revenue tracking.
+                The tier only follows your MRR when Dunlo starts billing.
               </p>
             </div>
 
@@ -738,7 +738,8 @@ function LandingPage() {
                 Beta access
               </p>
               <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-tight md:text-5xl">
-                Find the revenue hiding in failed payments.
+                Find the failed-payment revenue your Stripe account is already
+                showing you.
               </h2>
             </div>
             <Link
@@ -746,7 +747,7 @@ function LandingPage() {
               onClick={() => captureCta("final_cta")}
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
-              Start free
+              Start free in beta
               <ArrowRight size={16} />
             </Link>
           </div>
