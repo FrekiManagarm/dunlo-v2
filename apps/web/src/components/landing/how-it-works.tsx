@@ -23,7 +23,7 @@ function MockupConnect() {
       </div>
       <div className="space-y-2.5 rounded-xl border border-white/8 bg-white/5 p-4">
         <div className="mb-3 text-xs text-white/40">
-          Requesting read-only access to
+          Requesting Stripe access for
         </div>
         {["Payment Intents", "Customers", "Charges", "Subscriptions"].map(
           (item, i) => (
@@ -190,19 +190,19 @@ const HIW_STEPS = [
   {
     n: "01",
     title: "Connect Stripe",
-    body: "OAuth in 30 seconds. Read-only access — no write permissions, ever.",
+    body: "Authorize Dunlo with Stripe OAuth so it can monitor payment failures and set up the recovery plumbing around them.",
     Mockup: MockupConnect,
   },
   {
     n: "02",
-    title: "Review sequences",
-    body: "Pre-built flows for every failure type. Edit tone and timing, or ship the defaults.",
+    title: "Tune recovery sequences",
+    body: "Start with defaults for common failure reasons, then adjust tone, timing, and follow-up windows to match your product.",
     Mockup: MockupSequences,
   },
   {
     n: "03",
-    title: "Watch revenue return",
-    body: "Dunlo tracks opens, flags high-value accounts, and reports recovered revenue in real time.",
+    title: "Monitor recovered revenue",
+    body: "Track which payments are pending, recovered, or escalated so recovery becomes visible instead of buried in Stripe events.",
     Mockup: MockupDashboard,
   },
 ] as const;
@@ -233,12 +233,12 @@ export function HowItWorks() {
           <div className="flex flex-col">
             <SectionPill dark>How it works</SectionPill>
             <h2 className="mt-4 text-3xl font-bold tracking-tight text-white md:text-4xl">
-              Up and running
-              <br />
-              in 5 minutes.
+              Connect Stripe, tune the defaults, then let Dunlo watch the
+              recovery loop.
             </h2>
             <p className="mt-3 text-sm text-white/45">
-              No code. No webhooks. No engineering team.
+              No custom webhook build. No payment-ops spreadsheet. You can
+              start with defaults and refine the sequences later.
             </p>
 
             <div className="mt-10 space-y-1">
@@ -274,7 +274,7 @@ export function HowItWorks() {
               })}
             </div>
 
-            <div className="mt-4 flex h-24 flex-col justify-between rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3.5 sm:h-[5.5rem]">
+            <div className="mt-4 flex min-h-32 flex-col justify-between rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3.5 sm:min-h-28">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.p
                   key={activeStep.n}

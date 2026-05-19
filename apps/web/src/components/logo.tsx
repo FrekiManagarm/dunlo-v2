@@ -11,7 +11,7 @@ export function LogoMark({ size = 28 }: LogoMarkProps) {
       fill="none"
       aria-hidden
     >
-      <rect width="32" height="32" rx="8.5" fill="#00e87b" />
+      <rect width="32" height="32" rx="8.5" fill="var(--dunlo-accent)" />
       <path
         d="M 16 25 A 9 9 0 1 0 7 16"
         stroke="white"

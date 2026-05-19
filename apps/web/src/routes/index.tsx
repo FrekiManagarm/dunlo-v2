@@ -5,7 +5,6 @@ import {
   Check,
   CreditCard,
   FileText,
-  Gauge,
   MailCheck,
   RefreshCcw,
 } from "lucide-react";
@@ -29,21 +28,21 @@ import {
 
 const FEATURE_ITEMS = [
   {
-    label: "Detect",
-    title: "Reads the Stripe failure code",
-    body: "Expired card, insufficient funds, bank decline, or do-not-honor.",
-    icon: MailCheck,
+    label: "Understand",
+    title: "Shows why the payment failed",
+    body: "Expired card, insufficient funds, bank decline, or do-not-honor are treated as different recovery paths.",
+    icon: CreditCard,
   },
   {
     label: "Recover",
-    title: "Sends the matching message",
-    body: "A payment update link, retry timing, or softer customer nudge.",
-    icon: Gauge,
+    title: "Sends the right follow-up",
+    body: "Dunlo matches the Stripe reason to a clearer message, safer timing, and the right payment update path.",
+    icon: MailCheck,
   },
   {
     label: "Escalate",
-    title: "Drafts the human follow-up",
-    body: "High-value failures pause before they feel automated.",
+    title: "Keeps important accounts human",
+    body: "High-value failures can pause automation and become a founder email draft before the customer goes quiet.",
     icon: FileText,
   },
 ] as const;
@@ -109,39 +108,39 @@ const INCLUDED_IN_EVERY_PLAN = [
 
 const FAQS = [
   {
+    question: "What is involuntary churn?",
+    answer:
+      "It is churn caused by payment failure rather than a customer choosing to cancel. A good customer can disappear because their card expired, their bank declined a charge, or they missed a payment update email.",
+  },
+  {
+    question: "How is Dunlo different from Stripe Smart Retries?",
+    answer:
+      "Stripe Smart Retries can keep retrying the card. Dunlo handles the customer communication around the failure: why it happened, what message to send, when to follow up, and when a founder should step in.",
+  },
+  {
     question: "How is Dunlo different from Triggla or Churn Buster?",
     answer:
-      "Dunlo is narrower: Stripe-first recovery, failure-code emails, AI founder escalation, and simple beta pricing instead of a broad lifecycle suite or a recovered-revenue cut.",
+      "Dunlo is narrower: Stripe-first recovery, failure-code-specific emails, AI founder escalation, and simple beta pricing instead of a broad lifecycle suite or a recovered-revenue cut.",
   },
   {
     question: "What is the AI escalation feature exactly?",
     answer:
-      "When a failed payment crosses your threshold, Dunlo pauses automation and drafts a short personal email from the founder with the Stripe context. You can review, regenerate, dismiss, or send it.",
+      "When a failed payment crosses your threshold, Dunlo pauses automation and drafts a short personal email from the founder with Stripe context and account value. You can review, regenerate, dismiss, or send it.",
   },
   {
     question: "Is my Stripe data safe?",
     answer:
-      "Dunlo uses Stripe data only to understand the failed payment context and recovery status. It does not need to move money, change charges, or store card details.",
-  },
-  {
-    question: "Can I cancel anytime?",
-    answer:
-      "Yes. The beta is free, and after billing starts you can cancel or downgrade without a long-term contract.",
+      "Dunlo uses Stripe data to understand failed-payment context and recovery status. It does not store full card numbers or CVCs, and payment updates happen through Stripe-hosted flows.",
   },
   {
     question: "How much setup is involved?",
     answer:
-      "Connect Stripe, review the default sequences, and add your email provider. Most teams can see their recovery benchmark in a few minutes.",
+      "Connect Stripe, review the default sequences, and add your email provider. The baseline setup does not require an engineering team.",
   },
   {
     question: "What happens during beta?",
     answer:
-      "The product is free during beta. Pricing is visible so you know the direction before Dunlo starts billing.",
-  },
-  {
-    question: "Does Dunlo replace Stripe Smart Retries?",
-    answer:
-      "No. Stripe can keep retrying cards. Dunlo handles the customer communication and founder escalation around those failures.",
+      "The product is free during beta. Pricing is visible now so you know the direction before Dunlo starts billing.",
   },
 ] as const;
 
@@ -165,7 +164,7 @@ export const Route = createFileRoute("/")({
           name: "Dunlo",
           applicationCategory: "BusinessApplication",
           description:
-            "Stripe payment recovery SaaS that reads the failure code first, sends precise recovery emails, and drafts founder escalation emails for high-value failures.",
+            "Stripe payment recovery SaaS that reads failed-payment reasons, sends failure-code-specific recovery emails, and drafts founder escalation emails for high-value accounts.",
           operatingSystem: "Web",
           offers: {
             "@type": "Offer",
@@ -238,7 +237,7 @@ function LandingPage() {
                 }}
                 className="mt-8 max-w-[11ch] text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:max-w-xl sm:text-5xl sm:leading-[0.98] md:text-6xl"
               >
-                Recover failed Stripe payments with a lighter touch.
+                Recover failed Stripe payments before good customers disappear.
               </motion.h1>
 
               <motion.p
@@ -251,10 +250,39 @@ function LandingPage() {
                 }}
                 className="mt-6 max-w-md text-base leading-7 text-gray-600"
               >
-                Dunlo reads the failure code, sends the right recovery email,
-                and saves founder attention for the payments that actually need
-                it.
+                Dunlo turns Stripe failure reasons into the right recovery
+                email, the right retry timing, and a founder-written follow-up
+                when the account matters.
               </motion.p>
+
+              <motion.div
+                initial={{ opacity: 0, y: 14 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.58,
+                  delay: 0.2,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
+                className="mt-6 grid gap-2 sm:grid-cols-3"
+              >
+                {[
+                  { label: "Stripe signal", value: "failure_code" },
+                  { label: "Recovery move", value: "sequence + timing" },
+                  { label: "Human layer", value: "founder draft" },
+                ].map((item) => (
+                  <div
+                    key={item.label}
+                    className="rounded-2xl border border-gray-200 bg-white/70 px-4 py-3 shadow-sm backdrop-blur-md"
+                  >
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-400">
+                      {item.label}
+                    </p>
+                    <p className="mt-1 truncate text-sm font-semibold text-gray-900">
+                      {item.value}
+                    </p>
+                  </div>
+                ))}
+              </motion.div>
 
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
@@ -275,10 +303,10 @@ function LandingPage() {
                   <ArrowRight size={16} />
                 </Link>
                 <a
-                  href="#product"
+                  href="#payment-failures"
                   className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white/60 px-5 py-3 text-sm font-semibold text-gray-800 transition-all hover:border-gray-400 hover:bg-white active:scale-[0.98]"
                 >
-                  View the recovery stats
+                  Why payments fail
                 </a>
               </motion.div>
             </div>
@@ -298,6 +326,66 @@ function LandingPage() {
           </div>
         </section>
 
+        <section id="payment-failures" className="scroll-mt-24">
+          <div className={SECTION_SURFACE}>
+            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+              <div>
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+                  Payment failures
+                </p>
+                <h2 className="mt-4 max-w-lg text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
+                  A failed payment is not one problem.
+                </h2>
+                <p className="mt-5 max-w-md text-base leading-7 text-gray-600">
+                  A card can expire, a bank can decline a charge, or a customer
+                  can be short on funds for a few days. Treating all of those
+                  moments the same is how recoverable revenue turns into silent
+                  churn.
+                </p>
+              </div>
+
+              <div className="grid gap-3">
+                {[
+                  {
+                    code: "expired_card",
+                    plain: "The card needs an update.",
+                    move: "Send a secure payment update link quickly.",
+                  },
+                  {
+                    code: "insufficient_funds",
+                    plain: "The customer may need a softer retry window.",
+                    move: "Wait, retry, and phrase the email with less urgency.",
+                  },
+                  {
+                    code: "do_not_honor",
+                    plain: "The bank gave a generic refusal.",
+                    move: "Give clear context and escalate if the account value is high.",
+                  },
+                ].map((item) => (
+                  <article
+                    key={item.code}
+                    className="rounded-[1.25rem] border border-gray-100 bg-white px-4 py-4 shadow-sm"
+                  >
+                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                      <div>
+                        <p className="font-mono text-xs font-semibold text-dunlo-deep">
+                          {item.code}
+                        </p>
+                        <h3 className="mt-2 text-base font-semibold tracking-tight text-gray-950">
+                          {item.plain}
+                        </h3>
+                      </div>
+                      <p className="max-w-sm text-sm leading-6 text-gray-600">
+                        {item.move}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
+        </section>
+
         <section id="product" className="scroll-mt-24">
           <div className="mx-auto max-w-6xl">
             <StatsBanner />
@@ -312,11 +400,12 @@ function LandingPage() {
                   Features
                 </p>
                 <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-[0.95] tracking-tight md:text-5xl">
-                  From failed payment to the right recovery move.
+                  From Stripe signal to recovery action.
                 </h2>
                 <p className="mt-5 max-w-md text-base leading-7 text-white/60">
-                  Dunlo reads the reason Stripe gives you, chooses the next
-                  action, and keeps the customer message precise.
+                  Dunlo keeps the simple version simple: why did the payment
+                  fail, what should the customer hear, and when should a founder
+                  step in?
                 </p>
               </div>
 
@@ -414,9 +503,9 @@ function LandingPage() {
                 </h2>
               </div>
               <p className="max-w-xl text-sm leading-6 text-gray-600 lg:justify-self-end">
-                Every tier gets failure-code sequences and AI-drafted
-                escalations. The tier only follows your MRR when Dunlo starts
-                billing.
+                Every tier includes Stripe failure-code detection, recovery
+                emails, secure update links, and recovered-revenue tracking.
+                The tier only follows your MRR when Dunlo starts billing.
               </p>
             </div>
 
@@ -649,7 +738,8 @@ function LandingPage() {
                 Beta access
               </p>
               <h2 className="mt-4 max-w-2xl text-3xl font-semibold tracking-tight md:text-5xl">
-                Find the revenue hiding in failed payments.
+                Find the failed-payment revenue your Stripe account is already
+                showing you.
               </h2>
             </div>
             <Link
@@ -657,7 +747,7 @@ function LandingPage() {
               onClick={() => captureCta("final_cta")}
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
-              Start free
+              Start free in beta
               <ArrowRight size={16} />
             </Link>
           </div>

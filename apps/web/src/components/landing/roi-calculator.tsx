@@ -65,12 +65,12 @@ export function RoiCalculator() {
           <div className="border-b border-gray-100 p-8 md:p-12 lg:border-r lg:border-b-0 lg:p-14">
             <SectionPill>ROI calculator</SectionPill>
             <h2 className="mt-4 max-w-xl text-3xl font-bold tracking-tight text-gray-900 md:text-4xl">
-              See what failed payments are quietly costing you.
+              Estimate the revenue hiding in failed payments.
             </h2>
             <p className="mt-3 max-w-md text-base leading-relaxed text-gray-500">
-              Move the slider to match your monthly recurring revenue. Dunlo
-              estimates recoverable revenue using 5% failed payments and 63%
-              recoverability.
+              Move the slider to match your MRR. Dunlo estimates failed
+              revenue, then applies a recoverable-rate assumption so the number
+              stays understandable instead of magical.
             </p>
 
             <div className="mt-10 space-y-5">
@@ -145,11 +145,11 @@ export function RoiCalculator() {
                   className="max-w-md text-3xl font-bold leading-tight tracking-tight md:text-4xl"
                   aria-live="polite"
                 >
-                  Dunlo could recover ~
+                  You may have ~
                   <span className="text-dunlo">
                     <AnimatedCurrency value={recovered} />
                   </span>
-                  /mo for you — for $19/mo
+                  /mo in recoverable failed-payment revenue.
                 </p>
               </div>
 
@@ -174,8 +174,10 @@ export function RoiCalculator() {
 
               <div className="space-y-5 border-t border-white/10 pt-6">
                 <p className="text-sm leading-relaxed text-white/45">
-                  That's {roi.toFixed(1)}x ROI in 30 days, before counting the
-                  customers who stay subscribed next month.
+                  Estimate based on {formatCurrency(monthlyFailed)} failed MRR
+                  at risk, a 5% failed-payment rate, and 63% recoverability.
+                  Actual recovery depends on your customer mix, card network
+                  response, timing, and message quality.
                 </p>
                 <Link
                   to="/login"
@@ -188,7 +190,7 @@ export function RoiCalculator() {
                   }
                   className="inline-flex rounded-full bg-dunlo px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:bg-dunlo-hover active:scale-[0.97]"
                 >
-                  Calculate my recovery
+                  See my benchmark
                 </Link>
               </div>
             </div>

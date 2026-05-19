@@ -115,13 +115,14 @@ export function Escalation() {
           <div>
             <SectionPill>Escalate</SectionPill>
             <h2 className="mt-6 max-w-3xl text-4xl font-bold leading-[0.98] tracking-tight text-gray-900 md:text-6xl">
-              Automated recovery for the small ones. Your personal touch,
-              drafted by AI, for the ones that matter.
+              Automate routine failures. Keep the founder touch for meaningful
+              revenue.
             </h2>
             <p className="mt-6 max-w-xl text-base leading-8 text-gray-500">
-              Set a threshold. When a failed payment crosses it, Dunlo stops
-              the automation and drafts a founder email from you instead.
-              Review, regenerate, dismiss, or send in one click.
+              Set a threshold for the accounts that deserve a human moment.
+              When a failed payment crosses it, Dunlo pauses the sequence and
+              drafts a founder email using the Stripe context, payment value,
+              and customer record.
             </p>
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -129,14 +130,14 @@ export function Escalation() {
                 to="/login"
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-900 px-5 py-3 text-sm font-bold text-white transition-all hover:bg-gray-700 active:scale-[0.98]"
               >
-                Try escalation drafts
+                Review an escalation draft
                 <ChevronRight size={14} />
               </Link>
               <a
                 href="#pricing"
                 className="inline-flex items-center justify-center gap-2 rounded-full border border-gray-200 bg-white px-5 py-3 text-sm font-bold text-gray-700 transition-all hover:bg-gray-50 active:scale-[0.98]"
               >
-                See Growth plan
+                See beta pricing
                 <ArrowRight size={14} />
               </a>
             </div>
