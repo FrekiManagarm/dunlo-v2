@@ -274,7 +274,7 @@ export function HowItWorks() {
               })}
             </div>
 
-            <div className="mt-4 flex h-24 flex-col justify-between rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3.5 sm:h-[5.5rem]">
+            <div className="mt-4 flex min-h-32 flex-col justify-between rounded-xl border border-white/8 bg-white/[0.03] px-4 py-3.5 sm:min-h-28">
               <AnimatePresence mode="wait" initial={false}>
                 <motion.p
                   key={activeStep.n}
