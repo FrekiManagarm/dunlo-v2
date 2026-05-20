@@ -19,8 +19,8 @@ beforeAll(() => {
   if (!process.env.STRIPE_SECRET_KEY) process.env.STRIPE_SECRET_KEY = "sk_test";
   if (!process.env.STRIPE_WEBHOOK_SECRET)
     process.env.STRIPE_WEBHOOK_SECRET = "whsec_test";
-  if (!process.env.ANTHROPIC_API_KEY)
-    process.env.ANTHROPIC_API_KEY = "sk-ant-test";
+  if (!process.env.OPENAI_API_KEY)
+    process.env.OPENAI_API_KEY = "sk-openai-test";
   if (!process.env.RESEND_API_KEY) process.env.RESEND_API_KEY = "re_test";
   if (!process.env.APP_URL) process.env.APP_URL = "http://localhost:3000";
   if (!process.env.CRON_SECRET) process.env.CRON_SECRET = "x".repeat(16);

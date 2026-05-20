@@ -11,7 +11,7 @@ import { z } from "zod";
 
 import { authMiddleware } from "@/middleware/auth";
 import { sendUserEmail } from "@/lib/email-providers";
-import { ANTHROPIC_MODEL, getAnthropic } from "@/lib/anthropic";
+import { generateEscalationEmailBody } from "@/lib/escalation-ai";
 import { formatAmount, humanizeFailureCode } from "@/lib/template";
 import { wrapEmail } from "@/lib/email-wrapper";
 
@@ -282,28 +282,13 @@ export async function generateEscalationDraft(
   };
 
   try {
-    const system =
-      "You are writing a short, personal email from a SaaS founder to a customer whose payment failed. The email should feel human, not automated. 2-3 sentences max. No subject line needed.";
-
-    const userPrompt =
-      `Customer: ${customerName}. ` +
-      `Monthly value: ${formatAmount(payment.amount, payment.currency)}. ` +
-      `Product: ${productName}. ` +
-      `Failure: ${humanizeFailureCode(payment.failureCode)}. ` +
-      `Write the email body only.`;
-
-    const response = await getAnthropic().messages.create({
-      model: ANTHROPIC_MODEL,
-      max_tokens: 400,
-      system,
-      messages: [{ role: "user", content: userPrompt }],
-    });
-
-    const first = response.content[0];
     const body =
-      first && first.type === "text" && first.text.trim().length > 0
-        ? first.text.trim()
-        : fallback.body;
+      (await generateEscalationEmailBody({
+        customerName,
+        formattedAmount: formatAmount(payment.amount, payment.currency),
+        productName,
+        failureReason: humanizeFailureCode(payment.failureCode),
+      })) || fallback.body;
 
     await db
       .update(escalation)

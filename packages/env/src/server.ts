@@ -21,7 +21,7 @@ export const env = createEnv({
 
     AUTUMN_SECRET_KEY: z.string().min(1).optional(),
 
-    ANTHROPIC_API_KEY: z.string().min(1),
+    OPENAI_API_KEY: z.string().min(1),
     AUTH_EMAIL_PROVIDER: z
       .enum(["resend", "postmark", "mailgun", "sendgrid"])
       .default("resend"),
