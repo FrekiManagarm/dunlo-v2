@@ -33,6 +33,12 @@ export function Nav() {
           >
             Blog
           </Link>
+          <Link
+            to="/benchmark"
+            className="rounded-full px-3.5 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+          >
+            Benchmark
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">

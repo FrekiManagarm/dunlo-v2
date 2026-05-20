@@ -3,7 +3,13 @@ import {
   ALTERNATIVES,
   AlternativePage,
 } from "@/components/alternatives/alternative-page";
-import { SITE_URL, breadcrumbJsonLd, canonicalLink, ogMeta } from "@/lib/seo";
+import {
+  SITE_URL,
+  breadcrumbJsonLd,
+  canonicalLink,
+  keywordsMeta,
+  ogMeta,
+} from "@/lib/seo";
 
 const page = ALTERNATIVES["stripe-smart-retries"];
 
@@ -12,6 +18,13 @@ export const Route = createFileRoute("/alternatives/stripe-smart-retries")({
     meta: [
       { title: page.metaTitle },
       { name: "description", content: page.metaDescription },
+      keywordsMeta([
+        "Stripe Smart Retries alternative",
+        "Dunlo vs Stripe Smart Retries",
+        "Stripe failed payment recovery",
+        "Stripe dunning software",
+        "SaaS payment recovery workflow",
+      ]),
       ...ogMeta({
         title: page.metaTitle,
         description: page.metaDescription,

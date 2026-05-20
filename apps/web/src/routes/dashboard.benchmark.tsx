@@ -63,11 +63,17 @@ function RouteComponent() {
           <motion.h1
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.04, duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            transition={{
+              delay: 0.04,
+              duration: 0.28,
+              ease: [0.16, 1, 0.3, 1],
+            }}
             className="max-w-2xl text-4xl font-bold leading-none tracking-tight text-zinc-950 md:text-6xl"
           >
             Your failed payment rate is{" "}
-            <span className={isAboveAverage ? "text-red-600" : "text-dunlo-deep"}>
+            <span
+              className={isAboveAverage ? "text-red-600" : "text-dunlo-deep"}
+            >
               {formatRate(data.userRate)}
             </span>
           </motion.h1>
@@ -75,7 +81,11 @@ function RouteComponent() {
           <motion.p
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.08, duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            transition={{
+              delay: 0.08,
+              duration: 0.28,
+              ease: [0.16, 1, 0.3, 1],
+            }}
             className="mt-5 max-w-xl text-base leading-relaxed text-zinc-500 md:text-lg"
           >
             Similar SaaS companies average {formatRate(data.averageRate)}.{" "}
@@ -87,7 +97,11 @@ function RouteComponent() {
           <motion.div
             initial={{ opacity: 0, y: 12 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.12, duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+            transition={{
+              delay: 0.12,
+              duration: 0.28,
+              ease: [0.16, 1, 0.3, 1],
+            }}
             className="mt-8 flex flex-col gap-3 sm:flex-row"
           >
             <Link
@@ -172,7 +186,11 @@ function RouteComponent() {
 
           <div className="grid grid-cols-1 divide-y divide-zinc-100 bg-zinc-50/70 sm:grid-cols-3 sm:divide-x sm:divide-y-0">
             {[
-              { icon: Gauge, label: "Percentile", value: `Top ${data.percentile}%` },
+              {
+                icon: Gauge,
+                label: "Percentile",
+                value: `Top ${data.percentile}%`,
+              },
               {
                 icon: RefreshCw,
                 label: "Recovered",
@@ -195,7 +213,7 @@ function RouteComponent() {
       <section className="mx-auto max-w-6xl px-4 pb-12 md:px-6">
         <div className="grid grid-cols-1 gap-3 rounded-[1.5rem] border border-zinc-200 bg-white p-4 md:grid-cols-[1fr_auto] md:items-center">
           <div className="flex items-start gap-3">
-            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-dunlo/[0.08]">
+            <div className="flex size-9 shrink-0 items-center justify-center rounded-full bg-dunlo/8">
               <CheckCircle2 size={16} className="text-dunlo-deep" />
             </div>
             <div>
@@ -203,9 +221,10 @@ function RouteComponent() {
                 Benchmark data is aggregated without customer details.
               </p>
               <p className="mt-1 max-w-3xl text-xs leading-relaxed text-zinc-500">
-                Dunlo stores only rates, counts, recovery rate, and MRR range for
-                anonymized benchmarking. Customer names, emails, exact revenue,
-                and business-identifying details stay out of the benchmark set.
+                Dunlo stores only rates, counts, recovery rate, and MRR range
+                for anonymized benchmarking. Customer names, emails, exact
+                revenue, and business-identifying details stay out of the
+                benchmark set.
               </p>
             </div>
           </div>
@@ -221,4 +240,3 @@ function RouteComponent() {
     </main>
   );
 }
-

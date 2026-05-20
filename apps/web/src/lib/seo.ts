@@ -1,9 +1,18 @@
 export const SITE_URL = "https://dunlo.io";
 export const SITE_NAME = "Dunlo";
-export const DEFAULT_TITLE =
-  "Dunlo - Recover Failed Stripe Payments Before Customers Disappear";
+export const DEFAULT_TITLE = "Dunlo - Stripe Payment Recovery for SaaS";
 export const DEFAULT_DESCRIPTION =
-  "Dunlo helps SaaS founders recover failed Stripe payments with failure-code-specific emails, founder escalation for high-value accounts, and clear recovered-revenue tracking.";
+  "Dunlo helps SaaS founders recover failed Stripe payments with failure-code emails, smart timing, founder escalation, and revenue tracking.";
+export const DEFAULT_KEYWORDS = [
+  "Dunlo",
+  "Stripe payment recovery",
+  "failed payment recovery",
+  "dunning software for SaaS",
+  "recover failed Stripe payments",
+  "involuntary churn",
+  "Stripe dunning",
+  "SaaS payment recovery",
+] as const;
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/brand/dunlo-og-v2.png`;
 export const DEFAULT_OG_IMAGE_ALT =
   "Dunlo social preview showing failure-reason-specific Stripe payment recovery";
@@ -14,6 +23,10 @@ export function absoluteUrl(path = "/") {
 
 export function canonicalLink(path = "/") {
   return { rel: "canonical", href: absoluteUrl(path) };
+}
+
+export function keywordsMeta(keywords: readonly string[]) {
+  return { name: "keywords", content: keywords.join(", ") };
 }
 
 export function breadcrumbJsonLd(

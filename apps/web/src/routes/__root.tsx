@@ -19,10 +19,13 @@ import { env } from "@dunlo-v2/env/web";
 import appCss from "../index.css?url";
 import {
   DEFAULT_DESCRIPTION,
+  DEFAULT_KEYWORDS,
   DEFAULT_OG_IMAGE,
   DEFAULT_TITLE,
   SITE_NAME,
   SITE_URL,
+  absoluteUrl,
+  keywordsMeta,
   ogMeta,
 } from "@/lib/seo";
 
@@ -43,6 +46,7 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
         name: "description",
         content: DEFAULT_DESCRIPTION,
       },
+      keywordsMeta(DEFAULT_KEYWORDS),
       ...ogMeta({ title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION }),
     ],
     links: [
@@ -68,7 +72,17 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
           "@type": "Organization",
           name: SITE_NAME,
           url: SITE_URL,
-          logo: DEFAULT_OG_IMAGE,
+          logo: absoluteUrl("/brand/dunlo-logo.png"),
+          image: DEFAULT_OG_IMAGE,
+          email: "hello@dunlo.io",
+          description: DEFAULT_DESCRIPTION,
+          founder: {
+            "@type": "Person",
+            name: "Mathieu Chambaud",
+            sameAs: "https://x.com/mathchambaud",
+            image: absoluteUrl("/founder/mathieu-chambaud-linkedin.jpg"),
+          },
+          sameAs: ["https://x.com/mathchambaud"],
         }),
       },
       {
@@ -78,6 +92,12 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
           "@type": "WebSite",
           name: SITE_NAME,
           url: SITE_URL,
+          inLanguage: "en",
+          publisher: {
+            "@type": "Organization",
+            name: SITE_NAME,
+            url: SITE_URL,
+          },
         }),
       },
     ],

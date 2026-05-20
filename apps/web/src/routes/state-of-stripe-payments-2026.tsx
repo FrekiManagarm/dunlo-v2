@@ -7,7 +7,7 @@ import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
 import { formatRate } from "@/lib/benchmark";
 import { publicBenchmarkQueryOptions } from "@/lib/queries";
-import { breadcrumbJsonLd, canonicalLink, ogMeta } from "@/lib/seo";
+import { breadcrumbJsonLd, canonicalLink, keywordsMeta, ogMeta } from "@/lib/seo";
 
 export const Route = createFileRoute("/state-of-stripe-payments-2026")({
   head: () => ({
@@ -18,6 +18,14 @@ export const Route = createFileRoute("/state-of-stripe-payments-2026")({
         content:
           "Dunlo's public report on Stripe failed payment rates, decline codes, and recoverable revenue benchmarks for SaaS teams.",
       },
+      keywordsMeta([
+        "Stripe failed payment report",
+        "Stripe failed payment benchmark",
+        "Stripe decline code benchmark",
+        "SaaS payment failure report",
+        "recoverable revenue benchmark",
+        "payment recovery benchmarks",
+      ]),
       ...ogMeta({
         title: "State of Stripe Failed Payments 2026 — Dunlo",
         description:
@@ -128,6 +136,9 @@ function ReportPage() {
             <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
               Headline metric
             </p>
+            <h2 className="sr-only">
+              Average Stripe failed payment rate benchmark
+            </h2>
             <p className="mt-5 font-mono text-6xl font-bold leading-none tracking-tight text-zinc-950">
               {formatRate(data.globalRate)}
             </p>
@@ -147,9 +158,9 @@ function ReportPage() {
 
           <div className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-[0_18px_45px_-30px_rgba(24,24,27,0.2)]">
             <div className="border-b border-zinc-100 px-5 py-4">
-              <p className="text-sm font-bold text-zinc-950">
+              <h2 className="text-sm font-bold text-zinc-950">
                 Report outline
-              </p>
+              </h2>
               <p className="mt-1 text-xs text-zinc-400">
                 Built for citation, outreach, and SEO.
               </p>

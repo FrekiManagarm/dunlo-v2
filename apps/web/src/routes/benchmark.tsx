@@ -14,11 +14,7 @@ import {
 
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
-import {
-  estimatePercentile,
-  formatRate,
-} from "@/lib/benchmark";
-import { publicBenchmarkQueryOptions } from "@/lib/queries";
+import { formatRate } from "@/lib/benchmark";
 import { breadcrumbJsonLd, canonicalLink, ogMeta } from "@/lib/seo";
 
 const GLOBAL_AVERAGE = 5;
@@ -42,8 +38,10 @@ const failureBenchmarks = [
     averageRate: 1.9,
     recoverableRate: 31,
     meaning: "The bank declined because funds or credit were not available.",
-    customer: "The customer may know cash is tight or may be waiting for a reset.",
-    emailAngle: "Empathetic retry notice. Let them know you will try again later.",
+    customer:
+      "The customer may know cash is tight or may be waiting for a reset.",
+    emailAngle:
+      "Empathetic retry notice. Let them know you will try again later.",
     timing: "Wait at least 3 days before retrying.",
     avoid: "Do not demand a card update as the first response.",
   },
@@ -54,7 +52,8 @@ const failureBenchmarks = [
     recoverableRate: 44,
     meaning: "The issuing bank blocked the charge for a private reason.",
     customer: "The card can work elsewhere, which makes this feel confusing.",
-    emailAngle: "Explain the bank block and offer two fixes: call the bank or use another card.",
+    emailAngle:
+      "Explain the bank block and offer two fixes: call the bank or use another card.",
     timing: "Send on day 0 before another retry.",
     avoid: "Do not retry repeatedly without customer action.",
   },
@@ -63,9 +62,11 @@ const failureBenchmarks = [
     label: "Card declined",
     averageRate: 1.6,
     recoverableRate: 28,
-    meaning: "Stripe returned a generic decline without a precise customer-safe reason.",
+    meaning:
+      "Stripe returned a generic decline without a precise customer-safe reason.",
     customer: "The customer has little useful context and needs options.",
-    emailAngle: "Conservative dual-option email: approve with bank or add another card.",
+    emailAngle:
+      "Conservative dual-option email: approve with bank or add another card.",
     timing: "Send on day 1 after one clean delayed retry window.",
     avoid: "Do not pretend you know the exact cause.",
   },
@@ -89,7 +90,8 @@ export const Route = createFileRoute("/benchmark")({
       },
       ...ogMeta({
         title: "Stripe Failed Payment Benchmark — Dunlo",
-        description: "A free benchmark and calculator for Stripe failed payment rates, decline codes, and recoverable revenue.",
+        description:
+          "A free benchmark and calculator for Stripe failed payment rates, decline codes, and recoverable revenue.",
         path: "/benchmark",
       }),
     ],
@@ -124,7 +126,9 @@ function BenchmarkPage() {
     const delta = inputRate - GLOBAL_AVERAGE;
     const recoverableMonthly = Math.max(
       0,
-      Math.round(monthlyRevenue * (Math.max(delta, 0) / 100) * RECOVERY_MULTIPLIER),
+      Math.round(
+        monthlyRevenue * (Math.max(delta, 0) / 100) * RECOVERY_MULTIPLIER,
+      ),
     );
     const opportunity = getBiggestOpportunity(inputRate);
 
@@ -229,7 +233,9 @@ function BenchmarkPage() {
                     max="18"
                     step="0.1"
                     value={inputRate}
-                    onChange={(event) => setInputRate(Number(event.target.value))}
+                    onChange={(event) =>
+                      setInputRate(Number(event.target.value))
+                    }
                     className="w-full accent-dunlo"
                   />
                   <input
@@ -238,7 +244,9 @@ function BenchmarkPage() {
                     max="30"
                     step="0.1"
                     value={inputRate}
-                    onChange={(event) => setInputRate(Number(event.target.value))}
+                    onChange={(event) =>
+                      setInputRate(Number(event.target.value))
+                    }
                     className="h-11 rounded-xl border border-zinc-200 bg-white px-3 text-right font-mono text-sm text-zinc-950 outline-none transition-colors focus:border-dunlo focus:ring-2 focus:ring-dunlo/20"
                   />
                 </div>
@@ -253,7 +261,9 @@ function BenchmarkPage() {
                   min="0"
                   step="1000"
                   value={monthlyRevenue}
-                  onChange={(event) => setMonthlyRevenue(Number(event.target.value))}
+                  onChange={(event) =>
+                    setMonthlyRevenue(Number(event.target.value))
+                  }
                   className="mt-2 h-11 w-full rounded-xl border border-zinc-200 bg-white px-3 font-mono text-sm text-zinc-950 outline-none transition-colors focus:border-dunlo focus:ring-2 focus:ring-dunlo/20"
                 />
               </label>
@@ -382,23 +392,38 @@ function BenchmarkPage() {
 
                 <div className="space-y-4 text-sm leading-relaxed text-zinc-600">
                   <div className="flex gap-3">
-                    <ShieldCheck size={18} className="mt-0.5 shrink-0 text-zinc-400" />
+                    <ShieldCheck
+                      size={18}
+                      className="mt-0.5 shrink-0 text-zinc-400"
+                    />
                     <p>
-                      <span className="font-semibold text-zinc-950">Meaning:</span>{" "}
+                      <span className="font-semibold text-zinc-950">
+                        Meaning:
+                      </span>{" "}
                       {row.meaning} {row.customer}
                     </p>
                   </div>
                   <div className="flex gap-3">
-                    <MailCheck size={18} className="mt-0.5 shrink-0 text-zinc-400" />
+                    <MailCheck
+                      size={18}
+                      className="mt-0.5 shrink-0 text-zinc-400"
+                    />
                     <p>
-                      <span className="font-semibold text-zinc-950">Email:</span>{" "}
+                      <span className="font-semibold text-zinc-950">
+                        Email:
+                      </span>{" "}
                       {row.emailAngle}
                     </p>
                   </div>
                   <div className="flex gap-3">
-                    <TimerReset size={18} className="mt-0.5 shrink-0 text-zinc-400" />
+                    <TimerReset
+                      size={18}
+                      className="mt-0.5 shrink-0 text-zinc-400"
+                    />
                     <p>
-                      <span className="font-semibold text-zinc-950">Timing:</span>{" "}
+                      <span className="font-semibold text-zinc-950">
+                        Timing:
+                      </span>{" "}
                       {row.timing} {row.avoid}
                     </p>
                   </div>
@@ -419,7 +444,8 @@ function BenchmarkPage() {
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-300">
                 Connect Stripe to see your real failure-code mix, recoverable
-                revenue, and best next email sequence. Dunlo is free during beta.
+                revenue, and best next email sequence. Dunlo is free during
+                beta.
               </p>
             </div>
             <Link

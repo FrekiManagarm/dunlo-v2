@@ -3,7 +3,13 @@ import {
   ALTERNATIVES,
   AlternativePage,
 } from "@/components/alternatives/alternative-page";
-import { SITE_URL, breadcrumbJsonLd, canonicalLink, ogMeta } from "@/lib/seo";
+import {
+  SITE_URL,
+  breadcrumbJsonLd,
+  canonicalLink,
+  keywordsMeta,
+  ogMeta,
+} from "@/lib/seo";
 
 const page = ALTERNATIVES.triggla;
 
@@ -12,6 +18,13 @@ export const Route = createFileRoute("/alternatives/triggla")({
     meta: [
       { title: page.metaTitle },
       { name: "description", content: page.metaDescription },
+      keywordsMeta([
+        "Triggla alternative",
+        "Dunlo vs Triggla",
+        "Stripe churn recovery comparison",
+        "failed payment recovery comparison",
+        "SaaS dunning tool alternative",
+      ]),
       ...ogMeta({
         title: page.metaTitle,
         description: page.metaDescription,

@@ -19,10 +19,12 @@ import { StatsBanner } from "@/components/landing/stats-banner";
 import { LogoMark } from "@/components/logo";
 import {
   DEFAULT_DESCRIPTION,
+  DEFAULT_KEYWORDS,
   DEFAULT_TITLE,
   SITE_NAME,
   SITE_URL,
   canonicalLink,
+  keywordsMeta,
   ogMeta,
 } from "@/lib/seo";
 
@@ -59,6 +61,7 @@ const PLANS = [
       "Unlimited sequence steps",
       "1 team member",
     ],
+    featured: false,
   },
   {
     name: "Starter",
@@ -66,11 +69,7 @@ const PLANS = [
     price: "$49",
     tagline: "For SaaS with steady failed-payment volume.",
     aiEscalations: "20 AI escalations/mo",
-    features: [
-      "Weekly recovery summary",
-      "Priority scoring",
-      "1 team member",
-    ],
+    features: ["Weekly recovery summary", "Priority scoring", "1 team member"],
     featured: true,
   },
   {
@@ -84,6 +83,7 @@ const PLANS = [
       "Recovery insights",
       "Unlimited team members",
     ],
+    featured: false,
   },
   {
     name: "Scale",
@@ -91,11 +91,8 @@ const PLANS = [
     price: "$399",
     tagline: "For larger SaaS needing more support.",
     aiEscalations: "Unlimited AI escalations",
-    features: [
-      "Custom integrations",
-      "Priority SLA",
-      "Unlimited team members",
-    ],
+    features: ["Custom integrations", "Priority SLA", "Unlimited team members"],
+    featured: false,
   },
 ] as const;
 
@@ -152,6 +149,7 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: DEFAULT_TITLE },
       { name: "description", content: DEFAULT_DESCRIPTION },
+      keywordsMeta(DEFAULT_KEYWORDS),
       ...ogMeta({ title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION }),
     ],
     links: [canonicalLink("/")],
@@ -208,14 +206,12 @@ function LandingPage() {
   };
 
   return (
-    <div className="min-h-[100dvh] overflow-hidden bg-stone-100 font-sans text-gray-950">
+    <div className="min-h-dvh overflow-hidden bg-stone-100 font-sans text-gray-950">
       <Nav />
       <main className="space-y-4 px-3 pb-4 pt-24 md:space-y-5 md:px-4 md:pb-6 md:pt-28">
         <section className="relative -mx-3 px-3 md:-mx-4 md:px-4">
           <OrganicBackdrop />
-          <div
-            className="relative mx-auto grid min-h-[calc(100dvh-8rem)] max-w-6xl min-w-0 gap-12 py-6 md:grid-cols-[0.92fr_1.08fr] md:items-center md:gap-14 md:py-8"
-          >
+          <div className="relative mx-auto grid min-h-[calc(100dvh-8rem)] max-w-6xl min-w-0 gap-12 py-6 md:grid-cols-[0.92fr_1.08fr] md:items-center md:gap-14 md:py-8">
             <div className="min-w-0 max-w-xl">
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
@@ -235,9 +231,9 @@ function LandingPage() {
                   delay: 0.08,
                   ease: [0.16, 1, 0.3, 1],
                 }}
-                className="mt-8 max-w-[11ch] text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:max-w-xl sm:text-5xl sm:leading-[0.98] md:text-6xl"
+                className="mt-8 max-w-xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:text-5xl sm:leading-[0.98] md:text-6xl"
               >
-                Recover failed Stripe payments before good customers disappear.
+                Dunlo recovers failed Stripe payments before customers disappear.
               </motion.h1>
 
               <motion.p
@@ -295,8 +291,8 @@ function LandingPage() {
                 className="mt-8 flex flex-col gap-3 sm:flex-row"
               >
                 <Link
-                  to="/login"
-                  onClick={() => captureCta("hero")}
+                  to="/benchmark"
+                  onClick={() => captureCta("hero_benchmark")}
                   className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.98]"
                 >
                   See your benchmark
@@ -342,6 +338,23 @@ function LandingPage() {
                   moments the same is how recoverable revenue turns into silent
                   churn.
                 </p>
+                <div className="mt-6 flex flex-col gap-2 text-sm font-semibold text-gray-800">
+                  <Link
+                    to="/blog/$slug"
+                    params={{ slug: "stripe-failure-codes-explained" }}
+                    className="inline-flex w-fit items-center gap-1.5 text-dunlo-deep transition-all hover:gap-2"
+                  >
+                    Read the Stripe failure code guide
+                    <ArrowRight size={14} />
+                  </Link>
+                  <Link
+                    to="/alternatives/stripe-smart-retries"
+                    className="inline-flex w-fit items-center gap-1.5 text-dunlo-deep transition-all hover:gap-2"
+                  >
+                    Compare Dunlo with Stripe Smart Retries
+                    <ArrowRight size={14} />
+                  </Link>
+                </div>
               </div>
 
               <div className="grid gap-3">
@@ -364,7 +377,7 @@ function LandingPage() {
                 ].map((item) => (
                   <article
                     key={item.code}
-                    className="rounded-[1.25rem] border border-gray-100 bg-white px-4 py-4 shadow-sm"
+                    className="rounded-3xl border border-gray-100 bg-white px-4 py-4 shadow-sm"
                   >
                     <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                       <div>
@@ -479,6 +492,52 @@ function LandingPage() {
           <Escalation />
         </div>
 
+        <section id="about" className="scroll-mt-24">
+          <div className={SECTION_SURFACE}>
+            <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
+              <div>
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+                  About Dunlo
+                </p>
+                <h2 className="mt-4 max-w-md text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
+                  Stripe payment recovery for SaaS founders.
+                </h2>
+              </div>
+              <div className="space-y-5 text-sm leading-7 text-gray-600 md:text-base">
+                <p>
+                  Dunlo is a Stripe-first payment recovery SaaS for founders who
+                  want fewer failed payments turning into invisible churn. It
+                  reads the failure reason, chooses the right recovery message,
+                  tracks recovered revenue, and keeps high-value accounts
+                  human with founder escalation drafts.
+                </p>
+                <p>
+                  The product is built by Mathieu Chambaud after losing early
+                  SaaS users to silent payment failures. The goal is simple:
+                  make failed-payment recovery clear enough for solo founders
+                  and precise enough for growing SaaS teams.
+                </p>
+                <div className="flex flex-col gap-2 text-sm font-semibold sm:flex-row sm:flex-wrap sm:gap-4">
+                  <Link
+                    to="/benchmark"
+                    className="inline-flex w-fit items-center gap-1.5 text-dunlo-deep transition-all hover:gap-2"
+                  >
+                    Use the Stripe failed payment benchmark
+                    <ArrowRight size={14} />
+                  </Link>
+                  <Link
+                    to="/blog"
+                    className="inline-flex w-fit items-center gap-1.5 text-dunlo-deep transition-all hover:gap-2"
+                  >
+                    Read the payment recovery blog
+                    <ArrowRight size={14} />
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
         <div className="mx-auto max-w-6xl">
           <BuiltByMathieu />
         </div>
@@ -504,8 +563,8 @@ function LandingPage() {
               </div>
               <p className="max-w-xl text-sm leading-6 text-gray-600 lg:justify-self-end">
                 Every tier includes Stripe failure-code detection, recovery
-                emails, secure update links, and recovered-revenue tracking.
-                The tier only follows your MRR when Dunlo starts billing.
+                emails, secure update links, and recovered-revenue tracking. The
+                tier only follows your MRR when Dunlo starts billing.
               </p>
             </div>
 
@@ -558,9 +617,7 @@ function LandingPage() {
                   },
                 ].map((row) => (
                   <div key={row.label} className="contents">
-                    <div
-                      className="border-b border-gray-100 px-5 py-4 text-sm font-medium text-gray-500"
-                    >
+                    <div className="border-b border-gray-100 px-5 py-4 text-sm font-medium text-gray-500">
                       {row.label}
                     </div>
                     {row.values.map((value, index) => (
@@ -696,7 +753,7 @@ function LandingPage() {
               </div>
             </div>
 
-            <div className="mt-4 grid gap-3 rounded-[1.25rem] border border-gray-100 bg-white px-4 py-3 sm:grid-cols-2 lg:grid-cols-4">
+            <div className="mt-4 grid gap-3 rounded-3xl border border-gray-100 bg-white px-4 py-3 sm:grid-cols-2 lg:grid-cols-4">
               {INCLUDED_IN_EVERY_PLAN.map((feature) => (
                 <div key={feature} className="flex items-center gap-2">
                   <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-dunlo/12 text-dunlo-deep">
@@ -712,7 +769,9 @@ function LandingPage() {
         </section>
 
         <section id="faq" className="scroll-mt-24">
-          <div className={`${SECTION_SURFACE} grid gap-10 md:grid-cols-[0.7fr_1.3fr]`}>
+          <div
+            className={`${SECTION_SURFACE} grid gap-10 md:grid-cols-[0.7fr_1.3fr]`}
+          >
             <h2 className="text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
               A few clean answers.
             </h2>
@@ -760,11 +819,14 @@ function LandingPage() {
 
 function OrganicBackdrop() {
   return (
-    <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden>
+    <div
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+      aria-hidden
+    >
       <div className="absolute inset-x-0 top-0 h-px bg-gray-200" />
       <svg
         viewBox="0 0 960 640"
-        className="absolute right-[-22rem] top-16 h-[520px] w-[780px] text-gray-300 md:right-[-10rem]"
+        className="absolute -right-88 top-16 h-130 w-195 text-gray-300 md:-right-40"
         fill="none"
       >
         <path
@@ -796,9 +858,9 @@ function OrganicBackdrop() {
 
 function RecoveryConsole() {
   return (
-    <div className="relative mx-auto w-full max-w-[500px] overflow-hidden rounded-[2rem] border border-gray-200 bg-white/88 p-3 shadow-[0_35px_90px_-58px_rgba(28,25,23,0.75)] backdrop-blur-md">
+    <div className="relative mx-auto w-full max-w-125 overflow-hidden rounded-[2rem] border border-gray-200 bg-white/88 p-3 shadow-[0_35px_90px_-58px_rgba(28,25,23,0.75)] backdrop-blur-md">
       <div
-        className="absolute inset-0 bg-[linear-gradient(rgba(17,24,39,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(17,24,39,0.04)_1px,transparent_1px)] [background-size:32px_32px]"
+        className="absolute inset-0 bg-[linear-gradient(rgba(17,24,39,0.04)_1px,transparent_1px),linear-gradient(90deg,rgba(17,24,39,0.04)_1px,transparent_1px)] bg-size-[32px_32px]"
         aria-hidden
       />
 
@@ -807,10 +869,7 @@ function RecoveryConsole() {
         transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
         className="relative overflow-hidden rounded-[1.7rem] border border-gray-100 bg-white p-5 text-gray-950 shadow-[0_30px_70px_-52px_rgba(28,25,23,0.8)]"
       >
-        <div
-          className="absolute inset-x-0 top-0 h-px bg-white"
-          aria-hidden
-        />
+        <div className="absolute inset-x-0 top-0 h-px bg-white" aria-hidden />
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <LogoMark size={30} />

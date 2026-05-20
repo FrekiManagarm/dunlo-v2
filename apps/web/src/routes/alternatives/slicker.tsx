@@ -3,7 +3,7 @@ import {
   ALTERNATIVES,
   AlternativePage,
 } from "@/components/alternatives/alternative-page";
-import { SITE_URL, canonicalLink, ogMeta } from "@/lib/seo";
+import { SITE_URL, canonicalLink, keywordsMeta, ogMeta } from "@/lib/seo";
 
 const page = ALTERNATIVES.slicker;
 
@@ -12,11 +12,13 @@ export const Route = createFileRoute("/alternatives/slicker")({
     meta: [
       { title: page.metaTitle },
       { name: "description", content: page.metaDescription },
-      {
-        name: "keywords",
-        content:
-          "slicker alternative, slicker vs dunlo payment recovery, payment recovery for small saas",
-      },
+      keywordsMeta([
+        "Slicker alternative",
+        "Dunlo vs Slicker",
+        "Slicker payment recovery alternative",
+        "payment recovery for small SaaS",
+        "AI retry engine alternative",
+      ]),
       ...ogMeta({
         title: page.metaTitle,
         description: page.metaDescription,

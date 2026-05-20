@@ -3,7 +3,13 @@ import {
   ALTERNATIVES,
   AlternativePage,
 } from "@/components/alternatives/alternative-page";
-import { SITE_URL, breadcrumbJsonLd, canonicalLink, ogMeta } from "@/lib/seo";
+import {
+  SITE_URL,
+  breadcrumbJsonLd,
+  canonicalLink,
+  keywordsMeta,
+  ogMeta,
+} from "@/lib/seo";
 
 const page = ALTERNATIVES["churn-buster"];
 
@@ -12,6 +18,13 @@ export const Route = createFileRoute("/alternatives/churn-buster")({
     meta: [
       { title: page.metaTitle },
       { name: "description", content: page.metaDescription },
+      keywordsMeta([
+        "Churn Buster alternative",
+        "Dunlo vs Churn Buster",
+        "Stripe payment recovery alternative",
+        "SaaS dunning software comparison",
+        "failed payment recovery for SaaS",
+      ]),
       ...ogMeta({
         title: page.metaTitle,
         description: page.metaDescription,

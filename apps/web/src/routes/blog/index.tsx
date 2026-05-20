@@ -8,12 +8,13 @@ import {
   absoluteUrl,
   breadcrumbJsonLd,
   canonicalLink,
+  keywordsMeta,
   ogMeta,
 } from "@/lib/seo";
 
 const BLOG_TITLE = "Stripe Payment Recovery Blog - Dunlo";
 const BLOG_DESCRIPTION =
-  "Guides and tutorials for SaaS teams to recover failed Stripe payments, reduce involuntary churn, and improve dunning workflows.";
+  "Practical guides for SaaS teams to recover failed Stripe payments, reduce involuntary churn, and improve dunning workflows.";
 
 export const Route = createFileRoute("/blog/")({
   loader: async () => getAllPosts(),
@@ -21,6 +22,14 @@ export const Route = createFileRoute("/blog/")({
     meta: [
       { title: BLOG_TITLE },
       { name: "description", content: BLOG_DESCRIPTION },
+      keywordsMeta([
+        "Stripe payment recovery blog",
+        "SaaS dunning guide",
+        "failed payment recovery articles",
+        "involuntary churn guides",
+        "Stripe failure codes",
+        "dunning email strategy",
+      ]),
       ...ogMeta({
         title: BLOG_TITLE,
         description: BLOG_DESCRIPTION,
@@ -210,7 +219,7 @@ function BlogPage() {
             </span>
           </div>
           <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-none mb-4">
-            Blog
+            Stripe payment recovery blog
           </h1>
           <p className="text-muted-foreground text-lg max-w-[48ch]">
             Practical guides for recovering failed Stripe payments and reducing involuntary churn.

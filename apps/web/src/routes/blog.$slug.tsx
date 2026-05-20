@@ -10,6 +10,7 @@ import {
   absoluteUrl,
   breadcrumbJsonLd,
   canonicalLink,
+  keywordsMeta,
   ogMeta,
 } from "@/lib/seo";
 
@@ -23,7 +24,7 @@ export const Route = createFileRoute("/blog/$slug")({
     meta: [
       { title: `${loaderData?.title} — Dunlo Blog` },
       { name: "description", content: loaderData?.description },
-      { name: "keywords", content: loaderData?.keywords?.join(", ") },
+      keywordsMeta(loaderData?.keywords ?? []),
       ...ogMeta({
         title: `${loaderData?.title ?? "Dunlo Blog"} — Dunlo Blog`,
         description: loaderData?.description ?? "",
@@ -135,7 +136,7 @@ function ReadingProgress() {
   });
   return (
     <motion.div
-      className="fixed top-0 left-0 right-0 h-[2px] bg-dunlo origin-left"
+      className="fixed top-0 left-0 right-0 h-0.5 bg-dunlo origin-left"
       style={{ scaleX, zIndex: 60 }}
     />
   );
@@ -227,7 +228,10 @@ function TagPill({ tag }: { tag: string }) {
 
 function estimateReadingTime(description: string, readingTime?: string) {
   if (readingTime) return readingTime;
-  const mins = Math.max(3, Math.ceil((description.split(" ").length * 15) / 200));
+  const mins = Math.max(
+    3,
+    Math.ceil((description.split(" ").length * 15) / 200),
+  );
   return `${mins} min`;
 }
 
@@ -237,8 +241,7 @@ const spring = { type: "spring" as const, stiffness: 100, damping: 20 };
 
 function BlogPostPage() {
   const { slug } = Route.useParams();
-  const { title, date, tags, description, readingTime } =
-    Route.useLoaderData();
+  const { title, date, tags, description, readingTime } = Route.useLoaderData();
   const articleRef = useRef<HTMLDivElement>(null);
 
   const MDX = getBlogBody(slug);
@@ -305,7 +308,12 @@ function BlogPostPage() {
           className="h-px bg-border mb-10"
           initial={{ scaleX: 0, originX: "0%" }}
           animate={{ scaleX: 1 }}
-          transition={{ type: "spring", stiffness: 60, damping: 20, delay: 0.14 }}
+          transition={{
+            type: "spring",
+            stiffness: 60,
+            damping: 20,
+            delay: 0.14,
+          }}
         />
 
         {/* Content + TOC grid */}

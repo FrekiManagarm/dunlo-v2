@@ -3,7 +3,7 @@ import { ArrowLeft } from "lucide-react";
 
 import { Footer } from "@/components/landing/footer";
 import { Logo } from "@/components/logo";
-import { SITE_NAME, canonicalLink, ogMeta } from "@/lib/seo";
+import { SITE_NAME, canonicalLink, keywordsMeta, ogMeta } from "@/lib/seo";
 
 const UPDATED_AT = "May 19, 2026";
 const TITLE = "Privacy Policy - Dunlo";
@@ -15,6 +15,13 @@ export const Route = createFileRoute("/privacy")({
     meta: [
       { title: TITLE },
       { name: "description", content: DESCRIPTION },
+      keywordsMeta([
+        "Dunlo privacy policy",
+        "Dunlo data security",
+        "Stripe payment recovery privacy",
+        "SaaS payment recovery data",
+        "Dunlo Google sign-in data",
+      ]),
       ...ogMeta({
         title: TITLE,
         description: DESCRIPTION,

@@ -1,6 +1,7 @@
 import { Logo } from "@/components/logo";
 
 const FOOTER_LINKS = [
+  { label: "About Dunlo", href: "/#about" },
   { label: "Benchmark", href: "/benchmark" },
   { label: "Blog", href: "/blog" },
   { label: "Privacy", href: "/privacy" },
