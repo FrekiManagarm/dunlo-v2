@@ -21,7 +21,7 @@
         "STRIPE_WEBHOOK_SECRET",
         "VITE_POSTHOG_HOST",
         "VITE_POSTHOG_KEY",
-        "ANTHROPIC_API_KEY",
+        "OPENAI_API_KEY",
         "NITRO_PRESET",
         "CRON_SECRET",
         "NODE_ENV",
