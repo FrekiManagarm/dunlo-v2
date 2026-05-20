@@ -1,4 +1,10 @@
-import { motion, useInView, useMotionValue, useSpring, useTransform } from "framer-motion";
+import {
+  motion,
+  useInView,
+  useMotionValue,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import { useEffect, useRef } from "react";
 import { FadeIn } from "./shared";
 
@@ -17,7 +23,7 @@ function CountUp({ to, inView }: { to: number; inView: boolean }) {
 const STATS = [
   {
     prefix: "~",
-    value: 5,
+    value: 7,
     suffix: "%",
     label: "of recurring payments can fail in a typical month",
     source: "Stripe",
@@ -58,7 +64,9 @@ export function StatsBanner() {
               Failed payments are often recoverable revenue, not lost customers.
             </h2>
             <p className="mt-4 max-w-md text-sm leading-6 text-gray-600">
-              If you are new to payment recovery, start here: some churn happens because billing failed. If you already know dunning, the key is precision by failure reason.
+              If you are new to payment recovery, start here: some churn happens
+              because billing failed. If you already know dunning, the key is
+              precision by failure reason.
             </p>
           </div>
           <div className="grid grid-cols-1 divide-y divide-gray-100 md:grid-cols-3 md:divide-x md:divide-y-0 lg:grid-cols-1 lg:divide-x-0 xl:grid-cols-3 xl:divide-x xl:divide-y-0">
@@ -67,7 +75,11 @@ export function StatsBanner() {
                 key={stat.label}
                 initial={{ opacity: 0, y: 10 }}
                 animate={inView ? { opacity: 1, y: 0 } : { opacity: 0, y: 10 }}
-                transition={{ duration: 0.5, delay: i * 0.1, ease: [0.16, 1, 0.3, 1] }}
+                transition={{
+                  duration: 0.5,
+                  delay: i * 0.1,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
                 className="flex flex-col gap-2 px-8 py-8 md:py-10"
               >
                 <span className="text-[11px] font-semibold uppercase tracking-widest text-gray-400">

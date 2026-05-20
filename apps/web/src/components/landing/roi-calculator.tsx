@@ -15,6 +15,7 @@ const STEP = 500;
 const FAILED_PAYMENT_RATE = 0.05;
 const RECOVERABLE_RATE = 0.63;
 const DUNLO_PRICE = 19;
+const GROWTH_PLAN_PRICE = 149;
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-US", {
@@ -51,6 +52,7 @@ export function RoiCalculator() {
     () => Math.round(mrr * FAILED_PAYMENT_RATE * RECOVERABLE_RATE),
     [mrr],
   );
+  const annualRecoverable = recovered * 12;
   const roi = recovered / DUNLO_PRICE;
   const progress = ((mrr - MIN_MRR) / (MAX_MRR - MIN_MRR)) * 100;
   const monthlyFailed = Math.round(mrr * FAILED_PAYMENT_RATE);
@@ -150,6 +152,14 @@ export function RoiCalculator() {
                     <AnimatedCurrency value={recovered} />
                   </span>
                   /mo in recoverable failed-payment revenue.
+                </p>
+                <p className="max-w-sm text-sm font-semibold leading-6 text-white/70">
+                  That's{" "}
+                  <span className="font-mono text-white">
+                    <AnimatedCurrency value={annualRecoverable} />
+                  </span>{" "}
+                  per year leaving your Stripe account quietly. Dunlo's Growth
+                  plan is {formatCurrency(GROWTH_PLAN_PRICE)}/mo.
                 </p>
               </div>
 
