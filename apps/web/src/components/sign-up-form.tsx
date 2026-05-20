@@ -7,6 +7,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
 
+import { GoogleAuthButton } from "@/components/google-auth-button";
 import { authClient } from "@/lib/auth-client";
 
 export default function SignUpForm({
@@ -95,13 +96,22 @@ export default function SignUpForm({
         Free during beta — no credit card needed.
       </p>
 
+      <div className="mt-8 space-y-5">
+        <GoogleAuthButton source="signup" />
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-gray-200" />
+          <span className="text-xs font-medium text-gray-400">or</span>
+          <div className="h-px flex-1 bg-gray-200" />
+        </div>
+      </div>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           form.handleSubmit();
         }}
-        className="mt-8 space-y-5"
+        className="mt-5 space-y-5"
       >
         <form.Field name="name">
           {(field) => (
@@ -218,14 +228,14 @@ export default function SignUpForm({
       <p className="mt-4 text-center text-[11px] text-gray-400">
         By signing up you agree to our{" "}
         <a
-          href="#"
+          href="/terms"
           className="underline underline-offset-2 hover:text-gray-600"
         >
           Terms
         </a>{" "}
         and{" "}
         <a
-          href="#"
+          href="/privacy"
           className="underline underline-offset-2 hover:text-gray-600"
         >
           Privacy Policy

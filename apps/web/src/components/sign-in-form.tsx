@@ -8,6 +8,7 @@ import { useState } from "react";
 import { toast } from "sonner";
 import z from "zod";
 
+import { GoogleAuthButton } from "@/components/google-auth-button";
 import { authClient } from "@/lib/auth-client";
 
 type View = "signin" | "forgot" | "forgot-sent";
@@ -176,13 +177,22 @@ export default function SignInForm({
       <h2 className="text-2xl font-bold text-gray-900">Welcome back</h2>
       <p className="mt-1 text-sm text-gray-500">Sign in to your Dunlo account.</p>
 
+      <div className="mt-8 space-y-5">
+        <GoogleAuthButton source="signin" />
+        <div className="flex items-center gap-3">
+          <div className="h-px flex-1 bg-gray-200" />
+          <span className="text-xs font-medium text-gray-400">or</span>
+          <div className="h-px flex-1 bg-gray-200" />
+        </div>
+      </div>
+
       <form
         onSubmit={(e) => {
           e.preventDefault();
           e.stopPropagation();
           signInForm.handleSubmit();
         }}
-        className="mt-8 space-y-5"
+        className="mt-5 space-y-5"
       >
         <signInForm.Field name="email">
           {(field) => (

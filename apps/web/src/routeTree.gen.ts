@@ -9,8 +9,10 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as TermsRouteImport } from './routes/terms'
 import { Route as StateOfStripePayments2026RouteImport } from './routes/state-of-stripe-payments-2026'
 import { Route as ResetPasswordRouteImport } from './routes/reset-password'
+import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as BlogRouteImport } from './routes/blog'
@@ -40,6 +42,11 @@ import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as DashboardPaymentsIdRouteImport } from './routes/_dashboard/payments_.$id'
 import { Route as ApiStripeWebhookAccountIdRouteImport } from './routes/api/stripe/webhook.$accountId'
 
+const TermsRoute = TermsRouteImport.update({
+  id: '/terms',
+  path: '/terms',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const StateOfStripePayments2026Route =
   StateOfStripePayments2026RouteImport.update({
     id: '/state-of-stripe-payments-2026',
@@ -49,6 +56,11 @@ const StateOfStripePayments2026Route =
 const ResetPasswordRoute = ResetPasswordRouteImport.update({
   id: '/reset-password',
   path: '/reset-password',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PrivacyRoute = PrivacyRouteImport.update({
+  id: '/privacy',
+  path: '/privacy',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OnboardingRoute = OnboardingRouteImport.update({
@@ -200,8 +212,10 @@ export interface FileRoutesByFullPath {
   '/blog': typeof BlogRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/state-of-stripe-payments-2026': typeof StateOfStripePayments2026Route
+  '/terms': typeof TermsRoute
   '/alerts': typeof DashboardAlertsRoute
   '/dashboard': typeof DashboardDashboardRoute
   '/escalations': typeof DashboardEscalationsRoute
@@ -230,8 +244,10 @@ export interface FileRoutesByTo {
   '/benchmark': typeof BenchmarkRoute
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/state-of-stripe-payments-2026': typeof StateOfStripePayments2026Route
+  '/terms': typeof TermsRoute
   '/alerts': typeof DashboardAlertsRoute
   '/dashboard': typeof DashboardDashboardRoute
   '/escalations': typeof DashboardEscalationsRoute
@@ -263,8 +279,10 @@ export interface FileRoutesById {
   '/blog': typeof BlogRouteWithChildren
   '/login': typeof LoginRoute
   '/onboarding': typeof OnboardingRoute
+  '/privacy': typeof PrivacyRoute
   '/reset-password': typeof ResetPasswordRoute
   '/state-of-stripe-payments-2026': typeof StateOfStripePayments2026Route
+  '/terms': typeof TermsRoute
   '/_dashboard/alerts': typeof DashboardAlertsRoute
   '/_dashboard/dashboard': typeof DashboardDashboardRoute
   '/_dashboard/escalations': typeof DashboardEscalationsRoute
@@ -296,8 +314,10 @@ export interface FileRouteTypes {
     | '/blog'
     | '/login'
     | '/onboarding'
+    | '/privacy'
     | '/reset-password'
     | '/state-of-stripe-payments-2026'
+    | '/terms'
     | '/alerts'
     | '/dashboard'
     | '/escalations'
@@ -326,8 +346,10 @@ export interface FileRouteTypes {
     | '/benchmark'
     | '/login'
     | '/onboarding'
+    | '/privacy'
     | '/reset-password'
     | '/state-of-stripe-payments-2026'
+    | '/terms'
     | '/alerts'
     | '/dashboard'
     | '/escalations'
@@ -358,8 +380,10 @@ export interface FileRouteTypes {
     | '/blog'
     | '/login'
     | '/onboarding'
+    | '/privacy'
     | '/reset-password'
     | '/state-of-stripe-payments-2026'
+    | '/terms'
     | '/_dashboard/alerts'
     | '/_dashboard/dashboard'
     | '/_dashboard/escalations'
@@ -391,8 +415,10 @@ export interface RootRouteChildren {
   BlogRoute: typeof BlogRouteWithChildren
   LoginRoute: typeof LoginRoute
   OnboardingRoute: typeof OnboardingRoute
+  PrivacyRoute: typeof PrivacyRoute
   ResetPasswordRoute: typeof ResetPasswordRoute
   StateOfStripePayments2026Route: typeof StateOfStripePayments2026Route
+  TermsRoute: typeof TermsRoute
   AlternativesChurnBusterRoute: typeof AlternativesChurnBusterRoute
   AlternativesPaddleRetainRoute: typeof AlternativesPaddleRetainRoute
   AlternativesSlickerRoute: typeof AlternativesSlickerRoute
@@ -409,6 +435,13 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/terms': {
+      id: '/terms'
+      path: '/terms'
+      fullPath: '/terms'
+      preLoaderRoute: typeof TermsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/state-of-stripe-payments-2026': {
       id: '/state-of-stripe-payments-2026'
       path: '/state-of-stripe-payments-2026'
@@ -421,6 +454,13 @@ declare module '@tanstack/react-router' {
       path: '/reset-password'
       fullPath: '/reset-password'
       preLoaderRoute: typeof ResetPasswordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/privacy': {
+      id: '/privacy'
+      path: '/privacy'
+      fullPath: '/privacy'
+      preLoaderRoute: typeof PrivacyRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/onboarding': {
@@ -676,8 +716,10 @@ const rootRouteChildren: RootRouteChildren = {
   BlogRoute: BlogRouteWithChildren,
   LoginRoute: LoginRoute,
   OnboardingRoute: OnboardingRoute,
+  PrivacyRoute: PrivacyRoute,
   ResetPasswordRoute: ResetPasswordRoute,
   StateOfStripePayments2026Route: StateOfStripePayments2026Route,
+  TermsRoute: TermsRoute,
   AlternativesChurnBusterRoute: AlternativesChurnBusterRoute,
   AlternativesPaddleRetainRoute: AlternativesPaddleRetainRoute,
   AlternativesSlickerRoute: AlternativesSlickerRoute,

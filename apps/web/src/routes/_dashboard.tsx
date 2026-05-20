@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import { usePostHog } from "posthog-js/react";
 import {
   createFileRoute,
   Link,
@@ -19,6 +20,7 @@ import {
 } from "lucide-react";
 
 import { Logo } from "@/components/logo";
+import { FeedbackWidget } from "@/components/feedback-widget";
 import { WelcomeGuide } from "@/components/welcome-guide";
 import { authClient } from "@/lib/auth-client";
 import { getUser } from "@/functions/get-user";
@@ -50,6 +52,7 @@ function DashboardLayout() {
   const { session } = Route.useRouteContext();
   const { location } = useRouterState();
   const navigate = Route.useNavigate();
+  const posthog = usePostHog();
   const [guideOpen, setGuideOpen] = useState(false);
 
   useEffect(() => {
@@ -57,6 +60,15 @@ function DashboardLayout() {
       setGuideOpen(true);
     }
   }, []);
+
+  useEffect(() => {
+    if (!session?.user.id) return;
+
+    posthog.identify(session.user.id, {
+      email: session.user.email,
+      name: session.user.name,
+    });
+  }, [posthog, session?.user.email, session?.user.id, session?.user.name]);
 
   const openGuide = () => setGuideOpen(true);
   const closeGuide = () => {
@@ -221,6 +233,7 @@ function DashboardLayout() {
       </main>
 
       <WelcomeGuide open={guideOpen} onClose={closeGuide} />
+      <FeedbackWidget user={session?.user} path={location.pathname} />
     </div>
   );
 }
