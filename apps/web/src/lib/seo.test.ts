@@ -23,7 +23,11 @@ describe("social preview metadata", () => {
 
     expect(tags).toContainEqual({
       property: "og:image",
-      content: "https://dunlo.io/brand/dunlo-og.png",
+      content: "https://dunlo.io/brand/dunlo-og-v2.png",
+    });
+    expect(tags).toContainEqual({
+      property: "og:image:type",
+      content: "image/png",
     });
     expect(tags).toContainEqual({ property: "og:image:width", content: "1200" });
     expect(tags).toContainEqual({ property: "og:image:height", content: "630" });
@@ -35,8 +39,8 @@ describe("social preview metadata", () => {
   });
 
   test("ships a 1200x630 OG asset with the failure-reason tagline", () => {
-    const pngDimensions = readPngDimensions(join(brandDir, "dunlo-og.png"));
-    const svg = readFileSync(join(brandDir, "dunlo-og.svg"), "utf8");
+    const pngDimensions = readPngDimensions(join(brandDir, "dunlo-og-v2.png"));
+    const svg = readFileSync(join(brandDir, "dunlo-og-v2.svg"), "utf8");
 
     expect(pngDimensions).toEqual({ width: 1200, height: 630 });
     expect(svg).toContain("Recover failed Stripe payments");
