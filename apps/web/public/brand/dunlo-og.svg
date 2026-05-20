@@ -1,10 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
-  <rect width="1200" height="630" fill="#F6FBF7"/>
-  <path d="M760 0H1200V630H690C734 525 748 407 730 302C712 201 720 96 760 0Z" fill="#E8F7ED"/>
-  <circle cx="1016" cy="146" r="180" fill="#DDF5E6"/>
-  <circle cx="1016" cy="146" r="92" fill="#F6FBF7"/>
+  <title>Dunlo - Recover failed Stripe payments</title>
+  <desc>Recover failed Stripe payments — with the right email for each failure reason.</desc>
+  <rect width="1200" height="630" fill="#F8FCF9"/>
+  <path d="M746 0H1200V630H676C724 516 738 395 719 294C700 191 710 88 746 0Z" fill="#E7F7ED"/>
+  <circle cx="1012" cy="148" r="188" fill="#D9F5E4"/>
+  <circle cx="1012" cy="148" r="96" fill="#F8FCF9"/>
+  <path d="M111 604C272 587 410 587 525 604" stroke="#DDECE3" stroke-width="2" stroke-linecap="round"/>
 
-  <g transform="translate(80 80) scale(1.65)">
+  <g transform="translate(76 76) scale(1.72)">
     <rect x="12" y="12" width="32" height="32" rx="8.5" fill="#00e87b"/>
     <path d="M 28 37 A 9 9 0 1 0 19 28" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
     <path d="M 16.5 30.5 L 19 28 L 21.5 30.5" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
@@ -15,55 +18,57 @@
       font-weight="600"
       font-size="22"
       letter-spacing="-0.5"
-      fill="#111111"
+      fill="#0D1210"
       dominant-baseline="middle"
     >dunlo</text>
   </g>
 
-  <g transform="translate(80 224)">
-    <text x="0" y="0" font-family="Outfit, Arial, sans-serif" font-size="74" font-weight="800" letter-spacing="-1.4" fill="#0D1210">
+  <g transform="translate(80 214)">
+    <text x="0" y="0" font-family="Outfit, Arial, sans-serif" font-size="76" font-weight="800" letter-spacing="-1.35" fill="#0D1210">
       <tspan x="0" dy="0">Recover failed</tspan>
-      <tspan x="0" dy="82">Stripe payments</tspan>
+      <tspan x="0" dy="84">Stripe payments</tspan>
     </text>
-    <text x="0" y="210" font-family="Outfit, Arial, sans-serif" font-size="30" font-weight="500" fill="#415048">
-      <tspan x="0" dy="0">Automated recovery emails for SaaS teams</tspan>
-      <tspan x="0" dy="42">that bill with Stripe.</tspan>
+    <text x="0" y="211" font-family="Outfit, Arial, sans-serif" font-size="28" font-weight="500" fill="#3E4E45">
+      <tspan x="0" dy="0">with the right email</tspan>
+      <tspan x="0" dy="40">for each failure reason.</tspan>
     </text>
   </g>
 
   <g transform="translate(82 528)">
-    <rect x="0" y="0" width="186" height="54" rx="27" fill="#0D1210"/>
+    <rect x="0" y="0" width="212" height="54" rx="27" fill="#0D1210"/>
     <text x="28" y="36" font-family="Outfit, Arial, sans-serif" font-size="20" font-weight="700" fill="#FFFFFF">Free in beta</text>
-    <rect x="214" y="0" width="218" height="54" rx="27" fill="#FFFFFF" stroke="#CFE0D5"/>
-    <circle cx="244" cy="27" r="8" fill="#00e87b"/>
-    <text x="266" y="36" font-family="Outfit, Arial, sans-serif" font-size="20" font-weight="700" fill="#0D1210">Stripe-first</text>
+    <rect x="240" y="0" width="262" height="54" rx="27" fill="#FFFFFF" stroke="#CFE0D5"/>
+    <circle cx="270" cy="27" r="8" fill="#00e87b"/>
+    <text x="292" y="36" font-family="Outfit, Arial, sans-serif" font-size="20" font-weight="700" fill="#0D1210">Stripe failure codes</text>
   </g>
 
-  <g transform="translate(708 150)">
-    <rect x="0" y="0" width="380" height="330" rx="38" fill="#FFFFFF" stroke="#CFE0D5" stroke-width="2"/>
-    <rect x="28" y="28" width="324" height="274" rx="28" fill="#101713"/>
-    <rect x="58" y="60" width="142" height="16" rx="8" fill="#EFF8F2" opacity="0.9"/>
+  <g transform="translate(704 140)">
+    <rect x="0" y="0" width="392" height="350" rx="42" fill="#FFFFFF" stroke="#CFE0D5" stroke-width="2"/>
+    <rect x="28" y="28" width="336" height="294" rx="30" fill="#0F1712"/>
+    <rect x="58" y="60" width="152" height="16" rx="8" fill="#EFF8F2" opacity="0.9"/>
+    <rect x="252" y="58" width="54" height="20" rx="10" fill="#17231C"/>
+    <circle cx="276" cy="68" r="5" fill="#00e87b"/>
 
-    <g transform="translate(58 110)">
-      <rect x="0" y="0" width="264" height="50" rx="25" fill="#17201B"/>
+    <g transform="translate(58 108)">
+      <rect x="0" y="0" width="276" height="52" rx="26" fill="#17221B"/>
       <circle cx="26" cy="25" r="10" fill="#415048"/>
-      <text x="54" y="32" font-family="Outfit, Arial, sans-serif" font-size="19" font-weight="700" fill="#D8E5DD">Failed</text>
-      <text x="188" y="32" font-family="JetBrains Mono, Menlo, monospace" font-size="18" font-weight="700" fill="#8FA096">$248</text>
+      <text x="54" y="33" font-family="Outfit, Arial, sans-serif" font-size="19" font-weight="700" fill="#D8E5DD">insufficient funds</text>
+      <text x="218" y="33" font-family="JetBrains Mono, Menlo, monospace" font-size="18" font-weight="700" fill="#8FA096">$248</text>
     </g>
 
-    <g transform="translate(58 174)">
-      <rect x="0" y="0" width="264" height="50" rx="25" fill="#17201B"/>
-      <circle cx="26" cy="25" r="10" fill="#00e87b"/>
-      <text x="54" y="32" font-family="Outfit, Arial, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF">Email sent</text>
-      <path d="M210 25H236" stroke="#00e87b" stroke-width="4" stroke-linecap="round"/>
-      <path d="M228 17L236 25L228 33" stroke="#00e87b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <g transform="translate(58 176)">
+      <rect x="0" y="0" width="276" height="52" rx="26" fill="#17221B"/>
+      <circle cx="26" cy="26" r="10" fill="#00e87b"/>
+      <text x="54" y="34" font-family="Outfit, Arial, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF">Retry after payday</text>
+      <path d="M222 26H248" stroke="#00e87b" stroke-width="4" stroke-linecap="round"/>
+      <path d="M240 18L248 26L240 34" stroke="#00e87b" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
     </g>
 
-    <g transform="translate(58 238)">
-      <rect x="0" y="0" width="264" height="50" rx="25" fill="#DDF7E7"/>
-      <circle cx="26" cy="25" r="10" fill="#00e87b"/>
-      <text x="54" y="32" font-family="Outfit, Arial, sans-serif" font-size="19" font-weight="800" fill="#0B7A42">Recovered</text>
-      <text x="182" y="32" font-family="JetBrains Mono, Menlo, monospace" font-size="18" font-weight="800" fill="#0B7A42">$248</text>
+    <g transform="translate(58 244)">
+      <rect x="0" y="0" width="276" height="52" rx="26" fill="#DDF7E7"/>
+      <circle cx="26" cy="26" r="10" fill="#00e87b"/>
+      <text x="54" y="34" font-family="Outfit, Arial, sans-serif" font-size="19" font-weight="800" fill="#0B7A42">Recovered</text>
+      <text x="194" y="34" font-family="JetBrains Mono, Menlo, monospace" font-size="18" font-weight="800" fill="#0B7A42">$248</text>
     </g>
   </g>
 </svg>

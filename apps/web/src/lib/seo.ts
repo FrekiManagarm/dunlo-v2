@@ -6,7 +6,7 @@ export const DEFAULT_DESCRIPTION =
   "Dunlo helps SaaS founders recover failed Stripe payments with failure-code-specific emails, founder escalation for high-value accounts, and clear recovered-revenue tracking.";
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/brand/dunlo-og.png`;
 export const DEFAULT_OG_IMAGE_ALT =
-  "Dunlo social preview showing Stripe payment recovery metrics";
+  "Dunlo social preview showing failure-reason-specific Stripe payment recovery";
 
 export function absoluteUrl(path = "/") {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
