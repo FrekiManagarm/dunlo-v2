@@ -110,6 +110,8 @@ const INCLUDED_IN_EVERY_PLAN = [
   "No recovered-revenue percentage",
 ] as const;
 
+const PRICING_TRIAL_LABEL = "First 30 days free";
+
 const FAQS = [
   {
     question: "What is involuntary churn?",
@@ -549,6 +551,11 @@ function LandingPage() {
                     mono: true,
                   },
                   {
+                    label: "Trial",
+                    values: PLANS.map(() => PRICING_TRIAL_LABEL),
+                    highlight: true,
+                  },
+                  {
                     label: "AI escalation",
                     values: PLANS.map((plan) => plan.aiEscalations),
                     highlight: true,
@@ -633,9 +640,18 @@ function LandingPage() {
                           {plan.tagline}
                         </p>
                       </div>
-                      <p className="font-mono text-sm font-semibold">
-                        {plan.price}/mo
-                      </p>
+                      <div className="shrink-0 text-right">
+                        <p className="font-mono text-sm font-semibold">
+                          {plan.price}/mo
+                        </p>
+                        <p
+                          className={`mt-1 text-[11px] font-semibold ${
+                            plan.featured ? "text-dunlo" : "text-dunlo-deep"
+                          }`}
+                        >
+                          {PRICING_TRIAL_LABEL}
+                        </p>
+                      </div>
                     </div>
                     <div className="mt-4 grid grid-cols-2 gap-3 text-xs">
                       <div>

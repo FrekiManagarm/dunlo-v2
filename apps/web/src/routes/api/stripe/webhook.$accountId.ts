@@ -32,7 +32,9 @@ export const Route = createFileRoute("/api/stripe/webhook/$accountId")({
         const sig = request.headers.get("stripe-signature");
 
         if (!sig) {
-          return new Response("Missing stripe-signature header", { status: 400 });
+          return new Response("Missing stripe-signature header", {
+            status: 400,
+          });
         }
 
         const connection = await getStripeConnectionByAccountId(accountId);
@@ -50,7 +52,10 @@ export const Route = createFileRoute("/api/stripe/webhook/$accountId")({
         try {
           event = stripe.webhooks.constructEvent(rawBody, sig, webhookSecret);
         } catch (err) {
-          console.error("[stripe/webhook/$accountId] signature verification failed", err);
+          console.error(
+            "[stripe/webhook/$accountId] signature verification failed",
+            err,
+          );
           return new Response("Invalid signature", { status: 400 });
         }
 
@@ -65,7 +70,7 @@ export const Route = createFileRoute("/api/stripe/webhook/$accountId")({
           if (FAILURE_EVENTS.has(event.type)) {
             const result = await processFailedPayment(event, connection);
             if (result) {
-              sendAlertNotification({
+              await sendAlertNotification({
                 userId: connection.userId,
                 eventType: result.wasEscalated ? "escalation" : "failure",
                 customerName: result.customerName,
@@ -73,13 +78,16 @@ export const Route = createFileRoute("/api/stripe/webhook/$accountId")({
                 amount: result.amount,
                 currency: result.currency,
               }).catch((e) =>
-                console.error("[webhook/$accountId] alert notification failed", e),
+                console.error(
+                  "[webhook/$accountId] alert notification failed",
+                  e,
+                ),
               );
             }
           } else if (SUCCESS_EVENTS.has(event.type)) {
             const result = await processRecoveredPayment(event, connection);
             if (result) {
-              sendAlertNotification({
+              await sendAlertNotification({
                 userId: connection.userId,
                 eventType: "recovery",
                 customerName: result.customerName,
@@ -87,7 +95,10 @@ export const Route = createFileRoute("/api/stripe/webhook/$accountId")({
                 amount: result.amount,
                 currency: result.currency,
               }).catch((e) =>
-                console.error("[webhook/$accountId] alert notification failed", e),
+                console.error(
+                  "[webhook/$accountId] alert notification failed",
+                  e,
+                ),
               );
             }
           } else if (PAYMENT_METHOD_EVENTS.has(event.type)) {
