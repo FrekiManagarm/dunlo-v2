@@ -50,8 +50,20 @@ export const Route = createRootRouteWithContext<RouterAppContext>()({
       ...ogMeta({ title: DEFAULT_TITLE, description: DEFAULT_DESCRIPTION }),
     ],
     links: [
+      { rel: "icon", href: "/favicon.ico", sizes: "32x32" },
+      {
+        rel: "icon",
+        href: "/favicon-48x48.png",
+        type: "image/png",
+        sizes: "48x48",
+      },
+      {
+        rel: "icon",
+        href: "/favicon-96x96.png",
+        type: "image/png",
+        sizes: "96x96",
+      },
       { rel: "icon", href: "/brand/dunlo-mark.svg", type: "image/svg+xml" },
-      { rel: "icon", href: "/brand/dunlo-mark.png", type: "image/png" },
       { rel: "preconnect", href: "https://fonts.googleapis.com" },
       {
         rel: "preconnect",
