@@ -18,6 +18,14 @@ export default defineConfig({
     tailwindcss(),
     nitro(),
     tanstackStart({
+      prerender: {
+        crawlLinks: true,
+        enabled: true,
+      },
+      sitemap: {
+        enabled: true,
+        host: "https://dunlo.io",
+      },
       nitro: {
         plugins: ["./server/plugins/email-scheduler.ts"],
         ...(process.env.VERCEL && { preset: "vercel" }),
