@@ -4,19 +4,14 @@ description: "Involuntary churn drains SaaS MRR every month. Learn what causes i
 author: "Dunlo team"
 date: "2026-05-04"
 published: true
-tags: [
-  involuntary churn,
-  churn,
-  SaaS,
-  stripe,
-  dunlo,
-]
-keywords: [
-  involuntary churn saas,
-  delinquent churn,
-  failed payment recovery,
-  reduce churn saas,
-]
+tags: ["involuntary churn", "churn", "SaaS", "stripe", "dunlo"]
+keywords:
+  [
+    "involuntary churn saas",
+    "delinquent churn",
+    "failed payment recovery",
+    "reduce churn saas",
+  ]
 ---
 
 ## Why this article exists
@@ -24,8 +19,10 @@ keywords: [
 If you run a SaaS, you have a quiet leak in your bucket. Every month, somewhere between 5% and 10% of your monthly recurring revenue silently disappears — not because customers actively cancel, but because their cards expire, their banks reject the charge, or your payment processor gives up after a couple of half-hearted retries.
 
 This is involuntary churn. It is the most underestimated, most fixable problem in SaaS finance, and most founders only notice it when an account worth $500 a month suddenly stops paying and they wonder where it went.
-  - failed payment recovery
-  - reduce churn saas
+
+- failed payment recovery
+- reduce churn saas
+
 ---
 
 ## Why this article exists
@@ -60,16 +57,16 @@ Acquirers and investors discount valuations heavily for SaaS with high churn, an
 
 Every failed payment falls into one of eight categories. The retry strategy depends entirely on which category you're in, and most processors lump them together with the same generic logic.
 
-| Failure type | Frequency | What it actually means |
-|---|---|---|
-| Expired card | 30–40% | Customer's card expired and they haven't updated it. Often resolved with a card updater service or a quick email. |
-| Insufficient funds | 15–20% | Card is valid but the bank declined for lack of money. Retrying in 3–5 days works often. |
-| Soft decline (do_not_honor) | 10–15% | Bank is unsure and rejected by default. Retrying with slight variations often succeeds. |
-| Hard decline (lost, stolen, fraud) | 10–15% | Card is actively blocked. Retrying is useless and can hurt your processor reputation. Email the customer. |
-| Authentication failure (3DS / SCA) | 8–12% | Mostly EU customers. Bank required a step-up that didn't complete. |
-| Network errors | 3–5% | Transient errors at the processor or network level. Retry within minutes. |
-| Risk / fraud rules | 3–5% | Your processor flagged the transaction. May need manual review. |
-| Closed account | 2–4% | Account is permanently dead. Stop retrying immediately. |
+| Failure type                       | Frequency | What it actually means                                                                                            |
+| ---------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------- |
+| Expired card                       | 30–40%    | Customer's card expired and they haven't updated it. Often resolved with a card updater service or a quick email. |
+| Insufficient funds                 | 15–20%    | Card is valid but the bank declined for lack of money. Retrying in 3–5 days works often.                          |
+| Soft decline (do_not_honor)        | 10–15%    | Bank is unsure and rejected by default. Retrying with slight variations often succeeds.                           |
+| Hard decline (lost, stolen, fraud) | 10–15%    | Card is actively blocked. Retrying is useless and can hurt your processor reputation. Email the customer.         |
+| Authentication failure (3DS / SCA) | 8–12%     | Mostly EU customers. Bank required a step-up that didn't complete.                                                |
+| Network errors                     | 3–5%      | Transient errors at the processor or network level. Retry within minutes.                                         |
+| Risk / fraud rules                 | 3–5%      | Your processor flagged the transaction. May need manual review.                                                   |
+| Closed account                     | 2–4%      | Account is permanently dead. Stop retrying immediately.                                                           |
 
 Two takeaways from this table. First, more than half your failures are recoverable with the right retry logic. Second, lumping them together with a one-size-fits-all retry destroys your recovery rate and frustrates legitimate customers.
 

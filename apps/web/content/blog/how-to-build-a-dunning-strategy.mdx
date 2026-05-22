@@ -4,17 +4,14 @@ description: "A founder-tested playbook for designing a dunning workflow that re
 author: "Dunlo team"
 date: "2026-04-20"
 published: true
-tags: [
-  dunning strategy,
-  mrr,
-  dunlo,
-]
-keywords: [
-  dunning strategy saas,
-  recover mrr failed payments,
-  dunning workflow,
-  involuntary churn recovery,
-]
+tags: ["dunning strategy", "mrr", "dunlo"]
+keywords:
+  [
+    "dunning strategy saas",
+    "recover mrr failed payments",
+    "dunning workflow",
+    "involuntary churn recovery",
+  ]
 ---
 
 ## Why most dunning is broken
@@ -46,20 +43,20 @@ If you find out about a failed payment six days late, you've already lost the ea
 - **Categorized** — at minimum, by failure type bucket (recoverable / hard decline / authentication / other)
 - **Routed** — high-value customers get a Slack ping; low-value ones go straight to automated retries
 
-The simplest detection setup is a Slack channel called `#payment-failures` with one message per event, formatted: *"€X MRR failed — Customer Y — Reason Z — Retry attempt N"*. Founders who set this up all say the same thing: they didn't realize how often it was happening.
+The simplest detection setup is a Slack channel called `#payment-failures` with one message per event, formatted: _"€X MRR failed — Customer Y — Reason Z — Retry attempt N"_. Founders who set this up all say the same thing: they didn't realize how often it was happening.
 
 ### Stage 3 — Retry strategy (per failure type)
 
 This is where most teams over-rely on their processor's defaults. Here's a retry policy that works:
 
-| Failure type | First retry | Subsequent retries | Stop after |
-|---|---|---|---|
-| Insufficient funds | +3 days | +7 days, +14 days | 3 attempts |
-| Soft decline (`do_not_honor`) | +1 day | +5 days, +10 days | 3 attempts |
-| Network / processor error | +5 minutes | +1 hour, +1 day | 3 attempts |
-| Expired card | Don't retry — email | — | Email only, then escalate |
-| Hard decline (lost/stolen) | Don't retry — email | — | 1 attempt after card update |
-| Authentication (3DS / SCA) | Trigger re-auth in app | +2 days, +7 days | 3 attempts |
+| Failure type                  | First retry            | Subsequent retries | Stop after                  |
+| ----------------------------- | ---------------------- | ------------------ | --------------------------- |
+| Insufficient funds            | +3 days                | +7 days, +14 days  | 3 attempts                  |
+| Soft decline (`do_not_honor`) | +1 day                 | +5 days, +10 days  | 3 attempts                  |
+| Network / processor error     | +5 minutes             | +1 hour, +1 day    | 3 attempts                  |
+| Expired card                  | Don't retry — email    | —                  | Email only, then escalate   |
+| Hard decline (lost/stolen)    | Don't retry — email    | —                  | 1 attempt after card update |
+| Authentication (3DS / SCA)    | Trigger re-auth in app | +2 days, +7 days   | 3 attempts                  |
 
 Two principles to keep in mind:
 
@@ -70,11 +67,11 @@ Two principles to keep in mind:
 
 The retry strategy is the engine; the emails are the steering wheel. A good sequence has four to five emails over 14 days, each with a distinct job:
 
-- **Email 1 (T+0):** Heads-up. Friendly, brief. *"Your card on file didn't go through — we'll try again, but you can update it now."*
+- **Email 1 (T+0):** Heads-up. Friendly, brief. _"Your card on file didn't go through — we'll try again, but you can update it now."_
 - **Email 2 (T+3):** Reminder. Explain that retries are continuing, make the update link prominent.
-- **Email 3 (T+7):** Direct. *"Your account will be paused on [date] if we can't process the payment."*
+- **Email 3 (T+7):** Direct. _"Your account will be paused on [date] if we can't process the payment."_
 - **Email 4 (T+13):** Final notice. Calm, clear, with a one-click update.
-- **Email 5 (T+15, conditional):** Win-back. *"We had to pause your account. Here's how to come back."*
+- **Email 5 (T+15, conditional):** Win-back. _"We had to pause your account. Here's how to come back."_
 
 We'll dive into copy in a separate post. The single most important rule: the call to action — update card — should be a one-click button that takes the customer to a hosted update page with their account context preserved. Asking them to log in, navigate to billing, find the card section, and update is a 60% drop-off.
 

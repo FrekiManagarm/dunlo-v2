@@ -1,0 +1,216 @@
+---
+title: "What's a normal Stripe failed payment rate for SaaS ?"
+description: "Is your Stripe failed payment rate normal? Industry data says 4–8% of SaaS recurring payments fail each month. Here's the benchmark by MRR — and what it's costing you if you're not recovering them."
+author: "Dunlo team"
+date: "2026-05-22"
+published: true
+tags: ["stripe", "payment rate", "saas"]
+keywords:
+  [
+    "stripe failed payment rate",
+    "saas payment failure benchmark",
+    "involuntary churn rate saas",
+  ]
+---
+
+# What's a Normal Stripe Failed Payment Rate for SaaS? (Benchmarks + What It's Costing You)
+
+Every month, a percentage of your recurring Stripe payments fail silently.
+
+Some recover automatically. Most don't. And unless you're tracking this number separately from your overall churn, you probably have no idea how much revenue is quietly leaving your account.
+
+This article breaks down what a normal failed payment rate looks like for SaaS businesses, how to benchmark your own numbers, and what the math looks like if you're not actively recovering them.
+
+---
+
+## What Is a Failed Payment Rate?
+
+Your failed payment rate is the percentage of recurring charges that Stripe attempts but fails to collect in a given billing cycle.
+
+A payment can fail for many reasons:
+
+- The card on file has expired
+- The customer's bank declined the charge (fraud prevention, insufficient funds, international block)
+- The card was cancelled or replaced
+- A temporary processing issue
+
+Stripe will attempt automatic retries depending on your Smart Retries configuration — but even with retries, a significant portion of failed payments never recover without human intervention.
+
+**The formula:**
+
+> Failed payment rate = (failed charges / total attempted charges) × 100
+
+If Stripe attempted 200 charges this month and 10 failed, your failed payment rate is 5%.
+
+---
+
+## Industry Benchmarks: What's Normal?
+
+Based on industry data across SaaS businesses, here's what to expect:
+
+| Failed payment rate | Assessment                                                                          |
+| ------------------- | ----------------------------------------------------------------------------------- |
+| < 2%                | Excellent — either low-risk customer base or very proactive card update prompts     |
+| 2–4%                | Good — typical for B2B SaaS with stable billing relationships                       |
+| 4–7%                | Average — most bootstrapped B2C and prosumer SaaS falls here                        |
+| 7–10%               | Above average — common with consumer-facing or lower-price-point products           |
+| > 10%               | High — worth investigating. May indicate card quality issues or billing UX problems |
+
+**The honest average for bootstrapped SaaS: 4–7%.**
+
+If you're in that range, you're not doing anything wrong. Card expiry cycles, bank fraud systems, and payment infrastructure all contribute to baseline failure rates that no product change will eliminate.
+
+What you _can_ control is how much of that you recover.
+
+---
+
+## Recovery Rates: The Number That Actually Matters
+
+Failed payment rate tells you how much revenue is at risk. Recovery rate tells you how much you're actually losing.
+
+**Recovery rate** = the percentage of failed payments that eventually collect successfully (through retries, customer action, or outreach).
+
+Here's what recovery looks like across different approaches:
+
+| Recovery approach                                         | Typical recovery rate |
+| --------------------------------------------------------- | --------------------- |
+| No action (Stripe gives up)                               | 15–25%                |
+| Stripe Smart Retries only                                 | 25–40%                |
+| Smart Retries + generic dunning email                     | 40–55%                |
+| Smart Retries + failure-code-specific emails              | 60–75%                |
+| Above + personal founder outreach for high-value accounts | 70–85%                |
+
+The gap between "do nothing" and "do it properly" is enormous. On a $20k MRR business, that gap can represent $400–600/month in recovered revenue — every single month.
+
+---
+
+## The Real Cost by MRR: A Concrete Breakdown
+
+Let's make this tangible. Here's what failed payments typically cost at different MRR levels, and what proper recovery is worth:
+
+### $5,000 MRR
+
+- Failed payments per month: ~$250 (5% rate)
+- Recovery with no process: ~$50 (20%)
+- **Monthly loss: ~$200**
+- Recovery with proper dunning: ~$175 (70%)
+- **Monthly loss with recovery: ~$75**
+- **Monthly value of a recovery process: ~$125**
+- Annual value: **~$1,500**
+
+### $10,000 MRR
+
+- Failed payments per month: ~$500
+- Recovery with no process: ~$100
+- **Monthly loss: ~$400**
+- Recovery with proper dunning: ~$350
+- **Monthly loss with recovery: ~$150**
+- **Monthly value of a recovery process: ~$250**
+- Annual value: **~$3,000**
+
+### $25,000 MRR
+
+- Failed payments per month: ~$1,250
+- Recovery with no process: ~$250
+- **Monthly loss: ~$1,000**
+- Recovery with proper dunning: ~$875
+- **Monthly loss with recovery: ~$375**
+- **Monthly value of a recovery process: ~$625**
+- Annual value: **~$7,500**
+
+### $50,000 MRR
+
+- Failed payments per month: ~$2,500
+- Recovery with no process: ~$500
+- **Monthly loss: ~$2,000**
+- Recovery with proper dunning: ~$1,750
+- **Monthly loss with recovery: ~$750**
+- **Monthly value of a recovery process: ~$1,250**
+- Annual value: **~$15,000**
+
+---
+
+## Why Most Founders Don't Track This
+
+Three reasons failed payment rate stays invisible for most SaaS businesses:
+
+**1. Stripe doesn't surface it prominently**
+
+Stripe's default dashboard shows revenue, MRR, and churn — but it doesn't give you a clean "failed payment rate" metric front and center. You have to dig into the Payments section or build a query to find it. Most founders never do.
+
+**2. It looks like churn**
+
+When a subscription lapses due to a failed payment, it registers as churn in most analytics tools. You see your churn number tick up, assume it's a product or pricing issue, and start optimizing the wrong thing.
+
+**3. It feels small**
+
+"5% of payments" sounds small. It's not until you run the annual math — and multiply it by your average customer LTV — that the number starts to sting.
+
+---
+
+## Factors That Affect Your Failed Payment Rate
+
+Not all SaaS products have the same baseline. Here's what tends to drive higher or lower failure rates:
+
+**Higher failure rates tend to correlate with:**
+
+- Consumer or prosumer pricing (lower MRR per customer = more individual cards, more consumer bank friction)
+- Monthly billing vs. annual billing (annual customers update cards once; monthly customers are exposed every cycle)
+- International customer base (cross-border charges fail at higher rates)
+- Lower price points (customers are less likely to proactively update card details for a $9/month subscription)
+
+**Lower failure rates tend to correlate with:**
+
+- B2B with company cards (corporate cards have higher authorization rates)
+- Annual billing (exposure once per year instead of monthly)
+- Proactive card expiry prompts (reminding customers 30 days before expiry)
+- Higher price points (customers have more incentive to maintain billing)
+
+---
+
+## How to Find Your Own Failed Payment Rate in Stripe
+
+You can pull this directly from Stripe without any third-party tool:
+
+1. Go to **Stripe Dashboard → Billing → Subscriptions**
+2. Filter by status: **Past due** and **Unpaid**
+3. For a more precise number: go to **Payments**, filter by status **Failed**, and set a date range for the last 30 days
+4. Divide failed charges by total attempted charges
+
+For a more complete picture, look at:
+
+- **invoice.payment_failed** events in your webhook logs
+- The **Retry schedule** section under Billing settings to see how Stripe is handling retries
+- Your **Smart Retries** configuration (Revenue Recovery settings)
+
+If you want a faster benchmark, [Dunlo's free benchmark tool](https://dunlo.io/benchmark) connects to your Stripe account and calculates your failed payment rate, recovery rate, and estimated recoverable revenue in under two minutes.
+
+---
+
+## What to Do If Your Rate Is High
+
+If you're above 7%, it's worth investigating before jumping to a recovery process:
+
+**Check your card update flow.** Do you have a way for customers to update their card proactively? Is it easy to find? A simple "update billing" link in your app footer recovers a surprising amount of expired cards before they ever fail.
+
+**Check your billing email.** Stripe can send automated expiry reminder emails — make sure you have them enabled and that they're not landing in spam.
+
+**Check your Smart Retries settings.** By default, Stripe uses machine learning to determine retry timing. Make sure Revenue Recovery is enabled in your Billing settings.
+
+**Look at your customer mix.** If you recently acquired a lot of international customers or ran a promotion that brought in lower-commitment users, that can temporarily spike your failure rate.
+
+If you've checked all of the above and you're still above 7%, that's when a dedicated dunning process — failure-code-specific emails, timed follow-ups, and founder escalation for high-value accounts — makes a meaningful difference.
+
+---
+
+## The Bottom Line
+
+A 4–7% failed payment rate is normal. Losing most of those payments permanently is not.
+
+The difference between a founder who recovers 70% of failed payments and one who recovers 20% isn't luck or product quality. It's whether they have a process — the right email, timed to the right failure code, sent before the customer mentally moves on.
+
+If you don't know your current failed payment rate, start there. Pull the number from Stripe. Run the annual math. Then decide whether the revenue loss is worth ignoring.
+
+---
+
+_Want to see your exact numbers in under 2 minutes? [Connect your Stripe account at dunlo.io/benchmark](https://dunlo.io/benchmark) — free, no credit card required. You'll get your failed payment rate, recovery rate, and estimated recoverable revenue based on your actual Stripe data._
