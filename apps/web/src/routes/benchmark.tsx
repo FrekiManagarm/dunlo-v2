@@ -7,9 +7,7 @@ import {
   Calculator,
   CircleDollarSign,
   Gauge,
-  MailCheck,
-  ShieldCheck,
-  TimerReset,
+  TriangleAlert,
 } from "lucide-react";
 
 import { Footer } from "@/components/landing/footer";
@@ -26,49 +24,32 @@ const failureBenchmarks = [
     label: "Card expired",
     averageRate: 0.8,
     recoverableRate: 63,
-    meaning: "The saved card is past its expiry date.",
-    customer: "The customer probably has no idea anything broke.",
-    emailAngle: "Friendly card-update note with a one-click billing link.",
-    timing: "Send immediately on day 0.",
-    avoid: "Do not make it sound urgent or accusatory.",
+    pain: "A good customer disappears because a card date changed.",
+    action: "Send a calm update-card link now.",
   },
   {
     code: "insufficient_funds",
     label: "Insufficient funds",
     averageRate: 1.9,
     recoverableRate: 31,
-    meaning: "The bank declined because funds or credit were not available.",
-    customer:
-      "The customer may know cash is tight or may be waiting for a reset.",
-    emailAngle:
-      "Empathetic retry notice. Let them know you will try again later.",
-    timing: "Wait at least 3 days before retrying.",
-    avoid: "Do not demand a card update as the first response.",
+    pain: "You already delivered value, but timing breaks the payment.",
+    action: "Wait, then retry with a human note.",
   },
   {
     code: "do_not_honor",
     label: "Do not honor",
     averageRate: 0.7,
     recoverableRate: 44,
-    meaning: "The issuing bank blocked the charge for a private reason.",
-    customer: "The card can work elsewhere, which makes this feel confusing.",
-    emailAngle:
-      "Explain the bank block and offer two fixes: call the bank or use another card.",
-    timing: "Send on day 0 before another retry.",
-    avoid: "Do not retry repeatedly without customer action.",
+    pain: "The bank says no, your customer sees nothing, revenue stalls.",
+    action: "Explain the bank block before retrying.",
   },
   {
     code: "card_declined",
     label: "Card declined",
     averageRate: 1.6,
     recoverableRate: 28,
-    meaning:
-      "Stripe returned a generic decline without a precise customer-safe reason.",
-    customer: "The customer has little useful context and needs options.",
-    emailAngle:
-      "Conservative dual-option email: approve with bank or add another card.",
-    timing: "Send on day 1 after one clean delayed retry window.",
-    avoid: "Do not pretend you know the exact cause.",
+    pain: "A vague decline turns into support work and quiet churn.",
+    action: "Offer two fixes, bank approval or another card.",
   },
 ] as const;
 
@@ -138,8 +119,8 @@ function BenchmarkPage() {
       opportunity,
       headline:
         delta >= 0
-          ? `You're above the ~${GLOBAL_AVERAGE}% industry average`
-          : `You're below the ~${GLOBAL_AVERAGE}% industry average`,
+          ? `~$${recoverableMonthly.toLocaleString("en-US")}/mo is leaking above benchmark`
+          : "You're below the public danger line",
     };
   }, [inputRate, monthlyRevenue]);
 
@@ -156,7 +137,7 @@ function BenchmarkPage() {
               className="mb-5 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-1.5 text-sm font-semibold text-zinc-600 shadow-[0_14px_35px_-26px_rgba(24,24,27,0.3)]"
             >
               <Gauge size={15} className="text-dunlo-deep" />
-              Free, no account required
+              Founder reality check
             </motion.div>
             <motion.h1
               initial={{ opacity: 0, y: 14 }}
@@ -164,7 +145,7 @@ function BenchmarkPage() {
               transition={{ ...spring, delay: 0.04 }}
               className="text-4xl font-bold leading-none tracking-tight text-zinc-950 md:text-6xl"
             >
-              Stripe Failed Payment Benchmark
+              Every failed payment is revenue you already earned.
             </motion.h1>
             <motion.p
               initial={{ opacity: 0, y: 14 }}
@@ -172,9 +153,8 @@ function BenchmarkPage() {
               transition={{ ...spring, delay: 0.08 }}
               className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-600 md:text-lg"
             >
-              See how your recovery rate compares to similar SaaS. Enter your
-              failed payment rate and monthly revenue to estimate the recovery
-              opportunity hiding in Stripe declines.
+              See how much MRR is quietly slipping away before customers notice
+              anything broke.
             </motion.p>
           </div>
 
@@ -187,7 +167,7 @@ function BenchmarkPage() {
             <div className="flex items-start justify-between gap-5">
               <div>
                 <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
-                  Public SaaS baseline
+                  Public danger line
                 </p>
                 <p className="mt-4 font-mono text-6xl font-bold leading-none tracking-tight text-zinc-950">
                   ~{formatRate(GLOBAL_AVERAGE)}
@@ -196,13 +176,13 @@ function BenchmarkPage() {
               <BarChart3 size={21} className="text-zinc-400" />
             </div>
             <p className="mt-5 text-sm leading-relaxed text-zinc-500">
-              Based on public Stripe and ProfitWell baselines while Dunlo builds
-              an anonymized benchmark from beta users.
+              Above this, payment failures stop being noise and start becoming
+              preventable churn.
             </p>
           </motion.div>
         </section>
 
-        <section className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-[0.9fr_1.1fr]">
+        <section className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
           <motion.div
             initial={{ opacity: 0, y: 18 }}
             animate={{ opacity: 1, y: 0 }}
@@ -212,10 +192,10 @@ function BenchmarkPage() {
             <div className="mb-5 flex items-center justify-between gap-4">
               <div>
                 <h2 className="text-lg font-bold tracking-tight text-zinc-950">
-                  Is my failed payment rate normal?
+                  How much is leaking?
                 </h2>
                 <p className="mt-1 text-sm text-zinc-500">
-                  Mini calculator for Stripe SaaS subscriptions.
+                  Two inputs. One uncomfortable number.
                 </p>
               </div>
               <Calculator size={20} className="text-zinc-400" />
@@ -224,7 +204,7 @@ function BenchmarkPage() {
             <div className="space-y-5">
               <label className="block">
                 <span className="text-sm font-semibold text-zinc-700">
-                  What's your current failed payment rate?
+                  Failed payment rate
                 </span>
                 <div className="mt-3 grid grid-cols-[1fr_88px] items-center gap-3">
                   <input
@@ -275,23 +255,22 @@ function BenchmarkPage() {
                   {calculator.headline}
                 </p>
                 <p className="mt-1 text-sm leading-relaxed text-zinc-600">
-                  At your MRR level, that's approximately{" "}
+                  At your MRR level, the recoverable gap is roughly{" "}
                   <span className="font-mono font-bold text-dunlo-deep">
                     ${calculator.recoverableMonthly.toLocaleString("en-US")}/mo
-                  </span>{" "}
-                  in recoverable revenue.
+                  </span>.
                 </p>
               </div>
               <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
                 <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
-                  Biggest opportunity
+                  First place to look
                 </p>
                 <p className="mt-2 text-sm font-bold text-zinc-950">
-                  {calculator.opportunity.code} typically averages{" "}
+                  {calculator.opportunity.label} averages{" "}
                   {formatRate(calculator.opportunity.averageRate)}
                 </p>
                 <p className="mt-1 text-sm leading-relaxed text-zinc-600">
-                  {calculator.opportunity.emailAngle}
+                  {calculator.opportunity.action}
                 </p>
               </div>
             </div>
@@ -300,7 +279,7 @@ function BenchmarkPage() {
               to="/login"
               className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-zinc-950 px-5 text-sm font-bold text-white transition-all hover:bg-zinc-800 active:scale-[0.98]"
             >
-              See your full breakdown - connect Stripe free
+              Find the real leak in Stripe
               <ArrowRight size={15} />
             </Link>
           </motion.div>
@@ -314,10 +293,10 @@ function BenchmarkPage() {
             <div className="flex flex-col gap-2 border-b border-zinc-100 px-5 py-5 md:flex-row md:items-end md:justify-between">
               <div>
                 <h2 className="text-lg font-bold tracking-tight text-zinc-950">
-                  Benchmarks by failure code
+                  Where failures hide
                 </h2>
                 <p className="mt-1 text-sm text-zinc-500">
-                  Hardcoded Phase 1 public baselines.
+                  Average share and recovery upside.
                 </p>
               </div>
               <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
@@ -337,7 +316,7 @@ function BenchmarkPage() {
                     <p className="font-mono text-sm font-bold text-zinc-950">
                       {row.code}
                     </p>
-                    <p className="mt-1 text-sm text-zinc-500">{row.meaning}</p>
+                    <p className="mt-1 text-sm text-zinc-500">{row.pain}</p>
                   </div>
                   <div className="flex items-center justify-between gap-6 md:block md:text-right">
                     <p className="text-xs text-zinc-400 md:hidden">Average</p>
@@ -359,77 +338,43 @@ function BenchmarkPage() {
           </motion.div>
         </section>
 
-        <section className="mt-12">
-          <div className="mb-6 max-w-2xl">
+        <section className="mt-12 grid grid-cols-1 gap-5 lg:grid-cols-[0.82fr_1.18fr] lg:items-stretch">
+          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-[0_18px_48px_-34px_rgba(24,24,27,0.22)] md:p-8">
             <p className="text-xs font-semibold uppercase tracking-widest text-dunlo-dim">
-              Recovery playbook
+              The founder pain
             </p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight text-zinc-950 md:text-4xl">
-              What each code means for your recovery
+            <h2 className="mt-4 text-3xl font-bold tracking-tight text-zinc-950 md:text-4xl">
+              Failed payments look small until they compound.
             </h2>
+            <p className="mt-4 max-w-md text-sm leading-relaxed text-zinc-600">
+              The customer is still active. The product still costs money to
+              serve. The payment just fell through the floor.
+            </p>
           </div>
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-            {failureBenchmarks.map((row, index) => (
-              <motion.article
-                key={row.code}
-                initial={{ opacity: 0, y: 16 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true, margin: "-80px" }}
-                transition={{ ...spring, delay: index * 0.04 }}
-                className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-[0_18px_48px_-34px_rgba(24,24,27,0.22)] md:p-6"
-              >
-                <div className="mb-5 flex items-start justify-between gap-4">
+
+          <div className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-[0_18px_48px_-34px_rgba(24,24,27,0.22)]">
+            <div className="divide-y divide-zinc-100">
+              {failureBenchmarks.map((row) => (
+                <div
+                  key={row.code}
+                  className="grid grid-cols-1 gap-3 px-5 py-5 md:grid-cols-[auto_1fr_auto] md:items-center md:gap-5"
+                >
+                  <TriangleAlert
+                    size={18}
+                    className="hidden text-zinc-400 md:block"
+                  />
                   <div>
-                    <p className="font-mono text-sm font-bold text-zinc-950">
-                      {row.code}
+                    <p className="text-sm font-bold text-zinc-950">
+                      {row.pain}
                     </p>
-                    <p className="mt-1 text-sm text-zinc-500">{row.label}</p>
+                    <p className="mt-1 text-sm text-zinc-500">{row.action}</p>
                   </div>
-                  <span className="rounded-full border border-dunlo/20 bg-dunlo/10 px-3 py-1 font-mono text-xs font-bold text-dunlo-deep">
-                    {row.recoverableRate}% recovery avg
+                  <span className="w-fit rounded-full border border-dunlo/20 bg-dunlo/10 px-3 py-1 font-mono text-xs font-bold text-dunlo-deep">
+                    {row.recoverableRate}% recoverable
                   </span>
                 </div>
-
-                <div className="space-y-4 text-sm leading-relaxed text-zinc-600">
-                  <div className="flex gap-3">
-                    <ShieldCheck
-                      size={18}
-                      className="mt-0.5 shrink-0 text-zinc-400"
-                    />
-                    <p>
-                      <span className="font-semibold text-zinc-950">
-                        Meaning:
-                      </span>{" "}
-                      {row.meaning} {row.customer}
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <MailCheck
-                      size={18}
-                      className="mt-0.5 shrink-0 text-zinc-400"
-                    />
-                    <p>
-                      <span className="font-semibold text-zinc-950">
-                        Email:
-                      </span>{" "}
-                      {row.emailAngle}
-                    </p>
-                  </div>
-                  <div className="flex gap-3">
-                    <TimerReset
-                      size={18}
-                      className="mt-0.5 shrink-0 text-zinc-400"
-                    />
-                    <p>
-                      <span className="font-semibold text-zinc-950">
-                        Timing:
-                      </span>{" "}
-                      {row.timing} {row.avoid}
-                    </p>
-                  </div>
-                </div>
-              </motion.article>
-            ))}
+              ))}
+            </div>
           </div>
         </section>
 
@@ -440,19 +385,18 @@ function BenchmarkPage() {
                 Phase 2
               </p>
               <h2 className="mt-3 max-w-2xl text-3xl font-bold tracking-tight md:text-4xl">
-                Your personal benchmark will be built from your Stripe data.
+                Stop guessing which failures are costing you most.
               </h2>
               <p className="mt-4 max-w-2xl text-sm leading-relaxed text-zinc-300">
-                Connect Stripe to see your real failure-code mix, recoverable
-                revenue, and best next email sequence. Dunlo is free during
-                beta.
+                Connect Stripe to see the real leak, the failure-code mix, and
+                the next recovery email to send. Free during beta.
               </p>
             </div>
             <Link
               to="/login"
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-5 text-sm font-bold text-zinc-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
-              Connect Stripe to see your personal benchmark
+              Connect Stripe free
               <CircleDollarSign size={16} />
             </Link>
           </div>
