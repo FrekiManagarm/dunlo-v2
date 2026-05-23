@@ -6,6 +6,7 @@ import {
   DEFAULT_TITLE,
   SITE_NAME,
   SITE_URL,
+  pageSeoMetadata,
 } from "@/lib/seo";
 
 const FAQ_JSON_LD = [
@@ -46,14 +47,12 @@ const FAQ_JSON_LD = [
   },
 ] as const;
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageSeoMetadata({
   title: DEFAULT_TITLE,
   description: DEFAULT_DESCRIPTION,
-  keywords: [...DEFAULT_KEYWORDS],
-  alternates: {
-    canonical: "/",
-  },
-};
+  keywords: DEFAULT_KEYWORDS,
+  path: "/",
+});
 
 export default function Page() {
   return (

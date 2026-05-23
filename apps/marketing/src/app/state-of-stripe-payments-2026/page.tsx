@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ArrowRight, Download, FileText, LockKeyhole } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
-import { breadcrumbJsonLd } from "@/lib/seo";
+import { breadcrumbJsonLd, pageSeoMetadata } from "@/lib/seo";
 import { appUrl } from "@/lib/app-url";
 
 const TITLE = "State of Stripe Failed Payments 2026 - Dunlo";
@@ -18,27 +18,21 @@ const REPORT_ITEMS = [
   "Benchmarks by SaaS type when the sample is large enough",
 ] as const;
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  keywords: [
+const KEYWORDS = [
     "Stripe failed payment report",
     "Stripe failed payment benchmark",
     "Stripe decline code benchmark",
     "SaaS payment failure report",
     "recoverable revenue benchmark",
     "payment recovery benchmarks",
-  ],
-  alternates: {
-    canonical: "/state-of-stripe-payments-2026",
-  },
-  openGraph: {
-    title: TITLE,
-    description:
-      "Public Stripe failed payment benchmarks and recovery patterns from Dunlo.",
-    url: "/state-of-stripe-payments-2026",
-  },
-};
+  ] as const;
+
+export const metadata: Metadata = pageSeoMetadata({
+  title: TITLE,
+  description: DESCRIPTION,
+  keywords: KEYWORDS,
+  path: "/state-of-stripe-payments-2026",
+});
 
 export default function StateOfStripePaymentsPage() {
   return (

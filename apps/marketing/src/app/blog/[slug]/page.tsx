@@ -9,6 +9,7 @@ import {
   SITE_NAME,
   absoluteUrl,
   breadcrumbJsonLd,
+  pageSeoMetadata,
 } from "@/lib/seo";
 
 type BlogPostPageProps = {
@@ -26,22 +27,15 @@ export async function generateMetadata({
   const post = getPost(slug);
   if (!post) return {};
 
-  return {
+  return pageSeoMetadata({
     title: `${post.data.title} - Dunlo Blog`,
     description: post.data.description,
     keywords: post.data.keywords,
-    alternates: {
-      canonical: `/blog/${post.slugs[0]}`,
-    },
-    openGraph: {
-      type: "article",
-      title: `${post.data.title} - Dunlo Blog`,
-      description: post.data.description,
-      url: `/blog/${post.slugs[0]}`,
-      publishedTime: post.data.date,
-      authors: post.data.author ? [post.data.author] : undefined,
-    },
-  };
+    path: `/blog/${post.slugs[0]}`,
+    type: "article",
+    publishedTime: post.data.date,
+    authors: post.data.author ? [post.data.author] : undefined,
+  });
 }
 
 function formatDate(date: string) {

@@ -6,6 +6,9 @@ import {
   DEFAULT_KEYWORDS,
   DEFAULT_OG_IMAGE,
   DEFAULT_OG_IMAGE_ALT,
+  DEFAULT_OG_IMAGE_HEIGHT,
+  DEFAULT_OG_IMAGE_TYPE,
+  DEFAULT_OG_IMAGE_WIDTH,
   DEFAULT_TITLE,
   SITE_NAME,
   SITE_URL,
@@ -26,9 +29,25 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: SITE_NAME,
+  authors: [{ name: "Mathieu Chambaud", url: "https://x.com/mathchambaud" }],
+  creator: "Mathieu Chambaud",
+  publisher: SITE_NAME,
+  category: "SaaS",
   title: DEFAULT_TITLE,
   description: DEFAULT_DESCRIPTION,
   keywords: [...DEFAULT_KEYWORDS],
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+      "max-video-preview": -1,
+    },
+  },
   icons: {
     icon: [
       { url: "/favicon.ico", sizes: "32x32" },
@@ -47,9 +66,9 @@ export const metadata: Metadata = {
       {
         url: DEFAULT_OG_IMAGE,
         alt: DEFAULT_OG_IMAGE_ALT,
-        type: "image/png",
-        width: 1200,
-        height: 630,
+        type: DEFAULT_OG_IMAGE_TYPE,
+        width: DEFAULT_OG_IMAGE_WIDTH,
+        height: DEFAULT_OG_IMAGE_HEIGHT,
       },
     ],
   },

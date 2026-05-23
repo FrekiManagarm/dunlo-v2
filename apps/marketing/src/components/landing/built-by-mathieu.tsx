@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
 import { FadeIn } from "./shared";
 
@@ -13,11 +14,12 @@ export function BuiltByMathieu() {
       >
         <div className="grid gap-5 md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center">
           <div className="flex items-center gap-4">
-            <img
+            <Image
               src={FOUNDER_IMAGE_URL}
               alt="Mathieu Chambaud"
               width={96}
               height={96}
+              sizes="(max-width: 768px) 72px, 80px"
               className="size-18 rounded-2xl object-cover ring-1 ring-gray-200 md:size-20"
             />
             <div className="min-w-0 md:hidden">

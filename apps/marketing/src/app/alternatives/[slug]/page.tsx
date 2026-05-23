@@ -4,7 +4,7 @@ import {
   ALTERNATIVES,
   AlternativePage,
 } from "@/components/alternatives/alternative-page";
-import { SITE_URL, breadcrumbJsonLd } from "@/lib/seo";
+import { SITE_URL, breadcrumbJsonLd, pageSeoMetadata } from "@/lib/seo";
 
 type AlternativeRouteProps = {
   params: Promise<{ slug: string }>;
@@ -59,19 +59,12 @@ export async function generateMetadata({
   const page = ALTERNATIVES[slug];
   if (!page) return {};
 
-  return {
+  return pageSeoMetadata({
     title: page.metaTitle,
     description: page.metaDescription,
     keywords: KEYWORDS[slug] ?? [],
-    alternates: {
-      canonical: page.path,
-    },
-    openGraph: {
-      title: page.metaTitle,
-      description: page.metaDescription,
-      url: page.path,
-    },
-  };
+    path: page.path,
+  });
 }
 
 export default async function AlternativeDetailPage({
