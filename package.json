@@ -21,6 +21,8 @@
     "dev": "turbo dev",
     "build": "turbo build",
     "check-types": "turbo check-types",
+    "dev:app": "turbo -F web dev",
+    "dev:marketing": "turbo -F marketing dev",
     "dev:web": "turbo -F web dev",
     "db:push": "turbo -F @dunlo-v2/db db:push",
     "db:studio": "turbo -F @dunlo-v2/db db:studio",
