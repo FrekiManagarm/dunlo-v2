@@ -1,4 +1,4 @@
-export const SITE_URL = "https://app.dunlo.io";
+export const SITE_URL = "https://dunlo.io";
 export const SITE_NAME = "Dunlo";
 export const DEFAULT_TITLE = "Dunlo - Stripe Payment Recovery for SaaS";
 export const DEFAULT_DESCRIPTION =

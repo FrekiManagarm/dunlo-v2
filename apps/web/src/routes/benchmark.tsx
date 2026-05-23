@@ -10,8 +10,7 @@ import {
   TriangleAlert,
 } from "lucide-react";
 
-import { Footer } from "@/components/landing/footer";
-import { Nav } from "@/components/landing/nav";
+import { Logo } from "@/components/logo";
 import { formatRate } from "@/lib/benchmark";
 import { breadcrumbJsonLd, canonicalLink, ogMeta } from "@/lib/seo";
 
@@ -126,7 +125,7 @@ function BenchmarkPage() {
 
   return (
     <div className="min-h-dvh bg-zinc-100 font-sans text-zinc-950">
-      <Nav />
+      <ProductHeader />
       <main className="mx-auto max-w-7xl px-4 pb-14 pt-28 md:px-6 md:pt-36">
         <section className="grid grid-cols-1 gap-7 lg:grid-cols-[1.12fr_0.88fr] lg:items-end">
           <div className="max-w-3xl">
@@ -402,7 +401,44 @@ function BenchmarkPage() {
           </div>
         </section>
       </main>
-      <Footer />
+      <ProductFooter />
     </div>
+  );
+}
+
+function ProductHeader() {
+  return (
+    <header className="fixed inset-x-0 top-4 z-50 px-4">
+      <div className="mx-auto flex max-w-7xl items-center justify-between rounded-full border border-zinc-200 bg-white/90 px-4 py-2.5 shadow-sm backdrop-blur-md">
+        <Link to="/dashboard" aria-label="Go to dashboard">
+          <Logo size={26} />
+        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            to="/dashboard"
+            className="rounded-full px-3.5 py-1.5 text-sm font-medium text-zinc-700 transition-colors hover:text-zinc-950"
+          >
+            Dashboard
+          </Link>
+          <Link
+            to="/settings"
+            className="rounded-full bg-zinc-950 px-4 py-1.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 active:scale-[0.97]"
+          >
+            Settings
+          </Link>
+        </div>
+      </div>
+    </header>
+  );
+}
+
+function ProductFooter() {
+  return (
+    <footer className="border-t border-zinc-200 bg-white px-5 py-8 text-sm text-zinc-500">
+      <div className="mx-auto flex max-w-7xl flex-col gap-3 md:flex-row md:items-center md:justify-between">
+        <Logo size={22} />
+        <p>Stripe payment recovery for SaaS teams.</p>
+      </div>
+    </footer>
   );
 }

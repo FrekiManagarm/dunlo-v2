@@ -228,14 +228,14 @@ export default function SignUpForm({
       <p className="mt-4 text-center text-[11px] text-gray-400">
         By signing up you agree to our{" "}
         <a
-          href="/terms"
+          href="https://dunlo.io/terms"
           className="underline underline-offset-2 hover:text-gray-600"
         >
           Terms
         </a>{" "}
         and{" "}
         <a
-          href="/privacy"
+          href="https://dunlo.io/privacy"
           className="underline underline-offset-2 hover:text-gray-600"
         >
           Privacy Policy
