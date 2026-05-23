@@ -17,7 +17,7 @@ export const DEFAULT_KEYWORDS = [
   "Stripe dunning",
   "SaaS payment recovery",
 ] as const;
-export const DEFAULT_OG_IMAGE = `${SITE_URL}/brand/dunlo-og-v2.png`;
+export const DEFAULT_OG_IMAGE = `${SITE_URL}/opengraph-image`;
 export const DEFAULT_OG_IMAGE_ALT =
   "Dunlo social preview showing failure-reason-specific Stripe payment recovery";
 export const DEFAULT_OG_IMAGE_TYPE = "image/png";
@@ -26,6 +26,11 @@ export const DEFAULT_OG_IMAGE_HEIGHT = 630;
 
 export function absoluteUrl(path = "/") {
   return `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`;
+}
+
+export function pageOgImageUrl(path = "/") {
+  const cleanPath = path === "/" ? "" : path.replace(/\/$/, "");
+  return absoluteUrl(`${cleanPath}/opengraph-image`);
 }
 
 export function canonicalLink(path = "/") {
@@ -53,6 +58,8 @@ export function pageSeoMetadata({
   publishedTime?: string;
   authors?: string[];
 }): Metadata {
+  const ogImage = pageOgImageUrl(path);
+
   return {
     title,
     description,
@@ -69,7 +76,7 @@ export function pageSeoMetadata({
       url: path,
       images: [
         {
-          url: DEFAULT_OG_IMAGE,
+          url: ogImage,
           alt: DEFAULT_OG_IMAGE_ALT,
           type: DEFAULT_OG_IMAGE_TYPE,
           width: DEFAULT_OG_IMAGE_WIDTH,
@@ -90,7 +97,7 @@ export function pageSeoMetadata({
       description,
       images: [
         {
-          url: DEFAULT_OG_IMAGE,
+          url: ogImage,
           alt: DEFAULT_OG_IMAGE_ALT,
         },
       ],
@@ -123,13 +130,14 @@ export function ogMeta({
   type?: "website" | "article";
 }) {
   const url = absoluteUrl(path);
+  const image = pageOgImageUrl(path);
 
   return [
     { property: "og:type", content: type },
     { property: "og:site_name", content: SITE_NAME },
     { property: "og:title", content: title },
     { property: "og:description", content: description },
-    { property: "og:image", content: DEFAULT_OG_IMAGE },
+    { property: "og:image", content: image },
     { property: "og:image:alt", content: DEFAULT_OG_IMAGE_ALT },
     { property: "og:image:type", content: "image/png" },
     { property: "og:image:width", content: "1200" },
@@ -138,7 +146,7 @@ export function ogMeta({
     { name: "twitter:card", content: "summary_large_image" },
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
-    { name: "twitter:image", content: DEFAULT_OG_IMAGE },
+    { name: "twitter:image", content: image },
     { name: "twitter:image:alt", content: DEFAULT_OG_IMAGE_ALT },
   ];
 }
