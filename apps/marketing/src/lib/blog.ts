@@ -1,57 +1,57 @@
-import fs from "node:fs";
-import path from "node:path";
-import matter from "gray-matter";
-import { z } from "zod";
+import { loader } from "fumadocs-core/source";
+import { toFumadocsSource } from "fumadocs-mdx/runtime/server";
+import { blogPosts } from "collections/server";
 
-const BLOG_DIR = path.join(process.cwd(), "content/blog");
-
-const postSchema = z.object({
-  title: z.string(),
-  description: z.string(),
-  date: z.string(),
-  published: z.boolean().default(true),
-  tags: z.array(z.string()).default([]),
-  keywords: z.array(z.string()).default([]),
-  author: z.string().optional(),
-  readingTime: z.string().optional(),
+const blogSource = loader({
+  baseUrl: "/blog",
+  source: toFumadocsSource(blogPosts, []),
 });
 
-export type BlogPostMeta = z.infer<typeof postSchema> & {
+export type BlogPostMeta = {
   slug: string;
+  title: string;
+  description: string;
+  date: string;
+  published: boolean;
+  tags: string[];
+  keywords: string[];
+  author?: string;
+  readingTime?: string;
 };
 
-export type BlogPost = BlogPostMeta & {
-  content: string;
-};
-
-export function getBlogSlugs() {
-  return fs
-    .readdirSync(BLOG_DIR)
-    .filter((file) => file.endsWith(".mdx"))
-    .map((file) => file.replace(/\.mdx$/, ""));
+function toPostMeta(page: ReturnType<typeof blogSource.getPages>[number]) {
+  return {
+    slug: page.slugs[0] ?? "",
+    title: page.data.title,
+    description: page.data.description,
+    date: page.data.date,
+    published: page.data.published,
+    tags: page.data.tags,
+    keywords: page.data.keywords,
+    author: page.data.author,
+    readingTime: page.data.readingTime,
+  } satisfies BlogPostMeta;
 }
 
-export function getPost(slug: string): BlogPost | null {
-  const filePath = path.join(BLOG_DIR, `${slug}.mdx`);
-  if (!fs.existsSync(filePath)) return null;
+export function getBlogSlugs() {
+  return blogSource.getPages()
+    .filter((page) => page.data.published)
+    .map((page) => page.slugs[0] ?? "")
+    .filter(Boolean);
+}
 
-  const source = fs.readFileSync(filePath, "utf8");
-  const parsed = matter(source);
-  const meta = postSchema.parse(parsed.data);
+export function getPost(slug: string) {
+  const page = blogSource.getPage([slug]);
+  if (!page || !page.data.published) return null;
 
-  if (!meta.published) return null;
-
-  return {
-    ...meta,
-    slug,
-    content: parsed.content,
-  };
+  return page;
 }
 
 export function getAllPosts() {
-  return getBlogSlugs()
-    .map((slug) => getPost(slug))
-    .filter((post): post is BlogPost => Boolean(post))
+  return blogSource
+    .getPages()
+    .filter((page) => page.data.published)
+    .map(toPostMeta)
     .sort(
       (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
     );

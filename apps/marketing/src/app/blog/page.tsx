@@ -5,32 +5,28 @@ import {
   SITE_NAME,
   absoluteUrl,
   breadcrumbJsonLd,
+  pageSeoMetadata,
 } from "@/lib/seo";
 
 const BLOG_TITLE = "Stripe Payment Recovery Blog - Dunlo";
 const BLOG_DESCRIPTION =
   "Practical guides for SaaS teams to recover failed Stripe payments, reduce involuntary churn, and improve dunning workflows.";
 
-export const metadata: Metadata = {
-  title: BLOG_TITLE,
-  description: BLOG_DESCRIPTION,
-  keywords: [
+const BLOG_KEYWORDS = [
     "Stripe payment recovery blog",
     "SaaS dunning guide",
     "failed payment recovery articles",
     "involuntary churn guides",
     "Stripe failure codes",
     "dunning email strategy",
-  ],
-  alternates: {
-    canonical: "/blog",
-  },
-  openGraph: {
-    title: BLOG_TITLE,
-    description: BLOG_DESCRIPTION,
-    url: "/blog",
-  },
-};
+  ] as const;
+
+export const metadata: Metadata = pageSeoMetadata({
+  title: BLOG_TITLE,
+  description: BLOG_DESCRIPTION,
+  keywords: BLOG_KEYWORDS,
+  path: "/blog",
+});
 
 export default function BlogPage() {
   const posts = getAllPosts();

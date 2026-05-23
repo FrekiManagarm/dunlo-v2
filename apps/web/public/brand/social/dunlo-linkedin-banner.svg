@@ -1,0 +1,80 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1584" height="396" viewBox="0 0 1584 396" fill="none">
+  <title>Dunlo LinkedIn banner</title>
+  <desc>LinkedIn banner for Dunlo, a Stripe payment recovery SaaS.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1584" y2="396" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FBFEFC"/>
+      <stop offset="0.58" stop-color="#F4FBF6"/>
+      <stop offset="1" stop-color="#E7F8ED"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="925" y1="72" x2="1326" y2="346" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#15221A"/>
+      <stop offset="1" stop-color="#0A100D"/>
+    </linearGradient>
+    <filter id="softShadow" x="-80" y="-80" width="680" height="460" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="18"/>
+      <feGaussianBlur stdDeviation="24"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.03 0 0 0 0 0.12 0 0 0 0 0.07 0 0 0 0.16 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_1" result="shape"/>
+    </filter>
+    <pattern id="grid" width="42" height="42" patternUnits="userSpaceOnUse">
+      <path d="M42 0H0V42" stroke="#DCEBE2" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1584" height="396" fill="url(#bg)"/>
+  <rect width="1584" height="396" fill="url(#grid)" opacity="0.42"/>
+  <path d="M1045 -60C1167 4 1229 94 1231 208C1233 323 1157 400 1004 440H1584V-60H1045Z" fill="#DFF6E8"/>
+  <circle cx="1408" cy="76" r="172" fill="#CFF4DD"/>
+  <circle cx="1408" cy="76" r="92" fill="#FBFEFC"/>
+  <path d="M87 344C322 322 538 322 735 344" stroke="#D4E5DB" stroke-width="3" stroke-linecap="round"/>
+
+  <g transform="translate(118 46)">
+    <rect x="0" y="0" width="50" height="50" rx="14" fill="#00E87B"/>
+    <path d="M25 38.5A13.5 13.5 0 1 0 11.5 25" stroke="white" stroke-width="4" stroke-linecap="round"/>
+    <path d="M8 28.5L11.5 25L15 28.5" stroke="white" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="66" y="33" font-family="Outfit, Arial, sans-serif" font-size="30" font-weight="700" fill="#0D1210">dunlo</text>
+  </g>
+
+  <g transform="translate(118 164)">
+    <text x="0" y="0" font-family="Outfit, Arial, sans-serif" font-size="62" font-weight="800" fill="#0D1210">
+      <tspan x="0" dy="0">Recover failed</tspan>
+      <tspan x="0" dy="66">Stripe payments</tspan>
+    </text>
+    <text x="3" y="144" font-family="Outfit, Arial, sans-serif" font-size="23" font-weight="500" fill="#3E4E45">
+      Smart recovery emails for every decline reason.
+    </text>
+    <g transform="translate(0 180)">
+      <rect width="154" height="42" rx="21" fill="#0D1210"/>
+      <text x="24" y="28" font-family="Outfit, Arial, sans-serif" font-size="17" font-weight="700" fill="#FFFFFF">Free in beta</text>
+      <rect x="174" width="226" height="42" rx="21" fill="#FFFFFF" stroke="#CFE0D5"/>
+      <circle cx="202" cy="21" r="7" fill="#00E87B"/>
+      <text x="220" y="28" font-family="Outfit, Arial, sans-serif" font-size="17" font-weight="700" fill="#0D1210">Built for SaaS founders</text>
+    </g>
+  </g>
+
+  <g filter="url(#softShadow)" transform="translate(846 56)">
+    <rect width="522" height="288" rx="38" fill="#FFFFFF" stroke="#CFE0D5" stroke-width="2"/>
+    <rect x="24" y="24" width="474" height="240" rx="28" fill="url(#panel)"/>
+    <rect x="54" y="52" width="154" height="14" rx="7" fill="#ECF8F0"/>
+    <rect x="388" y="48" width="62" height="22" rx="11" fill="#1D2A22"/>
+    <circle cx="414" cy="59" r="5" fill="#00E87B"/>
+    <text x="54" y="108" font-family="Outfit, Arial, sans-serif" font-size="19" font-weight="700" fill="#FFFFFF">Payment recovery flow</text>
+    <g transform="translate(54 132)">
+      <rect width="398" height="38" rx="19" fill="#1A281F"/>
+      <circle cx="22" cy="19" r="7" fill="#75877D"/>
+      <text x="42" y="25" font-family="Outfit, Arial, sans-serif" font-size="15" font-weight="700" fill="#DDE8E1">card declined</text>
+      <text x="304" y="25" font-family="JetBrains Mono, Menlo, monospace" font-size="15" font-weight="700" fill="#8FA096">$248</text>
+    </g>
+    <g transform="translate(54 182)">
+      <rect width="398" height="38" rx="19" fill="#DDF7E7"/>
+      <circle cx="22" cy="19" r="7" fill="#00E87B"/>
+      <text x="42" y="25" font-family="Outfit, Arial, sans-serif" font-size="15" font-weight="800" fill="#087A42">recovered</text>
+      <path d="M302 19H342" stroke="#00C66A" stroke-width="4" stroke-linecap="round"/>
+      <path d="M334 11L342 19L334 27" stroke="#00C66A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <path d="M74 226C122 208 172 212 222 226C272 240 323 238 376 212" stroke="#00E87B" stroke-width="5" stroke-linecap="round"/>
+  </g>
+</svg>

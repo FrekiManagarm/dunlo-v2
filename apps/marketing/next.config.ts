@@ -1,6 +1,8 @@
 import type { NextConfig } from "next";
+import { createMDX } from "fumadocs-mdx/next";
 
 const appOrigin = process.env.NEXT_PUBLIC_APP_URL ?? "https://app.dunlo.io";
+const withMDX = createMDX();
 
 const nextConfig: NextConfig = {
   transpilePackages: ["@dunlo-v2/ui"],
@@ -24,4 +26,4 @@ const nextConfig: NextConfig = {
   },
 };
 
-export default nextConfig;
+export default withMDX(nextConfig);

@@ -1,0 +1,16 @@
+import { createDunloOgImage, ogImageSize } from "@/lib/og";
+import { DEFAULT_DESCRIPTION } from "@/lib/seo";
+
+export const alt = "Dunlo - Stripe payment recovery for SaaS";
+export const size = ogImageSize;
+export const contentType = "image/png";
+
+export default function Image() {
+  return createDunloOgImage({
+    title: "Recover failed Stripe payments",
+    description: DEFAULT_DESCRIPTION,
+    badge: "Free in beta",
+    metricLabel: "recovered",
+    metricValue: "$248",
+  });
+}

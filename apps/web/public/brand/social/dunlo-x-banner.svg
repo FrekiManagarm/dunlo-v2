@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1500" height="500" viewBox="0 0 1500 500" fill="none">
+  <title>Dunlo X/Twitter banner</title>
+  <desc>X/Twitter header for Dunlo, a Stripe payment recovery SaaS.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1500" y2="500" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F9FDFA"/>
+      <stop offset="0.55" stop-color="#F3FBF6"/>
+      <stop offset="1" stop-color="#E4F8EC"/>
+    </linearGradient>
+    <linearGradient id="darkPanel" x1="830" y1="90" x2="1246" y2="418" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#142119"/>
+      <stop offset="1" stop-color="#0A100D"/>
+    </linearGradient>
+    <filter id="shadow" x="-90" y="-90" width="700" height="520" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="20"/>
+      <feGaussianBlur stdDeviation="28"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.03 0 0 0 0 0.11 0 0 0 0 0.07 0 0 0 0.18 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_2_1"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_2_1" result="shape"/>
+    </filter>
+    <pattern id="dots" width="34" height="34" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.5" fill="#CFE0D5"/>
+    </pattern>
+  </defs>
+  <rect width="1500" height="500" fill="url(#bg)"/>
+  <rect width="1500" height="500" fill="url(#dots)" opacity="0.68"/>
+  <path d="M944 -78C1118 -14 1204 95 1201 249C1198 402 1109 512 934 578H1500V-78H944Z" fill="#DDF7E7"/>
+  <circle cx="1340" cy="126" r="186" fill="#CFF4DD"/>
+  <circle cx="1340" cy="126" r="96" fill="#F9FDFA"/>
+  <path d="M108 430C320 399 519 399 704 430" stroke="#D8E8DE" stroke-width="3" stroke-linecap="round"/>
+
+  <g transform="translate(172 100)">
+    <rect x="0" y="0" width="54" height="54" rx="15" fill="#00E87B"/>
+    <path d="M27 41.5A14.5 14.5 0 1 0 12.5 27" stroke="white" stroke-width="4.2" stroke-linecap="round"/>
+    <path d="M8.8 30.8L12.5 27L16.2 30.8" stroke="white" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="72" y="36" font-family="Outfit, Arial, sans-serif" font-size="32" font-weight="700" fill="#0D1210">dunlo</text>
+  </g>
+
+  <g transform="translate(172 205)">
+    <text x="0" y="0" font-family="Outfit, Arial, sans-serif" font-size="66" font-weight="800" fill="#0D1210">
+      <tspan x="0" dy="0">Turn failed</tspan>
+      <tspan x="0" dy="70">payments into MRR</tspan>
+    </text>
+    <text x="4" y="158" font-family="Outfit, Arial, sans-serif" font-size="24" font-weight="500" fill="#3E4E45">
+      Stripe dunning built for modern SaaS teams.
+    </text>
+  </g>
+
+  <g filter="url(#shadow)" transform="translate(782 72)">
+    <rect width="510" height="336" rx="42" fill="#FFFFFF" stroke="#CFE0D5" stroke-width="2"/>
+    <rect x="26" y="26" width="458" height="284" rx="30" fill="url(#darkPanel)"/>
+    <rect x="58" y="60" width="164" height="14" rx="7" fill="#ECF8F0"/>
+    <rect x="354" y="54" width="72" height="24" rx="12" fill="#1D2A22"/>
+    <circle cx="384" cy="66" r="5" fill="#00E87B"/>
+    <g transform="translate(58 110)">
+      <rect width="350" height="52" rx="26" fill="#1A281F"/>
+      <circle cx="27" cy="26" r="9" fill="#75877D"/>
+      <text x="56" y="33" font-family="Outfit, Arial, sans-serif" font-size="18" font-weight="700" fill="#DDE8E1">insufficient funds</text>
+      <text x="263" y="33" font-family="JetBrains Mono, Menlo, monospace" font-size="17" font-weight="700" fill="#8FA096">$248</text>
+    </g>
+    <g transform="translate(58 180)">
+      <rect width="350" height="52" rx="26" fill="#1A281F"/>
+      <circle cx="27" cy="26" r="9" fill="#00E87B"/>
+      <text x="56" y="33" font-family="Outfit, Arial, sans-serif" font-size="18" font-weight="800" fill="#FFFFFF">retry after payday</text>
+      <path d="M265 26H300" stroke="#00E87B" stroke-width="4" stroke-linecap="round"/>
+      <path d="M292 18L300 26L292 34" stroke="#00E87B" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+    </g>
+    <g transform="translate(58 250)">
+      <rect width="350" height="38" rx="19" fill="#DDF7E7"/>
+      <text x="26" y="25" font-family="Outfit, Arial, sans-serif" font-size="16" font-weight="800" fill="#087A42">Recovered revenue</text>
+      <text x="250" y="25" font-family="JetBrains Mono, Menlo, monospace" font-size="16" font-weight="800" fill="#087A42">$12.4k</text>
+    </g>
+  </g>
+</svg>

@@ -1,31 +1,31 @@
 import type { Metadata } from "next";
 import { AlternativesIndex } from "@/components/alternatives-index";
-import { breadcrumbJsonLd, absoluteUrl, SITE_NAME } from "@/lib/seo";
+import {
+  breadcrumbJsonLd,
+  absoluteUrl,
+  SITE_NAME,
+  pageSeoMetadata,
+} from "@/lib/seo";
 
 const TITLE = "Stripe Payment Recovery Alternatives - Dunlo";
 const DESCRIPTION =
   "Compare Dunlo with Churn Buster, Paddle Retain, Slicker, Stripe Smart Retries, and Triggla for Stripe failed payment recovery.";
 
-export const metadata: Metadata = {
-  title: TITLE,
-  description: DESCRIPTION,
-  keywords: [
+const KEYWORDS = [
     "Stripe payment recovery alternatives",
     "dunning software alternatives",
     "Churn Buster alternative",
     "Paddle Retain alternative",
     "Stripe Smart Retries alternative",
     "Triggla alternative",
-  ],
-  alternates: {
-    canonical: "/alternatives",
-  },
-  openGraph: {
-    title: TITLE,
-    description: DESCRIPTION,
-    url: "/alternatives",
-  },
-};
+  ] as const;
+
+export const metadata: Metadata = pageSeoMetadata({
+  title: TITLE,
+  description: DESCRIPTION,
+  keywords: KEYWORDS,
+  path: "/alternatives",
+});
 
 export default function AlternativesPage() {
   return (

@@ -1,7 +1,6 @@
 import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { MDXRemote } from "next-mdx-remote/rsc";
 import { ArrowLeft } from "lucide-react";
 import { BlogNav } from "@/components/blog-nav";
 import { mdxComponents } from "@/components/mdx-components";
@@ -10,6 +9,7 @@ import {
   SITE_NAME,
   absoluteUrl,
   breadcrumbJsonLd,
+  pageSeoMetadata,
 } from "@/lib/seo";
 
 type BlogPostPageProps = {
@@ -27,22 +27,15 @@ export async function generateMetadata({
   const post = getPost(slug);
   if (!post) return {};
 
-  return {
-    title: `${post.title} - Dunlo Blog`,
-    description: post.description,
-    keywords: post.keywords,
-    alternates: {
-      canonical: `/blog/${post.slug}`,
-    },
-    openGraph: {
-      type: "article",
-      title: `${post.title} - Dunlo Blog`,
-      description: post.description,
-      url: `/blog/${post.slug}`,
-      publishedTime: post.date,
-      authors: post.author ? [post.author] : undefined,
-    },
-  };
+  return pageSeoMetadata({
+    title: `${post.data.title} - Dunlo Blog`,
+    description: post.data.description,
+    keywords: post.data.keywords,
+    path: `/blog/${post.slugs[0]}`,
+    type: "article",
+    publishedTime: post.data.date,
+    authors: post.data.author ? [post.data.author] : undefined,
+  });
 }
 
 function formatDate(date: string) {
@@ -67,8 +60,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   if (!post) notFound();
 
   const related = getAllPosts()
-    .filter((item) => item.slug !== post.slug)
+    .filter((item) => item.slug !== post.slugs[0])
     .slice(0, 3);
+  const MdxContent = post.data.body;
 
   return (
     <>
@@ -85,25 +79,25 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         <article>
           <header className="mb-10 border-b border-border pb-8">
             <div className="mb-5 flex flex-wrap gap-1.5">
-              {post.tags.map((tag) => (
+              {post.data.tags.map((tag) => (
                 <TagPill key={tag} tag={tag} />
               ))}
             </div>
             <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-foreground md:text-6xl">
-              {post.title}
+              {post.data.title}
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              {post.description}
+              {post.data.description}
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-              <time dateTime={post.date}>{formatDate(post.date)}</time>
-              {post.readingTime && <span>{post.readingTime}</span>}
-              {post.author && <span>{post.author}</span>}
+              <time dateTime={post.data.date}>{formatDate(post.data.date)}</time>
+              {post.data.readingTime && <span>{post.data.readingTime}</span>}
+              {post.data.author && <span>{post.data.author}</span>}
             </div>
           </header>
 
           <div className="prose prose-zinc max-w-none">
-            <MDXRemote source={post.content} components={mdxComponents} />
+            <MdxContent components={mdxComponents} />
           </div>
         </article>
 
@@ -138,20 +132,20 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           __html: JSON.stringify({
             "@context": "https://schema.org",
             "@type": "Article",
-            mainEntityOfPage: absoluteUrl(`/blog/${post.slug}`),
-            headline: post.title,
-            description: post.description,
-            datePublished: post.date,
+            mainEntityOfPage: absoluteUrl(`/blog/${post.slugs[0]}`),
+            headline: post.data.title,
+            description: post.data.description,
+            datePublished: post.data.date,
             author: {
-              "@type": post.author ? "Person" : "Organization",
-              name: post.author ?? SITE_NAME,
+              "@type": post.data.author ? "Person" : "Organization",
+              name: post.data.author ?? SITE_NAME,
             },
             publisher: {
               "@type": "Organization",
               name: SITE_NAME,
               url: absoluteUrl("/"),
             },
-            keywords: post.keywords.join(", "),
+            keywords: post.data.keywords.join(", "),
           }),
         }}
       />
@@ -163,7 +157,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             breadcrumbJsonLd([
               { name: "Home", path: "/" },
               { name: "Blog", path: "/blog" },
-              { name: post.title, path: `/blog/${post.slug}` },
+              { name: post.data.title, path: `/blog/${post.slugs[0]}` },
             ]),
           ),
         }}
