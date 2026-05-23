@@ -18,7 +18,7 @@ export default function SignInForm({
 }: {
   onSwitchToSignUp: () => void;
 }) {
-  const navigate = useNavigate({ from: "/login" });
+  const navigate = useNavigate();
   const posthog = usePostHog();
   const [view, setView] = useState<View>("signin");
 

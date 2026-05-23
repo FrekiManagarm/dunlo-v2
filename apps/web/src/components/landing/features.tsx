@@ -4,7 +4,7 @@ import { ChevronRight, TrendingUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { FadeIn, SectionPill } from "./shared";
 
-const CYCLE_MS = 5000;
+const CYCLE_MS = 6200;
 
 function ProgressBar({ duration }: { duration: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -218,7 +218,7 @@ export function Features() {
               </p>
             </div>
             <Link
-              to="/login"
+              to="/signup"
               className="hidden shrink-0 items-center gap-1.5 rounded-full bg-gray-900 px-5 py-2.5 text-sm font-semibold text-white transition-all hover:bg-gray-700 active:scale-[0.97] md:flex"
             >
               Start recovering
@@ -257,7 +257,7 @@ export function Features() {
                     <motion.div
                       initial={{ opacity: 0, y: 4 }}
                       animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
                       className="mt-2 h-36 overflow-hidden md:h-32"
                     >
                       <p className="text-sm leading-relaxed text-gray-500">
@@ -277,7 +277,7 @@ export function Features() {
                   initial={{ opacity: 0, x: 16 }}
                   animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: -16 }}
-                  transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                  transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   className="absolute inset-0"
                 >
                   {FEATURE_ITEMS[active].visual}

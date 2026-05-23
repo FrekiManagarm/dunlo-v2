@@ -52,9 +52,9 @@ const PREVIEW_ROWS = [
   },
 ] as const;
 
-const STEP_DURATION = 4800;
+const STEP_DURATION = 5900;
 const PANEL_TRANSITION = {
-  duration: 0.42,
+  duration: 0.52,
   ease: [0.16, 1, 0.3, 1],
 } as const;
 
@@ -171,7 +171,7 @@ export function HowItWorks() {
 
               <div className="pt-8 lg:mt-auto lg:pt-10">
                 <Link
-                  to="/login"
+                  to="/signup"
                   className="inline-flex items-center gap-2 rounded-full bg-dunlo px-6 py-3 text-sm font-semibold text-gray-950 transition-all hover:bg-dunlo-hover active:translate-y-px active:scale-[0.98]"
                 >
                   Connect Stripe now

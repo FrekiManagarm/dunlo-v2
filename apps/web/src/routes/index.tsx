@@ -3,6 +3,7 @@ import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   Check,
+  ChevronRight,
   CreditCard,
   FileText,
   MailCheck,
@@ -18,12 +19,6 @@ import { Nav } from "@/components/landing/nav";
 import { RoiCalculator } from "@/components/landing/roi-calculator";
 import { StatsBanner } from "@/components/landing/stats-banner";
 import { LogoMark } from "@/components/logo";
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "@dunlo-v2/ui/components/accordion";
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_KEYWORDS,
@@ -225,7 +220,7 @@ function LandingPage() {
               <motion.div
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.68, ease: [0.16, 1, 0.3, 1] }}
                 className="inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/70 px-3 py-1.5 text-sm font-medium text-gray-600 shadow-sm backdrop-blur-md"
               >
                 <span className="size-1.5 rounded-full bg-dunlo" />
@@ -236,22 +231,21 @@ function LandingPage() {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 0.65,
-                  delay: 0.08,
+                  duration: 0.78,
+                  delay: 0.1,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="mt-8 max-w-xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:text-5xl sm:leading-[0.98] md:text-6xl"
               >
-                Dunlo recovers failed Stripe payments before customers
-                disappear.
+                Your best customers don't cancel. They just disappear.
               </motion.h1>
 
               <motion.p
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 0.56,
-                  delay: 0.14,
+                  duration: 0.68,
+                  delay: 0.17,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="mt-5 max-w-lg border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700"
@@ -264,8 +258,8 @@ function LandingPage() {
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 0.58,
-                  delay: 0.2,
+                  duration: 0.7,
+                  delay: 0.24,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="mt-6 max-w-lg text-base leading-7 text-gray-600"
@@ -280,8 +274,8 @@ function LandingPage() {
                 initial={{ opacity: 0, y: 14 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{
-                  duration: 0.58,
-                  delay: 0.28,
+                  duration: 0.7,
+                  delay: 0.34,
                   ease: [0.16, 1, 0.3, 1],
                 }}
                 className="mt-8 flex flex-col gap-3 sm:flex-row"
@@ -307,8 +301,8 @@ function LandingPage() {
               initial={{ opacity: 0, y: 26 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{
-                duration: 0.72,
-                delay: 0.18,
+                duration: 0.86,
+                delay: 0.22,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="relative min-w-0 md:pl-10"
@@ -400,80 +394,82 @@ function LandingPage() {
         </section>
 
         <section id="features" className="scroll-mt-24">
-          <div className="mx-auto max-w-6xl overflow-hidden rounded-[2rem] border border-gray-900 bg-gray-950 p-6 text-white md:p-8 lg:p-10">
-            <div className="grid gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-end">
+          <div className="mx-auto max-w-6xl overflow-hidden rounded-[1.5rem] border border-gray-200 bg-white/80 p-5 backdrop-blur-md md:p-6 lg:p-7">
+            <div className="grid gap-7 lg:grid-cols-[0.72fr_1.28fr] lg:items-start">
               <div>
-                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo">
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
                   Features
                 </p>
-                <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-[0.95] tracking-tight md:text-5xl">
+                <h2 className="mt-3 max-w-sm text-2xl font-semibold leading-tight tracking-tight text-gray-950 md:text-4xl">
                   From Stripe signal to recovery action.
                 </h2>
-                <p className="mt-5 max-w-md text-base leading-7 text-white/60">
+                <p className="mt-4 max-w-sm text-sm leading-6 text-gray-600">
                   Dunlo keeps the simple version simple: why did the payment
                   fail, what should the customer hear, and when should a founder
                   step in?
                 </p>
               </div>
 
-              <div>
-                <div className="grid grid-cols-1 gap-3 sm:grid-cols-[1fr_auto_1fr] sm:items-center">
-                  <div className="rounded-full border border-white/10 bg-white/8 px-4 py-3 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-                    <p className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-white/35">
-                      Stripe reason
-                    </p>
-                    <p className="mt-1 font-mono text-sm font-semibold text-white">
-                      insufficient_funds
-                    </p>
-                  </div>
-                  <ArrowRight
-                    size={18}
-                    strokeWidth={1.8}
-                    className="hidden text-dunlo sm:block"
-                  />
-                  <div className="rounded-full bg-dunlo px-4 py-3">
-                    <p className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-white/70">
-                      Dunlo action
-                    </p>
-                    <p className="mt-1 text-sm font-semibold text-white">
-                      Timed recovery email
-                    </p>
+              <div className="min-w-0">
+                <div className="rounded-[1.15rem] border border-gray-100 bg-gray-50/80 p-3 md:p-4">
+                  <div className="grid gap-2 md:grid-cols-[1fr_auto_1fr] md:items-center">
+                    <div className="rounded-xl border border-dunlo/30 bg-white px-3 py-2 shadow-sm">
+                      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-400">
+                        Stripe reason
+                      </p>
+                      <p className="mt-1 font-mono text-xs font-semibold text-gray-950">
+                        insufficient_funds
+                      </p>
+                    </div>
+
+                    <div className="flex justify-center text-dunlo-deep">
+                      <ArrowRight size={16} strokeWidth={1.8} />
+                    </div>
+
+                    <div className="rounded-xl border border-gray-100 bg-white px-3 py-2 shadow-sm">
+                      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-gray-400">
+                        Dunlo action
+                      </p>
+                      <p className="mt-1 text-xs font-semibold text-gray-950">
+                        Timed recovery email
+                      </p>
+                    </div>
                   </div>
                 </div>
 
-                <div className="mt-8 divide-y divide-white/10 border-y border-white/10">
+                <div className="mt-3 divide-y divide-gray-100 border-y border-gray-100">
                   {FEATURE_ITEMS.map((feature, index) => {
                     const Icon = feature.icon;
                     return (
-                      <motion.div
+                      <motion.article
                         key={feature.label}
                         initial={{ opacity: 0, y: 12 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true, margin: "-70px" }}
                         transition={{
-                          duration: 0.38,
-                          delay: index * 0.05,
+                          duration: 0.52,
+                          delay: index * 0.08,
                           ease: [0.16, 1, 0.3, 1],
                         }}
-                        className="grid gap-4 py-5 sm:grid-cols-[132px_1fr]"
+                        className="grid gap-3 py-3 sm:grid-cols-[128px_1fr] sm:items-start"
                       >
-                        <div className="flex items-center gap-3">
-                          <span className="flex size-9 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/8 text-white">
-                            <Icon size={17} strokeWidth={1.8} />
+                        <div className="flex items-center gap-2">
+                          <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-gray-950 text-white">
+                            <Icon size={15} strokeWidth={1.8} />
                           </span>
-                          <p className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-white/40">
+                          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-gray-400">
                             {feature.label}
                           </p>
                         </div>
                         <div>
-                          <h4 className="text-lg font-semibold tracking-tight text-white">
+                          <h4 className="text-sm font-semibold tracking-tight text-gray-950">
                             {feature.title}
                           </h4>
-                          <p className="mt-1 max-w-lg text-sm leading-6 text-white/55">
+                          <p className="mt-1 text-xs leading-5 text-gray-600">
                             {feature.body}
                           </p>
                         </div>
-                      </motion.div>
+                      </motion.article>
                     );
                   })}
                 </div>
@@ -785,25 +781,27 @@ function LandingPage() {
             <h2 className="text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
               A few clean answers.
             </h2>
-            <Accordion
-              defaultValue={[FAQS[0].question]}
-              className="border-y border-gray-300/70"
-            >
+            <div className="border-y border-gray-300/70">
               {FAQS.map((item) => (
-                <AccordionItem
+                <details
                   key={item.question}
-                  value={item.question}
-                  className="border-gray-300/70 py-3"
+                  className="group border-b border-gray-300/70 py-3 last:border-b-0"
+                  open={item.question === FAQS[0].question}
                 >
-                  <AccordionTrigger className="py-3 text-lg font-semibold tracking-tight text-gray-950 hover:no-underline **:data-[slot=accordion-trigger-icon]:size-5 **:data-[slot=accordion-trigger-icon]:text-gray-500">
+                  <summary className="flex cursor-pointer list-none items-start justify-between gap-6 py-3 text-lg font-semibold tracking-tight text-gray-950 marker:hidden [&::-webkit-details-marker]:hidden">
                     {item.question}
-                  </AccordionTrigger>
-                  <AccordionContent className="max-w-2xl pb-3 text-sm leading-6 text-gray-600">
+                    <ChevronRight
+                      size={18}
+                      className="mt-1 shrink-0 text-gray-500 transition-transform group-open:rotate-90"
+                      aria-hidden
+                    />
+                  </summary>
+                  <div className="max-w-2xl pb-3 text-sm leading-6 text-gray-600">
                     <p>{item.answer}</p>
-                  </AccordionContent>
-                </AccordionItem>
+                  </div>
+                </details>
               ))}
-            </Accordion>
+            </div>
           </div>
         </section>
 
@@ -819,7 +817,7 @@ function LandingPage() {
               </h2>
             </div>
             <Link
-              to="/login"
+              to="/signup"
               onClick={() => captureCta("final_cta")}
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
@@ -935,7 +933,7 @@ function RecoveryConsole() {
 
     const interval = window.setInterval(() => {
       setActivePhase((phase) => (phase + 1) % RECOVERY_PHASES.length);
-    }, 1900);
+    }, 2350);
 
     return () => window.clearInterval(interval);
   }, [shouldReduceMotion]);
@@ -972,7 +970,7 @@ function RecoveryConsole() {
                     initial={{ opacity: 0.45, scale: 1 }}
                     animate={{ opacity: 0, scale: 3.2 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 1.12, ease: [0.16, 1, 0.3, 1] }}
                     className="absolute inset-0 rounded-full bg-dunlo"
                   />
                 )}
@@ -984,7 +982,7 @@ function RecoveryConsole() {
                 initial={{ opacity: 0, y: 4 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -4 }}
-                transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
               >
                 {currentPhase.status}
               </motion.span>
@@ -1015,7 +1013,7 @@ function RecoveryConsole() {
                       initial={false}
                       animate={{ scaleY: activePhase > index ? 1 : 0 }}
                       transition={{
-                        duration: 0.44,
+                        duration: 0.54,
                         ease: [0.16, 1, 0.3, 1],
                       }}
                       className="absolute inset-0 origin-top bg-dunlo"
@@ -1027,8 +1025,8 @@ function RecoveryConsole() {
                   initial={{ opacity: 0, x: 18 }}
                   animate={{ opacity: 1, x: 0 }}
                   transition={{
-                    duration: 0.46,
-                    delay: 0.16 + index * 0.08,
+                    duration: 0.56,
+                    delay: 0.2 + index * 0.1,
                     ease: [0.16, 1, 0.3, 1],
                   }}
                   className={`relative grid gap-3 overflow-hidden rounded-[1.35rem] border p-3 transition-colors duration-300 sm:grid-cols-[auto_1fr_auto] sm:items-center ${
@@ -1047,7 +1045,7 @@ function RecoveryConsole() {
                         animate={{ x: "100%" }}
                         exit={{ opacity: 0 }}
                         transition={{
-                          duration: 0.9,
+                          duration: 1.12,
                           ease: [0.16, 1, 0.3, 1],
                         }}
                         className="absolute inset-y-0 w-full bg-linear-to-r from-transparent from-35% via-white/75 via-50% to-transparent to-65%"
@@ -1116,7 +1114,7 @@ function RecoveryConsole() {
                         initial={{ opacity: 0, y: 4 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{
-                          duration: 0.28,
+                          duration: 0.36,
                           ease: [0.16, 1, 0.3, 1],
                         }}
                       >
@@ -1161,7 +1159,7 @@ function RecoveryConsole() {
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                   >
                     {currentPhase.emailTone}
                   </motion.span>
@@ -1177,7 +1175,7 @@ function RecoveryConsole() {
                     initial={{ opacity: 0, y: 4 }}
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -4 }}
-                    transition={{ duration: 0.22, ease: [0.16, 1, 0.3, 1] }}
+                    transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
                   >
                     {currentPhase.emailBadge}
                   </motion.span>

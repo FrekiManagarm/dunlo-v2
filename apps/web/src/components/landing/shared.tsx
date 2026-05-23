@@ -6,7 +6,7 @@ const fadeUp: Variants = {
   visible: (i = 0) => ({
     opacity: 1,
     y: 0,
-    transition: { duration: 0.55, delay: i * 0.07, ease: [0.16, 1, 0.3, 1] },
+    transition: { duration: 0.68, delay: i * 0.09, ease: [0.16, 1, 0.3, 1] },
   }),
 };
 

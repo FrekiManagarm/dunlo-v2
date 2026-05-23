@@ -35,7 +35,7 @@ function MagneticCtaButton() {
       className="inline-block"
     >
       <Link
-        to="/login"
+        to="/signup"
         onClick={() => posthog.capture("cta_clicked", { location: "hero" })}
         className="inline-flex items-center gap-0 rounded-full border border-gray-200 bg-white px-2 py-2 shadow-sm transition-shadow hover:shadow-md active:scale-[0.98]"
       >
@@ -367,17 +367,17 @@ export function Hero() {
             </div>
 
             <h1 className="anim-2 text-5xl font-bold leading-[1.04] tracking-tight text-gray-900 lg:text-6xl xl:text-[68px]">
-              Failed payments
+              Your best customers
               <br />
-              need more than
+              don't cancel.
               <br />
-              one recovery email.
+              They just disappear.
             </h1>
 
             <p className="anim-3 mt-6 max-w-sm text-lg leading-relaxed text-gray-500">
-              Dunlo reads the Stripe failure code first, then sends the right
-              message for expired cards, insufficient funds, bank declines, and
-              high-value accounts that need your personal touch.
+              Some of your best customers are about to disappear — not because
+              they chose to leave, but because their payment failed and nobody
+              followed up. Dunlo catches that before it becomes silent churn.
             </p>
 
             <div className="anim-4 mt-8">
@@ -418,7 +418,7 @@ export function Hero() {
             <motion.div
               animate={{ y: [0, -10, 0] }}
               transition={{
-                duration: 4.4,
+                duration: 5.4,
                 repeat: Infinity,
                 ease: "easeInOut",
               }}
@@ -435,7 +435,7 @@ export function Hero() {
             <motion.div
               animate={{ y: [0, 9, 0] }}
               transition={{
-                duration: 3.9,
+                duration: 4.8,
                 repeat: Infinity,
                 ease: "easeInOut",
                 delay: 1.3,

@@ -33,7 +33,7 @@ export function BlogNav() {
             Sign in
           </Link>
           <Link
-            to="/login"
+            to="/signup"
             className="flex items-center gap-1.5 rounded-full bg-gray-900 px-4 py-1.5 text-sm font-semibold text-white transition-all hover:bg-gray-700 active:scale-[0.97]"
           >
             Sign up

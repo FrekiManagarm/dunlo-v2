@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ChevronRight } from "lucide-react";
 import { usePostHog } from "posthog-js/react";
 import { Logo } from "@/components/logo";
+import { HEADER_NAV_LINKS } from "@/lib/site-navigation";
 
 export function Nav() {
   const posthog = usePostHog();
@@ -14,31 +15,25 @@ export function Nav() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {[
-            { label: "Features", href: "#features" },
-            { label: "Pricing", href: "#pricing" },
-            { label: "FAQ", href: "#faq" },
-          ].map((link) => (
-            <a
-              key={link.label}
-              href={link.href}
-              className="rounded-full px-3.5 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-            >
-              {link.label}
-            </a>
-          ))}
-          <Link
-            to="/blog"
-            className="rounded-full px-3.5 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-          >
-            Blog
-          </Link>
-          <Link
-            to="/benchmark"
-            className="rounded-full px-3.5 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
-          >
-            Benchmark
-          </Link>
+          {HEADER_NAV_LINKS.map((link) =>
+            link.href.includes("#") ? (
+              <a
+                key={link.label}
+                href={link.href}
+                className="rounded-full px-3.5 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.label}
+                to={link.href}
+                className="rounded-full px-3.5 py-1.5 text-sm text-gray-600 transition-colors hover:bg-gray-100 hover:text-gray-900"
+              >
+                {link.label}
+              </Link>
+            ),
+          )}
         </nav>
 
         <div className="flex items-center gap-2">
@@ -49,7 +44,7 @@ export function Nav() {
             Sign in
           </Link>
           <Link
-            to="/login"
+            to="/signup"
             className="flex items-center gap-1.5 rounded-full bg-gray-900 px-4 py-1.5 text-sm font-semibold text-white transition-all hover:bg-gray-700 active:scale-[0.97]"
             onClick={() => posthog.capture("cta_clicked", { location: "nav" })}
           >

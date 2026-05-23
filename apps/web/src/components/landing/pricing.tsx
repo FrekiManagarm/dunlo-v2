@@ -284,7 +284,7 @@ export function Pricing() {
                   </div>
 
                   <Link
-                    to="/login"
+                    to="/signup"
                     onClick={() =>
                       posthog.capture("cta_clicked", { location: "pricing" })
                     }

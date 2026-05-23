@@ -190,7 +190,7 @@ export function RoiCalculator() {
                   response, timing, and message quality.
                 </p>
                 <Link
-                  to="/login"
+                  to="/signup"
                   onClick={() =>
                     posthog.capture("cta_clicked", {
                       location: "roi_calculator",

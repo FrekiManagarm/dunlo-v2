@@ -23,7 +23,7 @@ export function GoogleAuthButton({ source }: { source: GoogleAuthSource }) {
         provider: "google",
         callbackURL: "/dashboard",
         newUserCallbackURL: "/onboarding",
-        errorCallbackURL: "/login",
+        errorCallbackURL: source === "signup" ? "/signup" : "/login",
       });
     } catch (error) {
       posthog.capture("google_auth_failed", {

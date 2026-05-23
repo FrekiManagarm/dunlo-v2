@@ -33,7 +33,7 @@ export function CtaBanner() {
         </p>
         <div className="relative mt-8">
           <Link
-            to="/login"
+            to="/signup"
             onClick={() => posthog.capture("cta_clicked", { location: "cta_banner" })}
             className="inline-flex items-center gap-0 rounded-full border border-white/10 bg-white/5 px-2 py-2 backdrop-blur-sm transition-all hover:bg-white/10 active:scale-[0.97]"
           >

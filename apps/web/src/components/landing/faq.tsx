@@ -73,7 +73,7 @@ export function Faq() {
                   </span>
                   <ChevronDown
                     size={15}
-                    className={`shrink-0 text-gray-400 transition-transform duration-200 ${open === i ? "rotate-180" : ""}`}
+                    className={`shrink-0 text-gray-400 transition-transform duration-300 ${open === i ? "rotate-180" : ""}`}
                   />
                 </button>
                 <AnimatePresence>
@@ -82,7 +82,7 @@ export function Faq() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                      transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
                       className="overflow-hidden"
                     >
                       <p className="pb-5 text-sm leading-relaxed text-gray-500">
