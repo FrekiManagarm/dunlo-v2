@@ -1,0 +1,41 @@
+# Dunlo
+
+> Dunlo is a Stripe payment recovery SaaS for SaaS founders. It helps teams recover failed Stripe payments with failure-code-specific recovery emails, smart follow-up timing, founder escalation drafts, and recovered revenue tracking.
+
+## Product
+
+- Category: Stripe payment recovery software, dunning software, involuntary churn reduction.
+- Primary audience: SaaS founders and small teams using Stripe, especially around $5k-$80k MRR.
+- Core workflow: connect Stripe, review recovery email sequences, connect an email provider, monitor failed payments, track recovered revenue.
+- Key differentiation: Dunlo focuses on Stripe payment failures instead of a broad lifecycle suite. It uses the Stripe failure reason to tailor the recovery message and can draft a personal founder escalation for high-value accounts.
+- Beta status: Dunlo is in beta. The product is free during beta.
+
+## Key Pages
+
+- Home: https://dunlo.io/
+- Pricing: https://dunlo.io/pricing.md
+- Blog: https://dunlo.io/blog
+- Stripe failed payment benchmark: https://dunlo.io/benchmark
+- State of Stripe failed payments 2026: https://dunlo.io/state-of-stripe-payments-2026
+
+## Comparisons
+
+- Dunlo vs Stripe Smart Retries: https://dunlo.io/alternatives/stripe-smart-retries
+- Dunlo vs Churn Buster: https://dunlo.io/alternatives/churn-buster
+- Dunlo vs Paddle Retain: https://dunlo.io/alternatives/paddle-retain
+- Dunlo vs Triggla: https://dunlo.io/alternatives/triggla
+- Dunlo vs Slicker: https://dunlo.io/alternatives/slicker
+
+## Product Facts
+
+- Dunlo reads Stripe failed-payment context and recovery status.
+- Dunlo does not store full card numbers or CVCs.
+- Payment updates happen through Stripe-hosted flows.
+- Dunlo supports recovery emails by failure type, secure payment update links, recovered revenue tracking, and founder escalation drafts.
+- Dunlo does not take a recovered-revenue percentage.
+
+## Contact
+
+- Website: https://dunlo.io/
+- Email: hello@dunlo.io
+- Founder: Mathieu Chambaud
