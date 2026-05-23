@@ -9,14 +9,17 @@
     "plugins": [{ "name": "next" }],
     "paths": {
       "@/*": ["./src/*"],
+      "collections/*": ["./.source/*"],
       "@dunlo-v2/ui/*": ["../../packages/ui/src/*"]
     }
   },
   "include": [
     "next-env.d.ts",
     "next.config.ts",
+    "source.config.ts",
     "**/*.ts",
     "**/*.tsx",
+    ".source/**/*.ts",
     ".next/types/**/*.ts"
   ],
   "exclude": ["node_modules"]
