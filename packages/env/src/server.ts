@@ -9,7 +9,9 @@ export const env = createEnv({
     CORS_ORIGIN: z.url(),
     GOOGLE_CLIENT_ID: z.string().min(1),
     GOOGLE_CLIENT_SECRET: z.string().min(1),
-    NODE_ENV: z.enum(["development", "production", "test"]).default("development"),
+    NODE_ENV: z
+      .enum(["development", "production", "test"])
+      .default("development"),
 
     STRIPE_CLIENT_ID: z.string().min(1),
     STRIPE_SECRET_KEY: z.string().min(1),
@@ -17,8 +19,12 @@ export const env = createEnv({
 
     ENCRYPTION_KEY: z
       .string()
-      .regex(/^[0-9a-fA-F]{64}$/, "ENCRYPTION_KEY must be a 64-char hex string (32 bytes)"),
+      .regex(
+        /^[0-9a-fA-F]{64}$/,
+        "ENCRYPTION_KEY must be a 64-char hex string (32 bytes)",
+      ),
 
+    AUTUMN_PROD_SECRET_KEY: z.string().min(1),
     AUTUMN_SECRET_KEY: z.string().min(1).optional(),
 
     OPENAI_API_KEY: z.string().min(1),
@@ -34,6 +40,9 @@ export const env = createEnv({
 
     APP_URL: z.url(),
     CRON_SECRET: z.string().min(16),
+
+    TRIGGER_PROJECT_ID: z.string().min(1),
+    TRIGGER_SECRET_KEY: z.string().min(1),
 
     SCHEDULER_INTERVAL_MINUTES: z.coerce.number().int().positive().default(5),
   },

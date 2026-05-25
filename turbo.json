@@ -25,7 +25,11 @@
         "NITRO_PRESET",
         "CRON_SECRET",
         "NODE_ENV",
-        "VERCEL"
+        "VERCEL",
+        "TRIGGER_PROJECT_ID",
+        "TRIGGER_SECRET_KEY",
+        "AUTUMN_PROD_SECRET_KEY",
+        "AUTUMN_SECRET_KEY"
       ]
     },
     "lint": {

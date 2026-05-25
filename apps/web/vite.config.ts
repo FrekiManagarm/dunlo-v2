@@ -18,11 +18,12 @@ export default defineConfig({
         enabled: true,
         host: "https://dunlo.io",
       },
-      ...(process.env.VERCEL && {
-        nitro: {
-          preset: "vercel",
+      nitro: {
+        experimental: {
+          asyncContext: true,
         },
-      }),
+        ...(process.env.VERCEL && { preset: "vercel" }),
+      },
     }),
     viteReact(),
   ],
