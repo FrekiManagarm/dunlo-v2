@@ -2,6 +2,7 @@ import tailwindcss from "@tailwindcss/vite";
 import { tanstackStart } from "@tanstack/react-start/plugin/vite";
 import viteReact from "@vitejs/plugin-react";
 import { defineConfig } from "vite";
+import { nitro } from "nitro/vite";
 
 export default defineConfig({
   server: {
@@ -11,20 +12,5 @@ export default defineConfig({
   resolve: {
     tsconfigPaths: true,
   },
-  plugins: [
-    tailwindcss(),
-    tanstackStart({
-      sitemap: {
-        enabled: true,
-        host: "https://dunlo.io",
-      },
-      nitro: {
-        experimental: {
-          asyncContext: true,
-        },
-        ...(process.env.VERCEL && { preset: "vercel" }),
-      },
-    }),
-    viteReact(),
-  ],
+  plugins: [tailwindcss(), tanstackStart(), viteReact(), nitro()],
 });

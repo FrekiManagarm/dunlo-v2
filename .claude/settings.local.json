@@ -129,7 +129,9 @@
       "WebFetch(domain:docs.recurly.com)",
       "WebFetch(domain:help.mollie.com)",
       "Skill(superpowers:requesting-code-review)",
-      "Bash(npx next *)"
+      "Bash(npx next *)",
+      "Bash(gh run *)",
+      "Bash(gh pr *)"
     ]
   },
   "hooks": {

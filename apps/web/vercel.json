@@ -1,5 +1,0 @@
-{
-  "framework": null,
-  "installCommand": "cd ../.. && bun install",
-  "buildCommand": "cd ../.. && turbo build --filter=web"
-}
