@@ -128,7 +128,8 @@
       "WebFetch(domain:www.chargebee.com)",
       "WebFetch(domain:docs.recurly.com)",
       "WebFetch(domain:help.mollie.com)",
-      "Skill(superpowers:requesting-code-review)"
+      "Skill(superpowers:requesting-code-review)",
+      "Bash(npx next *)"
     ]
   },
   "hooks": {

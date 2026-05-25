@@ -39,6 +39,7 @@ Currently in **free beta** — full recovery pipeline available to early adopter
 | Components | [shadcn/ui](https://ui.shadcn.com/) (built on `@base-ui/react`) |
 | Forms | [@tanstack/react-form](https://tanstack.com/form) + Zod |
 | Payments | [Stripe](https://stripe.com) |
+| Jobs | [Trigger.dev](https://trigger.dev) |
 | Blog/MDX | [Fumadocs MDX](https://fumadocs.vercel.app/) |
 | Analytics | [PostHog](https://posthog.com) |
 | Build | [Turborepo](https://turbo.build/) + [Bun](https://bun.sh) workspaces |
@@ -56,7 +57,8 @@ dunlo-v2/
 │       │   ├── components/   # UI components
 │       │   ├── lib/          # Utilities, server functions, API queries
 │       │   ├── routes/       # File-based routes (TanStack Router)
-│       │   └── server/       # Nitro server plugins (email scheduler, etc.)
+│       │   ├── trigger/      # Trigger.dev scheduled jobs
+│       │   └── server/       # Nitro server configuration
 │       └── content/
 │           └── blog/         # MDX blog articles
 ├── packages/
@@ -112,6 +114,9 @@ POSTMARK_SERVER_TOKEN=...
 STRIPE_SECRET_KEY=sk_test_...
 STRIPE_WEBHOOK_SECRET=whsec_...
 
+# Background jobs
+TRIGGER_PROJECT_ID=proj_...
+
 NODE_ENV=development
 ```
 
@@ -152,6 +157,8 @@ Run from the **repo root**:
 |---|---|
 | `bun run dev` | Start all apps in parallel (hot reload) |
 | `bun run dev:web` | Start only the web app |
+| `bun --cwd apps/web run trigger:dev` | Run Trigger.dev tasks locally |
+| `bun --cwd apps/web run trigger:deploy` | Deploy Trigger.dev tasks |
 | `bun run build` | Production build |
 | `bun run check-types` | TypeScript type-check across the monorepo |
 | `bun run db:push` | Push Drizzle schema to Neon |
