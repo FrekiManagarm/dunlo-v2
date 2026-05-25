@@ -14,10 +14,6 @@ export default defineConfig({
   plugins: [
     tailwindcss(),
     tanstackStart({
-      prerender: {
-        crawlLinks: true,
-        enabled: true,
-      },
       sitemap: {
         enabled: true,
         host: "https://dunlo.io",
