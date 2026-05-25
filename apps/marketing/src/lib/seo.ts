@@ -118,35 +118,3 @@ export function breadcrumbJsonLd(items: Array<{ name: string; path: string }>) {
   };
 }
 
-export function ogMeta({
-  title,
-  description,
-  path = "/",
-  type = "website",
-}: {
-  title: string;
-  description: string;
-  path?: string;
-  type?: "website" | "article";
-}) {
-  const url = absoluteUrl(path);
-  const image = pageOgImageUrl(path);
-
-  return [
-    { property: "og:type", content: type },
-    { property: "og:site_name", content: SITE_NAME },
-    { property: "og:title", content: title },
-    { property: "og:description", content: description },
-    { property: "og:image", content: image },
-    { property: "og:image:alt", content: DEFAULT_OG_IMAGE_ALT },
-    { property: "og:image:type", content: "image/png" },
-    { property: "og:image:width", content: "1200" },
-    { property: "og:image:height", content: "630" },
-    { property: "og:url", content: url },
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:title", content: title },
-    { name: "twitter:description", content: description },
-    { name: "twitter:image", content: image },
-    { name: "twitter:image:alt", content: DEFAULT_OG_IMAGE_ALT },
-  ];
-}

@@ -32,8 +32,8 @@ const STATIC_ROUTES = [
   {
     path: "/state-of-stripe-payments-2026",
     lastModified: "2026-05-23",
-    changeFrequency: "weekly",
-    priority: 0.8,
+    changeFrequency: "monthly",
+    priority: 0.5,
   },
   {
     path: "/privacy",
@@ -46,18 +46,6 @@ const STATIC_ROUTES = [
     lastModified: "2026-05-23",
     changeFrequency: "monthly",
     priority: 0.45,
-  },
-  {
-    path: "/llms.txt",
-    lastModified: "2026-05-23",
-    changeFrequency: "weekly",
-    priority: 0.5,
-  },
-  {
-    path: "/pricing.md",
-    lastModified: "2026-05-23",
-    changeFrequency: "weekly",
-    priority: 0.6,
   },
 ] satisfies SitemapEntry[];
 

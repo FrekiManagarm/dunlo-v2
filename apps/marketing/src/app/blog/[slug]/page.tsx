@@ -135,7 +135,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             mainEntityOfPage: absoluteUrl(`/blog/${post.slugs[0]}`),
             headline: post.data.title,
             description: post.data.description,
+            image: absoluteUrl(`/blog/${post.slugs[0]}/opengraph-image`),
             datePublished: post.data.date,
+            dateModified: post.data.date,
             author: {
               "@type": post.data.author ? "Person" : "Organization",
               name: post.data.author ?? SITE_NAME,
