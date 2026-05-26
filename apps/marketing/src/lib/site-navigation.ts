@@ -11,8 +11,14 @@ export const HEADER_NAV_LINKS = [
 ] as const satisfies readonly SiteLink[];
 
 export const ALTERNATIVE_LINKS = [
+  { label: "Baremetrics vs Dunlo", href: "/vs/baremetrics" },
+  { label: "Dunlo vs Recurflux", href: "/alternatives/recurflux" },
+  { label: "Dunlo vs Churnkey", href: "/alternatives/churnkey" },
   { label: "Dunlo vs Churn Buster", href: "/alternatives/churn-buster" },
   { label: "Dunlo vs Paddle Retain", href: "/alternatives/paddle-retain" },
+  { label: "Dunlo vs ProfitWell", href: "/alternatives/profitwell" },
+  { label: "Dunlo vs RevenueCat", href: "/alternatives/revenuecat" },
+  { label: "Dunlo vs Chargebee", href: "/alternatives/chargebee" },
   { label: "Dunlo vs Slicker", href: "/alternatives/slicker" },
   {
     label: "Dunlo vs Stripe Smart Retries",

@@ -1,31 +1,31 @@
 import { notFound } from "next/navigation";
 import {
   ALTERNATIVES,
-  ALTERNATIVE_ROUTE_PAGES,
+  VS_ROUTE_PAGES,
 } from "@/components/alternatives/alternative-page";
 import { createDunloOgImage, ogImageSize } from "@/lib/og";
 
-type AlternativeOgImageProps = {
+type VsOgImageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export const alt = "Dunlo alternative comparison";
+export const alt = "Dunlo comparison";
 export const size = ogImageSize;
 export const contentType = "image/png";
 
 export function generateStaticParams() {
-  return ALTERNATIVE_ROUTE_PAGES.map((page) => ({ slug: page.slug }));
+  return VS_ROUTE_PAGES.map((page) => ({ slug: page.slug }));
 }
 
-export default async function Image({ params }: AlternativeOgImageProps) {
+export default async function Image({ params }: VsOgImageProps) {
   const { slug } = await params;
   const page = ALTERNATIVES[slug];
-  if (!page || !page.path.startsWith("/alternatives/")) notFound();
+  if (!page || !page.path.startsWith("/vs/")) notFound();
 
   return createDunloOgImage({
     title: page.headline,
     description: page.metaDescription,
-    badge: `${page.competitorName} alternative`,
+    badge: `${page.competitorName} comparison`,
     metricLabel: "compare",
     metricValue: "vs",
   });

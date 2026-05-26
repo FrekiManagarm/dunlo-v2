@@ -9,16 +9,22 @@ import {
 
 const TITLE = "Stripe Payment Recovery Alternatives - Dunlo";
 const DESCRIPTION =
-  "Compare Dunlo with Churn Buster, Paddle Retain, Slicker, Stripe Smart Retries, and Triggla for Stripe failed payment recovery.";
+  "Compare Dunlo with Baremetrics, Recurflux, Churnkey, RevenueCat, ProfitWell, Chargebee, and other recovery tools for Stripe failed payment recovery.";
 
 const KEYWORDS = [
-    "Stripe payment recovery alternatives",
-    "dunning software alternatives",
-    "Churn Buster alternative",
-    "Paddle Retain alternative",
-    "Stripe Smart Retries alternative",
-    "Triggla alternative",
-  ] as const;
+  "Stripe payment recovery alternatives",
+  "dunning software alternatives",
+  "Baremetrics alternative",
+  "Recurflux alternative",
+  "Churnkey alternative",
+  "RevenueCat Stripe alternative",
+  "ProfitWell alternative",
+  "Chargebee alternative Stripe",
+  "Churn Buster alternative",
+  "Paddle Retain alternative",
+  "Stripe Smart Retries alternative",
+  "Triggla alternative",
+] as const;
 
 export const metadata: Metadata = pageSeoMetadata({
   title: TITLE,
