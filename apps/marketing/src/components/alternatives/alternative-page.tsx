@@ -508,7 +508,512 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
       },
     ],
   },
+  baremetrics: {
+    slug: "baremetrics",
+    path: "/vs/baremetrics",
+    competitorName: "Baremetrics",
+    metaTitle: "Baremetrics vs Dunlo - Stripe Recovery for Early SaaS",
+    metaDescription:
+      "Compare Baremetrics and Dunlo for MRR analytics, Recover dunning, Stripe failed payment emails, setup, pricing, and founder escalation.",
+    eyebrow: "Comparison guide",
+    headline: "Baremetrics vs Dunlo: metrics suite or focused recovery layer?",
+    intro:
+      "Baremetrics is a respected subscription metrics platform with a separate Recover product for dunning. Dunlo is narrower: failed Stripe payment recovery, failure-code-specific emails, and AI-drafted founder escalation for bootstrapped SaaS teams that are not ready for a larger metrics stack.",
+    verdict:
+      "Use Baremetrics when you want a mature MRR analytics suite and a separate Recover workflow. Use Dunlo when you already live in Stripe and want a focused recovery layer with flat beta pricing, failure-code copy, and founder-visible follow-up.",
+    competitorSummary:
+      "Subscription metrics plus optional Recover dunning: MRR dashboards, churn reporting, customer insights, recovery emails, card update pages, and in-app prompts.",
+    dunloSummary:
+      "Stripe-first failed payment recovery for early SaaS founders who want a lighter tool focused on recovering at-risk invoices.",
+    comparisonRows: [
+      {
+        label: "Primary job",
+        competitor:
+          "MRR analytics first, with Recover available as a dedicated dunning product.",
+        dunlo:
+          "Failed Stripe payment recovery first: monitoring, customer emails, and founder escalation.",
+      },
+      {
+        label: "MRR tracking",
+        competitor:
+          "Yes. Metrics is Baremetrics' core product for MRR, churn, LTV, cohorts, and customer analytics.",
+        dunlo:
+          "No. Dunlo tracks recovery outcomes, not full subscription analytics.",
+      },
+      {
+        label: "Failed payment recovery",
+        competitor:
+          "Yes. Baremetrics Recover sends recovery emails, hosts a card update page, and can prompt customers inside your app.",
+        dunlo:
+          "Yes. Dunlo focuses on Stripe failure context, recovery emails, and high-value customer escalation.",
+      },
+      {
+        label: "Failure-code-specific emails",
+        competitor:
+          "Recover provides customizable drip campaigns; public docs do not position it around per-decline-code copy.",
+        dunlo:
+          "Built around Stripe failure codes such as expired_card, insufficient_funds, and do_not_honor.",
+      },
+      {
+        label: "Founder escalation AI",
+        competitor:
+          "Not positioned around founder-reviewed personal email drafts for high-value failed payments.",
+        dunlo:
+          "Yes. Dunlo drafts a personal founder email when a valuable account needs more than automation.",
+      },
+      {
+        label: "Pricing entry",
+        competitor:
+          "Metrics starts at $129/mo up to $10k MRR; Recover starts at $69/mo up to $10k MRR.",
+        dunlo:
+          "Free during beta. Planned tiers start at $19/mo with no percentage of recovered revenue.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Founders who want a broader subscription metrics system and are ready to pay separately for analytics or Recover.",
+        dunlo:
+          "Stripe-first founders who want the payment leak fixed before buying a full metrics suite.",
+      },
+    ],
+    competitorUseCases: [
+      "You need trusted MRR dashboards, churn reporting, cohorts, and customer analytics.",
+      "You want Baremetrics Recover's dunning emails, card update pages, and in-app recovery prompt.",
+      "You are comfortable paying for a broader metrics and recovery suite as your MRR grows.",
+    ],
+    dunloUseCases: [
+      "You already use Stripe as your source of truth and do not need a full analytics product.",
+      "You want failure-code-specific recovery emails instead of generic dunning copy.",
+      "You want high-value failed payments surfaced as founder-reviewed personal follow-up.",
+    ],
+    sourceLinks: [
+      {
+        label: "Baremetrics pricing",
+        href: "https://help.baremetrics.com/en/articles/5390941-pricing",
+      },
+      {
+        label: "Baremetrics Recover",
+        href: "https://help.baremetrics.com/en/articles/5380360-what-is-recover",
+      },
+      {
+        label: "Baremetrics Recover setup",
+        href: "https://help.baremetrics.com/en/articles/5430343-recover-your-101-setup-guide",
+      },
+    ],
+  },
+  recurflux: {
+    slug: "recurflux",
+    path: "/alternatives/recurflux",
+    competitorName: "Recurflux",
+    metaTitle: "Dunlo vs Recurflux - Focused Stripe Recovery Alternative",
+    metaDescription:
+      "Compare Dunlo and Recurflux for failed payment recovery, churn prevention, RevenueCat recovery, pricing, setup, and founder escalation.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs Recurflux",
+    intro:
+      "Recurflux is a broader retention platform covering failed payments, smart retries, card health, cancellation flows, win-back, checkout recovery, and mobile recovery through RevenueCat. Dunlo is intentionally smaller: a Stripe-first tool for founders who want failed payment recovery without configuring a full retention suite.",
+    verdict:
+      "Choose Recurflux if you want one platform for payment recovery, cancellation prevention, win-back, and multiple processors. Choose Dunlo if you want a focused Stripe recovery layer with a simpler setup, lower planned entry price, and founder escalation built into the workflow.",
+    competitorSummary:
+      "Subscription recovery and churn prevention across Stripe, Paddle, Razorpay, and RevenueCat, with smart retries, dunning, card health, cancellation flows, and win-back.",
+    dunloSummary:
+      "A focused Stripe payment recovery tool for bootstrapped SaaS founders who want fewer knobs and faster recovery discipline.",
+    comparisonRows: [
+      {
+        label: "Failed payment recovery",
+        competitor:
+          "Yes, with smart retry scheduling, recovery emails, hosted payment pages, and analytics.",
+        dunlo:
+          "Yes, with Stripe failure-code-specific emails and founder-visible escalation.",
+      },
+      {
+        label: "Scope",
+        competitor:
+          "Broad retention suite: failed payments, card health, cancellation flow builder, subscription pause, checkout recovery, disputes, and win-back.",
+        dunlo:
+          "Narrow recovery layer: failed Stripe payments, email sequences, Morning Brief, and founder escalation.",
+      },
+      {
+        label: "Payment stack",
+        competitor:
+          "Supports Stripe, Paddle, Razorpay, and RevenueCat, with RevenueCat recovery handled by email because app stores own the retry cycle.",
+        dunlo: "Stripe-only by design.",
+      },
+      {
+        label: "Founder escalation AI",
+        competitor:
+          "Not positioned around founder-reviewed personal email drafts for high-value accounts.",
+        dunlo:
+          "Yes. Dunlo drafts a personal email when automation should not be the only touch.",
+      },
+      {
+        label: "Pricing model",
+        competitor:
+          "Flat monthly pricing: Rise at $59/mo up to $75k MRR, Surge at $159/mo up to $250k MRR.",
+        dunlo:
+          "Free during beta. Planned tiers start at $19/mo, with no recovered-revenue cut.",
+      },
+      {
+        label: "Setup motion",
+        competitor:
+          "Connect processor credentials in under 60 seconds, then customize defaults if needed.",
+        dunlo:
+          "Connect Stripe, keep the product surface focused, and start monitoring without a retention-suite rollout.",
+      },
+    ],
+    competitorUseCases: [
+      "You want payment recovery plus cancellation prevention, win-back, checkout recovery, and card health.",
+      "You run multiple processors or need RevenueCat recovery for mobile subscriptions.",
+      "You are comfortable with a broader retention system because retention is already a multi-channel problem.",
+    ],
+    dunloUseCases: [
+      "You are Stripe-first and failed payments are the leak you want to fix first.",
+      "You prefer a focused tool over a retention platform with many flows.",
+      "You want founder escalation for high-value failed payments, not only automated campaigns.",
+    ],
+    sourceLinks: [
+      { label: "Recurflux product", href: "https://recurflux.com/" },
+      {
+        label: "Recurflux vs Churnkey",
+        href: "https://recurflux.com/resources/guides/recurflux-vs-churnkey-2026",
+      },
+    ],
+  },
+  churnkey: {
+    slug: "churnkey",
+    path: "/alternatives/churnkey",
+    competitorName: "Churnkey",
+    metaTitle: "Dunlo vs Churnkey - Payment Recovery for Bootstrapped SaaS",
+    metaDescription:
+      "Compare Dunlo and Churnkey for payment recovery, cancel flows, pricing, retries, founder escalation, and the best fit by SaaS stage.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs Churnkey",
+    intro:
+      "Churnkey is a mature churn reduction suite with cancel flows, payment recovery, campaigns, precision retries, segmentation, and AI retention features. Dunlo is a focused Stripe recovery tool for founders who want failed payments handled before they need a full churn platform.",
+    verdict:
+      "Choose Churnkey when cancellation saves, A/B testing, segmentation, and omnichannel recovery are strategic retention infrastructure. Choose Dunlo when you are earlier, Stripe-first, and want failure-aware payment recovery without committing to a broader churn suite.",
+    competitorSummary:
+      "A full churn management platform combining cancel flows, payment recovery, precision retries, campaigns, customer timelines, and AI retention tools.",
+    dunloSummary:
+      "A Stripe-first failed payment recovery layer for bootstrapped teams that want focused recovery and founder follow-up.",
+    comparisonRows: [
+      {
+        label: "Failed payment recovery",
+        competitor:
+          "Yes. Churnkey promotes payment recovery, precision retries, email/SMS/in-app campaigns, and payment walls.",
+        dunlo:
+          "Yes. Dunlo focuses on Stripe failure-code-specific emails and founder escalation.",
+      },
+      {
+        label: "Cancellation flows",
+        competitor:
+          "Yes. Cancel flows, adaptive offers, segmentation, and testing are core Churnkey products.",
+        dunlo: "No. Dunlo is focused on involuntary churn from payment failures.",
+      },
+      {
+        label: "Failure-code-specific emails",
+        competitor:
+          "Churnkey positions around advanced retry logic and omnichannel campaigns; public pages do not present per-code email copy as the main primitive.",
+        dunlo:
+          "Built around Stripe failure reasons so expired cards, insufficient funds, and bank blocks get different messages.",
+      },
+      {
+        label: "Founder escalation AI",
+        competitor:
+          "Churnkey has AI retention products, but not founder-reviewed personal recovery drafts as the core motion.",
+        dunlo:
+          "Yes. Dunlo creates founder-readable drafts for high-value failed payments.",
+      },
+      {
+        label: "Pricing entry",
+        competitor:
+          "Starter is listed at $250/mo billed yearly, for teams with less than $5k/mo churn volume.",
+        dunlo:
+          "Free during beta. Planned tiers start at $19/mo and avoid recovered-revenue percentages.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Teams ready for a retention platform across cancellation, recovery, segmentation, campaigns, and reporting.",
+        dunlo:
+          "Solo founders and small Stripe SaaS teams that want to solve failed payments before building a retention department.",
+      },
+    ],
+    competitorUseCases: [
+      "You need cancellation flows, payment recovery, segmentation, campaigns, and A/B testing in one product.",
+      "Your churn volume justifies a full retention suite and annual platform spend.",
+      "You want SMS, in-app, and payment-wall recovery tactics in addition to email.",
+    ],
+    dunloUseCases: [
+      "You use Stripe and want the failed-payment leak handled first.",
+      "You do not need cancel flow experiments or adaptive offers yet.",
+      "You want flat, founder-friendly pricing and personal escalation for valuable accounts.",
+    ],
+    sourceLinks: [
+      { label: "Churnkey product", href: "https://churnkey.co/" },
+      { label: "Churnkey pricing", href: "https://churnkey.co/pricing" },
+      {
+        label: "Churnkey payment recovery docs",
+        href: "https://docs.churnkey.co/failed-payment-recovery/payment-recovery",
+      },
+    ],
+  },
+  revenuecat: {
+    slug: "revenuecat",
+    path: "/alternatives/revenuecat",
+    competitorName: "RevenueCat",
+    metaTitle: "Dunlo vs RevenueCat - Stripe Web SaaS Recovery",
+    metaDescription:
+      "Compare Dunlo and RevenueCat for mobile subscriptions, web Stripe SaaS, failed payment recovery, pricing, analytics, and customer messaging.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs RevenueCat",
+    intro:
+      "RevenueCat is the standard subscription infrastructure for mobile apps, in-app purchases, paywalls, funnels, and cross-platform subscription analytics. Dunlo is for web SaaS founders running Stripe Billing who need failed payment recovery, not app-store purchase infrastructure.",
+    verdict:
+      "Use RevenueCat if your subscription revenue runs through iOS, Android, or app-store purchase infrastructure. Use Dunlo if your SaaS is web-first on Stripe and you need recovery emails, visibility, and founder escalation when invoices fail.",
+    competitorSummary:
+      "Subscription infrastructure for mobile and app businesses: SDKs, purchase backend, paywalls, funnels, analytics, and lifecycle tools.",
+    dunloSummary:
+      "Stripe web SaaS recovery for failed charges, failure-code-specific emails, and founder escalation.",
+    comparisonRows: [
+      {
+        label: "Primary platform",
+        competitor:
+          "Mobile and app subscriptions, with SDKs and infrastructure for in-app purchases plus integrated web billing.",
+        dunlo: "Web SaaS subscriptions running on Stripe.",
+      },
+      {
+        label: "In-app purchases",
+        competitor:
+          "Yes. RevenueCat simplifies implementation and maintenance of in-app purchases across platforms.",
+        dunlo: "No. Dunlo does not manage app-store purchases.",
+      },
+      {
+        label: "Subscription analytics",
+        competitor:
+          "Yes. RevenueCat includes dashboards, reporting, events, cohorts, and lifecycle integrations.",
+        dunlo:
+          "Recovery analytics only: at-risk payments, recovered revenue, and escalation context.",
+      },
+      {
+        label: "Failed payment recovery",
+        competitor:
+          "RevenueCat supports lifecycle and retention tools for app subscriptions, but app-store billing recovery is constrained by Apple and Google.",
+        dunlo:
+          "Built for Stripe failed invoices where Dunlo can send email sequences and surface founder follow-up.",
+      },
+      {
+        label: "Failure-code-specific emails",
+        competitor:
+          "Not the core model. RevenueCat is subscription infrastructure rather than Stripe decline-code dunning.",
+        dunlo:
+          "Yes. Dunlo changes copy and timing based on the Stripe failure reason.",
+      },
+      {
+        label: "Pricing entry",
+        competitor:
+          "Free up to $2,500 in monthly tracked revenue, then 1% of tracked revenue on Pro.",
+        dunlo:
+          "Free during beta. Planned tiers start at $19/mo for Stripe recovery.",
+      },
+    ],
+    competitorUseCases: [
+      "You sell subscriptions through iOS, Android, or app-store purchase flows.",
+      "You need SDKs, paywalls, funnels, purchase validation, and subscription analytics.",
+      "Your recovery problem is tied to mobile subscription lifecycle messaging.",
+    ],
+    dunloUseCases: [
+      "You sell a web SaaS subscription through Stripe.",
+      "You need direct customer emails after a Stripe invoice fails.",
+      "You want founder escalation when an important Stripe customer is at risk.",
+    ],
+    sourceLinks: [
+      {
+        label: "RevenueCat pricing",
+        href: "https://www.revenuecat.com/pricing/",
+      },
+      {
+        label: "RevenueCat billing issues",
+        href: "https://www.revenuecat.com/docs/subscription-guidance/how-grace-periods-work",
+      },
+    ],
+  },
+  profitwell: {
+    slug: "profitwell",
+    path: "/alternatives/profitwell",
+    competitorName: "ProfitWell",
+    metaTitle: "Dunlo vs ProfitWell - Metrics vs Stripe Recovery",
+    metaDescription:
+      "Compare Dunlo and ProfitWell Metrics for SaaS analytics, churn reporting, Stripe payment recovery, Paddle Retain, pricing, and setup.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs ProfitWell",
+    intro:
+      "ProfitWell Metrics, now part of Paddle, is a free subscription analytics product for reporting on revenue, churn, retention, and subscription performance. Dunlo is not an analytics dashboard. It is the action layer for Stripe failed payments.",
+    verdict:
+      "Use ProfitWell Metrics to understand your subscription numbers. Use Dunlo to reduce the failed-payment portion of churn in Stripe. For many founders, the honest answer is both: ProfitWell shows the leak, Dunlo works the recovery queue.",
+    competitorSummary:
+      "Free subscription analytics from Paddle for MRR, churn, retention, revenue reporting, cohorts, and subscription performance.",
+    dunloSummary:
+      "A Stripe payment recovery layer that turns failed invoices into targeted customer outreach and founder-reviewed follow-up.",
+    comparisonRows: [
+      {
+        label: "Primary job",
+        competitor:
+          "Analytics and reporting: understand subscription revenue, churn, cohorts, and retention.",
+        dunlo:
+          "Recovery execution: email customers, track at-risk failed invoices, and escalate important accounts.",
+      },
+      {
+        label: "MRR analytics",
+        competitor:
+          "Yes. ProfitWell Metrics is positioned as free subscription analytics for SaaS companies.",
+        dunlo: "No. Dunlo is not a full subscription analytics suite.",
+      },
+      {
+        label: "Failed payment recovery",
+        competitor:
+          "Not in ProfitWell Metrics itself. Paddle Retain handles failed payment recovery in the Paddle ecosystem.",
+        dunlo:
+          "Yes. Dunlo is built specifically for failed Stripe payment recovery.",
+      },
+      {
+        label: "Stripe fit",
+        competitor:
+          "Useful as a read-side analytics layer for subscription metrics.",
+        dunlo:
+          "Action-side recovery layer for Stripe invoices, customer emails, and founder escalation.",
+      },
+      {
+        label: "Pricing entry",
+        competitor: "ProfitWell Metrics is free.",
+        dunlo:
+          "Free during beta. Planned tiers start at $19/mo because Dunlo executes recovery workflows.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Founders who need clearer subscription metrics and reporting.",
+        dunlo:
+          "Founders who know failed payments are leaking revenue and want the recovery system built for them.",
+      },
+    ],
+    competitorUseCases: [
+      "You need a clean view of MRR, churn, retention, and subscription reporting.",
+      "You want a free metrics product before paying for recovery tooling.",
+      "You use Paddle products or want to evaluate Paddle Retain separately.",
+    ],
+    dunloUseCases: [
+      "You already know failed Stripe payments are a problem and want to recover them.",
+      "You want failure-code-specific emails rather than another dashboard.",
+      "You want high-value failures surfaced for founder-level follow-up.",
+    ],
+    sourceLinks: [
+      {
+        label: "ProfitWell Metrics",
+        href: "https://www.paddle.com/profitwell-metrics",
+      },
+      {
+        label: "Paddle Retain payment recovery",
+        href: "https://www.paddle.com/retain/failed-payment-recovery",
+      },
+      {
+        label: "Paddle Retain developer docs",
+        href: "https://developer.paddle.com/concepts/retain/payment-recovery-dunning",
+      },
+    ],
+  },
+  chargebee: {
+    slug: "chargebee",
+    path: "/alternatives/chargebee",
+    competitorName: "Chargebee",
+    metaTitle: "Dunlo vs Chargebee - Stripe Dunning Without Migration",
+    metaDescription:
+      "Compare Dunlo and Chargebee for billing infrastructure, Smart Dunning, Stripe migration, failed payment recovery, pricing, and setup.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs Chargebee",
+    intro:
+      "Chargebee is billing infrastructure for subscription, usage-based, hybrid, tax, invoicing, and revenue workflows. It includes dunning, but adopting Chargebee is a billing-platform decision. Dunlo is for founders who already use Stripe and want a recovery layer without migration.",
+    verdict:
+      "Choose Chargebee when you need billing automation beyond Stripe: invoicing, usage workflows, tax, CPQ, and dedicated billing operations. Choose Dunlo when your billing stack is already Stripe and the problem is failed payment recovery, not replacing billing infrastructure.",
+    competitorSummary:
+      "A complete billing automation platform with subscriptions, usage-based billing, hosted payments, taxes, invoices, revenue workflows, and Smart Dunning on higher plans.",
+    dunloSummary:
+      "A Stripe add-on for failed payment recovery, failure-code-specific emails, and founder escalation with no billing migration.",
+    comparisonRows: [
+      {
+        label: "Primary job",
+        competitor:
+          "Billing infrastructure: subscriptions, usage-based billing, invoicing, taxes, revenue workflows, and payment operations.",
+        dunlo:
+          "Failed payment recovery on top of an existing Stripe setup.",
+      },
+      {
+        label: "Dunning",
+        competitor:
+          "Yes. Chargebee automates dunning attempts and can send payment failure emails with retry-specific fields.",
+        dunlo:
+          "Yes. Dunlo focuses on Stripe failure-code-specific messaging and founder escalation.",
+      },
+      {
+        label: "Stripe migration",
+        competitor:
+          "Adopting Chargebee is a billing-platform project, even when Stripe remains a gateway.",
+        dunlo:
+          "No migration. Dunlo is designed to sit beside Stripe and read failed payment context.",
+      },
+      {
+        label: "Setup timeline",
+        competitor:
+          "Best treated as billing infrastructure rollout, especially if you need migrations, invoices, taxes, and revenue workflows.",
+        dunlo:
+          "Focused setup for failed payment recovery rather than a billing stack replacement.",
+      },
+      {
+        label: "Pricing entry for Smart Dunning",
+        competitor:
+          "Smart Dunning is listed in the Performance plan at $7,188/yr for up to $100k billing/mo.",
+        dunlo:
+          "Free during beta. Planned tiers start at $19/mo for focused recovery.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Teams with billing operations, hybrid revenue models, invoicing complexity, and migration budget.",
+        dunlo:
+          "Bootstrapped Stripe SaaS founders who want recovery without a billing-platform migration.",
+      },
+    ],
+    competitorUseCases: [
+      "You need a billing platform for subscriptions, usage, invoicing, tax, CPQ, or revenue workflows.",
+      "You have billing operations complexity that Stripe alone no longer handles well.",
+      "You want Smart Dunning as part of a broader billing automation rollout.",
+    ],
+    dunloUseCases: [
+      "You are staying on Stripe and only need failed payment recovery.",
+      "You want customer emails tailored to the Stripe failure reason.",
+      "You want founder escalation for high-value failures without a billing migration.",
+    ],
+    sourceLinks: [
+      { label: "Chargebee pricing", href: "https://www.chargebee.com/pricing/" },
+      {
+        label: "Chargebee dunning docs",
+        href: "https://www.chargebee.com/docs/payments/2.0/dunning.html",
+      },
+      {
+        label: "Chargebee dunning management",
+        href: "https://www.chargebee.com/gb/recurring-payments/dunning-management/",
+      },
+    ],
+  },
 };
+
+export const ALTERNATIVE_ROUTE_PAGES = Object.values(ALTERNATIVES).filter(
+  (page) => page.path.startsWith("/alternatives/"),
+);
+
+export const VS_ROUTE_PAGES = Object.values(ALTERNATIVES).filter((page) =>
+  page.path.startsWith("/vs/"),
+);
 
 export function AlternativePage({ page }: { page: AlternativePageData }) {
   return (
