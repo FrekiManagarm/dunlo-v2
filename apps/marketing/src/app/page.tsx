@@ -43,7 +43,7 @@ const FAQ_JSON_LD = [
   {
     question: "What happens during beta?",
     answer:
-      "The product is free during beta. Pricing is visible now so you know the direction before Dunlo starts billing.",
+      "Dunlo is free until the beta ends on July 31, 2026. Pricing is visible now so you know the direction before Dunlo starts billing.",
   },
 ] as const;
 
@@ -68,13 +68,13 @@ export default function Page() {
             name: "Dunlo",
             applicationCategory: "BusinessApplication",
             description:
-              "Stripe payment recovery SaaS that reads failed-payment reasons, sends failure-code-specific recovery emails, and drafts founder escalation emails for high-value accounts.",
+              "Stripe payment recovery SaaS with failure-code-specific emails, founder escalation, flat beta pricing, and no recovered-revenue cut.",
             operatingSystem: "Web",
             offers: {
               "@type": "Offer",
               price: "0",
               priceCurrency: "EUR",
-              description: "Free during beta",
+              description: "Free until beta ends on July 31, 2026",
             },
             provider: {
               "@type": "Organization",

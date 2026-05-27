@@ -66,6 +66,22 @@ const INCLUDED_IN_EVERY_PLAN = [
 ] as const;
 
 const PRICING_TRIAL_LABEL = "First 30 days free";
+const BETA_DEADLINE = "July 31, 2026";
+
+const CHURN_BUSTER_REASONS = [
+  {
+    title: "Keep every recovered dollar",
+    body: "Dunlo is built around flat SaaS pricing. No recovered-revenue percentage hiding in the model.",
+  },
+  {
+    title: "Start without a sales motion",
+    body: "Connect Stripe, review the default sequences, and use the beta free until July 31, 2026.",
+  },
+  {
+    title: "Recover by failure code",
+    body: "Expired card, insufficient funds, and do_not_honor get different messages instead of one generic dunning flow.",
+  },
+] as const;
 
 export const FAQS = [
   {
@@ -101,7 +117,7 @@ export const FAQS = [
   {
     question: "What happens during beta?",
     answer:
-      "The product is free during beta. Pricing is visible now so you know the direction before Dunlo starts billing.",
+      "Dunlo is free until the beta ends on July 31, 2026. Pricing is visible now so you know the direction before Dunlo starts billing.",
   },
 ] as const;
 
@@ -116,6 +132,49 @@ export function LandingPage() {
         <section className="relative -mx-3 px-3 md:-mx-4 md:px-4">
           <OrganicBackdrop />
           <HeroContent />
+        </section>
+
+        <section className="scroll-mt-24">
+          <div className={SECTION_SURFACE}>
+            <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+              <div>
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+                  Dunlo vs Churn Buster
+                </p>
+                <h2 className="mt-4 max-w-md text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
+                  Why founders choose Dunlo over Churn Buster.
+                </h2>
+                <p className="mt-5 max-w-md text-base leading-7 text-gray-600">
+                  If failed Stripe payments are the leak, you should not need a
+                  heavyweight dunning stack or give away a slice of recovered
+                  revenue to fix it.
+                </p>
+              </div>
+
+              <div className="grid gap-3">
+                {CHURN_BUSTER_REASONS.map((item) => (
+                  <article
+                    key={item.title}
+                    className="rounded-3xl border border-gray-100 bg-white px-5 py-5 shadow-sm"
+                  >
+                    <div className="flex gap-4">
+                      <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-dunlo/12 text-dunlo-deep">
+                        <Check size={15} strokeWidth={2.2} />
+                      </span>
+                      <div>
+                        <h3 className="text-base font-semibold tracking-tight text-gray-950">
+                          {item.title}
+                        </h3>
+                        <p className="mt-2 text-sm leading-6 text-gray-600">
+                          {item.body}
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
+          </div>
         </section>
 
         <div className="mx-auto max-w-6xl">
@@ -261,13 +320,13 @@ export function LandingPage() {
                   Pricing
                 </p>
                 <h2 className="mt-4 max-w-md text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
-                  Free while the beta is open.
+                  Free until {BETA_DEADLINE}.
                 </h2>
               </div>
               <p className="max-w-xl text-sm leading-6 text-gray-600 lg:justify-self-end">
                 Every tier includes Stripe failure-code detection, recovery
                 emails, secure update links, and recovered-revenue tracking. The
-                tier only follows your MRR when Dunlo starts billing.
+                tier only follows your MRR when Dunlo starts billing after beta.
               </p>
             </div>
 
@@ -509,9 +568,11 @@ export function LandingPage() {
                 </p>
                 <p>
                   The product is built by Mathieu Chambaud after losing early
-                  SaaS users to silent payment failures. The goal is simple:
-                  make failed-payment recovery clear enough for solo founders
-                  and precise enough for growing SaaS teams.
+                  SaaS users to silent payment failures. At $49-$149 per month,
+                  five missed card updates can quietly turn into hundreds of
+                  dollars of MRR at risk before a founder notices. The goal is
+                  simple: make failed-payment recovery clear enough for solo
+                  founders and precise enough for growing SaaS teams.
                 </p>
                 <div className="flex flex-col gap-2 text-sm font-semibold sm:flex-row sm:flex-wrap sm:gap-4">
                   <Link

@@ -4,7 +4,7 @@ export const SITE_URL = "https://dunlo.io";
 export const SITE_NAME = "Dunlo";
 export const DEFAULT_TITLE = "Dunlo - Stripe Payment Recovery for SaaS";
 export const DEFAULT_DESCRIPTION =
-  "Dunlo helps SaaS founders recover failed Stripe payments with failure-code emails, smart timing, founder escalation, and revenue tracking.";
+  "Recover failed Stripe payments by failure code, not guesswork. Dunlo has flat beta pricing, no revenue cut, and founder escalation.";
 export const DEFAULT_KEYWORDS = [
   "Dunlo",
   "dunlo",
@@ -117,4 +117,3 @@ export function breadcrumbJsonLd(items: Array<{ name: string; path: string }>) {
     })),
   };
 }
-

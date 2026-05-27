@@ -1,7 +1,7 @@
 "use client";
 
 import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { ArrowRight, CalendarClock, Percent } from "lucide-react";
 import Link from "next/link";
 import { appUrl } from "@/lib/app-url";
 import { RecoveryConsole } from "./recovery-console";
@@ -19,6 +19,22 @@ export function HeroContent() {
           Stripe Payment Recovery for SaaS
         </motion.p>
 
+        <motion.div
+          initial={{ opacity: 0, y: 14 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.68, delay: 0.06, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-5 flex flex-wrap gap-2"
+        >
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-dunlo/30 bg-dunlo/15 px-3 py-1.5 text-xs font-bold text-dunlo-deep">
+            <Percent size={13} strokeWidth={2.2} />
+            No revenue cut
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-xs font-bold text-gray-700 shadow-sm">
+            <CalendarClock size={13} strokeWidth={2.2} />
+            Beta ends July 31, 2026 — free until then
+          </span>
+        </motion.div>
+
         <motion.h1
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
@@ -34,8 +50,8 @@ export function HeroContent() {
           transition={{ duration: 0.68, delay: 0.17, ease: [0.16, 1, 0.3, 1] }}
           className="mt-5 max-w-lg border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700"
         >
-          I lost my first SaaS users to silent churn. I didn't understand why
-          until too late.
+          When a $49/mo customer churns from a failed card, it is not just $49.
+          It is months of LTV gone because nobody saw the payment leak in time.
         </motion.p>
 
         <motion.p
@@ -44,9 +60,9 @@ export function HeroContent() {
           transition={{ duration: 0.7, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
           className="mt-6 max-w-lg text-base leading-7 text-gray-600"
         >
-          Some of your best customers are about to disappear — not because they
-          chose to leave, but because their payment failed and nobody followed
-          up. Dunlo catches that before it becomes silent churn.
+          Recover failed Stripe payments by failure code, not guesswork. No
+          revenue cut. No enterprise pricing. Just precise emails, smart timing,
+          and founder escalation before a recoverable charge becomes churn.
         </motion.p>
 
         <motion.div
