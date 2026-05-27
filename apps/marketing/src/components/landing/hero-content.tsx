@@ -3,7 +3,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight, CalendarClock, Percent } from "lucide-react";
 import Link from "next/link";
-import { appUrl } from "@/lib/app-url";
 import { RecoveryConsole } from "./recovery-console";
 
 export function HeroContent() {
@@ -61,7 +60,7 @@ export function HeroContent() {
           className="mt-8 flex flex-col gap-3 sm:flex-row"
         >
           <Link
-            href={appUrl("/benchmark")}
+            href="/benchmark"
             className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.98]"
           >
             See your benchmark

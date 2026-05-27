@@ -4,7 +4,6 @@ import { SITE_URL, absoluteUrl } from "@/lib/seo";
 const PRODUCT_PATHS = [
   "/api/",
   "/alerts",
-  "/benchmark",
   "/dashboard",
   "/dashboard/",
   "/escalations",

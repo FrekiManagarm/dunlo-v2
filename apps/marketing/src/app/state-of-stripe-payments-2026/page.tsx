@@ -4,7 +4,6 @@ import { ArrowRight, Download, FileText, LockKeyhole } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
 import { breadcrumbJsonLd, pageSeoMetadata } from "@/lib/seo";
-import { appUrl } from "@/lib/app-url";
 
 const TITLE = "State of Stripe Failed Payments 2026 - Dunlo";
 const DESCRIPTION =
@@ -106,7 +105,7 @@ export default function StateOfStripePaymentsPage() {
               large enough for public reporting.
             </p>
             <Link
-              href={appUrl("/benchmark")}
+              href="/benchmark"
               className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-dunlo-deep transition-all hover:gap-3"
             >
               Open the live benchmark
