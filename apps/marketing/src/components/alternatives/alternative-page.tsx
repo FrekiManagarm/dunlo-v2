@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { SIGNUP_URL } from "@/lib/app-url";
+import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials";
 import { Logo } from "@/components/logo";
 
 type ComparisonRow = {
@@ -1143,6 +1144,8 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             items={page.dunloUseCases}
           />
         </section>
+
+        <BetaTestimonialsSection compact />
 
         <section className="rounded-3xl border border-gray-200 bg-gray-950 px-6 py-8 text-white md:px-10 md:py-10">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">

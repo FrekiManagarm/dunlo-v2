@@ -14,6 +14,7 @@ import {
   ALTERNATIVES,
   type AlternativePageData,
 } from "@/components/alternatives/alternative-page";
+import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials";
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
 import { ALTERNATIVE_LINKS } from "@/lib/site-navigation";
@@ -161,6 +162,8 @@ export function AlternativesIndex() {
             ))}
           </div>
         </section>
+
+        <BetaTestimonialsSection compact />
       </main>
       <Footer />
     </div>

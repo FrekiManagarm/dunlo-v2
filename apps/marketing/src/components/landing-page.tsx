@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SIGNUP_URL } from "@/lib/app-url";
 import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import { AnimatedFeatureItems } from "@/components/landing/animated-feature-items";
+import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials";
 import { BuiltByMathieu } from "@/components/landing/built-by-mathieu";
 import { Escalation } from "@/components/landing/escalation";
 import { Footer } from "@/components/landing/footer";
@@ -176,6 +177,8 @@ export function LandingPage() {
         <div className="mx-auto max-w-6xl">
           <RoiCalculator />
         </div>
+
+        <BetaTestimonialsSection />
 
         <section id="pricing" className="scroll-mt-24">
           <div className={SECTION_SURFACE}>
