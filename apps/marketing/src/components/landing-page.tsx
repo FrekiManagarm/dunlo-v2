@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { appUrl } from "@/lib/app-url";
+import { appUrl, SIGNUP_URL } from "@/lib/app-url";
 import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import { AnimatedFeatureItems } from "@/components/landing/animated-feature-items";
 import { BuiltByMathieu } from "@/components/landing/built-by-mathieu";
@@ -581,7 +581,7 @@ export function LandingPage() {
               </h2>
             </div>
             <Link
-              href={appUrl("/signup")}
+              href={SIGNUP_URL}
               className="inline-flex shrink-0 items-center justify-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
               Start free in beta

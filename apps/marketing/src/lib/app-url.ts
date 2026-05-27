@@ -4,3 +4,5 @@ export const APP_ORIGIN =
 export function appUrl(path = "/") {
   return `${APP_ORIGIN}${path.startsWith("/") ? path : `/${path}`}`;
 }
+
+export const SIGNUP_URL = appUrl("/login?mode=signup");

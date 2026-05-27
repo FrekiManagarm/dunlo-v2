@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { appUrl } from "@/lib/app-url";
+import { SIGNUP_URL } from "@/lib/app-url";
 import { motion } from "framer-motion";
 import {
   ArrowRight,
@@ -70,7 +70,7 @@ export function AlternativesIndex() {
               </div>
             </div>
             <Link
-              href={appUrl("/signup")}
+              href={SIGNUP_URL}
               className="mt-5 inline-flex h-11 w-full items-center justify-center gap-2 rounded-full bg-gray-950 px-5 text-sm font-bold text-white transition-all hover:bg-gray-800 active:scale-[0.98]"
             >
               Start free

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { appUrl } from "@/lib/app-url";
+import { SIGNUP_URL } from "@/lib/app-url";
 import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
@@ -302,7 +302,7 @@ export function Escalation() {
 
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
-                href={appUrl("/signup")}
+                href={SIGNUP_URL}
                 className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-900 px-5 py-3 text-sm font-bold text-white transition-all hover:bg-gray-700 active:scale-[0.98]"
               >
                 Review an escalation draft

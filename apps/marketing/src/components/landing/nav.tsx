@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { appUrl } from "@/lib/app-url";
+import { appUrl, SIGNUP_URL } from "@/lib/app-url";
 import { ChevronRight } from "lucide-react";
 import { Logo } from "@/components/logo";
 import { HEADER_NAV_LINKS } from "@/lib/site-navigation";
@@ -42,7 +42,7 @@ export function Nav() {
             Sign in
           </Link>
           <Link
-            href={appUrl("/signup")}
+            href={SIGNUP_URL}
             className="flex items-center gap-1.5 rounded-full bg-gray-900 px-4 py-1.5 text-sm font-semibold text-white transition-all hover:bg-gray-700 active:scale-[0.97]"
           >
             Start free

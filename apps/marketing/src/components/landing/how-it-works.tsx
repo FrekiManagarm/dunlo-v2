@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { appUrl } from "@/lib/app-url";
+import { SIGNUP_URL } from "@/lib/app-url";
 import { AnimatePresence, motion } from "framer-motion";
 import {
   BarChart3,
@@ -174,7 +174,7 @@ export function HowItWorks() {
 
               <div className="pt-8 lg:mt-auto lg:pt-10">
                 <Link
-                  href={appUrl("/signup")}
+                  href={SIGNUP_URL}
                   className="inline-flex items-center gap-2 rounded-full bg-dunlo px-6 py-3 text-sm font-semibold text-gray-950 transition-all hover:bg-dunlo-hover active:translate-y-px active:scale-[0.98]"
                 >
                   Connect Stripe now

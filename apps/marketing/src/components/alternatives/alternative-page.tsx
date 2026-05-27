@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { appUrl } from "@/lib/app-url";
+import { SIGNUP_URL } from "@/lib/app-url";
 import { Logo } from "@/components/logo";
 
 type ComparisonRow = {
@@ -1027,10 +1027,10 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             Home
           </Link>
           <Link
-            href={appUrl("/login")}
+            href={SIGNUP_URL}
             className="rounded-full bg-gray-950 px-4 py-2 text-white transition-transform active:scale-[0.98]"
           >
-            Join beta
+            Start free
           </Link>
         </nav>
       </header>
@@ -1050,10 +1050,10 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
-                  href={appUrl("/login")}
+                  href={SIGNUP_URL}
                   className="inline-flex h-12 items-center justify-center rounded-full bg-dunlo px-6 text-sm font-semibold text-gray-950 transition-transform active:scale-[0.98]"
                 >
-                  Join the free beta
+                  Start free
                 </Link>
                 <a
                   href="#comparison"
@@ -1158,7 +1158,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
               </p>
             </div>
             <Link
-              href={appUrl("/login")}
+              href={SIGNUP_URL}
               className="inline-flex h-12 shrink-0 items-center justify-center rounded-full bg-dunlo px-6 text-sm font-semibold text-gray-950 transition-transform active:scale-[0.98]"
             >
               Start with Dunlo

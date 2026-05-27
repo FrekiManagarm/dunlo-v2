@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { appUrl } from "@/lib/app-url";
+import { SIGNUP_URL } from "@/lib/app-url";
 import {
   motion,
   useMotionValue,
@@ -184,7 +184,7 @@ export function RoiCalculator() {
                   response, timing, and message quality.
                 </p>
                 <Link
-                  href={appUrl("/signup")}
+                  href={SIGNUP_URL}
                   className="inline-flex rounded-full bg-dunlo px-6 py-3 text-sm font-semibold text-gray-900 transition-all hover:bg-dunlo-hover active:scale-[0.97]"
                 >
                   See my benchmark

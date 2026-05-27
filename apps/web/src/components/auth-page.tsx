@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { Check } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { Logo } from "@/components/logo";
 import SignInForm from "@/components/sign-in-form";
@@ -17,6 +17,10 @@ const PERKS = [
 
 export function AuthPage({ initialMode }: { initialMode: AuthMode }) {
   const [mode, setMode] = useState<AuthMode>(initialMode);
+
+  useEffect(() => {
+    setMode(initialMode);
+  }, [initialMode]);
 
   return (
     <div className="flex min-h-dvh bg-[#f7f8fa] font-sans">
