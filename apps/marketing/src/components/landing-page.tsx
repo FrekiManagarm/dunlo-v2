@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { appUrl, SIGNUP_URL } from "@/lib/app-url";
+import { SIGNUP_URL } from "@/lib/app-url";
 import { ArrowRight, Check, ChevronRight } from "lucide-react";
 import { AnimatedFeatureItems } from "@/components/landing/animated-feature-items";
 import { BuiltByMathieu } from "@/components/landing/built-by-mathieu";
@@ -9,7 +9,6 @@ import { HeroContent } from "@/components/landing/hero-content";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { Nav } from "@/components/landing/nav";
 import { RoiCalculator } from "@/components/landing/roi-calculator";
-import { StatsBanner } from "@/components/landing/stats-banner";
 
 const PLANS = [
   {
@@ -68,21 +67,6 @@ const INCLUDED_IN_EVERY_PLAN = [
 const PRICING_TRIAL_LABEL = "First 30 days free";
 const BETA_DEADLINE = "July 31, 2026";
 
-const CHURN_BUSTER_REASONS = [
-  {
-    title: "Keep every recovered dollar",
-    body: "Dunlo is built around flat SaaS pricing. No recovered-revenue percentage hiding in the model.",
-  },
-  {
-    title: "Start without a sales motion",
-    body: "Connect Stripe, review the default sequences, and use the beta free until July 31, 2026.",
-  },
-  {
-    title: "Recover by failure code",
-    body: "Expired card, insufficient funds, and do_not_honor get different messages instead of one generic dunning flow.",
-  },
-] as const;
-
 export const FAQS = [
   {
     question: "What is involuntary churn?",
@@ -134,128 +118,9 @@ export function LandingPage() {
           <HeroContent />
         </section>
 
-        <section className="scroll-mt-24">
-          <div className={SECTION_SURFACE}>
-            <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
-              <div>
-                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-                  Dunlo vs Churn Buster
-                </p>
-                <h2 className="mt-4 max-w-md text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
-                  Why founders choose Dunlo over Churn Buster.
-                </h2>
-                <p className="mt-5 max-w-md text-base leading-7 text-gray-600">
-                  If failed Stripe payments are the leak, you should not need a
-                  heavyweight dunning stack or give away a slice of recovered
-                  revenue to fix it.
-                </p>
-              </div>
-
-              <div className="grid gap-3">
-                {CHURN_BUSTER_REASONS.map((item) => (
-                  <article
-                    key={item.title}
-                    className="rounded-3xl border border-gray-100 bg-white px-5 py-5 shadow-sm"
-                  >
-                    <div className="flex gap-4">
-                      <span className="mt-0.5 flex size-7 shrink-0 items-center justify-center rounded-full bg-dunlo/12 text-dunlo-deep">
-                        <Check size={15} strokeWidth={2.2} />
-                      </span>
-                      <div>
-                        <h3 className="text-base font-semibold tracking-tight text-gray-950">
-                          {item.title}
-                        </h3>
-                        <p className="mt-2 text-sm leading-6 text-gray-600">
-                          {item.body}
-                        </p>
-                      </div>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
-
         <div className="mx-auto max-w-6xl">
           <Escalation />
         </div>
-
-        <section id="payment-failures" className="scroll-mt-24">
-          <div className={SECTION_SURFACE}>
-            <div className="grid gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-              <div>
-                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-                  Payment failures
-                </p>
-                <h2 className="mt-4 max-w-lg text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
-                  A failed payment is not one problem.
-                </h2>
-                <p className="mt-5 max-w-md text-base leading-7 text-gray-600">
-                  A card can expire, a bank can decline a charge, or a customer
-                  can be short on funds for a few days. Treating all of those
-                  moments the same is how recoverable revenue turns into silent
-                  churn.
-                </p>
-                <div className="mt-6 flex flex-col gap-2 text-sm font-semibold text-gray-800">
-                  <Link
-                    href="/blog/stripe-failure-codes-explained"
-                    className="inline-flex w-fit items-center gap-1.5 text-dunlo-deep transition-all hover:gap-2"
-                  >
-                    Read the Stripe failure code guide
-                    <ArrowRight size={14} />
-                  </Link>
-                  <Link
-                    href="/alternatives/stripe-smart-retries"
-                    className="inline-flex w-fit items-center gap-1.5 text-dunlo-deep transition-all hover:gap-2"
-                  >
-                    Compare Dunlo with Stripe Smart Retries
-                    <ArrowRight size={14} />
-                  </Link>
-                </div>
-              </div>
-
-              <div className="grid gap-3">
-                {[
-                  {
-                    code: "expired_card",
-                    plain: "The card needs an update.",
-                    move: "Send a secure payment update link quickly.",
-                  },
-                  {
-                    code: "insufficient_funds",
-                    plain: "The customer may need a softer retry window.",
-                    move: "Wait, retry, and phrase the email with less urgency.",
-                  },
-                  {
-                    code: "do_not_honor",
-                    plain: "The bank gave a generic refusal.",
-                    move: "Give clear context and escalate if the account value is high.",
-                  },
-                ].map((item) => (
-                  <article
-                    key={item.code}
-                    className="rounded-3xl border border-gray-100 bg-white px-4 py-4 shadow-sm"
-                  >
-                    <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
-                      <div>
-                        <p className="font-mono text-xs font-semibold text-dunlo-deep">
-                          {item.code}
-                        </p>
-                        <h3 className="mt-2 text-base font-semibold tracking-tight text-gray-950">
-                          {item.plain}
-                        </h3>
-                      </div>
-                      <p className="max-w-sm text-sm leading-6 text-gray-600">
-                        {item.move}
-                      </p>
-                    </div>
-                  </article>
-                ))}
-              </div>
-            </div>
-          </div>
-        </section>
 
         <section id="features" className="scroll-mt-24">
           <div className="mx-auto max-w-6xl overflow-hidden rounded-[1.5rem] border border-gray-200 bg-white/80 p-5 backdrop-blur-md md:p-6 lg:p-7">
@@ -537,60 +402,6 @@ export function LandingPage() {
                   </span>
                 </div>
               ))}
-            </div>
-          </div>
-        </section>
-
-        <section id="product" className="scroll-mt-24">
-          <div className="mx-auto max-w-6xl">
-            <StatsBanner />
-          </div>
-        </section>
-
-        <section id="about" className="scroll-mt-24">
-          <div className={SECTION_SURFACE}>
-            <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:items-start">
-              <div>
-                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-                  About Dunlo
-                </p>
-                <h2 className="mt-4 max-w-md text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
-                  Stripe payment recovery for SaaS founders.
-                </h2>
-              </div>
-              <div className="space-y-5 text-sm leading-7 text-gray-600 md:text-base">
-                <p>
-                  Dunlo is a Stripe-first payment recovery SaaS for founders who
-                  want fewer failed payments turning into invisible churn. It
-                  reads the failure reason, chooses the right recovery message,
-                  tracks recovered revenue, and keeps high-value accounts human
-                  with founder escalation drafts.
-                </p>
-                <p>
-                  The product is built by Mathieu Chambaud after losing early
-                  SaaS users to silent payment failures. At $49-$149 per month,
-                  five missed card updates can quietly turn into hundreds of
-                  dollars of MRR at risk before a founder notices. The goal is
-                  simple: make failed-payment recovery clear enough for solo
-                  founders and precise enough for growing SaaS teams.
-                </p>
-                <div className="flex flex-col gap-2 text-sm font-semibold sm:flex-row sm:flex-wrap sm:gap-4">
-                  <Link
-                    href={appUrl("/benchmark")}
-                    className="inline-flex w-fit items-center gap-1.5 text-dunlo-deep transition-all hover:gap-2"
-                  >
-                    Use the Stripe failed payment benchmark
-                    <ArrowRight size={14} />
-                  </Link>
-                  <Link
-                    href="/blog"
-                    className="inline-flex w-fit items-center gap-1.5 text-dunlo-deep transition-all hover:gap-2"
-                  >
-                    Read the payment recovery blog
-                    <ArrowRight size={14} />
-                  </Link>
-                </div>
-              </div>
             </div>
           </div>
         </section>

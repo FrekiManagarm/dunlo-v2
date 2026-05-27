@@ -54,21 +54,10 @@ export function HeroContent() {
           It is months of LTV gone because nobody saw the payment leak in time.
         </motion.p>
 
-        <motion.p
-          initial={{ opacity: 0, y: 14 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-6 max-w-lg text-base leading-7 text-gray-600"
-        >
-          Recover failed Stripe payments by failure code, not guesswork. No
-          revenue cut. No enterprise pricing. Just precise emails, smart timing,
-          and founder escalation before a recoverable charge becomes churn.
-        </motion.p>
-
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.7, delay: 0.34, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.7, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
           className="mt-8 flex flex-col gap-3 sm:flex-row"
         >
           <Link
@@ -79,10 +68,10 @@ export function HeroContent() {
             <ArrowRight size={16} />
           </Link>
           <a
-            href="#payment-failures"
+            href="#features"
             className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white/60 px-5 py-3 text-sm font-semibold text-gray-800 transition-all hover:border-gray-400 hover:bg-white active:scale-[0.98]"
           >
-            Why payments fail
+            See failure-code recovery
           </a>
         </motion.div>
       </div>

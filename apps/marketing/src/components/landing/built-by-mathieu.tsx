@@ -45,10 +45,8 @@ export function BuiltByMathieu() {
               </p>
             </div>
             <p className="max-w-3xl text-sm leading-relaxed text-gray-600 md:mt-3 md:text-[15px]">
-              I built Dunlo after seeing how easily a $49/mo or $99/mo customer
-              can disappear from a Stripe failure with no human follow-up. Ten
-              missed updates is not a small bug; it is hundreds of dollars of
-              MRR at risk before you even count lifetime value.
+              I built Dunlo after seeing how easily a $49/mo customer can
+              disappear from a Stripe failure with no human follow-up.
             </p>
           </div>
 
