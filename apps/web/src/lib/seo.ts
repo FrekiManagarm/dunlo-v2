@@ -1,4 +1,5 @@
-export const SITE_URL = "https://app.dunlo.io";
+export const SITE_URL =
+  process.env.NEXT_PUBLIC_APP_URL ?? "https://app.dunlo.io";
 export const SITE_NAME = "Dunlo";
 export const DEFAULT_TITLE = "Dunlo - Stripe Payment Recovery for SaaS";
 export const DEFAULT_DESCRIPTION =
@@ -29,9 +30,7 @@ export function keywordsMeta(keywords: readonly string[]) {
   return { name: "keywords", content: keywords.join(", ") };
 }
 
-export function breadcrumbJsonLd(
-  items: Array<{ name: string; path: string }>,
-) {
+export function breadcrumbJsonLd(items: Array<{ name: string; path: string }>) {
   return {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
