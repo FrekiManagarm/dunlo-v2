@@ -42,7 +42,7 @@ function RouteComponent() {
         {
           onSuccess: () => {
             toast.success("Password updated. Please sign in.");
-            navigate({ to: "/login" });
+            navigate({ to: "/login", search: { mode: "signin" } });
           },
           onError: (err) =>
             toast.error(err.error.message || err.error.statusText),
@@ -70,6 +70,7 @@ function RouteComponent() {
         </Link>
         <Link
           to="/login"
+          search={{ mode: "signin" }}
           className="inline-flex items-center gap-1.5 text-xs font-medium text-gray-500 hover:text-gray-700"
         >
           <ArrowLeft size={12} /> Back to sign in
@@ -89,6 +90,7 @@ function RouteComponent() {
               </p>
               <Link
                 to="/login"
+                search={{ mode: "signin" }}
                 className="mt-6 inline-flex h-11 items-center justify-center rounded-full bg-gray-900 px-6 text-sm font-semibold text-white transition-all hover:bg-gray-700 active:scale-[0.98]"
               >
                 Go to sign in
@@ -135,7 +137,10 @@ function RouteComponent() {
                         className="h-11 rounded-xl border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:border-dunlo focus:ring-dunlo/20"
                       />
                       {field.state.meta.errors.map((error) => (
-                        <p key={error?.message} className="text-xs text-red-500">
+                        <p
+                          key={error?.message}
+                          className="text-xs text-red-500"
+                        >
                           {error?.message}
                         </p>
                       ))}
@@ -164,7 +169,10 @@ function RouteComponent() {
                         className="h-11 rounded-xl border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:border-dunlo focus:ring-dunlo/20"
                       />
                       {field.state.meta.errors.map((error) => (
-                        <p key={error?.message} className="text-xs text-red-500">
+                        <p
+                          key={error?.message}
+                          className="text-xs text-red-500"
+                        >
                           {error?.message}
                         </p>
                       ))}

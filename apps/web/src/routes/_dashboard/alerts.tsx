@@ -256,8 +256,16 @@ function RouteComponent() {
               [
                 { key: "failure", color: "bg-red-400", label: "failed" },
                 { key: "recovery", color: "bg-dunlo", label: "recovered" },
-                { key: "escalation", color: "bg-amber-400", label: "escalated" },
-                { key: "emailSent", color: "bg-blue-400", label: "emails sent" },
+                {
+                  key: "escalation",
+                  color: "bg-amber-400",
+                  label: "escalated",
+                },
+                {
+                  key: "emailSent",
+                  color: "bg-blue-400",
+                  label: "emails sent",
+                },
               ] as const
             ).map(({ key, color, label }) => (
               <button
@@ -290,9 +298,7 @@ function RouteComponent() {
                 key={key}
                 onClick={() => setActiveFilter(key)}
                 className={`relative flex shrink-0 items-center gap-1.5 rounded-t-lg px-3.5 py-2 text-xs font-medium transition-colors ${
-                  active
-                    ? "text-zinc-900"
-                    : "text-zinc-400 hover:text-zinc-600"
+                  active ? "text-zinc-900" : "text-zinc-400 hover:text-zinc-600"
                 }`}
               >
                 {label}
@@ -310,7 +316,7 @@ function RouteComponent() {
                 {active && (
                   <motion.span
                     layoutId="filter-indicator"
-                    className="absolute inset-x-0 bottom-0 h-[2px] rounded-full bg-dunlo"
+                    className="absolute inset-x-0 bottom-0 h-0.5 rounded-full bg-dunlo"
                     transition={{ type: "spring", stiffness: 400, damping: 30 }}
                   />
                 )}

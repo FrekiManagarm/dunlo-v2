@@ -24,7 +24,8 @@ export const Route = createFileRoute("/dashboard/benchmark")({
   }),
   beforeLoad: async () => {
     const session = await getUser();
-    if (!session?.user) throw redirect({ to: "/login" });
+    if (!session?.user)
+      throw redirect({ to: "/login", search: { mode: "signin" } });
     return { session };
   },
   loader: ({ context }) =>

@@ -38,7 +38,8 @@ export const Route = createFileRoute("/onboarding")({
   validateSearch: searchSchema,
   beforeLoad: async () => {
     const session = await getUser();
-    if (!session?.user) throw redirect({ to: "/login" });
+    if (!session?.user)
+      throw redirect({ to: "/login", search: { mode: "signin" } });
     return { session };
   },
   loader: ({ context }) =>
@@ -81,9 +82,9 @@ function StepConnector({ done }: { done: boolean }) {
 }
 
 function RouteComponent() {
-  const { data: { stripeConnected, emailConfigured } } = useSuspenseQuery(
-    onboardingStateQueryOptions(),
-  );
+  const {
+    data: { stripeConnected, emailConfigured },
+  } = useSuspenseQuery(onboardingStateQueryOptions());
   const search = Route.useSearch();
   const navigate = useNavigate({ from: "/onboarding" });
 
@@ -113,16 +114,22 @@ function RouteComponent() {
       }
     },
     validators: {
-      onSubmit: z.object({
-        provider: z.enum(["resend", "postmark", "mailgun", "sendgrid"]),
-        apiKey: z.string().min(1, "Required"),
-        domain: z.string().max(200),
-        fromEmail: z.email("Invalid email"),
-        fromName: z.string().min(1, "Required"),
-      }).refine((value) => value.provider !== "mailgun" || Boolean(value.domain.trim()), {
-        message: "Mailgun sending domain is required",
-        path: ["domain"],
-      }),
+      onSubmit: z
+        .object({
+          provider: z.enum(["resend", "postmark", "mailgun", "sendgrid"]),
+          apiKey: z.string().min(1, "Required"),
+          domain: z.string().max(200),
+          fromEmail: z.email("Invalid email"),
+          fromName: z.string().min(1, "Required"),
+        })
+        .refine(
+          (value) =>
+            value.provider !== "mailgun" || Boolean(value.domain.trim()),
+          {
+            message: "Mailgun sending domain is required",
+            path: ["domain"],
+          },
+        ),
     },
   });
 
@@ -135,9 +142,17 @@ function RouteComponent() {
 
       <main className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 pb-16">
         <div className="mb-8 flex items-center">
-          <StepDot n={1} active={step === 1} done={step > 1 || stripeConnected} />
+          <StepDot
+            n={1}
+            active={step === 1}
+            done={step > 1 || stripeConnected}
+          />
           <StepConnector done={step > 1 || stripeConnected} />
-          <StepDot n={2} active={step === 2} done={step > 2 || emailConfigured} />
+          <StepDot
+            n={2}
+            active={step === 2}
+            done={step > 2 || emailConfigured}
+          />
           <StepConnector done={step > 2} />
           <StepDot n={3} active={step === 3} done={false} />
         </div>
@@ -218,7 +233,9 @@ function RouteComponent() {
                         value={field.state.value}
                         onBlur={field.handleBlur}
                         onChange={(e) =>
-                          field.handleChange(e.target.value as typeof field.state.value)
+                          field.handleChange(
+                            e.target.value as typeof field.state.value,
+                          )
                         }
                         className="h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-900 outline-none transition-colors focus:border-dunlo focus:ring-2 focus:ring-dunlo/20"
                       >
@@ -284,11 +301,16 @@ function RouteComponent() {
                               placeholder="mg.yourdomain.com"
                               value={field.state.value}
                               onBlur={field.handleBlur}
-                              onChange={(e) => field.handleChange(e.target.value)}
+                              onChange={(e) =>
+                                field.handleChange(e.target.value)
+                              }
                               className="h-11 rounded-xl border-gray-200 bg-white text-sm placeholder:text-gray-400 focus:border-dunlo focus:ring-dunlo/20"
                             />
                             {field.state.meta.errors.map((err) => (
-                              <p key={err?.message} className="text-xs text-red-500">
+                              <p
+                                key={err?.message}
+                                className="text-xs text-red-500"
+                              >
                                 {err?.message}
                               </p>
                             ))}

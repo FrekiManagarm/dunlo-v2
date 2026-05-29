@@ -292,16 +292,22 @@ function EmailTab({
       }
     },
     validators: {
-      onSubmit: z.object({
-        provider: z.enum(["resend", "postmark", "mailgun", "sendgrid"]),
-        apiKey: z.string().max(500),
-        domain: z.string().max(200),
-        fromEmail: z.email("Invalid email"),
-        fromName: z.string().min(1, "Required").max(100),
-      }).refine((value) => value.provider !== "mailgun" || Boolean(value.domain.trim()), {
-        message: "Mailgun sending domain is required",
-        path: ["domain"],
-      }),
+      onSubmit: z
+        .object({
+          provider: z.enum(["resend", "postmark", "mailgun", "sendgrid"]),
+          apiKey: z.string().max(500),
+          domain: z.string().max(200),
+          fromEmail: z.email("Invalid email"),
+          fromName: z.string().min(1, "Required").max(100),
+        })
+        .refine(
+          (value) =>
+            value.provider !== "mailgun" || Boolean(value.domain.trim()),
+          {
+            message: "Mailgun sending domain is required",
+            path: ["domain"],
+          },
+        ),
     },
   });
 
@@ -398,7 +404,9 @@ function EmailTab({
               <Input
                 type="password"
                 autoComplete="off"
-                placeholder={initial.apiKey ? "••••••••••••••••" : "Paste provider API key"}
+                placeholder={
+                  initial.apiKey ? "••••••••••••••••" : "Paste provider API key"
+                }
                 value={field.state.value}
                 onBlur={field.handleBlur}
                 onChange={(e) => field.handleChange(e.target.value)}
@@ -934,9 +942,15 @@ function BillingTab() {
   const { data: customer, isLoading, openCustomerPortal } = useCustomer();
 
   const activePlans: string[] =
-    customer?.products
-      ?.filter((p: { status: string }) => p.status === "active")
-      .map((p: { name: string }) => p.name) ?? [];
+    customer?.subscriptions
+      ?.filter(
+        (subscription) =>
+          subscription.status === "active" &&
+          !subscription.autoEnable &&
+          (subscription.plan?.price?.amount ?? 0) > 0,
+      )
+      .map((subscription) => subscription.plan?.name ?? subscription.planId) ??
+    [];
 
   const hasPaidPlan = activePlans.length > 0;
 
@@ -972,10 +986,18 @@ function BillingTab() {
 
         <div className="space-y-3 px-6 py-5">
           {!hasPaidPlan && (
-            <div className="flex items-start gap-3 rounded-xl border border-dunlo/15 bg-dunlo/[0.04] p-4">
-              <TrendingUp size={14} className="mt-0.5 shrink-0 text-dunlo-deep" />
+            <div className="flex items-start gap-3 rounded-xl border border-dunlo/15 bg-dunlo/4 p-4">
+              <TrendingUp
+                size={14}
+                className="mt-0.5 shrink-0 text-dunlo-deep"
+              />
               <p className="text-[12px] leading-relaxed text-zinc-600">
-                Dunlo is <strong className="font-semibold text-zinc-800">free during beta</strong>. Paid plans launch soon — you'll get a 2-week heads-up before any billing starts.
+                Dunlo is{" "}
+                <strong className="font-semibold text-zinc-800">
+                  free during beta
+                </strong>
+                . Paid plans launch soon — you'll get a 2-week heads-up before
+                any billing starts.
               </p>
             </div>
           )}
@@ -1011,7 +1033,10 @@ function BillingTab() {
               "Escalation rules & alerts",
               "Full payment recovery history",
             ].map((feature) => (
-              <li key={feature} className="flex items-center gap-2.5 text-[13px] text-zinc-700">
+              <li
+                key={feature}
+                className="flex items-center gap-2.5 text-[13px] text-zinc-700"
+              >
                 <span className="flex size-4 shrink-0 items-center justify-center rounded-full bg-dunlo/10">
                   <CheckCircle2 size={10} className="text-dunlo-deep" />
                 </span>

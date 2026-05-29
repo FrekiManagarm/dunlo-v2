@@ -1,5 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   CheckCircle2,
@@ -92,40 +96,7 @@ function RouteComponent() {
   );
 
   const [edits, setEdits] = useState<Record<string, EditState>>({});
-  const [busy, setBusy] = useState<Record<string, BusyState>>({});
   const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
-
-  const getEdit = (esc: (typeof items)[number]): EditState =>
-    edits[esc.id] ?? {
-      subject: esc.draftSubject ?? "",
-      body: esc.draftBody ?? "",
-    };
-
-  const setEditFor = (id: string, patch: Partial<EditState>) => {
-    setEdits((prev) => {
-      const item = items.find((e) => e.id === id);
-      const current = prev[id] ?? {
-        subject: item?.draftSubject ?? "",
-        body: item?.draftBody ?? "",
-      };
-      const next = { ...current, ...patch };
-      clearTimeout(saveTimers.current[id]);
-      saveTimers.current[id] = setTimeout(async () => {
-        if (!next.subject.trim() || !next.body.trim()) return;
-        try {
-          await updateEscalationDraft({
-            data: { escalationId: id, subject: next.subject, body: next.body },
-          });
-        } catch (e) {
-          console.error("[escalations] auto-save failed", e);
-        }
-      }, 1000);
-      return { ...prev, [id]: next };
-    });
-  };
-
-  const setBusyFor = (id: string, patch: BusyState) =>
-    setBusy((p) => ({ ...p, [id]: { ...(p[id] ?? {}), ...patch } }));
 
   const handleSelect = useCallback(
     (id: string | null) => {
@@ -154,75 +125,140 @@ function RouteComponent() {
     [filtered, handleSelect],
   );
 
+  const invalidateEscalationSideEffects = useCallback(
+    () =>
+      Promise.all([
+        queryClient.invalidateQueries({ queryKey: ["escalations"] }),
+        queryClient.invalidateQueries({ queryKey: ["payments"] }),
+        queryClient.invalidateQueries({ queryKey: ["alerts", "feed"] }),
+      ]),
+    [queryClient],
+  );
+
+  const updateDraftMutation = useMutation({
+    mutationFn: (data: {
+      escalationId: string;
+      subject: string;
+      body: string;
+    }) => updateEscalationDraft({ data }),
+    onError: (e) => {
+      console.error("[escalations] auto-save failed", e);
+      toast.error("Failed to save draft");
+    },
+  });
+
+  const sendMutation = useMutation({
+    mutationFn: (id: string) =>
+      sendEscalationEmail({ data: { escalationId: id } }),
+    onSuccess: async (_result, id) => {
+      await invalidateEscalationSideEffects();
+      toast.success("Email sent");
+      advanceFrom(id);
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Failed to send");
+    },
+  });
+
+  const regenerateMutation = useMutation({
+    mutationFn: (id: string) =>
+      regenerateEscalationDraft({ data: { escalationId: id } }),
+    onSuccess: async (_result, id) => {
+      const refreshed = await queryClient.fetchQuery(escalationsQueryOptions());
+      const updated = refreshed.find((e) => e.id === id);
+      if (updated) {
+        setEdits((prev) => ({
+          ...prev,
+          [id]: {
+            subject: updated.draftSubject ?? "",
+            body: updated.draftBody ?? "",
+          },
+        }));
+      }
+      toast.success("Draft regenerated");
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Failed to regenerate");
+    },
+  });
+
+  const dismissMutation = useMutation({
+    mutationFn: (id: string) =>
+      dismissEscalation({ data: { escalationId: id } }),
+    onSuccess: async (_result, id) => {
+      await invalidateEscalationSideEffects();
+      toast.success("Escalation dismissed");
+      advanceFrom(id);
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Failed to dismiss");
+    },
+  });
+  const { mutateAsync: saveDraft } = updateDraftMutation;
+  const { mutateAsync: sendEscalation } = sendMutation;
+  const { mutateAsync: regenerateDraft } = regenerateMutation;
+  const { mutateAsync: dismissCurrentEscalation } = dismissMutation;
+
+  const getEdit = (esc: (typeof items)[number]): EditState =>
+    edits[esc.id] ?? {
+      subject: esc.draftSubject ?? "",
+      body: esc.draftBody ?? "",
+    };
+
+  const setEditFor = (id: string, patch: Partial<EditState>) => {
+    setEdits((prev) => {
+      const item = items.find((e) => e.id === id);
+      const current = prev[id] ?? {
+        subject: item?.draftSubject ?? "",
+        body: item?.draftBody ?? "",
+      };
+      const next = { ...current, ...patch };
+      clearTimeout(saveTimers.current[id]);
+      saveTimers.current[id] = setTimeout(() => {
+        if (!next.subject.trim() || !next.body.trim()) return;
+        void saveDraft({
+          escalationId: id,
+          subject: next.subject,
+          body: next.body,
+        }).catch(() => undefined);
+      }, 1000);
+      return { ...prev, [id]: next };
+    });
+  };
+
   const handleSend = useCallback(
     async (id: string) => {
-      setBusyFor(id, { sending: true });
-      try {
-        await sendEscalationEmail({ data: { escalationId: id } });
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ["escalations"] }),
-          queryClient.invalidateQueries({ queryKey: ["payments"] }),
-          queryClient.invalidateQueries({ queryKey: ["alerts", "feed"] }),
-        ]);
-        toast.success("Email sent");
-        advanceFrom(id);
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Failed to send");
-      } finally {
-        setBusyFor(id, { sending: false });
-      }
+      await sendEscalation(id).catch(() => undefined);
     },
-    [queryClient, advanceFrom],
+    [sendEscalation],
   );
 
   const handleRegenerate = useCallback(
     async (id: string) => {
-      setBusyFor(id, { regenerating: true });
-      try {
-        await regenerateEscalationDraft({ data: { escalationId: id } });
-        const refreshed = await queryClient.fetchQuery(
-          escalationsQueryOptions(),
-        );
-        const updated = refreshed.find((e) => e.id === id);
-        if (updated) {
-          setEdits((prev) => ({
-            ...prev,
-            [id]: {
-              subject: updated.draftSubject ?? "",
-              body: updated.draftBody ?? "",
-            },
-          }));
-        }
-        toast.success("Draft regenerated");
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Failed to regenerate");
-      } finally {
-        setBusyFor(id, { regenerating: false });
-      }
+      await regenerateDraft(id).catch(() => undefined);
     },
-    [queryClient],
+    [regenerateDraft],
   );
 
   const handleDismiss = useCallback(
     async (id: string) => {
-      setBusyFor(id, { dismissing: true });
-      try {
-        await dismissEscalation({ data: { escalationId: id } });
-        await Promise.all([
-          queryClient.invalidateQueries({ queryKey: ["escalations"] }),
-          queryClient.invalidateQueries({ queryKey: ["payments"] }),
-          queryClient.invalidateQueries({ queryKey: ["alerts", "feed"] }),
-        ]);
-        toast.success("Escalation dismissed");
-        advanceFrom(id);
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Failed to dismiss");
-      } finally {
-        setBusyFor(id, { dismissing: false });
-      }
+      await dismissCurrentEscalation(id).catch(() => undefined);
     },
-    [queryClient, advanceFrom],
+    [dismissCurrentEscalation],
   );
+
+  const selectedBusy: BusyState | undefined = selected
+    ? {
+        sending:
+          sendMutation.isPending && sendMutation.variables === selected.id,
+        regenerating:
+          regenerateMutation.isPending &&
+          regenerateMutation.variables === selected.id,
+        dismissing:
+          dismissMutation.isPending &&
+          dismissMutation.variables === selected.id,
+      }
+    : undefined;
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -337,7 +373,7 @@ function RouteComponent() {
                 key={selected.id}
                 esc={selected}
                 edit={getEdit(selected)}
-                busy={busy[selected.id]}
+                busy={selectedBusy}
                 onEdit={(patch) => setEditFor(selected.id, patch)}
                 onSend={() => handleSend(selected.id)}
                 onRegenerate={() => handleRegenerate(selected.id)}

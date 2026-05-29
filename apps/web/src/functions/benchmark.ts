@@ -286,7 +286,9 @@ async function getCurrentUserSnapshot(userId: string) {
 export const getUserBenchmarkData = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
-    if (!context.session?.user) throw redirect({ to: "/login" });
+    if (!context.session?.user) {
+      throw redirect({ to: "/login", search: { mode: "signin" } });
+    }
     const userId = context.session.user.id;
     const snapshot = await getCurrentUserSnapshot(userId);
     const startsAt = new Date(Date.now() - SAMPLE_WINDOW_DAYS * 86400_000);

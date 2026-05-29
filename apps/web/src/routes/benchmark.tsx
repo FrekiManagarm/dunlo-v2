@@ -257,7 +257,8 @@ function BenchmarkPage() {
                   At your MRR level, the recoverable gap is roughly{" "}
                   <span className="font-mono font-bold text-dunlo-deep">
                     ${calculator.recoverableMonthly.toLocaleString("en-US")}/mo
-                  </span>.
+                  </span>
+                  .
                 </p>
               </div>
               <div className="rounded-2xl border border-zinc-200 bg-zinc-50 p-4">
@@ -276,6 +277,7 @@ function BenchmarkPage() {
 
             <Link
               to="/login"
+              search={{ mode: "signin" }}
               className="mt-5 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-zinc-950 px-5 text-sm font-bold text-white transition-all hover:bg-zinc-800 active:scale-[0.98]"
             >
               Find the real leak in Stripe
@@ -393,6 +395,7 @@ function BenchmarkPage() {
             </div>
             <Link
               to="/login"
+              search={{ mode: "signin" }}
               className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-5 text-sm font-bold text-zinc-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
               Connect Stripe free

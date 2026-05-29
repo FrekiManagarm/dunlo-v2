@@ -28,7 +28,7 @@ import { getUser } from "@/functions/get-user";
 export const Route = createFileRoute("/_dashboard")({
   beforeLoad: async () => {
     const session = await getUser();
-    if (!session) throw redirect({ to: "/login" });
+    if (!session) throw redirect({ to: "/login", search: { mode: "signin" } });
     return { session };
   },
   component: DashboardLayout,
@@ -95,7 +95,7 @@ function DashboardLayout() {
     <div className="flex h-dvh bg-[#f7f8fa] font-sans">
       <aside className="hidden h-dvh w-58 shrink-0 sticky top-0 flex-col border-r border-zinc-100 bg-white lg:flex">
         {/* Logo + beta badge */}
-        <div className="flex items-center justify-between border-b border-zinc-100 px-5 py-[18px]">
+        <div className="flex items-center justify-between border-b border-zinc-100 px-5 py-4.5">
           <Logo size={26} />
           <span className="rounded-full bg-dunlo/10 px-2 py-0.5 text-[9px] font-bold uppercase tracking-widest text-dunlo-deep">
             Beta
@@ -114,14 +114,14 @@ function DashboardLayout() {
                     to={to}
                     className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] transition-all ${
                       active
-                        ? "bg-dunlo/[0.08] font-semibold text-dunlo-deep"
+                        ? "bg-dunlo/8 font-semibold text-dunlo-deep"
                         : "font-medium text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800"
                     }`}
                   >
                     {active && (
                       <motion.span
                         layoutId="sidebar-active-indicator"
-                        className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-dunlo"
+                        className="absolute left-0 top-1/2 h-5 w-0.75 -translate-y-1/2 rounded-r-full bg-dunlo"
                         transition={{
                           type: "spring",
                           stiffness: 380,
@@ -158,14 +158,14 @@ function DashboardLayout() {
                     to={to}
                     className={`group relative flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] transition-all ${
                       active
-                        ? "bg-dunlo/[0.08] font-semibold text-dunlo-deep"
+                        ? "bg-dunlo/8 font-semibold text-dunlo-deep"
                         : "font-medium text-zinc-500 hover:bg-zinc-50 hover:text-zinc-800"
                     }`}
                   >
                     {active && (
                       <motion.span
                         layoutId="sidebar-active-indicator"
-                        className="absolute left-0 top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-r-full bg-dunlo"
+                        className="absolute left-0 top-1/2 h-5 w-0.75 -translate-y-1/2 rounded-r-full bg-dunlo"
                         transition={{
                           type: "spring",
                           stiffness: 380,
