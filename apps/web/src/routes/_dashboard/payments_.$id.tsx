@@ -1,5 +1,9 @@
 import { motion } from "framer-motion";
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import {
   AlertTriangle,
@@ -12,7 +16,7 @@ import {
   TrendingUp,
   XCircle,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { toast } from "sonner";
 import { usePostHog } from "posthog-js/react";
 
@@ -95,8 +99,6 @@ function RouteComponent() {
   useEffect(() => {
     posthog.capture("payment_viewed", { payment_id: id });
   }, [id, posthog]);
-  const [recovering, setRecovering] = useState(false);
-  const [escalating, setEscalating] = useState(false);
 
   const isDone =
     payment.status === "recovered" || payment.status === "dismissed";
@@ -117,30 +119,38 @@ function RouteComponent() {
       queryClient.invalidateQueries({ queryKey: ["alerts", "feed"] }),
     ]);
 
-  const handleRecover = async () => {
-    setRecovering(true);
-    try {
-      await markPaymentRecovered({ data: { id: payment.id } });
+  const recoverMutation = useMutation({
+    mutationFn: (paymentId: string) =>
+      markPaymentRecovered({ data: { id: paymentId } }),
+    onSuccess: async () => {
       await invalidatePaymentViews();
       toast.success("Payment marked as recovered");
-    } catch (e) {
+    },
+    onError: (e) => {
       toast.error(e instanceof Error ? e.message : "Failed");
-    } finally {
-      setRecovering(false);
-    }
+    },
+  });
+
+  const escalateMutation = useMutation({
+    mutationFn: (paymentId: string) =>
+      escalatePaymentManually({ data: { id: paymentId } }),
+    onSuccess: async () => {
+      await invalidatePaymentViews();
+      toast.success("Escalated — AI draft is being generated");
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Failed");
+    },
+  });
+  const { mutateAsync: recoverPayment } = recoverMutation;
+  const { mutateAsync: escalatePayment } = escalateMutation;
+
+  const handleRecover = async () => {
+    await recoverPayment(payment.id).catch(() => undefined);
   };
 
   const handleEscalate = async () => {
-    setEscalating(true);
-    try {
-      await escalatePaymentManually({ data: { id: payment.id } });
-      await invalidatePaymentViews();
-      toast.success("Escalated — AI draft is being generated");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed");
-    } finally {
-      setEscalating(false);
-    }
+    await escalatePayment(payment.id).catch(() => undefined);
   };
 
   return (
@@ -176,21 +186,21 @@ function RouteComponent() {
           {!isDone && !isEscalated && (
             <button
               onClick={handleEscalate}
-              disabled={escalating}
+              disabled={escalateMutation.isPending}
               className="flex items-center gap-1.5 rounded-xl border border-amber-100 bg-amber-50 px-3 py-1.5 text-xs font-semibold text-amber-700 transition-all hover:bg-amber-100 active:scale-[0.97] disabled:opacity-50"
             >
               <TrendingUp size={11} />
-              {escalating ? "Escalating…" : "Escalate"}
+              {escalateMutation.isPending ? "Escalating…" : "Escalate"}
             </button>
           )}
           {!isDone && (
             <button
               onClick={handleRecover}
-              disabled={recovering}
+              disabled={recoverMutation.isPending}
               className="flex items-center gap-1.5 rounded-xl bg-dunlo px-3 py-1.5 text-xs font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.97] disabled:opacity-50"
             >
               <CheckCircle2 size={11} />
-              {recovering ? "Marking…" : "Mark recovered"}
+              {recoverMutation.isPending ? "Marking…" : "Mark recovered"}
             </button>
           )}
         </div>

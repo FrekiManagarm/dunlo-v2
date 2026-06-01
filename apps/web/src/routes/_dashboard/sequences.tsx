@@ -1,5 +1,9 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useQueryClient, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { usePostHog } from "posthog-js/react";
 import {
@@ -12,7 +16,7 @@ import {
   Trash2,
   Zap,
 } from "lucide-react";
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -88,7 +92,6 @@ function RouteComponent() {
   const navigate = Route.useNavigate();
   const search = Route.useSearch();
 
-  const [resetting, setResetting] = useState(false);
   const [edits, setEdits] = useState<Record<string, EditState>>({});
   const [saveStatus, setSaveStatus] = useState<Record<string, SaveStatus>>({});
   const saveTimers = useRef<Record<string, ReturnType<typeof setTimeout>>>({});
@@ -117,8 +120,63 @@ function RouteComponent() {
     });
   };
 
-  const invalidate = () =>
-    queryClient.invalidateQueries({ queryKey: ["sequences"] });
+  const invalidate = useCallback(
+    () => queryClient.invalidateQueries({ queryKey: ["sequences"] }),
+    [queryClient],
+  );
+
+  const updateStepMutation = useMutation({
+    mutationFn: (data: {
+      stepId: string;
+      subject: string;
+      body: string;
+      delayHours: number;
+    }) => updateSequenceStep({ data }),
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Save failed");
+    },
+  });
+
+  const toggleMutation = useMutation({
+    mutationFn: (data: { sequenceId: string; isActive: boolean }) =>
+      toggleSequence({ data }),
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Failed to update");
+    },
+  });
+
+  const addStepMutation = useMutation({
+    mutationFn: (data: {
+      sequenceId: string;
+      stepNumber: number;
+      subject: string;
+      body: string;
+      delayHours: number;
+    }) => addSequenceStep({ data }),
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Failed to add step");
+    },
+  });
+
+  const deleteStepMutation = useMutation({
+    mutationFn: (stepId: string) => deleteSequenceStep({ data: { stepId } }),
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Failed to delete");
+    },
+  });
+
+  const resetMutation = useMutation({
+    mutationFn: () => resetSequencesToDefault(),
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Reset failed");
+    },
+  });
+
+  const { mutateAsync: saveStep } = updateStepMutation;
+  const { mutateAsync: toggleSelectedSequence } = toggleMutation;
+  const { mutateAsync: addStep } = addStepMutation;
+  const { mutateAsync: deleteStep } = deleteStepMutation;
+  const { mutateAsync: resetSequences } = resetMutation;
 
   const getEdit = (step: StepLike): EditState =>
     edits[step.id] ?? {
@@ -140,13 +198,11 @@ function RouteComponent() {
     clearTimeout(savedTimers.current[step.id]);
     saveTimers.current[step.id] = setTimeout(async () => {
       try {
-        await updateSequenceStep({
-          data: {
-            stepId: step.id,
-            subject: next.subject,
-            body: next.body,
-            delayHours: next.delayHours,
-          },
+        await saveStep({
+          stepId: step.id,
+          subject: next.subject,
+          body: next.body,
+          delayHours: next.delayHours,
         });
         setSaveStatus((s) => ({ ...s, [step.id]: "saved" }));
         await invalidate();
@@ -155,7 +211,6 @@ function RouteComponent() {
         }, 1500);
       } catch (e) {
         setSaveStatus((s) => ({ ...s, [step.id]: "idle" }));
-        toast.error(e instanceof Error ? e.message : "Save failed");
       }
     }, 900);
   };
@@ -164,8 +219,9 @@ function RouteComponent() {
     if (!selectedSeq) return;
     const newEnabled = !selectedSeq.isActive;
     try {
-      await toggleSequence({
-        data: { sequenceId: selectedSeq.id, isActive: newEnabled },
+      await toggleSelectedSequence({
+        sequenceId: selectedSeq.id,
+        isActive: newEnabled,
       });
       await invalidate();
       posthog.capture("sequence_toggled", {
@@ -175,40 +231,32 @@ function RouteComponent() {
       toast.success(
         selectedSeq.isActive ? "Sequence paused" : "Sequence enabled",
       );
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to update");
-    }
+    } catch {}
   };
 
   const handleAddStep = async () => {
     if (!selectedSeq) return;
     const nextNumber = (selectedSeq.steps.at(-1)?.stepNumber ?? 0) + 1;
     try {
-      await addSequenceStep({
-        data: {
-          sequenceId: selectedSeq.id,
-          stepNumber: nextNumber,
-          subject: "New step subject",
-          body: "Hi {{customer_name}},\n\nYour message here.\n\n{{sender_name}}",
-          delayHours: 24,
-        },
+      await addStep({
+        sequenceId: selectedSeq.id,
+        stepNumber: nextNumber,
+        subject: "New step subject",
+        body: "Hi {{customer_name}},\n\nYour message here.\n\n{{sender_name}}",
+        delayHours: 24,
       });
       await invalidate();
       toast.success("Step added");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to add step");
-    }
+    } catch {}
   };
 
   const handleDeleteStep = async (stepId: string) => {
     if (!window.confirm("Delete this step?")) return;
     try {
-      await deleteSequenceStep({ data: { stepId } });
+      await deleteStep(stepId);
       await invalidate();
       toast.success("Step deleted");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to delete");
-    }
+    } catch {}
   };
 
   const handleReset = async () => {
@@ -218,17 +266,12 @@ function RouteComponent() {
       )
     )
       return;
-    setResetting(true);
     try {
-      await resetSequencesToDefault();
+      await resetSequences();
       setEdits({});
       await invalidate();
       toast.success("Sequences reset to defaults");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Reset failed");
-    } finally {
-      setResetting(false);
-    }
+    } catch {}
   };
 
   if (sequences.length === 0) {
@@ -260,10 +303,13 @@ function RouteComponent() {
           </div>
           <button
             onClick={handleReset}
-            disabled={resetting}
+            disabled={resetMutation.isPending}
             className="flex shrink-0 items-center gap-1.5 rounded-full border border-zinc-200 bg-white px-3.5 py-2 text-xs font-semibold text-zinc-600 transition-all hover:bg-zinc-50 active:scale-[0.97] disabled:opacity-50"
           >
-            <RotateCcw size={12} className={resetting ? "animate-spin" : ""} />
+            <RotateCcw
+              size={12}
+              className={resetMutation.isPending ? "animate-spin" : ""}
+            />
             Reset defaults
           </button>
         </div>
@@ -345,9 +391,10 @@ function RouteComponent() {
                 role="switch"
                 aria-checked={selectedSeq.isActive}
                 onClick={handleToggleActive}
+                disabled={toggleMutation.isPending}
                 className={`relative inline-flex h-5 w-9 shrink-0 cursor-pointer items-center rounded-full transition-colors ${
                   selectedSeq.isActive ? "bg-dunlo" : "bg-zinc-200"
-                }`}
+                } disabled:opacity-50`}
               >
                 <motion.span
                   layout
@@ -407,6 +454,10 @@ function RouteComponent() {
                   onEdit={(patch) => setEdit(step, patch)}
                   status={saveStatus[step.id] ?? "idle"}
                   canDelete={selectedSeq.steps.length > 1}
+                  deleting={
+                    deleteStepMutation.isPending &&
+                    deleteStepMutation.variables === step.id
+                  }
                   onDelete={() => handleDeleteStep(step.id)}
                 />
               </div>
@@ -420,15 +471,17 @@ function RouteComponent() {
             <div className="relative flex items-center gap-4">
               <button
                 onClick={handleAddStep}
-                className="relative z-10 flex size-[27px] shrink-0 items-center justify-center rounded-full border-2 border-dashed border-zinc-300 bg-[#f7f8fa] text-zinc-400 ring-4 ring-[#f7f8fa] transition-all hover:border-dunlo/50 hover:text-dunlo"
+                disabled={addStepMutation.isPending}
+                className="relative z-10 flex size-[27px] shrink-0 items-center justify-center rounded-full border-2 border-dashed border-zinc-300 bg-[#f7f8fa] text-zinc-400 ring-4 ring-[#f7f8fa] transition-all hover:border-dunlo/50 hover:text-dunlo disabled:opacity-50"
               >
                 <Plus size={12} strokeWidth={2.5} />
               </button>
               <button
                 onClick={handleAddStep}
-                className="text-[12px] font-semibold text-zinc-400 transition-colors hover:text-zinc-700"
+                disabled={addStepMutation.isPending}
+                className="text-[12px] font-semibold text-zinc-400 transition-colors hover:text-zinc-700 disabled:opacity-50"
               >
-                Add a step
+                {addStepMutation.isPending ? "Adding…" : "Add a step"}
               </button>
             </div>
           </div>
@@ -446,6 +499,7 @@ function StepCard({
   onEdit,
   status,
   canDelete,
+  deleting,
   onDelete,
 }: {
   step: StepLike;
@@ -455,6 +509,7 @@ function StepCard({
   onEdit: (patch: Partial<EditState>) => void;
   status: SaveStatus;
   canDelete: boolean;
+  deleting: boolean;
   onDelete: () => void;
 }) {
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -650,10 +705,11 @@ function StepCard({
                   <div className="flex items-center justify-end border-t border-zinc-100 pt-3">
                     <button
                       onClick={onDelete}
-                      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-500 active:scale-[0.97]"
+                      disabled={deleting}
+                      className="flex items-center gap-1.5 rounded-lg px-2.5 py-1.5 text-[11px] font-medium text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-500 active:scale-[0.97] disabled:opacity-50"
                     >
                       <Trash2 size={11} />
-                      Delete step
+                      {deleting ? "Deleting…" : "Delete step"}
                     </button>
                   </div>
                 )}

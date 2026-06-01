@@ -9,7 +9,7 @@ import {
 } from "@dunlo-v2/ui/components/select";
 import { useForm } from "@tanstack/react-form";
 import { usePostHog } from "posthog-js/react";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -272,7 +272,34 @@ function EmailTab({
   initial: Awaited<ReturnType<typeof getEmailProvider>>;
 }) {
   const posthog = usePostHog();
-  const [testing, setTesting] = useState(false);
+  const saveProviderMutation = useMutation({
+    mutationFn: (data: {
+      provider: "resend" | "postmark" | "mailgun" | "sendgrid";
+      apiKey: string;
+      domain: string;
+      fromEmail: string;
+      fromName: string;
+    }) => saveEmailProvider({ data }),
+    onSuccess: () => {
+      posthog.capture("settings_updated", { section: "email_provider" });
+      toast.success("Email provider saved");
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Save failed");
+    },
+  });
+
+  const testEmailMutation = useMutation({
+    mutationFn: () => sendTestEmail(),
+    onSuccess: () => {
+      toast.success("Test email sent — check your inbox");
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Test send failed");
+    },
+  });
+  const { mutateAsync: saveProvider } = saveProviderMutation;
+  const { mutateAsync: testEmail } = testEmailMutation;
 
   const form = useForm({
     defaultValues: {
@@ -283,13 +310,7 @@ function EmailTab({
       fromName: initial.fromName,
     },
     onSubmit: async ({ value }) => {
-      try {
-        await saveEmailProvider({ data: value });
-        posthog.capture("settings_updated", { section: "email_provider" });
-        toast.success("Email provider saved");
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Save failed");
-      }
+      await saveProvider(value).catch(() => undefined);
     },
     validators: {
       onSubmit: z
@@ -312,15 +333,7 @@ function EmailTab({
   });
 
   const onTest = async () => {
-    setTesting(true);
-    try {
-      await sendTestEmail();
-      toast.success("Test email sent — check your inbox");
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Test send failed");
-    } finally {
-      setTesting(false);
-    }
+    await testEmail().catch(() => undefined);
   };
 
   return (
@@ -505,10 +518,10 @@ function EmailTab({
           <button
             type="button"
             onClick={onTest}
-            disabled={!initial.configured || testing}
+            disabled={!initial.configured || testEmailMutation.isPending}
             className="flex items-center gap-1.5 rounded-xl border border-zinc-200 bg-white px-3.5 py-2 text-xs font-semibold text-zinc-600 transition-all hover:bg-zinc-50 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {testing ? (
+            {testEmailMutation.isPending ? (
               <Loader2 size={12} className="animate-spin" />
             ) : (
               <Send size={12} />
@@ -549,12 +562,55 @@ function EscalationTab({
   initial: Awaited<ReturnType<typeof getEscalationSettings>>;
 }) {
   const posthog = usePostHog();
-  const [disconnecting, setDisconnecting] = useState(false);
-  const [syncing, setSyncing] = useState(false);
   const [syncResult, setSyncResult] = useState<{
     imported: number;
     skipped: number;
   } | null>(null);
+
+  const saveEscalationSettingsMutation = useMutation({
+    mutationFn: (data: { threshold: number; currency: "eur" | "usd" | "gbp" }) =>
+      updateEscalationSettings({ data }),
+    onSuccess: () => {
+      posthog.capture("settings_updated", { section: "escalation" });
+      toast.success("Escalation settings saved");
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Save failed");
+    },
+  });
+
+  const syncPaymentsMutation = useMutation({
+    mutationFn: () => syncExistingFailedPayments(),
+    onSuccess: (result) => {
+      setSyncResult(result);
+      toast.success(
+        result.imported > 0
+          ? `${result.imported} payment${result.imported === 1 ? "" : "s"} imported`
+          : "No new payments to import",
+      );
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Sync failed");
+    },
+  });
+
+  const disconnectStripeMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch("/api/stripe/disconnect", { method: "POST" });
+      if (!res.ok) throw new Error(`Disconnect failed (${res.status})`);
+    },
+    onSuccess: () => {
+      toast.success("Stripe disconnected");
+      window.location.href = "/onboarding";
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Disconnect failed");
+    },
+  });
+  const { mutateAsync: saveEscalationSettings } =
+    saveEscalationSettingsMutation;
+  const { mutateAsync: syncPayments } = syncPaymentsMutation;
+  const { mutateAsync: disconnectStripe } = disconnectStripeMutation;
 
   const form = useForm({
     defaultValues: {
@@ -562,15 +618,10 @@ function EscalationTab({
       currency: initial.currency as "eur" | "usd" | "gbp",
     },
     onSubmit: async ({ value }) => {
-      try {
-        await updateEscalationSettings({
-          data: { threshold: value.threshold, currency: value.currency },
-        });
-        posthog.capture("settings_updated", { section: "escalation" });
-        toast.success("Escalation settings saved");
-      } catch (e) {
-        toast.error(e instanceof Error ? e.message : "Save failed");
-      }
+      await saveEscalationSettings({
+        threshold: value.threshold,
+        currency: value.currency,
+      }).catch(() => undefined);
     },
     validators: {
       onSubmit: z.object({
@@ -581,21 +632,8 @@ function EscalationTab({
   });
 
   const onSync = async () => {
-    setSyncing(true);
     setSyncResult(null);
-    try {
-      const result = await syncExistingFailedPayments();
-      setSyncResult(result);
-      toast.success(
-        result.imported > 0
-          ? `${result.imported} payment${result.imported === 1 ? "" : "s"} imported`
-          : "No new payments to import",
-      );
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Sync failed");
-    } finally {
-      setSyncing(false);
-    }
+    await syncPayments().catch(() => undefined);
   };
 
   const onDisconnect = async () => {
@@ -606,17 +644,7 @@ function EscalationTab({
     ) {
       return;
     }
-    setDisconnecting(true);
-    try {
-      const res = await fetch("/api/stripe/disconnect", { method: "POST" });
-      if (!res.ok) throw new Error(`Disconnect failed (${res.status})`);
-      toast.success("Stripe disconnected");
-      window.location.href = "/onboarding";
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Disconnect failed");
-    } finally {
-      setDisconnecting(false);
-    }
+    await disconnectStripe().catch(() => undefined);
   };
 
   return (
@@ -761,15 +789,15 @@ function EscalationTab({
           </div>
           <button
             onClick={onSync}
-            disabled={syncing || !initial.hasConnection}
+            disabled={syncPaymentsMutation.isPending || !initial.hasConnection}
             className="shrink-0 flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-xs font-semibold text-zinc-700 transition-all hover:bg-zinc-50 hover:border-zinc-300 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"
           >
-            {syncing ? (
+            {syncPaymentsMutation.isPending ? (
               <Loader2 size={12} className="animate-spin" />
             ) : (
               <RefreshCw size={12} />
             )}
-            {syncing ? "Syncing…" : "Sync now"}
+            {syncPaymentsMutation.isPending ? "Syncing…" : "Sync now"}
           </button>
         </div>
       </div>
@@ -792,10 +820,12 @@ function EscalationTab({
             </p>
             <button
               onClick={onDisconnect}
-              disabled={!initial.hasConnection || disconnecting}
+              disabled={
+                !initial.hasConnection || disconnectStripeMutation.isPending
+              }
               className="shrink-0 flex items-center gap-2 rounded-xl border border-red-200 bg-red-50/50 px-4 py-2 text-xs font-semibold text-red-600 transition-all hover:bg-red-50 hover:border-red-300 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"
             >
-              {disconnecting ? (
+              {disconnectStripeMutation.isPending ? (
                 <Loader2 size={12} className="animate-spin" />
               ) : (
                 <Unplug size={12} />
@@ -849,26 +879,29 @@ const SIM_BUTTONS: {
 ];
 
 function TestingTab() {
-  const [busy, setBusy] = useState<SimAction | null>(null);
+  const simulationMutation = useMutation({
+    mutationFn: async (action: SimAction) => {
+      if (action === "failure") return simulateFailedPayment();
+      if (action === "escalation") return simulateEscalation();
+      return simulateRecovery();
+    },
+    onSuccess: (result, action) => {
+      if (action === "failure") {
+        toast.success(`Failed payment created for ${result.customerName}`);
+      } else if (action === "escalation") {
+        toast.success(`Escalation created for ${result.customerName}`);
+      } else {
+        toast.success(`${result.customerName ?? "Payment"} marked as recovered`);
+      }
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Simulation failed");
+    },
+  });
+  const { mutateAsync: simulateAction } = simulationMutation;
 
   const run = async (action: SimAction) => {
-    setBusy(action);
-    try {
-      if (action === "failure") {
-        const r = await simulateFailedPayment();
-        toast.success(`Failed payment created for ${r.customerName}`);
-      } else if (action === "escalation") {
-        const r = await simulateEscalation();
-        toast.success(`Escalation created for ${r.customerName}`);
-      } else {
-        const r = await simulateRecovery();
-        toast.success(`${r.customerName ?? "Payment"} marked as recovered`);
-      }
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Simulation failed");
-    } finally {
-      setBusy(null);
-    }
+    await simulateAction(action).catch(() => undefined);
   };
 
   return (
@@ -908,15 +941,19 @@ function TestingTab() {
                 </div>
                 <button
                   onClick={() => run(action)}
-                  disabled={busy !== null}
+                  disabled={simulationMutation.isPending}
                   className={`shrink-0 flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${badge}`}
                 >
-                  {busy === action ? (
+                  {simulationMutation.isPending &&
+                  simulationMutation.variables === action ? (
                     <Loader2 size={11} className="animate-spin" />
                   ) : (
                     <Icon size={11} />
                   )}
-                  {busy === action ? "Running…" : "Simulate"}
+                  {simulationMutation.isPending &&
+                  simulationMutation.variables === action
+                    ? "Running…"
+                    : "Simulate"}
                 </button>
               </div>
             ),

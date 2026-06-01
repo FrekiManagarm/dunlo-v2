@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useSuspenseQuery } from "@tanstack/react-query";
+import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   AlertCircle,
@@ -139,6 +139,13 @@ const SLACK_TOGGLES: { key: SlackToggleKey; label: string }[] = [
   { key: "slackOnEmailSent", label: "Recovery email sent" },
 ];
 
+type NotificationSettingsUpdate = Pick<
+  NotificationSettings,
+  | EmailToggleKey
+  | SlackToggleKey
+  | "slackWebhookUrl"
+>;
+
 function Toggle({
   checked,
   onChange,
@@ -185,9 +192,21 @@ function RouteComponent() {
   );
   const [settings, setSettings] =
     useState<NotificationSettings>(initialSettings);
-  const [saving, setSaving] = useState(false);
   const [activeFilter, setActiveFilter] = useState<FilterKey>("all");
   const [settingsOpen, setSettingsOpen] = useState(false);
+
+  const saveSettingsMutation = useMutation({
+    mutationFn: (data: NotificationSettingsUpdate) =>
+      updateNotificationSettings({ data }),
+    onSuccess: () => {
+      toast.success("Notification settings saved");
+      setSettingsOpen(false);
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Failed to save");
+    },
+  });
+  const { mutateAsync: saveNotificationSettings } = saveSettingsMutation;
 
   const counts: Record<FilterKey, number> = {
     all: feed.length,
@@ -203,28 +222,17 @@ function RouteComponent() {
       : feed.filter((e: FeedEvent) => e.type === activeFilter);
 
   async function handleSave() {
-    setSaving(true);
-    try {
-      await updateNotificationSettings({
-        data: {
-          emailOnFailure: settings.emailOnFailure,
-          emailOnRecovery: settings.emailOnRecovery,
-          emailOnEscalation: settings.emailOnEscalation,
-          emailOnEmailSent: settings.emailOnEmailSent,
-          slackOnFailure: settings.slackOnFailure,
-          slackOnRecovery: settings.slackOnRecovery,
-          slackOnEscalation: settings.slackOnEscalation,
-          slackOnEmailSent: settings.slackOnEmailSent,
-          slackWebhookUrl: settings.slackWebhookUrl ?? "",
-        },
-      });
-      toast.success("Notification settings saved");
-      setSettingsOpen(false);
-    } catch (e) {
-      toast.error(e instanceof Error ? e.message : "Failed to save");
-    } finally {
-      setSaving(false);
-    }
+    await saveNotificationSettings({
+      emailOnFailure: settings.emailOnFailure,
+      emailOnRecovery: settings.emailOnRecovery,
+      emailOnEscalation: settings.emailOnEscalation,
+      emailOnEmailSent: settings.emailOnEmailSent,
+      slackOnFailure: settings.slackOnFailure,
+      slackOnRecovery: settings.slackOnRecovery,
+      slackOnEscalation: settings.slackOnEscalation,
+      slackOnEmailSent: settings.slackOnEmailSent,
+      slackWebhookUrl: settings.slackWebhookUrl ?? "",
+    }).catch(() => undefined);
   }
 
   return (
@@ -521,11 +529,11 @@ function RouteComponent() {
                 <motion.button
                   whileTap={{ scale: 0.97 }}
                   onClick={handleSave}
-                  disabled={saving}
+                  disabled={saveSettingsMutation.isPending}
                   className="flex w-full items-center justify-center gap-2 rounded-xl bg-zinc-900 px-4 py-2.5 text-sm font-semibold text-white transition-colors hover:bg-zinc-700 disabled:opacity-50"
                 >
                   <AnimatePresence mode="wait" initial={false}>
-                    {saving ? (
+                    {saveSettingsMutation.isPending ? (
                       <motion.span
                         key="saving"
                         initial={{ opacity: 0 }}
