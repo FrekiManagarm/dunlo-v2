@@ -31,18 +31,21 @@ const KEYWORDS = [
 const FAILURE_REASONS = [
   {
     code: "card_expired",
-    title: "Expired cards need a direct update path",
-    copy: "A customer did not choose to churn. They need a calm email with the exact card update link before the subscription lapses.",
+    title: "The customer is still willing to pay",
+    copy: "Send a direct update-card path before a simple expiry becomes cancellation noise.",
+    signal: "high intent",
   },
   {
     code: "insufficient_funds",
-    title: "Insufficient funds need better timing",
-    copy: "Retrying immediately often burns the same decline. Dunlo waits, explains the issue, and follows up when the payment is more likely to clear.",
+    title: "Timing matters more than pressure",
+    copy: "Wait, explain the issue, and retry when the payment has a better chance to clear.",
+    signal: "timing",
   },
   {
     code: "do_not_honor",
-    title: "Bank blocks need human context",
-    copy: "A vague bank decline can make customers think your product broke. The recovery message should explain the fix before another retry.",
+    title: "Vague bank blocks need context",
+    copy: "Tell the customer what the bank blocked and what to do before another retry burns trust.",
+    signal: "context",
   },
 ] as const;
 
@@ -73,132 +76,245 @@ export const metadata: Metadata = pageSeoMetadata({
 
 export default function StripeFailedPaymentsPage() {
   return (
-    <div className="min-h-dvh bg-stone-100 font-sans text-gray-950">
+    <div className="min-h-dvh overflow-hidden bg-stone-100 font-sans text-gray-950">
       <Nav />
-      <main className="px-4 pb-12 pt-28 md:pt-32">
-        <section className="mx-auto grid max-w-6xl grid-cols-1 gap-8 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
-          <div>
+      <main className="space-y-4 px-3 pb-4 pt-24 md:space-y-5 md:px-4 md:pb-6 md:pt-28">
+        <section className="relative -mx-3 px-3 md:-mx-4 md:px-4">
+          <OrganicBackdrop />
+          <div className="relative mx-auto grid min-h-[calc(100dvh-8rem)] max-w-6xl min-w-0 gap-12 py-6 md:grid-cols-[0.92fr_1.08fr] md:items-center md:gap-14 md:py-8">
+          <div className="min-w-0 max-w-xl">
             <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
               Stripe failed payment recovery
             </p>
-            <h1 className="mt-5 max-w-4xl text-4xl font-bold leading-none tracking-tight text-gray-950 md:text-6xl">
-              Recover failed Stripe payments before they become silent churn.
+            <div className="mt-5 flex flex-wrap gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-dunlo/30 bg-dunlo/15 px-3 py-1.5 text-xs font-bold text-dunlo-deep">
+                <MailCheck size={13} strokeWidth={2.2} />
+                Failure-code emails
+              </span>
+              <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-xs font-bold text-gray-700 shadow-sm">
+                <Clock3 size={13} strokeWidth={2.2} />
+                Smarter Stripe retry timing
+              </span>
+            </div>
+            <h1 className="mt-8 max-w-xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:text-5xl sm:leading-[0.98] md:text-6xl">
+              Recover failed Stripe payments before they turn into quiet churn.
             </h1>
-            <p className="mt-6 max-w-2xl text-lg leading-relaxed text-gray-600">
-              Dunlo watches failed Stripe payments, sends the right recovery
-              email for each failure reason, times retries more carefully, and
-              shows the revenue you win back.
+            <p className="mt-5 max-w-lg border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700">
+              Dunlo turns raw Stripe decline events into a recovery workflow:
+              the right customer email, the right retry moment, and founder
+              escalation when an account is worth saving personally.
             </p>
+
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href={SIGNUP_URL}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all hover:bg-gray-800 active:scale-[0.98]"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-[1px] hover:bg-gray-800 active:scale-[0.98]"
               >
                 Recover failed payments
-                <ArrowRight size={16} />
+                <ArrowRight size={16} strokeWidth={1.8} />
               </a>
               <Link
                 href="/benchmark"
-                className="inline-flex h-12 items-center justify-center rounded-full border border-gray-300 px-6 text-sm font-semibold text-gray-800 transition-colors hover:border-gray-950"
+                className="inline-flex h-12 items-center justify-center rounded-full border border-gray-300 px-6 text-sm font-semibold text-gray-800 transition-all duration-300 hover:-translate-y-[1px] hover:border-gray-950 active:scale-[0.98]"
               >
                 Check your failure rate
               </Link>
             </div>
           </div>
 
-          <div className="rounded-[1.5rem] border border-gray-200 bg-white/80 p-5 shadow-[0_22px_56px_-36px_rgba(24,24,27,0.22)] backdrop-blur-md">
-            <p className="text-sm font-semibold text-gray-500">
-              Recovery workflow
-            </p>
-            <div className="mt-5 space-y-3">
-              {[
-                "Detect a failed charge or invoice in Stripe",
-                "Classify the failure reason and urgency",
-                "Send a customer-safe recovery email",
-                "Escalate high-value accounts to the founder",
-              ].map((step, index) => (
-                <div
-                  key={step}
-                  className="flex items-center gap-3 rounded-xl border border-gray-100 bg-gray-50 px-4 py-3"
-                >
-                  <span className="flex size-7 items-center justify-center rounded-full bg-dunlo font-mono text-xs font-bold text-gray-950">
-                    {index + 1}
+          <aside className="relative min-w-0 md:pl-10">
+            <div className="overflow-hidden rounded-[1.75rem] border border-gray-200/70 bg-white shadow-[0_24px_70px_-52px_rgba(17,24,39,0.45)]">
+              <div className="border-b border-gray-100 bg-gray-50 px-5 py-4">
+                <div className="flex items-center justify-between gap-4">
+                  <div>
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400">
+                      Failed payment
+                    </p>
+                    <h2 className="mt-1 text-base font-bold tracking-tight text-gray-900">
+                      Northstar Ledger
+                    </h2>
+                  </div>
+                  <span className="rounded-full border border-dunlo/25 bg-dunlo/10 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-dunlo-deep">
+                    recovered
                   </span>
-                  <span className="text-sm text-gray-700">{step}</span>
                 </div>
-              ))}
+                <div className="mt-4 grid grid-cols-2 gap-2">
+                  <div className="rounded-xl border border-gray-200 bg-white px-3 py-2">
+                    <p className="font-mono text-xl font-bold text-dunlo">
+                      $842
+                    </p>
+                    <p className="text-[11px] font-medium text-gray-400">
+                      failed payment
+                    </p>
+                  </div>
+                  <div className="rounded-xl border border-gray-200 bg-white px-3 py-2">
+                    <p className="font-mono text-xl font-bold text-gray-900">
+                      18h
+                    </p>
+                    <p className="text-[11px] font-medium text-gray-400">
+                      to recover
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="p-5">
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+                  Stripe reason
+                </p>
+                <div className="mt-3 rounded-xl border border-gray-200 bg-gray-50 px-3 py-2 font-mono text-xs font-bold text-gray-900">
+                  card_expired
+                </div>
+                <div className="my-4 flex justify-center text-dunlo-deep">
+                  <ArrowRight size={16} strokeWidth={1.8} />
+                </div>
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+                  Dunlo action
+                </p>
+                <div className="mt-3 rounded-xl border border-dunlo/25 bg-dunlo/8 px-3 py-2 text-sm font-semibold text-gray-900">
+                  Send update-card email, then retry after customer action.
+                </div>
+              </div>
             </div>
+
+            <div className="mt-4 rounded-[1.35rem] border border-gray-200 bg-gray-950 p-5 text-white">
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo">
+                Recovery state
+              </p>
+              <div className="mt-5 space-y-3">
+                {[
+                  ["failed", "$842", "card_expired"],
+                  ["messaged", "$842", "update link sent"],
+                  ["recovered", "$842", "paid after 18h"],
+                ].map(([state, amount, detail], index) => (
+                  <div
+                    key={state}
+                    className="flex items-center justify-between gap-4 border-t border-white/10 pt-4 first:border-t-0 first:pt-0"
+                    style={{ animationDelay: `${index * 110}ms` }}
+                  >
+                    <div>
+                      <p className="font-mono text-xs uppercase tracking-[0.16em] text-gray-400">
+                        {state}
+                      </p>
+                      <p className="mt-1 text-sm text-gray-300">{detail}</p>
+                    </div>
+                    <p className="font-mono text-xl font-bold">{amount}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </aside>
           </div>
         </section>
 
-        <section className="mx-auto mt-12 max-w-6xl rounded-[1.5rem] border border-gray-200 bg-white/75 p-6 backdrop-blur-md md:p-8">
-          <div className="max-w-3xl">
+        <section className="mx-auto grid max-w-6xl grid-cols-1 gap-5 lg:grid-cols-[0.72fr_1.28fr]">
+          <div className="lg:pt-10">
             <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-              Why Stripe payments fail
+              Failure-code logic
             </p>
-            <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
-              A failed payment is not one problem. It is a signal.
+            <h2 className="mt-3 max-w-sm text-3xl font-bold tracking-tight md:text-4xl">
+              The reason changes the recovery play.
             </h2>
-            <p className="mt-4 text-base leading-relaxed text-gray-600">
-              Treating every decline the same leaves revenue on the table. Card
-              expiry, bank blocks, insufficient funds, and authentication
-              failures each need different timing and customer language.
+            <p className="mt-4 max-w-sm text-sm leading-6 text-gray-600">
+              Generic payment failed emails flatten every problem into the same
+              message. Dunlo keeps the response tied to the Stripe failure code.
             </p>
           </div>
 
-          <div className="mt-8 grid grid-cols-1 gap-4 lg:grid-cols-3">
-            {FAILURE_REASONS.map((reason) => (
-              <article
-                key={reason.code}
-                className="rounded-2xl border border-gray-200 bg-gray-50 p-5"
-              >
-                <TriangleAlert size={18} className="text-dunlo-deep" />
-                <p className="mt-4 font-mono text-sm font-bold text-gray-950">
-                  {reason.code}
-                </p>
-                <h3 className="mt-3 text-lg font-bold tracking-tight">
-                  {reason.title}
-                </h3>
-                <p className="mt-2 text-sm leading-relaxed text-gray-600">
-                  {reason.copy}
-                </p>
-              </article>
-            ))}
-          </div>
-        </section>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-[1.25fr_0.75fr]">
+            <div className="rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md">
+              <div className="divide-y divide-gray-200">
+                {FAILURE_REASONS.map((reason) => (
+                  <article
+                    key={reason.code}
+                    className="grid grid-cols-1 gap-4 py-5 first:pt-0 last:pb-0 md:grid-cols-[170px_1fr]"
+                  >
+                    <div>
+                      <p className="font-mono text-sm font-bold text-gray-950">
+                        {reason.code}
+                      </p>
+                      <p className="mt-2 w-fit rounded-full border border-dunlo/20 bg-dunlo/[0.07] px-2.5 py-1 font-mono text-[11px] font-semibold text-dunlo-deep">
+                        {reason.signal}
+                      </p>
+                    </div>
+                    <div>
+                      <h3 className="text-lg font-bold tracking-tight">
+                        {reason.title}
+                      </h3>
+                      <p className="mt-2 text-sm leading-6 text-gray-600">
+                        {reason.copy}
+                      </p>
+                    </div>
+                  </article>
+                ))}
+              </div>
+            </div>
 
-        <section className="mx-auto mt-4 grid max-w-6xl grid-cols-1 gap-4 md:grid-cols-3">
-          {[
-            {
-              icon: MailCheck,
-              title: "Failure-code emails",
-              copy: "Send messages that match the actual Stripe decline instead of a generic payment failed note.",
-            },
-            {
-              icon: Clock3,
-              title: "Smarter timing",
-              copy: "Avoid wasting retries when the failure reason needs a customer action or a better payment window.",
-            },
-            {
-              icon: BadgeCheck,
-              title: "Revenue tracking",
-              copy: "See recovered MRR, pending failures, and which recovery steps are doing the work.",
-            },
-          ].map(({ icon: Icon, title, copy }) => (
-            <div
-              key={title}
-              className="rounded-[1.5rem] border border-gray-200 bg-white/75 p-5 backdrop-blur-md"
-            >
-              <Icon size={20} className="text-dunlo-deep" />
-              <h3 className="mt-4 text-lg font-bold tracking-tight">{title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-gray-600">
-                {copy}
+            <div className="rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md">
+              <TriangleAlert size={20} className="text-dunlo-deep" />
+              <h3 className="mt-5 text-xl font-bold tracking-tight">
+                Blind retries are not a recovery strategy.
+              </h3>
+              <p className="mt-3 text-sm leading-6 text-gray-600">
+                If the card expired or the bank blocked the charge, another
+                retry without context can train customers to ignore the problem.
               </p>
             </div>
-          ))}
+          </div>
         </section>
 
-        <FaqSection />
+        <section className="mx-auto grid max-w-6xl grid-cols-1 gap-5 lg:grid-cols-[1fr_0.8fr]">
+          <div className="rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md md:p-8">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              Recovery operating system
+            </p>
+            <div className="mt-7 grid grid-cols-1 gap-6 md:grid-cols-[0.8fr_1.2fr]">
+              <div>
+                <h2 className="text-3xl font-bold tracking-tight">
+                  From event to paid invoice.
+                </h2>
+                <p className="mt-4 text-sm leading-6 text-gray-600">
+                  Dunlo gives failed payments a clear owner, a customer-safe
+                  message, and a visible recovery state.
+                </p>
+              </div>
+              <div className="space-y-4">
+                {[
+                  {
+                    icon: MailCheck,
+                    title: "Failure-code emails",
+                    copy: "Messaging changes with the decline reason.",
+                  },
+                  {
+                    icon: Clock3,
+                    title: "Timed recovery",
+                    copy: "Follow-ups wait when waiting improves the outcome.",
+                  },
+                  {
+                    icon: BadgeCheck,
+                    title: "Revenue tracking",
+                    copy: "Recovered MRR is visible without spreadsheet work.",
+                  },
+                ].map(({ icon: Icon, title, copy }) => (
+                  <div key={title} className="flex gap-4">
+                    <div className="mt-1 flex size-9 shrink-0 items-center justify-center rounded-xl border border-dunlo/20 bg-dunlo/[0.07]">
+                      <Icon size={17} className="text-dunlo-deep" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold tracking-tight">{title}</h3>
+                      <p className="mt-1 text-sm leading-6 text-gray-600">
+                        {copy}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <FaqSection />
+        </section>
+
         <CtaSection />
       </main>
       <Footer />
@@ -209,17 +325,17 @@ export default function StripeFailedPaymentsPage() {
 
 function FaqSection() {
   return (
-    <section className="mx-auto mt-4 max-w-4xl rounded-[1.5rem] border border-gray-200 bg-white/75 p-6 backdrop-blur-md md:p-8">
-      <h2 className="text-3xl font-bold tracking-tight">
+    <section className="rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md md:p-8">
+      <h2 className="text-2xl font-bold tracking-tight">
         Stripe failed payments FAQ
       </h2>
-      <div className="mt-7 divide-y divide-gray-200 border-y border-gray-200">
+      <div className="mt-6 divide-y divide-gray-200 border-y border-gray-200">
         {FAQS.map((faq) => (
           <div key={faq.question} className="py-5">
-            <h3 className="text-lg font-bold tracking-tight">
+            <h3 className="text-base font-bold tracking-tight">
               {faq.question}
             </h3>
-            <p className="mt-2 text-sm leading-relaxed text-gray-600">
+            <p className="mt-2 text-sm leading-6 text-gray-600">
               {faq.answer}
             </p>
           </div>
@@ -231,29 +347,68 @@ function FaqSection() {
 
 function CtaSection() {
   return (
-    <section className="mx-auto mt-4 max-w-6xl rounded-[1.5rem] bg-gray-950 p-7 text-white md:p-9">
+    <section className="mx-auto max-w-6xl rounded-[2rem] border border-gray-900 bg-gray-950 p-7 text-white md:p-9 lg:p-10">
       <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo">
         Free during beta
       </p>
       <div className="mt-3 grid grid-cols-1 gap-6 md:grid-cols-[1fr_auto] md:items-center">
         <div>
-          <h2 className="text-3xl font-bold tracking-tight">
+          <h2 className="max-w-2xl text-3xl font-bold tracking-tight">
             Find the failed payments Stripe is not recovering.
           </h2>
-          <p className="mt-3 max-w-2xl text-sm leading-relaxed text-gray-300">
+          <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-300">
             Connect Stripe, import existing failures, and start recovering
             revenue with customer-safe emails in minutes.
           </p>
         </div>
         <a
           href={SIGNUP_URL}
-          className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-gray-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+          className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-gray-950 transition-all duration-300 hover:-translate-y-[1px] hover:bg-dunlo-hover active:scale-[0.98]"
         >
           Connect Stripe
-          <ArrowRight size={16} />
+          <ArrowRight size={16} strokeWidth={1.8} />
         </a>
       </div>
     </section>
+  );
+}
+
+function OrganicBackdrop() {
+  return (
+    <div
+      className="pointer-events-none absolute inset-0 overflow-hidden"
+      aria-hidden
+    >
+      <div className="absolute inset-x-0 top-0 h-px bg-gray-200" />
+      <svg
+        viewBox="0 0 960 640"
+        className="absolute -right-88 top-16 h-130 w-195 text-gray-300 md:-right-40"
+        fill="none"
+      >
+        <path
+          d="M46 398C188 261 280 478 424 340C552 217 611 140 790 195C876 222 900 136 924 86"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth="1"
+        />
+        <path
+          d="M14 472C180 284 314 552 476 390C600 266 640 224 810 264C894 284 914 214 946 160"
+          opacity="0.65"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth="1"
+        />
+        <path
+          d="M98 548C222 430 326 584 468 500C642 398 626 310 782 352C884 380 906 314 950 270"
+          opacity="0.45"
+          stroke="currentColor"
+          strokeLinecap="round"
+          strokeWidth="1"
+        />
+      </svg>
+      <div className="absolute left-4 top-40 h-[70vh] w-px bg-gray-200/70 md:left-[12vw]" />
+      <div className="absolute bottom-0 left-0 right-0 h-32 bg-linear-to-t from-stone-100 to-transparent" />
+    </div>
   );
 }
 
