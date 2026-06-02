@@ -45,6 +45,8 @@ export const FOOTER_SECTIONS = [
     links: [
       { label: "Blog", href: "/blog" },
       { label: "Alternatives", href: "/alternatives" },
+      { label: "Stripe failed payments", href: "/stripe-failed-payments" },
+      { label: "Stripe dunning", href: "/stripe-dunning" },
       { label: "Stripe Smart Retries", href: "/alternatives/stripe-smart-retries" },
     ],
   },

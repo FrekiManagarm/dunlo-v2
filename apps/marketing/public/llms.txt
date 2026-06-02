@@ -15,6 +15,8 @@
 - Home: https://dunlo.io/
 - Pricing: https://dunlo.io/pricing.md
 - Blog: https://dunlo.io/blog
+- Stripe failed payments: https://dunlo.io/stripe-failed-payments
+- Stripe dunning: https://dunlo.io/stripe-dunning
 - Stripe failed payment benchmark: https://dunlo.io/benchmark
 - State of Stripe failed payments 2026: https://dunlo.io/state-of-stripe-payments-2026
 

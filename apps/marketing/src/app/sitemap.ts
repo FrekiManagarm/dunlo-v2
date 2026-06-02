@@ -36,6 +36,18 @@ const STATIC_ROUTES = [
     priority: 0.9,
   },
   {
+    path: "/stripe-failed-payments",
+    lastModified: "2026-06-02",
+    changeFrequency: "weekly",
+    priority: 0.92,
+  },
+  {
+    path: "/stripe-dunning",
+    lastModified: "2026-06-02",
+    changeFrequency: "weekly",
+    priority: 0.9,
+  },
+  {
     path: "/state-of-stripe-payments-2026",
     lastModified: "2026-05-23",
     changeFrequency: "monthly",
