@@ -9,7 +9,7 @@ import {
   stripeConnection,
 } from "@dunlo-v2/db/schema/domain";
 import { createServerFn } from "@tanstack/react-start";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq } from "drizzle-orm";
 
 import { generateEscalationDraft } from "@/functions/escalations";
 import { storeBenchmarkSnapshotFromPaymentIntents } from "@/functions/benchmark";
@@ -36,6 +36,7 @@ export async function getStripeConnection(
     .select()
     .from(stripeConnection)
     .where(eq(stripeConnection.userId, userId))
+    .orderBy(desc(stripeConnection.updatedAt))
     .limit(1);
 
   if (!row) return null;
@@ -211,6 +212,7 @@ export const getOnboardingState = createServerFn({ method: "GET" })
       .select({ id: stripeConnection.id })
       .from(stripeConnection)
       .where(eq(stripeConnection.userId, userId))
+      .orderBy(desc(stripeConnection.updatedAt))
       .limit(1);
     const [prov] = await db
       .select({ id: emailProvider.id })
@@ -274,6 +276,7 @@ export async function importExistingFailedPayments(
 
   await storeBenchmarkSnapshotFromPaymentIntents({
     userId,
+    stripeAccountId: connection.stripeAccountId,
     paymentIntents: piList.data,
   });
 
@@ -342,6 +345,7 @@ export async function importExistingFailedPayments(
       id: paymentId,
       userId,
       stripePaymentIntentId: pi.id,
+      stripeAccountId: connection.stripeAccountId,
       stripeCustomerId: customerId,
       stripeInvoiceId: invoiceId,
       amount: pi.amount,

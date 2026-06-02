@@ -101,10 +101,27 @@ export async function processScheduledEmails(): Promise<SchedulerResult> {
       continue;
     }
 
+    if (!payment.stripeAccountId) {
+      await db
+        .update(recoveryAttempt)
+        .set({
+          status: "failed",
+          errorMessage: "payment_missing_stripe_account",
+        })
+        .where(eq(recoveryAttempt.id, attempt.id));
+      failed += 1;
+      continue;
+    }
+
     const [connection] = await db
       .select()
       .from(stripeConnection)
-      .where(eq(stripeConnection.userId, payment.userId))
+      .where(
+        and(
+          eq(stripeConnection.userId, payment.userId),
+          eq(stripeConnection.stripeAccountId, payment.stripeAccountId),
+        ),
+      )
       .limit(1);
 
     if (!connection) {

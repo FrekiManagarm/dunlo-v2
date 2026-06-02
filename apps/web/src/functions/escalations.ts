@@ -38,6 +38,15 @@ export const getEscalations = createServerFn({ method: "GET" })
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 
+    const [connection] = await db
+      .select({ stripeAccountId: stripeConnection.stripeAccountId })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .orderBy(desc(stripeConnection.updatedAt))
+      .limit(1);
+
+    if (!connection) return [];
+
     const rows = await db
       .select()
       .from(escalation)
@@ -48,6 +57,7 @@ export const getEscalations = createServerFn({ method: "GET" })
       .where(
         and(
           eq(escalation.userId, userId),
+          eq(failedPayment.stripeAccountId, connection.stripeAccountId),
           inArray(escalation.status, ["pending", "sent"]),
         ),
       )
@@ -118,6 +128,15 @@ export const sendEscalationEmail = createServerFn({ method: "POST" })
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 
+    const [connection] = await db
+      .select({ stripeAccountId: stripeConnection.stripeAccountId })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .orderBy(desc(stripeConnection.updatedAt))
+      .limit(1);
+
+    if (!connection) throw new Error("Escalation not found");
+
     const [row] = await db
       .select()
       .from(escalation)
@@ -129,6 +148,7 @@ export const sendEscalationEmail = createServerFn({ method: "POST" })
         and(
           eq(escalation.id, data.escalationId),
           eq(escalation.userId, userId),
+          eq(failedPayment.stripeAccountId, connection.stripeAccountId),
         ),
       )
       .limit(1);
@@ -213,6 +233,7 @@ export const getEscalationSettings = createServerFn({ method: "GET" })
       .select()
       .from(stripeConnection)
       .where(eq(stripeConnection.userId, userId))
+      .orderBy(desc(stripeConnection.updatedAt))
       .limit(1);
 
     if (!row) {

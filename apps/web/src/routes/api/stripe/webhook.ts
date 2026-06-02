@@ -153,6 +153,7 @@ export async function processFailedPayment(
     id: paymentId,
     userId: connection.userId,
     stripePaymentIntentId: ctx.paymentIntentId,
+    stripeAccountId: connection.stripeAccountId,
     stripeCustomerId: ctx.customerId ?? "",
     stripeInvoiceId: ctx.invoiceId,
     amount: ctx.amount,
@@ -288,6 +289,7 @@ export async function processRecoveredPayment(
     .where(
       and(
         eq(failedPayment.userId, connection.userId),
+        eq(failedPayment.stripeAccountId, connection.stripeAccountId),
         inArray(failedPayment.status, ["in_recovery", "escalated"]),
       ),
     );
@@ -338,6 +340,7 @@ export async function processPaymentMethodUpdate(
     .where(
       and(
         eq(failedPayment.userId, connection.userId),
+        eq(failedPayment.stripeAccountId, connection.stripeAccountId),
         eq(failedPayment.stripeCustomerId, customer.id),
         eq(failedPayment.status, "in_recovery"),
       ),

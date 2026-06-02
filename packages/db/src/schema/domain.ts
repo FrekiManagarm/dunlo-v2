@@ -103,6 +103,7 @@ export const failedPayment = pgTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     stripePaymentIntentId: text("stripe_payment_intent_id").notNull().unique(),
+    stripeAccountId: text("stripe_account_id"),
     stripeCustomerId: text("stripe_customer_id").notNull(),
     stripeInvoiceId: text("stripe_invoice_id"),
     amount: integer("amount").notNull(),
@@ -123,6 +124,7 @@ export const failedPayment = pgTable(
   },
   (table) => [
     index("failed_payment_user_id_idx").on(table.userId),
+    index("failed_payment_stripe_account_id_idx").on(table.stripeAccountId),
     index("failed_payment_status_idx").on(table.status),
     index("failed_payment_created_at_idx").on(table.createdAt),
   ],
@@ -274,6 +276,7 @@ export const benchmarkSnapshot = pgTable(
       .notNull()
       .unique()
       .references(() => user.id, { onDelete: "cascade" }),
+    stripeAccountId: text("stripe_account_id"),
     sampleStartsAt: timestamp("sample_starts_at").notNull(),
     sampleEndsAt: timestamp("sample_ends_at").notNull(),
     totalChargeCount: integer("total_charge_count").default(0).notNull(),
@@ -304,6 +307,7 @@ export const benchmarkSnapshot = pgTable(
   },
   (table) => [
     index("benchmark_snapshot_user_id_idx").on(table.userId),
+    index("benchmark_snapshot_stripe_account_id_idx").on(table.stripeAccountId),
     index("benchmark_snapshot_opt_out_idx").on(table.benchmarkOptOut),
     index("benchmark_snapshot_updated_at_idx").on(table.updatedAt),
   ],

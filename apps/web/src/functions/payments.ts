@@ -57,7 +57,7 @@ export const getDashboardData = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .handler(async ({ context }) => {
     if (!context.session) {
-      throw redirect({ to: "/login" });
+      throw redirect({ to: "/login", search: { mode: "signin" } });
     }
     const userId = context.session.user.id;
 
@@ -65,10 +65,26 @@ export const getDashboardData = createServerFn({ method: "GET" })
       .select()
       .from(stripeConnection)
       .where(eq(stripeConnection.userId, userId))
+      .orderBy(desc(stripeConnection.updatedAt))
       .limit(1);
 
     const currency = connection?.escalationCurrency ?? "eur";
     const stripeConnected = Boolean(connection);
+
+    if (!connection) {
+      return {
+        stripeConnected,
+        stats: {
+          recoveredAmount: 0,
+          inRecoveryCount: 0,
+          successRate: 0,
+          mrrAtRisk: 0,
+        },
+        recentPayments: [],
+        pendingEscalations: 0,
+        currency,
+      };
+    }
 
     const monthStart = startOfMonth(new Date());
 
@@ -78,6 +94,7 @@ export const getDashboardData = createServerFn({ method: "GET" })
       .where(
         and(
           eq(failedPayment.userId, userId),
+          eq(failedPayment.stripeAccountId, connection.stripeAccountId),
           gte(failedPayment.createdAt, monthStart),
         ),
       );
@@ -88,6 +105,7 @@ export const getDashboardData = createServerFn({ method: "GET" })
       .where(
         and(
           eq(failedPayment.userId, userId),
+          eq(failedPayment.stripeAccountId, connection.stripeAccountId),
           eq(failedPayment.status, "in_recovery"),
         ),
       );
@@ -114,7 +132,12 @@ export const getDashboardData = createServerFn({ method: "GET" })
     const recentRows = await db
       .select()
       .from(failedPayment)
-      .where(eq(failedPayment.userId, userId))
+      .where(
+        and(
+          eq(failedPayment.userId, userId),
+          eq(failedPayment.stripeAccountId, connection.stripeAccountId),
+        ),
+      )
       .orderBy(desc(failedPayment.createdAt))
       .limit(20);
 
@@ -133,8 +156,13 @@ export const getDashboardData = createServerFn({ method: "GET" })
     const pendingEscalationRows = await db
       .select()
       .from(escalation)
+      .innerJoin(failedPayment, eq(escalation.failedPaymentId, failedPayment.id))
       .where(
-        and(eq(escalation.userId, userId), eq(escalation.status, "pending")),
+        and(
+          eq(escalation.userId, userId),
+          eq(failedPayment.stripeAccountId, connection.stripeAccountId),
+          eq(escalation.status, "pending"),
+        ),
       );
 
     return {
@@ -170,14 +198,37 @@ export const getPayments = createServerFn({ method: "GET" })
   .inputValidator((raw: unknown) => getPaymentsInput.parse(raw))
   .handler(async ({ context, data }) => {
     if (!context.session) {
-      throw redirect({ to: "/login" });
+      throw redirect({ to: "/login", search: { mode: "signin" } });
     }
     const userId = context.session.user.id;
     const { status, limit, offset } = data;
 
+    const [connection] = await db
+      .select({ stripeAccountId: stripeConnection.stripeAccountId })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .orderBy(desc(stripeConnection.updatedAt))
+      .limit(1);
+
+    if (!connection) {
+      return {
+        payments: [],
+        hasMore: false,
+        limit,
+        offset,
+      };
+    }
+
     const whereClause = status
-      ? and(eq(failedPayment.userId, userId), eq(failedPayment.status, status))
-      : eq(failedPayment.userId, userId);
+      ? and(
+          eq(failedPayment.userId, userId),
+          eq(failedPayment.stripeAccountId, connection.stripeAccountId),
+          eq(failedPayment.status, status),
+        )
+      : and(
+          eq(failedPayment.userId, userId),
+          eq(failedPayment.stripeAccountId, connection.stripeAccountId),
+        );
 
     const rows = await db
       .select()
@@ -216,13 +267,30 @@ export const getPaymentDetail = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .inputValidator((raw: unknown) => z.object({ id: z.string() }).parse(raw))
   .handler(async ({ context, data }) => {
-    if (!context.session) throw redirect({ to: "/login" });
+    if (!context.session) {
+      throw redirect({ to: "/login", search: { mode: "signin" } });
+    }
     const userId = context.session.user.id;
+
+    const [conn] = await db
+      .select({ stripeAccountId: stripeConnection.stripeAccountId })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .orderBy(desc(stripeConnection.updatedAt))
+      .limit(1);
+
+    if (!conn) throw new Error("Payment not found");
 
     const [row] = await db
       .select()
       .from(failedPayment)
-      .where(and(eq(failedPayment.id, data.id), eq(failedPayment.userId, userId)))
+      .where(
+        and(
+          eq(failedPayment.id, data.id),
+          eq(failedPayment.userId, userId),
+          eq(failedPayment.stripeAccountId, conn.stripeAccountId),
+        ),
+      )
       .limit(1);
 
     if (!row) throw new Error("Payment not found");
@@ -248,12 +316,6 @@ export const getPaymentDetail = createServerFn({ method: "GET" })
       .where(eq(escalation.failedPaymentId, row.id))
       .limit(1);
 
-    const [conn] = await db
-      .select({ stripeAccountId: stripeConnection.stripeAccountId })
-      .from(stripeConnection)
-      .where(eq(stripeConnection.userId, userId))
-      .limit(1);
-
     return {
       id: row.id,
       customerName: row.customerName,
@@ -267,7 +329,7 @@ export const getPaymentDetail = createServerFn({ method: "GET" })
       lastFour: row.lastFour,
       status: row.status,
       stripePaymentIntentId: row.stripePaymentIntentId,
-      stripeAccountId: conn?.stripeAccountId ?? null,
+      stripeAccountId: row.stripeAccountId ?? conn.stripeAccountId,
       createdAt: row.createdAt.toISOString(),
       recoveredAt: row.recoveredAt?.toISOString() ?? null,
       attempts: attempts.map((a) => ({
@@ -290,10 +352,25 @@ export const markPaymentRecovered = createServerFn({ method: "POST" })
     if (!context.session) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 
+    const [connection] = await db
+      .select({ stripeAccountId: stripeConnection.stripeAccountId })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .orderBy(desc(stripeConnection.updatedAt))
+      .limit(1);
+
+    if (!connection) throw new Error("Payment not found");
+
     const [row] = await db
       .select({ id: failedPayment.id })
       .from(failedPayment)
-      .where(and(eq(failedPayment.id, data.id), eq(failedPayment.userId, userId)))
+      .where(
+        and(
+          eq(failedPayment.id, data.id),
+          eq(failedPayment.userId, userId),
+          eq(failedPayment.stripeAccountId, connection.stripeAccountId),
+        ),
+      )
       .limit(1);
 
     if (!row) throw new Error("Payment not found");
@@ -328,10 +405,25 @@ export const escalatePaymentManually = createServerFn({ method: "POST" })
     if (!context.session) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 
+    const [connection] = await db
+      .select({ stripeAccountId: stripeConnection.stripeAccountId })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .orderBy(desc(stripeConnection.updatedAt))
+      .limit(1);
+
+    if (!connection) throw new Error("Payment not found");
+
     const [row] = await db
       .select({ id: failedPayment.id, status: failedPayment.status })
       .from(failedPayment)
-      .where(and(eq(failedPayment.id, data.id), eq(failedPayment.userId, userId)))
+      .where(
+        and(
+          eq(failedPayment.id, data.id),
+          eq(failedPayment.userId, userId),
+          eq(failedPayment.stripeAccountId, connection.stripeAccountId),
+        ),
+      )
       .limit(1);
 
     if (!row) throw new Error("Payment not found");

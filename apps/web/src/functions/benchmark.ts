@@ -96,6 +96,7 @@ function fallbackSnapshot(userId: string): SnapshotLike {
   return {
     id: "fallback",
     userId,
+    stripeAccountId: null,
     sampleStartsAt: new Date(now.getTime() - SAMPLE_WINDOW_DAYS * 86400_000),
     sampleEndsAt: now,
     totalChargeCount: 0,
@@ -117,9 +118,11 @@ function fallbackSnapshot(userId: string): SnapshotLike {
 
 export async function storeBenchmarkSnapshotFromPaymentIntents({
   userId,
+  stripeAccountId,
   paymentIntents,
 }: {
   userId: string;
+  stripeAccountId: string;
   paymentIntents: StripePaymentIntentLike[];
 }) {
   const now = new Date();
@@ -164,7 +167,13 @@ export async function storeBenchmarkSnapshotFromPaymentIntents({
       createdAt: failedPayment.createdAt,
     })
     .from(failedPayment)
-    .where(and(eq(failedPayment.userId, userId), gte(failedPayment.createdAt, startsAt)));
+    .where(
+      and(
+        eq(failedPayment.userId, userId),
+        eq(failedPayment.stripeAccountId, stripeAccountId),
+        gte(failedPayment.createdAt, startsAt),
+      ),
+    );
 
   const recovered = rows.filter((row) => row.status === "recovered").length;
   const monthlyCents = succeededAmount / 3;
@@ -175,6 +184,7 @@ export async function storeBenchmarkSnapshotFromPaymentIntents({
       .values({
         id: crypto.randomUUID(),
         userId,
+        stripeAccountId,
         sampleStartsAt: startsAt,
         sampleEndsAt: now,
         totalChargeCount: totalCharges,
@@ -197,6 +207,7 @@ export async function storeBenchmarkSnapshotFromPaymentIntents({
         target: benchmarkSnapshot.userId,
         set: {
           sampleStartsAt: startsAt,
+          stripeAccountId,
           sampleEndsAt: now,
           totalChargeCount: totalCharges,
           failedChargeCount: failedCharges,
@@ -225,6 +236,7 @@ export async function storeBenchmarkSnapshotFromPaymentIntents({
 
 export async function syncStripeBenchmarkSnapshot(
   userId: string,
+  stripeAccountId: string,
   accessToken: string,
 ) {
   const stripe = getConnectedStripe(accessToken);
@@ -239,7 +251,11 @@ export async function syncStripeBenchmarkSnapshot(
     if (paymentIntents.length >= 500) break;
   }
 
-  return storeBenchmarkSnapshotFromPaymentIntents({ userId, paymentIntents });
+  return storeBenchmarkSnapshotFromPaymentIntents({
+    userId,
+    stripeAccountId,
+    paymentIntents,
+  });
 }
 
 async function getCurrentUserSnapshot(userId: string) {
@@ -256,21 +272,33 @@ async function getCurrentUserSnapshot(userId: string) {
     return fallbackSnapshot(userId);
   }
 
-  if (snapshot && Date.now() - snapshot.updatedAt.getTime() < SNAPSHOT_TTL_MS) {
-    return snapshot;
-  }
-
   const [connection] = await db
-    .select({ accessToken: stripeConnection.accessToken })
+    .select({
+      accessToken: stripeConnection.accessToken,
+      stripeAccountId: stripeConnection.stripeAccountId,
+    })
     .from(stripeConnection)
     .where(eq(stripeConnection.userId, userId))
+    .orderBy(desc(stripeConnection.updatedAt))
     .limit(1);
 
   if (!connection) return snapshot ?? fallbackSnapshot(userId);
 
+  if (
+    snapshot &&
+    snapshot.stripeAccountId === connection.stripeAccountId &&
+    Date.now() - snapshot.updatedAt.getTime() < SNAPSHOT_TTL_MS
+  ) {
+    return snapshot;
+  }
+
   try {
     const { decrypt } = await import("@dunlo-v2/db/encrypt");
-    await syncStripeBenchmarkSnapshot(userId, decrypt(connection.accessToken));
+    await syncStripeBenchmarkSnapshot(
+      userId,
+      connection.stripeAccountId,
+      decrypt(connection.accessToken),
+    );
     const [fresh] = await db
       .select()
       .from(benchmarkSnapshot)
@@ -292,6 +320,12 @@ export const getUserBenchmarkData = createServerFn({ method: "GET" })
     const userId = context.session.user.id;
     const snapshot = await getCurrentUserSnapshot(userId);
     const startsAt = new Date(Date.now() - SAMPLE_WINDOW_DAYS * 86400_000);
+    const [connection] = await db
+      .select({ stripeAccountId: stripeConnection.stripeAccountId })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .orderBy(desc(stripeConnection.updatedAt))
+      .limit(1);
 
     const failedRows = await db
       .select({
@@ -300,7 +334,18 @@ export const getUserBenchmarkData = createServerFn({ method: "GET" })
         failureCode: failedPayment.failureCode,
       })
       .from(failedPayment)
-      .where(and(eq(failedPayment.userId, userId), gte(failedPayment.createdAt, startsAt)))
+      .where(
+        connection
+          ? and(
+              eq(failedPayment.userId, userId),
+              eq(failedPayment.stripeAccountId, connection.stripeAccountId),
+              gte(failedPayment.createdAt, startsAt),
+            )
+          : and(
+              eq(failedPayment.userId, userId),
+              gte(failedPayment.createdAt, startsAt),
+            ),
+      )
       .orderBy(desc(failedPayment.createdAt));
 
     const currency = failedRows[0]?.currency ?? "usd";

@@ -4,6 +4,7 @@ import {
   failedPayment,
   notificationSettings,
   recoveryAttempt,
+  stripeConnection,
 } from "@dunlo-v2/db/schema/domain";
 import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq } from "drizzle-orm";
@@ -45,18 +46,36 @@ export const getAlertFeed = createServerFn({ method: "GET" })
   .handler(async ({ context }): Promise<FeedEvent[]> => {
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
+    const [connection] = await db
+      .select({ stripeAccountId: stripeConnection.stripeAccountId })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .orderBy(desc(stripeConnection.updatedAt))
+      .limit(1);
+
+    if (!connection) return [];
 
     const [failures, escalations, sentAttempts] = await Promise.all([
       db
         .select()
         .from(failedPayment)
-        .where(eq(failedPayment.userId, userId))
+        .where(
+          and(
+            eq(failedPayment.userId, userId),
+            eq(failedPayment.stripeAccountId, connection.stripeAccountId),
+          ),
+        )
         .orderBy(desc(failedPayment.createdAt)),
       db
         .select()
         .from(escalation)
         .innerJoin(failedPayment, eq(escalation.failedPaymentId, failedPayment.id))
-        .where(eq(escalation.userId, userId))
+        .where(
+          and(
+            eq(escalation.userId, userId),
+            eq(failedPayment.stripeAccountId, connection.stripeAccountId),
+          ),
+        )
         .orderBy(desc(escalation.createdAt)),
       db
         .select({ attempt: recoveryAttempt, payment: failedPayment })
@@ -68,6 +87,7 @@ export const getAlertFeed = createServerFn({ method: "GET" })
         .where(
           and(
             eq(failedPayment.userId, userId),
+            eq(failedPayment.stripeAccountId, connection.stripeAccountId),
             eq(recoveryAttempt.status, "sent"),
           ),
         )
