@@ -18,7 +18,7 @@ const FAQ_JSON_LD = [
   {
     question: "How is Dunlo different from Stripe Smart Retries?",
     answer:
-      "Stripe Smart Retries can keep retrying the card. Dunlo handles the customer communication around the failure: why it happened, what message to send, when to follow up, and when a founder should step in.",
+      "Stripe Smart Retries can keep retrying the card. Dunlo handles the customer communication around the failure: why it happened, what message to send, when to follow up, and when a founder should step in so recovery does not burn customer trust.",
   },
   {
     question: "How is Dunlo different from Triggla or Churn Buster?",
@@ -68,7 +68,7 @@ export default function Page() {
             name: "Dunlo",
             applicationCategory: "BusinessApplication",
             description:
-              "Stripe payment recovery SaaS with failure-code-specific emails, founder escalation, flat beta pricing, and no recovered-revenue cut.",
+              "Stripe payment recovery SaaS that helps founders recover failed Stripe payments without burning customer trust, using failure-code emails, smart retry timing, and founder escalation.",
             operatingSystem: "Web",
             offers: {
               "@type": "Offer",

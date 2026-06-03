@@ -2,15 +2,18 @@ import type { Metadata } from "next";
 
 export const SITE_URL = "https://dunlo.io";
 export const SITE_NAME = "Dunlo";
-export const DEFAULT_TITLE = "Dunlo - Stripe Payment Recovery for SaaS";
+export const DEFAULT_TITLE =
+  "Dunlo - Stripe Payment Recovery Without Burning Trust";
 export const DEFAULT_DESCRIPTION =
-  "Recover failed Stripe payments by failure code, not guesswork. Dunlo has flat beta pricing, no revenue cut, and founder escalation.";
+  "Recover failed Stripe payments without burning customer trust. Dunlo uses failure-code emails, smart retry timing, and founder escalation for SaaS.";
 export const DEFAULT_KEYWORDS = [
   "Dunlo",
   "dunlo",
   "dunlo.io",
   "Stripe payment recovery",
+  "Stripe failed payments",
   "failed payment recovery",
+  "customer-friendly dunning",
   "dunning software for SaaS",
   "recover failed Stripe payments",
   "involuntary churn",

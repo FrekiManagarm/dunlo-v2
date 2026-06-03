@@ -77,7 +77,7 @@ export const FAQS = [
   {
     question: "How is Dunlo different from Stripe Smart Retries?",
     answer:
-      "Stripe Smart Retries can keep retrying the card. Dunlo handles the customer communication around the failure: why it happened, what message to send, when to follow up, and when a founder should step in.",
+      "Stripe Smart Retries can keep retrying the card. Dunlo handles the customer communication around the failure: why it happened, what message to send, when to follow up, and when a founder should step in so recovery does not burn customer trust.",
   },
   {
     question: "How is Dunlo different from Triggla or Churn Buster?",
