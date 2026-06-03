@@ -191,11 +191,6 @@ function DashboardLayout() {
         </nav>
 
         <div className="space-y-px border-t border-zinc-100 px-3 py-3">
-          <FeedbackWidget
-            user={session?.user}
-            path={location.pathname}
-            variant="sidebar"
-          />
           <button
             onClick={openGuide}
             className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-zinc-500 transition-all hover:bg-zinc-50 hover:text-zinc-800 active:scale-[0.98]"
@@ -207,6 +202,11 @@ function DashboardLayout() {
             />
             How it works
           </button>
+          <FeedbackWidget
+            user={session?.user}
+            path={location.pathname}
+            variant="sidebar"
+          />
         </div>
 
         {/* User card */}
