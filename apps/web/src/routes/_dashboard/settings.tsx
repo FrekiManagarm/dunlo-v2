@@ -1,3 +1,14 @@
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogMedia,
+  AlertDialogTitle,
+} from "@dunlo-v2/ui/components/alert-dialog";
 import { Input } from "@dunlo-v2/ui/components/input";
 import { Label } from "@dunlo-v2/ui/components/label";
 import {
@@ -9,7 +20,11 @@ import {
 } from "@dunlo-v2/ui/components/select";
 import { useForm } from "@tanstack/react-form";
 import { usePostHog } from "posthog-js/react";
-import { useMutation, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { AnimatePresence, motion } from "framer-motion";
 import {
@@ -375,23 +390,33 @@ function EmailTab({
         <form.Field name="provider">
           {(field) => (
             <div className="space-y-1.5">
-              <Label className="text-xs font-medium text-zinc-500">
+              <Label
+                htmlFor={field.name}
+                className="text-xs font-medium text-zinc-500"
+              >
                 Provider
               </Label>
-              <select
+              <Select
                 value={field.state.value}
-                onBlur={field.handleBlur}
-                onChange={(e) =>
-                  field.handleChange(e.target.value as typeof field.state.value)
+                onValueChange={(value) =>
+                  field.handleChange(value as typeof field.state.value)
                 }
-                className="h-10 w-full rounded-xl border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-900 outline-none transition-colors focus:border-dunlo/40 focus:bg-white focus:ring-2 focus:ring-dunlo/10"
               >
-                {EMAIL_PROVIDER_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger
+                  id={field.name}
+                  className="h-10 w-full rounded-xl border-zinc-200 bg-zinc-50 text-sm text-zinc-900 focus:border-dunlo/40 focus:bg-white focus:ring-dunlo/10"
+                  onBlur={field.handleBlur}
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  {EMAIL_PROVIDER_OPTIONS.map((option) => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.label}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
               {field.state.meta.errors.map((err) => (
                 <p key={err?.message} className="text-xs text-red-500">
                   {err?.message}
@@ -566,6 +591,7 @@ function EscalationTab({
     imported: number;
     skipped: number;
   } | null>(null);
+  const [disconnectDialogOpen, setDisconnectDialogOpen] = useState(false);
 
   const saveEscalationSettingsMutation = useMutation({
     mutationFn: (data: { threshold: number; currency: "eur" | "usd" | "gbp" }) =>
@@ -625,7 +651,7 @@ function EscalationTab({
     },
     validators: {
       onSubmit: z.object({
-        threshold: z.coerce.number().int().min(0).max(1_000_000),
+        threshold: z.number().int().min(0).max(1_000_000),
         currency: z.enum(["eur", "usd", "gbp"]),
       }),
     },
@@ -636,14 +662,7 @@ function EscalationTab({
     await syncPayments().catch(() => undefined);
   };
 
-  const onDisconnect = async () => {
-    if (
-      !window.confirm(
-        "Disconnect Stripe? Recovery sequences are preserved and will be reused if you reconnect.",
-      )
-    ) {
-      return;
-    }
+  const onDisconnectConfirm = async () => {
     await disconnectStripe().catch(() => undefined);
   };
 
@@ -819,7 +838,7 @@ function EscalationTab({
               recovery sequences and all historical payment data are preserved.
             </p>
             <button
-              onClick={onDisconnect}
+              onClick={() => setDisconnectDialogOpen(true)}
               disabled={
                 !initial.hasConnection || disconnectStripeMutation.isPending
               }
@@ -835,6 +854,51 @@ function EscalationTab({
           </div>
         </div>
       </div>
+
+      <AlertDialog
+        open={disconnectDialogOpen}
+        onOpenChange={setDisconnectDialogOpen}
+      >
+        <AlertDialogContent className="max-w-[calc(100%-2rem)] rounded-2xl border border-red-100 bg-white p-0 shadow-2xl shadow-red-950/10 ring-0 sm:max-w-md">
+          <div className="px-6 pt-6">
+            <AlertDialogHeader>
+              <AlertDialogMedia className="mb-3 size-11 rounded-full bg-red-50 text-red-600">
+                <Unplug size={20} />
+              </AlertDialogMedia>
+              <AlertDialogTitle className="text-base font-semibold tracking-tight text-zinc-950">
+                Disconnect Stripe?
+              </AlertDialogTitle>
+              <AlertDialogDescription className="mt-1 max-w-sm text-sm leading-6 text-zinc-500">
+                This removes the OAuth connection and deregisters the webhook.
+                Your recovery sequences and historical payment data stay
+                preserved and will be reused if you reconnect.
+              </AlertDialogDescription>
+            </AlertDialogHeader>
+          </div>
+
+          <AlertDialogFooter className="border-t border-zinc-100 px-6 py-4">
+            <AlertDialogCancel
+              disabled={disconnectStripeMutation.isPending}
+              className="h-10 rounded-xl border-zinc-200 px-4 text-xs font-semibold text-zinc-700 hover:bg-zinc-50"
+            >
+              Keep connected
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={onDisconnectConfirm}
+              disabled={disconnectStripeMutation.isPending}
+              variant="destructive"
+              className="h-10 rounded-xl border border-red-200 bg-red-50 px-4 text-xs font-semibold text-red-600 hover:bg-red-100"
+            >
+              {disconnectStripeMutation.isPending ? (
+                <Loader2 size={13} className="animate-spin" />
+              ) : (
+                <Unplug size={13} />
+              )}
+              Disconnect
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }
@@ -853,7 +917,7 @@ const SIM_BUTTONS: {
     action: "failure",
     label: "Failed payment",
     description:
-      "Creates a test failed payment and schedules its recovery sequence.",
+      "Creates a real Stripe test failed PaymentIntent and schedules its recovery sequence.",
     icon: CreditCard,
     accent: "text-red-500",
     badge: "bg-red-50 border-red-100 text-red-600",
@@ -862,7 +926,7 @@ const SIM_BUTTONS: {
     action: "escalation",
     label: "Escalation",
     description:
-      "Creates a failed payment above your escalation threshold and queues an AI email draft.",
+      "Creates a Stripe test failed PaymentIntent above your escalation threshold and queues an AI email draft.",
     icon: TrendingUp,
     accent: "text-amber-500",
     badge: "bg-amber-50 border-amber-100 text-amber-600",
@@ -879,29 +943,65 @@ const SIM_BUTTONS: {
 ];
 
 function TestingTab() {
-  const simulationMutation = useMutation({
-    mutationFn: async (action: SimAction) => {
-      if (action === "failure") return simulateFailedPayment();
-      if (action === "escalation") return simulateEscalation();
-      return simulateRecovery();
-    },
-    onSuccess: (result, action) => {
-      if (action === "failure") {
-        toast.success(`Failed payment created for ${result.customerName}`);
-      } else if (action === "escalation") {
-        toast.success(`Escalation created for ${result.customerName}`);
-      } else {
-        toast.success(`${result.customerName ?? "Payment"} marked as recovered`);
-      }
+  const queryClient = useQueryClient();
+
+  const invalidatePaymentViews = () =>
+    Promise.all([
+      queryClient.invalidateQueries({ queryKey: ["dashboard"] }),
+      queryClient.invalidateQueries({ queryKey: ["payments"] }),
+      queryClient.invalidateQueries({ queryKey: ["escalations"] }),
+      queryClient.invalidateQueries({ queryKey: ["alerts", "feed"] }),
+    ]);
+
+  const failedPaymentMutation = useMutation({
+    mutationFn: () => simulateFailedPayment(),
+    onSuccess: async (result) => {
+      await invalidatePaymentViews();
+      toast.success(`Failed payment created for ${result.customerName}`);
     },
     onError: (e) => {
       toast.error(e instanceof Error ? e.message : "Simulation failed");
     },
   });
-  const { mutateAsync: simulateAction } = simulationMutation;
+
+  const escalationMutation = useMutation({
+    mutationFn: () => simulateEscalation(),
+    onSuccess: async (result) => {
+      await invalidatePaymentViews();
+      toast.success(`Escalation created for ${result.customerName}`);
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Simulation failed");
+    },
+  });
+
+  const recoveryMutation = useMutation({
+    mutationFn: () => simulateRecovery(),
+    onSuccess: async (result) => {
+      await invalidatePaymentViews();
+      toast.success(`${result.customerName ?? "Payment"} marked as recovered`);
+    },
+    onError: (e) => {
+      toast.error(e instanceof Error ? e.message : "Simulation failed");
+    },
+  });
 
   const run = async (action: SimAction) => {
-    await simulateAction(action).catch(() => undefined);
+    if (action === "failure") {
+      await failedPaymentMutation.mutateAsync().catch(() => undefined);
+      return;
+    }
+    if (action === "escalation") {
+      await escalationMutation.mutateAsync().catch(() => undefined);
+      return;
+    }
+    await recoveryMutation.mutateAsync().catch(() => undefined);
+  };
+
+  const isActionPending = (action: SimAction) => {
+    if (action === "failure") return failedPaymentMutation.isPending;
+    if (action === "escalation") return escalationMutation.isPending;
+    return recoveryMutation.isPending;
   };
 
   return (
@@ -941,19 +1041,15 @@ function TestingTab() {
                 </div>
                 <button
                   onClick={() => run(action)}
-                  disabled={simulationMutation.isPending}
+                  disabled={isActionPending(action)}
                   className={`shrink-0 flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-all active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40 ${badge}`}
                 >
-                  {simulationMutation.isPending &&
-                  simulationMutation.variables === action ? (
+                  {isActionPending(action) ? (
                     <Loader2 size={11} className="animate-spin" />
                   ) : (
                     <Icon size={11} />
                   )}
-                  {simulationMutation.isPending &&
-                  simulationMutation.variables === action
-                    ? "Running…"
-                    : "Simulate"}
+                  {isActionPending(action) ? "Running…" : "Simulate"}
                 </button>
               </div>
             ),
@@ -964,9 +1060,9 @@ function TestingTab() {
       <div className="flex items-start gap-2 rounded-xl border border-amber-100 bg-amber-50 px-4 py-3">
         <AlertCircle size={13} className="mt-0.5 shrink-0 text-amber-500" />
         <p className="text-xs leading-relaxed text-amber-700">
-          Test events create real database records prefixed with{" "}
-          <code className="font-mono">pi_test_</code>. They will appear in
-          Payments, Escalations, and the activity feed.
+          Test events create Stripe test PaymentIntents plus matching Dunlo
+          records. They will appear in Payments, Escalations, and the activity
+          feed.
         </p>
       </div>
     </div>

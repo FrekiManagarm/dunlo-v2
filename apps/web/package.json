@@ -6,7 +6,7 @@
     "build": "vite build",
     "serve": "vite preview",
     "dev": "vite dev",
-    "trigger:dev": "trigger dev",
+    "trigger:dev": "trigger dev --env-file .env",
     "trigger:deploy": "trigger deploy",
     "test": "vitest run",
     "test:watch": "vitest"

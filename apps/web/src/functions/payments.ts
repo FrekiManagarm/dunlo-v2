@@ -8,7 +8,7 @@ import {
   sequenceStep,
   stripeConnection,
 } from "@dunlo-v2/db/schema/domain";
-import { and, desc, eq, gte } from "drizzle-orm";
+import { and, desc, eq, gte, inArray } from "drizzle-orm";
 import { z } from "zod";
 
 import { generateEscalationDraft } from "@/functions/escalations";
@@ -21,6 +21,8 @@ type PaymentStatus =
   | "escalated"
   | "failed"
   | "dismissed";
+
+const MRR_AT_RISK_STATUSES = ["in_recovery", "escalated"] as const;
 
 function startOfMonth(d: Date): Date {
   return new Date(d.getFullYear(), d.getMonth(), 1);
@@ -99,14 +101,14 @@ export const getDashboardData = createServerFn({ method: "GET" })
         ),
       );
 
-    const allInRecoveryRows = await db
+    const activeAtRiskRows = await db
       .select()
       .from(failedPayment)
       .where(
         and(
           eq(failedPayment.userId, userId),
           eq(failedPayment.stripeAccountId, connection.stripeAccountId),
-          eq(failedPayment.status, "in_recovery"),
+          inArray(failedPayment.status, MRR_AT_RISK_STATUSES),
         ),
       );
 
@@ -114,7 +116,9 @@ export const getDashboardData = createServerFn({ method: "GET" })
       .filter((p) => p.status === "recovered")
       .reduce((acc, p) => acc + p.amount, 0);
 
-    const inRecoveryCount = allInRecoveryRows.length;
+    const inRecoveryCount = activeAtRiskRows.filter(
+      (p) => p.status === "in_recovery",
+    ).length;
 
     const successDenominatorRows = monthRows.filter((p) =>
       ["recovered", "failed", "dismissed"].includes(p.status),
@@ -127,7 +131,7 @@ export const getDashboardData = createServerFn({ method: "GET" })
         ? (recoveredCountThisMonth / successDenominatorRows.length) * 100
         : 0;
 
-    const mrrAtRisk = allInRecoveryRows.reduce((acc, p) => acc + p.amount, 0);
+    const mrrAtRisk = activeAtRiskRows.reduce((acc, p) => acc + p.amount, 0);
 
     const recentRows = await db
       .select()

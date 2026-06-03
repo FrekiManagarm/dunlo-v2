@@ -1,5 +1,12 @@
 import { Input } from "@dunlo-v2/ui/components/input";
 import { Label } from "@dunlo-v2/ui/components/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@dunlo-v2/ui/components/select";
 import { useForm } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
@@ -227,24 +234,29 @@ function RouteComponent() {
                       >
                         Provider
                       </Label>
-                      <select
-                        id={field.name}
-                        name={field.name}
+                      <Select
                         value={field.state.value}
-                        onBlur={field.handleBlur}
-                        onChange={(e) =>
+                        onValueChange={(value) =>
                           field.handleChange(
-                            e.target.value as typeof field.state.value,
+                            value as typeof field.state.value,
                           )
                         }
-                        className="h-11 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm text-gray-900 outline-none transition-colors focus:border-dunlo focus:ring-2 focus:ring-dunlo/20"
                       >
-                        {EMAIL_PROVIDER_OPTIONS.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger
+                          id={field.name}
+                          className="h-11 w-full rounded-xl border-gray-200 bg-white px-3 text-sm text-gray-900 focus:border-dunlo focus:ring-2 focus:ring-dunlo/20"
+                          onBlur={field.handleBlur}
+                        >
+                          <SelectValue />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {EMAIL_PROVIDER_OPTIONS.map((option) => (
+                            <SelectItem key={option.value} value={option.value}>
+                              {option.label}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                       {field.state.meta.errors.map((err) => (
                         <p key={err?.message} className="text-xs text-red-500">
                           {err?.message}
