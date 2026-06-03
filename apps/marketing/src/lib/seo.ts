@@ -5,7 +5,7 @@ export const SITE_NAME = "Dunlo";
 export const DEFAULT_TITLE =
   "Dunlo - Stripe Payment Recovery Without Burning Trust";
 export const DEFAULT_DESCRIPTION =
-  "Recover failed Stripe payments without burning customer trust. Dunlo uses failure-code emails, smart retry timing, and founder escalation for SaaS.";
+  "Recover failed Stripe payments without burning customer trust. Dunlo gives Stripe-first SaaS founders failure-code emails, smart retry timing, and founder escalation.";
 export const DEFAULT_KEYWORDS = [
   "Dunlo",
   "dunlo",

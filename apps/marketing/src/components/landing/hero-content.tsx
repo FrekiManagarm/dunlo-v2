@@ -15,7 +15,7 @@ export function HeroContent() {
           transition={{ duration: 0.68, ease: [0.16, 1, 0.3, 1] }}
           className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep"
         >
-          Stripe Payment Recovery for SaaS
+          Stripe-first recovery for SaaS founders
         </motion.p>
 
         <motion.div
@@ -26,11 +26,14 @@ export function HeroContent() {
         >
           <span className="inline-flex items-center gap-1.5 rounded-full border border-dunlo/30 bg-dunlo/15 px-3 py-1.5 text-xs font-bold text-dunlo-deep">
             <Percent size={13} strokeWidth={2.2} />
-            No revenue cut
+            No recovered-revenue cut
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-xs font-bold text-gray-700 shadow-sm">
             <CalendarClock size={13} strokeWidth={2.2} />
-            Beta ends July 31, 2026 — free until then
+            <span className="sm:hidden">Free until July 31</span>
+            <span className="hidden sm:inline">
+              Beta ends July 31, 2026 — free until then
+            </span>
           </span>
         </motion.div>
 
@@ -38,7 +41,7 @@ export function HeroContent() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.78, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-8 max-w-xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:text-5xl sm:leading-[0.98] md:text-6xl"
+          className="mt-8 max-w-[21rem] text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:max-w-xl sm:text-5xl sm:leading-[0.98] md:text-6xl"
         >
           Recover failed Stripe payments without burning customer trust
         </motion.h1>
@@ -47,18 +50,18 @@ export function HeroContent() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.68, delay: 0.17, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-5 max-w-lg border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700"
+          className="mt-5 max-w-[21rem] border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700 sm:max-w-lg"
         >
           Dunlo turns Stripe failure codes into smart recovery emails, retry
-          timing, and founder escalation, so good customers don’t disappear over
-          a failed card.
+          timing, and founder escalation for Stripe-first SaaS teams, so good
+          customers don’t disappear over a failed card.
         </motion.p>
 
         <motion.div
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-8 flex flex-col gap-3 sm:flex-row"
+          className="mt-8 flex max-w-[21rem] flex-col gap-3 sm:max-w-none sm:flex-row"
         >
           <Link
             href="/benchmark"
@@ -74,6 +77,32 @@ export function HeroContent() {
             See failure-code recovery
           </a>
         </motion.div>
+
+        <motion.p
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.62, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+          className="mt-5 grid max-w-[21rem] gap-2 text-xs font-semibold text-gray-500 sm:flex sm:max-w-none sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2"
+        >
+          <Link
+            href="/alternatives/stripe-smart-retries"
+            className="transition-colors hover:text-gray-950"
+          >
+            vs Stripe Smart Retries
+          </Link>
+          <Link
+            href="/stripe-dunning"
+            className="transition-colors hover:text-gray-950"
+          >
+            Stripe dunning guide
+          </Link>
+          <Link
+            href="/alternatives"
+            className="transition-colors hover:text-gray-950"
+          >
+            Compare recovery tools
+          </Link>
+        </motion.p>
       </div>
 
       <motion.div

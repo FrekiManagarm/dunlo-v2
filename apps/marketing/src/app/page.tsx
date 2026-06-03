@@ -68,7 +68,7 @@ export default function Page() {
             name: "Dunlo",
             applicationCategory: "BusinessApplication",
             description:
-              "Stripe payment recovery SaaS that helps founders recover failed Stripe payments without burning customer trust, using failure-code emails, smart retry timing, and founder escalation.",
+              "Stripe payment recovery SaaS that helps Stripe-first SaaS founders recover failed payments without burning customer trust, using failure-code emails, smart retry timing, and founder escalation.",
             operatingSystem: "Web",
             offers: {
               "@type": "Offer",

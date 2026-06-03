@@ -1,6 +1,6 @@
 # Dunlo
 
-> Dunlo is a Stripe payment recovery SaaS for SaaS founders. It helps teams recover failed Stripe payments without burning customer trust, using failure-code-specific recovery emails, smart follow-up timing, founder escalation drafts, and recovered revenue tracking.
+> Dunlo is a Stripe-first payment recovery SaaS for SaaS founders. It helps teams recover failed Stripe payments without burning customer trust, using failure-code-specific recovery emails, smart follow-up timing, founder escalation drafts, and recovered revenue tracking.
 
 ## Product
 
