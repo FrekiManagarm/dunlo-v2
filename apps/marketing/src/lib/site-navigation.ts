@@ -41,6 +41,20 @@ export const ALTERNATIVE_LINKS = [
   { label: "Gr4vy alternative", href: "/alternatives/gr4vy" },
 ] as const satisfies readonly SiteLink[];
 
+const FOOTER_COMPARE_LINKS = [
+  { label: "All alternatives", href: "/alternatives" },
+  {
+    label: "Stripe Smart Retries",
+    href: "/alternatives/stripe-smart-retries",
+  },
+  {
+    label: "Custom Stripe webhooks",
+    href: "/alternatives/custom-stripe-webhooks",
+  },
+  { label: "FlyCode", href: "/alternatives/flycode" },
+  { label: "Churn Buster", href: "/alternatives/churn-buster" },
+] as const satisfies readonly SiteLink[];
+
 export const FOOTER_SECTIONS = [
   {
     title: "Product",
@@ -67,7 +81,7 @@ export const FOOTER_SECTIONS = [
   },
   {
     title: "Compare",
-    links: ALTERNATIVE_LINKS,
+    links: FOOTER_COMPARE_LINKS,
   },
   {
     title: "Legal",
