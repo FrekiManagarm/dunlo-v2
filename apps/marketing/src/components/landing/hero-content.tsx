@@ -40,7 +40,7 @@ export function HeroContent() {
           transition={{ duration: 0.78, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="mt-8 max-w-xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:text-5xl sm:leading-[0.98] md:text-6xl"
         >
-          Your best customers don't cancel. They just disappear.
+          Recover failed Stripe payments without burning customer trust
         </motion.h1>
 
         <motion.p
@@ -49,8 +49,9 @@ export function HeroContent() {
           transition={{ duration: 0.68, delay: 0.17, ease: [0.16, 1, 0.3, 1] }}
           className="mt-5 max-w-lg border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700"
         >
-          When a $49/mo customer churns from a failed card, it is not just $49.
-          It is months of LTV gone because nobody saw the payment leak in time.
+          Dunlo turns Stripe failure codes into smart recovery emails, retry
+          timing, and founder escalation, so good customers don’t disappear over
+          a failed card.
         </motion.p>
 
         <motion.div
