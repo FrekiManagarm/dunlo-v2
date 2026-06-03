@@ -19,12 +19,26 @@ export const ALTERNATIVE_LINKS = [
   { label: "Dunlo vs ProfitWell", href: "/alternatives/profitwell" },
   { label: "Dunlo vs RevenueCat", href: "/alternatives/revenuecat" },
   { label: "Dunlo vs Chargebee", href: "/alternatives/chargebee" },
+  { label: "Dunlo vs FlyCode", href: "/alternatives/flycode" },
+  {
+    label: "Dunlo vs custom Stripe webhooks",
+    href: "/alternatives/custom-stripe-webhooks",
+  },
+  { label: "Loops for dunning", href: "/alternatives/loops-dunning" },
+  { label: "RetryFix alternative", href: "/alternatives/retryfix" },
+  { label: "Revive alternative", href: "/alternatives/revive" },
+  {
+    label: "Recurly Recover alternative",
+    href: "/alternatives/recurly-recover",
+  },
   { label: "Dunlo vs Slicker", href: "/alternatives/slicker" },
   {
     label: "Dunlo vs Stripe Smart Retries",
     href: "/alternatives/stripe-smart-retries",
   },
   { label: "Dunlo vs Triggla", href: "/alternatives/triggla" },
+  { label: "Revaly/FlexPay alternative", href: "/alternatives/revaly-flexpay" },
+  { label: "Gr4vy alternative", href: "/alternatives/gr4vy" },
 ] as const satisfies readonly SiteLink[];
 
 export const FOOTER_SECTIONS = [
@@ -34,6 +48,7 @@ export const FOOTER_SECTIONS = [
       { label: "Features", href: "/#features" },
       { label: "Pricing", href: "/#pricing" },
       { label: "Benchmark", href: "/benchmark" },
+      { label: "Stripe audit", href: "/stripe-failed-payment-audit" },
       {
         label: "State of Stripe Payments",
         href: "/state-of-stripe-payments-2026",

@@ -66,7 +66,45 @@ function getRange(mrr: number) {
   );
 }
 
-export function PublicBenchmark() {
+type PublicBenchmarkProps = {
+  variant?: "benchmark" | "audit";
+};
+
+const BENCHMARK_COPY = {
+  benchmark: {
+    badge: "Public Stripe benchmark",
+    headline: "Estimate the failed-payment MRR hiding in Stripe.",
+    intro:
+      "Move one slider. See your estimated failed payment rate, MRR at risk, and monthly recovery potential before you connect anything.",
+    resultLabel: "Your estimated range",
+    inputTitle: "Enter your estimated MRR",
+    resultTitle: "Result shown immediately",
+    formTitle: "Get my full benchmark report",
+    formBody:
+      "We will send the detailed breakdown after you have seen the result here.",
+    submit: "Get my full benchmark report",
+    success: "Report requested",
+    cta: "Connect Stripe to see your real numbers",
+  },
+  audit: {
+    badge: "Stripe Failed Payment Audit",
+    headline: "Find the failed-payment leak hiding in Stripe.",
+    intro:
+      "Estimate what failed payments may be costing you, then request the audit checklist Dunlo uses to review Stripe recovery setups.",
+    resultLabel: "Your audit baseline",
+    inputTitle: "Start with your estimated MRR",
+    resultTitle: "Audit baseline shown immediately",
+    formTitle: "Send my Stripe audit checklist",
+    formBody:
+      "We will send the checklist and the benchmark breakdown so you can review your Stripe setup line by line.",
+    submit: "Send my audit checklist",
+    success: "Audit checklist requested",
+    cta: "Connect Stripe for the real audit",
+  },
+} as const;
+
+export function PublicBenchmark({ variant = "benchmark" }: PublicBenchmarkProps) {
+  const copy = BENCHMARK_COPY[variant];
   const [mrr, setMrr] = useState(24_000);
   const [email, setEmail] = useState("");
   const [captureState, setCaptureState] = useState<
@@ -102,6 +140,7 @@ export function PublicBenchmark() {
           failedPaymentRate: result.range.failedRate,
           failedMrr: result.failedMrr,
           recoverableMrr: result.recoverableMrr,
+          source: variant,
         }),
       });
 
@@ -119,20 +158,19 @@ export function PublicBenchmark() {
           <div>
             <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-1.5 text-sm font-semibold text-zinc-600 shadow-sm">
               <Gauge size={15} className="text-dunlo-deep" />
-              Public Stripe benchmark
+              {copy.badge}
             </div>
             <h1 className="max-w-3xl text-4xl font-bold leading-none tracking-tight text-zinc-950 md:text-6xl">
-              Estimate the failed-payment MRR hiding in Stripe.
+              {copy.headline}
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-600 md:text-lg">
-              Move one slider. See your estimated failed payment rate, MRR at
-              risk, and monthly recovery potential before you connect anything.
+              {copy.intro}
             </p>
           </div>
 
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-[0_24px_60px_-34px_rgba(24,24,27,0.3)] md:p-6">
             <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
-              Your estimated range
+              {copy.resultLabel}
             </p>
             <p className="mt-4 font-mono text-5xl font-bold leading-none tracking-tight text-zinc-950 md:text-6xl">
               {result.range.failedRate.toFixed(1)}%
@@ -149,7 +187,7 @@ export function PublicBenchmark() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <h2 className="text-lg font-bold tracking-tight text-zinc-950">
-                  Enter your estimated MRR
+                  {copy.inputTitle}
                 </h2>
                 <p className="mt-1 text-sm text-zinc-500">
                   No email required to see the result.
@@ -188,7 +226,7 @@ export function PublicBenchmark() {
 
             <div className="mt-7 rounded-3xl border border-dunlo/20 bg-dunlo/[0.07] p-5">
               <p className="text-sm font-bold text-zinc-950">
-                Result shown immediately
+                {copy.resultTitle}
               </p>
               <p className="mt-2 text-sm leading-relaxed text-zinc-600">
                 At {result.range.label}, the benchmark estimates{" "}
@@ -245,11 +283,10 @@ export function PublicBenchmark() {
                 </span>
                 <div>
                   <h2 className="text-base font-bold tracking-tight text-zinc-950">
-                    Get my full benchmark report
+                    {copy.formTitle}
                   </h2>
                   <p className="mt-1 text-sm leading-relaxed text-zinc-500">
-                    We will send the detailed breakdown after you have seen the
-                    result here.
+                    {copy.formBody}
                   </p>
                 </div>
               </div>
@@ -276,12 +313,12 @@ export function PublicBenchmark() {
                 {captureState === "success" ? (
                   <>
                     <Check size={15} />
-                    Report requested
+                    {copy.success}
                   </>
                 ) : captureState === "submitting" ? (
                   "Sending report request..."
                 ) : (
-                  "Get my full benchmark report"
+                  copy.submit
                 )}
               </button>
               {captureState === "error" && (
@@ -295,7 +332,7 @@ export function PublicBenchmark() {
               href={SIGNUP_URL}
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-bold text-zinc-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
-              Connect Stripe to see your real numbers
+              {copy.cta}
               <ArrowRight size={15} />
             </Link>
           </div>

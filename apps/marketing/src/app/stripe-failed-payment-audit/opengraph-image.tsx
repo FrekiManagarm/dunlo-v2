@@ -1,8 +1,8 @@
 import { createDunloOgImage, ogImageSize } from "@/lib/og";
 
-const title = "State of Stripe Failed Payments 2026";
+const title = "Stripe Failed Payment Audit";
 const description =
-  "A living benchmark for SaaS founders tracking failed payments, decline codes, and recovery opportunities across Stripe.";
+  "Estimate failed MRR, recovery potential, and the Stripe dunning checks that usually reveal hidden churn.";
 
 export const alt = title;
 export const size = ogImageSize;
@@ -12,8 +12,8 @@ export default function Image() {
   return createDunloOgImage({
     title,
     description,
-    badge: "Public report",
-    metricLabel: "ranges",
-    metricValue: "4",
+    badge: "Free audit",
+    metricLabel: "checks",
+    metricValue: "6",
   });
 }

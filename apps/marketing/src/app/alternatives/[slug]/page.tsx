@@ -82,6 +82,62 @@ const KEYWORDS: Record<string, string[]> = {
     "Chargebee vs Stripe dunning",
     "Stripe dunning without migration",
   ],
+  flycode: [
+    "FlyCode alternative",
+    "Dunlo vs FlyCode",
+    "FlyCode Stripe recovery",
+    "failed payment recovery comparison",
+    "Stripe payment recovery tool",
+  ],
+  "custom-stripe-webhooks": [
+    "Stripe webhooks failed payment recovery",
+    "invoice.payment_failed webhook",
+    "Dunlo vs custom Stripe webhooks",
+    "build Stripe dunning workflow",
+    "Stripe dunning build vs buy",
+  ],
+  "loops-dunning": [
+    "Loops dunning",
+    "Loops Stripe failed payment emails",
+    "Dunlo vs Loops",
+    "Stripe dunning emails",
+    "transactional email dunning",
+  ],
+  retryfix: [
+    "RetryFix alternative",
+    "Dunlo vs RetryFix",
+    "RetryFix Stripe",
+    "failed Stripe payment recovery",
+    "payment recovery pricing",
+  ],
+  revive: [
+    "Revive alternative",
+    "Dunlo vs Revive",
+    "Revive failed payment recovery",
+    "Stripe payment recovery alternative",
+    "failed payment recovery for SaaS",
+  ],
+  "recurly-recover": [
+    "Recurly Recover alternative",
+    "Dunlo vs Recurly Recover",
+    "Recurly dunning alternative",
+    "Stripe recovery without Recurly",
+    "subscription dunning comparison",
+  ],
+  "revaly-flexpay": [
+    "Revaly alternative",
+    "FlexPay alternative",
+    "Dunlo vs Revaly",
+    "payment performance management alternative",
+    "failed payment recovery comparison",
+  ],
+  gr4vy: [
+    "Gr4vy alternative",
+    "Dunlo vs Gr4vy",
+    "payment orchestration alternative",
+    "Stripe recovery without orchestration",
+    "failed payment recovery for Stripe SaaS",
+  ],
 };
 
 export function generateStaticParams() {

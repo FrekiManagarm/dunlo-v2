@@ -36,6 +36,12 @@ const STATIC_ROUTES = [
     priority: 0.9,
   },
   {
+    path: "/stripe-failed-payment-audit",
+    lastModified: "2026-06-03",
+    changeFrequency: "weekly",
+    priority: 0.92,
+  },
+  {
     path: "/stripe-failed-payments",
     lastModified: "2026-06-02",
     changeFrequency: "weekly",
@@ -49,9 +55,9 @@ const STATIC_ROUTES = [
   },
   {
     path: "/state-of-stripe-payments-2026",
-    lastModified: "2026-05-23",
+    lastModified: "2026-06-03",
     changeFrequency: "monthly",
-    priority: 0.5,
+    priority: 0.86,
   },
   {
     path: "/privacy",
@@ -80,7 +86,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const alternativeRoutes = Object.values(ALTERNATIVES).map((page) =>
     toRoute({
       path: page.path,
-      lastModified: "2026-05-23",
+      lastModified: "2026-06-03",
       changeFrequency: "monthly",
       priority: 0.75,
     }),

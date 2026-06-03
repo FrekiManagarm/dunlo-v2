@@ -8,6 +8,7 @@ const leadSchema = z.object({
   failedPaymentRate: z.number().min(0).max(100),
   failedMrr: z.number().min(0).max(1_000_000),
   recoverableMrr: z.number().min(0).max(1_000_000),
+  source: z.enum(["benchmark", "audit"]).default("benchmark"),
 });
 
 function platformRecipient() {
@@ -29,10 +30,14 @@ async function sendLeadNotification(lead: z.infer<typeof leadSchema>) {
   const provider = process.env.AUTH_EMAIL_PROVIDER ?? "resend";
   const from = process.env.PLATFORM_EMAIL_FROM ?? "Dunlo <noreply@dunlo.io>";
   const to = platformRecipient();
-  const subject = `Benchmark report request: ${lead.email}`;
+  const subject =
+    lead.source === "audit"
+      ? `Stripe audit request: ${lead.email}`
+      : `Benchmark report request: ${lead.email}`;
   const html = `
-    <h1>New benchmark lead</h1>
+    <h1>New ${lead.source === "audit" ? "Stripe audit" : "benchmark"} lead</h1>
     <p><strong>Email:</strong> ${escapeHtml(lead.email)}</p>
+    <p><strong>Source:</strong> ${escapeHtml(lead.source)}</p>
     <p><strong>MRR:</strong> $${lead.mrr.toLocaleString("en-US")}</p>
     <p><strong>MRR range:</strong> ${escapeHtml(lead.mrrRange)}</p>
     <p><strong>Estimated failed payment rate:</strong> ${lead.failedPaymentRate.toFixed(1)}%</p>

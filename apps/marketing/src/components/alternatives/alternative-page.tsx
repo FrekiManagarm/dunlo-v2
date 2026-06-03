@@ -2,6 +2,7 @@ import Link from "next/link";
 import { SIGNUP_URL } from "@/lib/app-url";
 import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials";
 import { Logo } from "@/components/logo";
+import { PublicProofLayer } from "@/components/public-proof-layer";
 
 type ComparisonRow = {
   label: string;
@@ -12,6 +13,11 @@ type ComparisonRow = {
 type SourceLink = {
   label: string;
   href: string;
+};
+
+type DecisionSection = {
+  title: string;
+  body: string;
 };
 
 type FailureCodeProof = {
@@ -40,6 +46,7 @@ export type AlternativePageData = {
   verdict: string;
   competitorSummary: string;
   dunloSummary: string;
+  decisionSections?: DecisionSection[];
   comparisonRows: ComparisonRow[];
   failureCodeProof?: FailureCodeProof;
   competitorUseCases: string[];
@@ -246,6 +253,20 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
       "Stripe's built-in retry timing system uses machine learning signals to schedule payment retries.",
     dunloSummary:
       "A recovery layer for Stripe teams that turns failed charges into understandable customer outreach and follow-up.",
+    decisionSections: [
+      {
+        title: "When Stripe Smart Retries is enough",
+        body: "Keep Smart Retries as your baseline when you only need Stripe to pick better retry timing and your failed-payment volume is still small enough to inspect manually.",
+      },
+      {
+        title: "Where Stripe stops",
+        body: "Smart Retries does not turn each failure reason into customer-specific messaging, founder alerts, or a recovery report that shows which invoices are still at risk.",
+      },
+      {
+        title: "Where Dunlo fits",
+        body: "Dunlo sits above Stripe Billing: it reads the failure context, sends clearer recovery emails, tracks the recovery workflow, and flags accounts that deserve a human note.",
+      },
+    ],
     comparisonRows: [
       {
         label: "Pricing model",
@@ -1006,6 +1027,555 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
       },
     ],
   },
+  flycode: {
+    slug: "flycode",
+    path: "/alternatives/flycode",
+    competitorName: "FlyCode",
+    metaTitle: "Dunlo vs FlyCode - Stripe Failed Payment Recovery",
+    metaDescription:
+      "Compare Dunlo and FlyCode for Stripe failed payment recovery, AI retries, backup payment methods, setup motion, pricing, and founder-friendly workflows.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs FlyCode",
+    intro:
+      "FlyCode is an AI payment recovery platform for companies that want optimization across retries, payment methods, and payment providers. Dunlo is narrower: Stripe-first failed-payment recovery for founders who want clear emails, flat pricing, and a recovery workflow they can understand.",
+    verdict:
+      "Choose FlyCode when payment optimization is already a payment-ops priority. Choose Dunlo when you want a focused Stripe recovery layer that explains failures, contacts customers clearly, and keeps pricing simple.",
+    competitorSummary:
+      "AI-powered failed payment recovery with smart retries, payment optimization, backup payment method handling, and Stripe Marketplace positioning.",
+    dunloSummary:
+      "Stripe-first recovery for SaaS founders: failure-code emails, secure update links, founder escalation, and no recovered-revenue cut.",
+    decisionSections: [
+      {
+        title: "When FlyCode makes sense",
+        body: "Use FlyCode when you want payment performance tooling around retries, backup payment methods, and broader optimization across a larger payment operation.",
+      },
+      {
+        title: "When Dunlo is the cleaner start",
+        body: "Use Dunlo when the core problem is simpler: failed Stripe invoices are turning into silent churn and you need a clear customer recovery workflow.",
+      },
+      {
+        title: "The real decision",
+        body: "This is not enterprise intelligence versus nothing. It is optimization depth versus a focused, founder-readable recovery layer.",
+      },
+    ],
+    comparisonRows: [
+      {
+        label: "Primary job",
+        competitor:
+          "Payment recovery and authorization optimization using AI retry and payment-method logic.",
+        dunlo:
+          "Customer-safe failed Stripe payment recovery with failure-code emails and founder escalation.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Teams with enough failed-payment volume to justify deeper payment optimization.",
+        dunlo:
+          "Stripe-first SaaS founders who want a focused recovery workflow before payment ops becomes a department.",
+      },
+      {
+        label: "Customer communication",
+        competitor:
+          "Includes custom failed-payment emails coordinated with the retry engine.",
+        dunlo:
+          "Email sequences are built around the Stripe failure reason and the customer action needed.",
+      },
+      {
+        label: "Pricing posture",
+        competitor:
+          "Public pages emphasize recovery lift and enterprise-style payment optimization.",
+        dunlo:
+          "Flat beta pricing direction, free during beta, and no recovered-revenue percentage.",
+      },
+      {
+        label: "Founder escalation",
+        competitor:
+          "Not positioned around founder-reviewed personal drafts as the core workflow.",
+        dunlo:
+          "High-value failures can be escalated into a founder-reviewed personal email draft.",
+      },
+    ],
+    competitorUseCases: [
+      "You want a payment optimization platform, not just dunning emails.",
+      "You care about backup payment methods and advanced retry intelligence.",
+      "Your failed-payment volume is large enough to justify a deeper optimization layer.",
+    ],
+    dunloUseCases: [
+      "You use Stripe and want to recover failed payments without enterprise setup.",
+      "You want to preserve customer trust with plain-language recovery emails.",
+      "You want clear recovered-revenue tracking without giving up a recovery percentage.",
+    ],
+    sourceLinks: [
+      { label: "FlyCode product", href: "https://www.flycode.com/" },
+      { label: "FlyCode for Stripe", href: "https://www.flycode.com/stripe" },
+      {
+        label: "FlyCode Stripe docs",
+        href: "https://docs.flycode.com/docs/integrations/stripe",
+      },
+    ],
+  },
+  "custom-stripe-webhooks": {
+    slug: "custom-stripe-webhooks",
+    path: "/alternatives/custom-stripe-webhooks",
+    competitorName: "Custom Stripe webhooks",
+    metaTitle: "Dunlo vs Custom Stripe Webhooks - Build or Buy Recovery",
+    metaDescription:
+      "Compare Dunlo with building your own Stripe invoice.payment_failed webhook workflow for SaaS failed payment recovery.",
+    eyebrow: "Build vs buy",
+    headline: "Dunlo vs custom Stripe webhooks",
+    intro:
+      "You can build failed-payment recovery yourself with Stripe webhooks, an email provider, a retry policy, and reporting. Dunlo packages that workflow for founders who would rather recover revenue than maintain billing edge cases.",
+    verdict:
+      "Build if recovery is a core engineering investment you want to own. Use Dunlo if you need the failure-code workflow, emails, reporting, and escalation now without turning it into an internal project.",
+    competitorSummary:
+      "A homegrown workflow built from Stripe events, app state, email templates, retry rules, and reporting jobs.",
+    dunloSummary:
+      "A maintained recovery layer that reads Stripe failure context and turns it into customer-safe recovery actions.",
+    decisionSections: [
+      {
+        title: "The DIY version",
+        body: "Listen to Stripe events, dedupe deliveries, map failure codes, schedule emails, track invoice state, and build a recovery report.",
+      },
+      {
+        title: "The hidden cost",
+        body: "The first webhook is easy. The maintenance cost lives in edge cases: duplicate events, stale state, retries, access rules, and missing visibility.",
+      },
+      {
+        title: "The Dunlo version",
+        body: "Connect Stripe, review the default sequences, and keep the recovery workflow outside your product roadmap.",
+      },
+    ],
+    comparisonRows: [
+      {
+        label: "Setup",
+        competitor:
+          "Requires webhook endpoints, queueing or jobs, email provider integration, templates, and a reporting surface.",
+        dunlo:
+          "Connect Stripe, review recovery sequences, and start monitoring failed payments.",
+      },
+      {
+        label: "Failure-code logic",
+        competitor:
+          "You define and maintain the mapping from Stripe failure reason to customer action.",
+        dunlo:
+          "Built around failure-code-specific recovery messages and timing.",
+      },
+      {
+        label: "Reporting",
+        competitor:
+          "You need to build MRR at risk, recovery rate, recovered amount, and open recovery state yourself.",
+        dunlo:
+          "Recovery visibility is part of the product surface.",
+      },
+      {
+        label: "Maintenance",
+        competitor:
+          "Engineering-owned. Every billing edge case becomes product maintenance.",
+        dunlo:
+          "Product-owned by Dunlo, with a narrow scope around Stripe recovery.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Teams that want billing recovery logic deeply customized inside their app.",
+        dunlo:
+          "Founders who want the recovery discipline without building a billing subsystem.",
+      },
+    ],
+    competitorUseCases: [
+      "You need custom app access rules tightly coupled to billing state.",
+      "You already have strong billing infrastructure and own background jobs.",
+      "You want full control over every retry, email, and reporting decision.",
+    ],
+    dunloUseCases: [
+      "You want a fast recovery layer without spending weeks on billing plumbing.",
+      "You prefer Stripe-first defaults over a custom internal system.",
+      "You want founder escalation and recovery reporting out of the box.",
+    ],
+    sourceLinks: [
+      {
+        label: "Stripe subscription webhooks",
+        href: "https://docs.stripe.com/billing/subscriptions/webhooks",
+      },
+      {
+        label: "Stripe events API",
+        href: "https://docs.stripe.com/api/events",
+      },
+      {
+        label: "Stripe revenue recovery",
+        href: "https://docs.stripe.com/billing/revenue-recovery",
+      },
+    ],
+  },
+  "loops-dunning": {
+    slug: "loops-dunning",
+    path: "/alternatives/loops-dunning",
+    competitorName: "Loops",
+    metaTitle: "Dunlo vs Loops - Dunning Emails for Stripe SaaS",
+    metaDescription:
+      "Compare Dunlo and Loops for failed payment emails, Stripe dunning workflows, transactional email setup, and recovery reporting.",
+    eyebrow: "DIY comparison",
+    headline: "Dunlo vs Loops for dunning",
+    intro:
+      "Loops is a strong email platform. You can use it to send dunning emails if you build the Stripe triggers and recovery logic yourself. Dunlo is purpose-built for Stripe failed-payment recovery, so the failure context, email timing, and reporting are already connected.",
+    verdict:
+      "Use Loops if you want to own the whole recovery system and only need the email layer. Use Dunlo if you want the Stripe recovery workflow, not just the email sending tool.",
+    competitorSummary:
+      "Transactional and lifecycle email infrastructure for SaaS teams, including API-triggered emails.",
+    dunloSummary:
+      "Stripe failed-payment recovery that includes detection, failure-code copy, reporting, and founder escalation.",
+    comparisonRows: [
+      {
+        label: "Primary job",
+        competitor:
+          "Send product, lifecycle, and transactional emails through a SaaS email platform.",
+        dunlo: "Recover failed Stripe payments with context-aware workflows.",
+      },
+      {
+        label: "Stripe logic",
+        competitor:
+          "You build the Stripe event handling and decide when each email should send.",
+        dunlo:
+          "Stripe failure context is the starting point for the workflow.",
+      },
+      {
+        label: "Recovery reporting",
+        competitor:
+          "Email engagement can be tracked, but recovered invoice reporting must be built separately.",
+        dunlo:
+          "Tracks recovery outcomes rather than only email delivery.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Teams that already use Loops and want to custom-build recovery automation.",
+        dunlo:
+          "Stripe-first founders who want a dedicated recovery workflow without assembling tools.",
+      },
+    ],
+    competitorUseCases: [
+      "You already use Loops and want all customer email in one platform.",
+      "You have engineering time to wire Stripe events, templates, and reporting.",
+      "You need general lifecycle email more than a dedicated recovery product.",
+    ],
+    dunloUseCases: [
+      "You need more than email sending: failure codes, recovery state, and reporting.",
+      "You want default dunning logic without building webhook infrastructure.",
+      "You want high-value failed payments to surface for founder follow-up.",
+    ],
+    sourceLinks: [
+      {
+        label: "Loops transactional email docs",
+        href: "https://app.loops.so/docs/transactional",
+      },
+      {
+        label: "Stripe subscription webhooks",
+        href: "https://docs.stripe.com/billing/subscriptions/webhooks",
+      },
+    ],
+  },
+  retryfix: {
+    slug: "retryfix",
+    path: "/alternatives/retryfix",
+    competitorName: "RetryFix",
+    metaTitle: "Dunlo vs RetryFix - Failed Stripe Payment Recovery",
+    metaDescription:
+      "Compare Dunlo and RetryFix for failed Stripe payment recovery, pricing model, dunning workflows, and founder escalation.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs RetryFix",
+    intro:
+      "RetryFix is a focused Stripe recovery product with pay-on-recovery pricing. Dunlo is also focused on Stripe, but the wedge is founder-friendly recovery: flat pricing direction, failure-code copy, and human escalation for valuable accounts.",
+    verdict:
+      "Choose RetryFix if a success-fee model feels aligned. Choose Dunlo if you want a flat-price recovery layer and do not want to give up a percentage of recovered revenue.",
+    competitorSummary:
+      "Failed payment recovery for Stripe, positioned around automatically recovering failed charges and charging a percentage of recovered revenue.",
+    dunloSummary:
+      "Stripe-first recovery with no recovered-revenue cut, failure-code emails, and founder escalation.",
+    comparisonRows: [
+      {
+        label: "Pricing model",
+        competitor: "Public site positions pricing as 10% of recovered revenue.",
+        dunlo:
+          "Free during beta. Planned tiers are flat by MRR with no recovered-revenue percentage.",
+      },
+      {
+        label: "Recovery scope",
+        competitor: "Focused on failed Stripe payment recovery.",
+        dunlo:
+          "Focused on failed Stripe payment recovery, with failure-code messaging and escalation.",
+      },
+      {
+        label: "Founder escalation",
+        competitor:
+          "Not positioned as founder-reviewed personal recovery drafts.",
+        dunlo:
+          "Founder escalation is part of the product story for high-value failures.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Founders comfortable paying only when a tool recovers money.",
+        dunlo:
+          "Founders who prefer predictable SaaS pricing and keeping recovered revenue.",
+      },
+    ],
+    competitorUseCases: [
+      "You like success-fee pricing.",
+      "You want a narrow Stripe recovery product.",
+      "You prefer paying only when recovered revenue is attributed.",
+    ],
+    dunloUseCases: [
+      "You want predictable pricing instead of a recovery cut.",
+      "You care about failure-code-specific customer communication.",
+      "You want a founder-reviewed path for important accounts.",
+    ],
+    sourceLinks: [{ label: "RetryFix", href: "https://retryfix.com/" }],
+  },
+  revive: {
+    slug: "revive",
+    path: "/alternatives/revive",
+    competitorName: "Revive",
+    metaTitle: "Dunlo vs Revive - Failed Payment Recovery for Stripe",
+    metaDescription:
+      "Compare Dunlo and Revive for failed payment recovery, Stripe visibility, recovery emails, pricing, and founder escalation.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs Revive",
+    intro:
+      "Revive is a failed-payment recovery product focused on automatic retries, recovery emails, and showing recent failed-payment loss. Dunlo competes on a narrower founder wedge: Stripe-first recovery, customer trust, and no recovered-revenue cut.",
+    verdict:
+      "Choose Revive if you want an autopilot recovery tool with its pricing model and product direction. Choose Dunlo if your priority is a simple Stripe-first recovery layer with founder-visible escalation and trust-preserving copy.",
+    competitorSummary:
+      "Failed payment recovery automation with smart retries, email sequences, and visibility into recent failed-payment losses.",
+    dunloSummary:
+      "Customer-friendly Stripe recovery with failure-code emails, founder escalation, and flat beta pricing direction.",
+    comparisonRows: [
+      {
+        label: "Recovery motion",
+        competitor:
+          "Autopilot recovery with retries and email sequences.",
+        dunlo:
+          "Automated recovery plus founder review for high-value accounts.",
+      },
+      {
+        label: "Stripe visibility",
+        competitor:
+          "Shows how much was lost to failed payments over a recent period.",
+        dunlo:
+          "Surfaces failed payment context, recovery state, and escalation priority.",
+      },
+      {
+        label: "Customer trust",
+        competitor:
+          "Positioned around automatic recovery.",
+        dunlo:
+          "Positioned around recovering failed payments without burning customer trust.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Teams wanting an automated recovery product with minimal manual involvement.",
+        dunlo:
+          "Founders who want automation but still want a personal path for important accounts.",
+      },
+    ],
+    competitorUseCases: [
+      "You want failed payment recovery to run mostly on autopilot.",
+      "You want to quickly see recent loss from failed payments.",
+      "You are comparing direct Stripe recovery tools.",
+    ],
+    dunloUseCases: [
+      "You want recovery emails to change based on the failure reason.",
+      "You want high-value failures surfaced for personal follow-up.",
+      "You want no recovered-revenue cut during and after beta.",
+    ],
+    sourceLinks: [{ label: "Revive", href: "https://revive-hq.com/" }],
+  },
+  "recurly-recover": {
+    slug: "recurly-recover",
+    path: "/alternatives/recurly-recover",
+    competitorName: "Recurly Recover",
+    metaTitle: "Dunlo vs Recurly Recover - Stripe Recovery Without Replatforming",
+    metaDescription:
+      "Compare Dunlo and Recurly Recover for dunning, subscription recovery, billing platform fit, reporting, and Stripe-first SaaS teams.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs Recurly Recover",
+    intro:
+      "Recurly Recover is part of Recurly's subscription billing platform. Dunlo is for SaaS founders who already use Stripe and want failed-payment recovery without moving billing systems.",
+    verdict:
+      "Choose Recurly Recover when Recurly is already your billing platform or you need broader subscription billing. Choose Dunlo when Stripe is staying and recovery is the job.",
+    competitorSummary:
+      "Dunning and revenue recovery inside Recurly's subscription management and billing platform.",
+    dunloSummary:
+      "A Stripe-first recovery layer for failed invoices, recovery emails, and founder escalation.",
+    comparisonRows: [
+      {
+        label: "Platform fit",
+        competitor:
+          "Best for teams using or adopting Recurly for subscription billing.",
+        dunlo: "Best for teams staying on Stripe.",
+      },
+      {
+        label: "Dunning",
+        competitor:
+          "Configurable dunning campaigns and reporting inside Recurly.",
+        dunlo:
+          "Failure-code-specific recovery sequences around Stripe failed payments.",
+      },
+      {
+        label: "Migration",
+        competitor:
+          "Usually part of a billing-platform decision.",
+        dunlo: "No billing migration required.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Teams with subscription billing complexity and an appetite for a billing platform.",
+        dunlo:
+          "Stripe-first founders who need recovery without replatforming.",
+      },
+    ],
+    competitorUseCases: [
+      "You use Recurly or plan to adopt it for billing.",
+      "You need dunning as part of a broader subscription management platform.",
+      "Your billing needs go beyond Stripe plus a recovery layer.",
+    ],
+    dunloUseCases: [
+      "You want to keep Stripe as the billing source of truth.",
+      "You need a recovery layer, not a billing migration.",
+      "You want founder-friendly visibility into failed payments.",
+    ],
+    sourceLinks: [
+      { label: "Recurly dunning dashboard", href: "https://docs.recurly.com/docs/dunning-summary" },
+      { label: "Recurly dunning effectiveness", href: "https://docs.recurly.com/recurly-subscriptions/docs/dunning-effectiveness" },
+    ],
+  },
+  "revaly-flexpay": {
+    slug: "revaly-flexpay",
+    path: "/alternatives/revaly-flexpay",
+    competitorName: "Revaly / FlexPay",
+    metaTitle: "Dunlo vs Revaly FlexPay - Payment Performance vs Stripe Recovery",
+    metaDescription:
+      "Compare Dunlo and Revaly FlexPay for payment performance management, failed payment recovery, enterprise fit, and Stripe-first SaaS recovery.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs Revaly / FlexPay",
+    intro:
+      "Revaly, formerly FlexPay, is payment performance management for companies treating approvals and failed payments as a strategic operations layer. Dunlo is intentionally smaller: failed Stripe payment recovery for SaaS founders.",
+    verdict:
+      "Choose Revaly when payment performance is an enterprise revenue operation. Choose Dunlo when you use Stripe and need a simple, trust-preserving recovery workflow.",
+    competitorSummary:
+      "AI-powered payment performance management that aims to prevent and recover failed payments across the transaction lifecycle.",
+    dunloSummary:
+      "Stripe-first failed-payment recovery for founders who want clear emails, recovery tracking, and no revenue cut.",
+    comparisonRows: [
+      {
+        label: "Primary job",
+        competitor:
+          "Payment performance management across approvals, prevention, and recovery.",
+        dunlo:
+          "Recover failed Stripe subscription payments with customer-safe workflows.",
+      },
+      {
+        label: "Stage",
+        competitor:
+          "Best suited to larger merchants with payment operations complexity.",
+        dunlo:
+          "Best suited to early and growing Stripe SaaS teams.",
+      },
+      {
+        label: "Recovery style",
+        competitor:
+          "Optimization-first, focused on transaction performance.",
+        dunlo:
+          "Communication-first, focused on failure reason, customer action, and founder visibility.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Companies where payment approval performance is already a dedicated growth lever.",
+        dunlo:
+          "Founders who need a recovery layer before investing in payment performance infrastructure.",
+      },
+    ],
+    competitorUseCases: [
+      "You have meaningful payment volume and need an approvals strategy.",
+      "You want payment performance management, not just dunning.",
+      "Your team can support a more consultative payment optimization motion.",
+    ],
+    dunloUseCases: [
+      "You want a Stripe-specific failed-payment recovery workflow.",
+      "You do not need a payment performance platform.",
+      "You want simple pricing and customer-friendly recovery language.",
+    ],
+    sourceLinks: [
+      {
+        label: "Revaly rebrand",
+        href: "https://www.revaly.co/resources/flexpay-rebrands-as-revaly-a-new-era-of-payment-performance-management",
+      },
+      {
+        label: "FlexPay recovery calculation",
+        href: "https://documentation.flexpay.io/docs/how-flexpay-calculates-recovery",
+      },
+    ],
+  },
+  gr4vy: {
+    slug: "gr4vy",
+    path: "/alternatives/gr4vy",
+    competitorName: "Gr4vy",
+    metaTitle: "Dunlo vs Gr4vy - Payment Orchestration vs Stripe Recovery",
+    metaDescription:
+      "Compare Dunlo and Gr4vy for payment orchestration, multi-PSP infrastructure, failed payment recovery, and Stripe-first SaaS workflows.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs Gr4vy",
+    intro:
+      "Gr4vy is payment orchestration infrastructure for teams managing multiple payment providers and checkout complexity. Dunlo is not orchestration. It is a Stripe-first recovery layer for failed subscription payments.",
+    verdict:
+      "Choose Gr4vy when your payment strategy spans multiple PSPs and orchestration is the point. Choose Dunlo when you are staying on Stripe and want failed-payment recovery without payment infrastructure work.",
+    competitorSummary:
+      "Payment orchestration platform for multi-provider payment strategy, payment methods, routing, and infrastructure control.",
+    dunloSummary:
+      "Focused failed-payment recovery for Stripe SaaS: emails, update links, reporting, and founder escalation.",
+    comparisonRows: [
+      {
+        label: "Primary job",
+        competitor:
+          "Payment orchestration across PSPs, payment methods, and payment infrastructure.",
+        dunlo:
+          "Failed Stripe payment recovery for subscription SaaS.",
+      },
+      {
+        label: "Payment stack",
+        competitor:
+          "Built for teams that need multiple providers and payment method optionality.",
+        dunlo: "Stripe-only by design.",
+      },
+      {
+        label: "Setup motion",
+        competitor:
+          "Infrastructure decision involving payments architecture.",
+        dunlo:
+          "Recovery workflow added beside Stripe.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Enterprise merchants and platforms optimizing payment infrastructure.",
+        dunlo:
+          "SaaS founders who do not need orchestration just to recover failed payments.",
+      },
+    ],
+    competitorUseCases: [
+      "You need payment orchestration across several PSPs.",
+      "You want to route payment methods and providers from one infrastructure layer.",
+      "Payment architecture is a strategic project for the business.",
+    ],
+    dunloUseCases: [
+      "You use Stripe and plan to keep using Stripe.",
+      "Your problem is involuntary churn, not payment infrastructure.",
+      "You want a smaller recovery layer with no enterprise setup.",
+    ],
+    sourceLinks: [{ label: "Gr4vy product", href: "https://gr4vy.com/" }],
+  },
 };
 
 export const ALTERNATIVE_ROUTE_PAGES = Object.values(ALTERNATIVES).filter(
@@ -1018,8 +1588,8 @@ export const VS_ROUTE_PAGES = Object.values(ALTERNATIVES).filter((page) =>
 
 export function AlternativePage({ page }: { page: AlternativePageData }) {
   return (
-    <div className="min-h-dvh bg-gray-100 font-sans text-gray-950">
-      <header className="mx-auto flex max-w-6xl items-center justify-between px-4 py-4 md:px-6 md:py-6">
+    <div className="min-h-dvh overflow-x-hidden bg-gray-100 font-sans text-gray-950">
+      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 md:px-6 md:py-6">
         <Link href="/" aria-label="Dunlo home">
           <Logo />
         </Link>
@@ -1036,10 +1606,10 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
         </nav>
       </header>
 
-      <main className="mx-auto max-w-6xl space-y-4 px-3 pb-8 md:px-4">
+      <main className="mx-auto w-full max-w-6xl space-y-4 px-3 pb-8 md:px-4">
         <section className="overflow-hidden rounded-3xl border border-gray-200 bg-white">
           <div className="grid gap-0 lg:grid-cols-[1.08fr_0.92fr]">
-            <div className="px-6 py-10 md:px-10 md:py-14 lg:px-14">
+            <div className="min-w-0 px-6 py-10 md:px-10 md:py-14 lg:px-14">
               <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
                 {page.eyebrow}
               </p>
@@ -1065,7 +1635,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
               </div>
             </div>
 
-            <aside className="border-t border-gray-200 bg-gray-50 px-6 py-8 md:px-10 lg:border-l lg:border-t-0 lg:px-12 lg:py-14">
+            <aside className="min-w-0 border-t border-gray-200 bg-gray-50 px-6 py-8 md:px-10 lg:border-l lg:border-t-0 lg:px-12 lg:py-14">
               <div className="space-y-8">
                 <SummaryBlock
                   label={page.competitorName}
@@ -1076,6 +1646,24 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             </aside>
           </div>
         </section>
+
+        {page.decisionSections && (
+          <section className="grid gap-3 md:grid-cols-3">
+            {page.decisionSections.map((section) => (
+              <article
+                key={section.title}
+                className="border-t border-gray-200 bg-white px-1 py-5 md:px-0"
+              >
+                <h2 className="text-base font-bold tracking-tight text-gray-950">
+                  {section.title}
+                </h2>
+                <p className="mt-3 text-sm leading-6 text-gray-600">
+                  {section.body}
+                </p>
+              </article>
+            ))}
+          </section>
+        )}
 
         {page.failureCodeProof && (
           <FailureCodeProofSection proof={page.failureCodeProof} />
@@ -1144,6 +1732,8 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             items={page.dunloUseCases}
           />
         </section>
+
+        <PublicProofLayer compact />
 
         <BetaTestimonialsSection compact />
 

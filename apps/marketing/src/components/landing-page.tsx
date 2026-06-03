@@ -10,6 +10,7 @@ import { HeroContent } from "@/components/landing/hero-content";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { Nav } from "@/components/landing/nav";
 import { RoiCalculator } from "@/components/landing/roi-calculator";
+import { PublicProofLayer } from "@/components/public-proof-layer";
 
 const PLANS = [
   {
@@ -177,6 +178,8 @@ export function LandingPage() {
         <div className="mx-auto max-w-6xl">
           <RoiCalculator />
         </div>
+
+        <PublicProofLayer />
 
         <BetaTestimonialsSection />
 

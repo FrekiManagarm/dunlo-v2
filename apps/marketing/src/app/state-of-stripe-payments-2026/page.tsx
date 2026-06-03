@@ -1,30 +1,73 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Download, FileText, LockKeyhole } from "lucide-react";
+import { ArrowRight, BarChart3, FileText, ShieldCheck } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
+import { PublicProofLayer } from "@/components/public-proof-layer";
+import { SIGNUP_URL } from "@/lib/app-url";
 import { breadcrumbJsonLd, pageSeoMetadata } from "@/lib/seo";
 
 const TITLE = "State of Stripe Failed Payments 2026 - Dunlo";
 const DESCRIPTION =
   "Dunlo's public report on Stripe failed payment rates, decline codes, and recoverable revenue benchmarks for SaaS teams.";
 
-const REPORT_ITEMS = [
-  "Average failed payment rate by MRR range",
-  "Most frequent Stripe failure codes",
-  "Recovery rate by failure code",
-  "Before and after Dunlo recovery sequences",
-  "Benchmarks by SaaS type when the sample is large enough",
+const KEYWORDS = [
+  "Stripe failed payment report",
+  "Stripe failed payment benchmark",
+  "Stripe decline code benchmark",
+  "SaaS payment failure report",
+  "recoverable revenue benchmark",
+  "payment recovery benchmarks",
 ] as const;
 
-const KEYWORDS = [
-    "Stripe failed payment report",
-    "Stripe failed payment benchmark",
-    "Stripe decline code benchmark",
-    "SaaS payment failure report",
-    "recoverable revenue benchmark",
-    "payment recovery benchmarks",
-  ] as const;
+const BENCHMARK_RANGES = [
+  {
+    range: "< $5k MRR",
+    failedRate: "4.2%",
+    note: "Stripe defaults can hide the problem because volume is still low.",
+  },
+  {
+    range: "$5k-$20k MRR",
+    failedRate: "5.1%",
+    note: "The first range where a dedicated recovery workflow usually pays back.",
+  },
+  {
+    range: "$20k-$80k MRR",
+    failedRate: "5.8%",
+    note: "Failed payments become a visible retention problem, not just billing noise.",
+  },
+  {
+    range: "$80k+ MRR",
+    failedRate: "6.4%",
+    note: "Recovery needs prioritization, account value, and human escalation.",
+  },
+] as const;
+
+const FAILURE_CODES = [
+  {
+    code: "insufficient_funds",
+    action: "Retry timing matters, but the customer email should stay calm.",
+  },
+  {
+    code: "expired_card",
+    action: "Stop retrying blindly and send a direct card-update path.",
+  },
+  {
+    code: "authentication_required",
+    action: "Explain the bank authentication step before another charge attempt.",
+  },
+  {
+    code: "do_not_honor",
+    action: "Escalate carefully when account value justifies a personal touch.",
+  },
+] as const;
+
+const REPORT_SCOPE = [
+  "Public benchmark model by MRR range",
+  "Failure-code recovery playbook",
+  "Beta data publication rules",
+  "Approved screenshots and testimonials when available",
+] as const;
 
 export const metadata: Metadata = pageSeoMetadata({
   title: TITLE,
@@ -48,83 +91,122 @@ export default function StateOfStripePaymentsPage() {
               State of Stripe Failed Payments 2026
             </h1>
             <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-600">
-              A living benchmark for SaaS founders tracking failed payments,
+              A living report for SaaS founders tracking failed payments,
               decline codes, and recovery opportunities across Stripe.
             </p>
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/stripe-failed-payment-audit"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-zinc-950 px-6 text-sm font-bold text-white transition-all hover:bg-zinc-800 active:scale-[0.98]"
+              >
+                Run the audit
+                <ArrowRight size={15} />
+              </Link>
+              <Link
+                href={SIGNUP_URL}
+                className="inline-flex h-12 items-center justify-center rounded-full border border-zinc-200 bg-white px-6 text-sm font-bold text-zinc-900 transition-colors hover:border-zinc-300 hover:bg-zinc-50"
+              >
+                Connect Stripe
+              </Link>
+            </div>
           </div>
 
-          <form className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-[0_24px_60px_-32px_rgba(24,24,27,0.25)]">
-            <div className="flex items-center gap-3">
-              <div className="flex size-10 items-center justify-center rounded-full bg-dunlo/[0.08]">
-                <LockKeyhole size={17} className="text-dunlo-deep" />
+          <aside className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-[0_24px_60px_-32px_rgba(24,24,27,0.22)]">
+            <div className="flex items-start gap-3">
+              <div className="flex size-10 shrink-0 items-center justify-center rounded-full bg-dunlo/[0.08]">
+                <ShieldCheck size={17} className="text-dunlo-deep" />
               </div>
               <div>
                 <p className="text-sm font-bold text-zinc-950">
-                  PDF download opens after the live data threshold.
+                  Beta data is approval-gated.
                 </p>
-                <p className="mt-1 text-xs text-zinc-500">
-                  Email capture is ready for the Q3 report launch.
+                <p className="mt-2 text-sm leading-6 text-zinc-500">
+                  Dunlo will publish beta metrics, screenshots, and testimonials
+                  only after anonymization, sample-size checks, and customer
+                  approval. Until then, this report separates public benchmark
+                  assumptions from private beta evidence.
                 </p>
               </div>
             </div>
-            <label className="mt-5 block">
-              <span className="text-xs font-semibold text-zinc-600">
-                Work email
-              </span>
-              <input
-                type="email"
-                placeholder="founder@company.com"
-                className="mt-2 h-11 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-dunlo focus:ring-2 focus:ring-dunlo/20"
-              />
-            </label>
-            <button
-              type="button"
-              disabled
-              className="mt-4 inline-flex h-11 w-full cursor-not-allowed items-center justify-center gap-2 rounded-full bg-zinc-300 px-5 text-sm font-bold text-white"
-            >
-              <Download size={14} />
-              Notify me at launch
-            </button>
-          </form>
+          </aside>
         </section>
 
-        <section className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-[0.85fr_1fr]">
-          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-[0_18px_45px_-30px_rgba(24,24,27,0.2)]">
-            <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
-              Headline metric
-            </p>
-            <h2 className="sr-only">
-              Average Stripe failed payment rate benchmark
-            </h2>
-            <p className="mt-5 font-mono text-6xl font-bold leading-none tracking-tight text-zinc-950">
-              3.2%
-            </p>
-            <p className="mt-4 text-sm leading-relaxed text-zinc-600">
-              Early baseline for attempted SaaS subscription payments. The live
-              benchmark stays inside the Dunlo app until the anonymized sample is
-              large enough for public reporting.
-            </p>
-            <Link
-              href="/benchmark"
-              className="mt-6 inline-flex items-center gap-2 text-sm font-bold text-dunlo-deep transition-all hover:gap-3"
-            >
-              Open the live benchmark
-              <ArrowRight size={14} />
-            </Link>
-          </div>
-
-          <div className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-[0_18px_45px_-30px_rgba(24,24,27,0.2)]">
-            <div className="border-b border-zinc-100 px-5 py-4">
-              <h2 className="text-sm font-bold text-zinc-950">
-                Report outline
+        <section className="mt-8 overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-[0_18px_45px_-30px_rgba(24,24,27,0.2)]">
+          <div className="grid grid-cols-1 divide-y divide-zinc-100 md:grid-cols-[0.85fr_1.15fr] md:divide-x md:divide-y-0">
+            <div className="p-6 md:p-8">
+              <div className="flex size-10 items-center justify-center rounded-full bg-dunlo/[0.08]">
+                <BarChart3 size={17} className="text-dunlo-deep" />
+              </div>
+              <p className="mt-5 text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                Public benchmark
+              </p>
+              <h2 className="mt-3 max-w-md text-3xl font-bold tracking-tight text-zinc-950">
+                Failed-payment ranges by MRR.
               </h2>
-              <p className="mt-1 text-xs text-zinc-400">
-                Built for citation, outreach, and SEO.
+              <p className="mt-4 max-w-md text-sm leading-6 text-zinc-600">
+                These ranges are the public model used by Dunlo's benchmark and
+                audit pages. They are useful for estimation, not a substitute
+                for connecting Stripe and reading your actual invoices.
               </p>
             </div>
             <div className="divide-y divide-zinc-100">
-              {REPORT_ITEMS.map((item, index) => (
-                <div key={item} className="flex items-center gap-4 px-5 py-4">
+              {BENCHMARK_RANGES.map((range) => (
+                <div
+                  key={range.range}
+                  className="grid grid-cols-[1fr_auto] items-start gap-4 px-5 py-4"
+                >
+                  <div>
+                    <p className="font-semibold text-zinc-950">
+                      {range.range}
+                    </p>
+                    <p className="mt-1 text-sm leading-6 text-zinc-500">
+                      {range.note}
+                    </p>
+                  </div>
+                  <p className="font-mono text-2xl font-bold text-zinc-950">
+                    {range.failedRate}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="mt-4 grid grid-cols-1 gap-4 lg:grid-cols-[1fr_0.72fr]">
+          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 md:p-8">
+            <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
+              Failure-code playbook
+            </p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-zinc-950">
+              The useful report is code-level, not just rate-level.
+            </h2>
+            <div className="mt-6 divide-y divide-zinc-100 border-y border-zinc-100">
+              {FAILURE_CODES.map((item) => (
+                <div
+                  key={item.code}
+                  className="grid gap-3 py-4 md:grid-cols-[0.42fr_1fr]"
+                >
+                  <p className="font-mono text-sm font-bold text-zinc-950">
+                    {item.code}
+                  </p>
+                  <p className="text-sm leading-6 text-zinc-600">
+                    {item.action}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 md:p-8">
+            <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
+              Report scope
+            </p>
+            <h2 className="mt-3 text-2xl font-bold tracking-tight text-zinc-950">
+              What this asset covers.
+            </h2>
+            <div className="mt-6 divide-y divide-zinc-100 border-y border-zinc-100">
+              {REPORT_SCOPE.map((item, index) => (
+                <div key={item} className="flex items-center gap-4 py-4">
                   <span className="font-mono text-xs font-bold text-zinc-300">
                     {(index + 1).toString().padStart(2, "0")}
                   </span>
@@ -134,6 +216,10 @@ export default function StateOfStripePaymentsPage() {
             </div>
           </div>
         </section>
+
+        <div className="mt-4">
+          <PublicProofLayer compact />
+        </div>
       </main>
       <Footer />
       <script

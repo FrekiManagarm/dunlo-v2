@@ -1,0 +1,213 @@
+---
+title: "Best Stripe Dunning Tools for SaaS"
+description: "A practical comparison of the best Stripe dunning tools for SaaS teams, including Stripe Smart Retries, Dunlo, FlyCode, Churn Buster, Baremetrics Recover, Churnkey, Recurly Recover, and Chargebee."
+author: "Dunlo team"
+date: "2026-06-03"
+published: true
+tags: ["stripe", "dunning", "payment recovery"]
+keywords:
+  [
+    "best Stripe dunning tools",
+    "Stripe dunning tools for SaaS",
+    "failed payment recovery software",
+    "Stripe payment recovery tools",
+    "dunning software for SaaS",
+  ]
+---
+
+## The short answer
+
+The best Stripe dunning tool depends on what you are trying to fix.
+
+If you only need automatic retry timing, start with **Stripe Smart Retries**. If you need Stripe-specific failed-payment emails, failure-code logic, and founder escalation without building webhooks, use **Dunlo**. If you need a broader churn, subscription, or billing platform, look at tools like **Churn Buster**, **Churnkey**, **Recurly Recover**, or **Chargebee**.
+
+The mistake is treating all dunning tools as the same category. They are not. Some retry cards. Some send emails. Some manage cancellation flows. Some replace part of your billing stack. The right choice depends on your stage, stack, and how much engineering work you want to own.
+
+## What to look for in a Stripe dunning tool
+
+For SaaS teams using Stripe, a useful dunning tool should answer six questions:
+
+1. Does it understand why the payment failed?
+2. Can it send different messages for different failure codes?
+3. Can customers update payment details through a trusted Stripe-hosted flow?
+4. Can the founder or team see which accounts are worth manual follow-up?
+5. Can it report failed MRR, recovered MRR, and recovery rate clearly?
+6. Does the pricing make sense before the recovered revenue is proven?
+
+Most tools do one or two of these well. Very few do all of them without becoming a larger billing or retention suite.
+
+## 1. Stripe Smart Retries
+
+Best for: teams that want the free baseline switched on.
+
+Stripe Smart Retries uses Stripe's machine learning to retry failed subscription payments at better times than a fixed schedule. It is free, built into Stripe Billing, and usually the first thing a SaaS team should enable.
+
+Where it works:
+
+- You want retry timing without another tool.
+- Your failed-payment volume is still low.
+- You do not need much customer communication control.
+
+Where it falls short:
+
+- It does not give you a full dunning workflow.
+- It does not tailor communication by failure code.
+- It does not give founders a clean view of high-value failed accounts.
+
+Smart Retries is a good baseline. It is not a complete recovery system.
+
+## 2. Dunlo
+
+Best for: Stripe-first SaaS teams that want failed-payment recovery without building it themselves.
+
+Dunlo is intentionally narrow. It focuses on Stripe failed payments, failure-code emails, payment update links, recovered-revenue tracking, and founder escalation for accounts worth a personal follow-up.
+
+Where it works:
+
+- You are using Stripe and plan to keep using Stripe.
+- You have outgrown generic Stripe emails.
+- You want a clearer recovery workflow than Smart Retries alone.
+- You do not want to build and maintain custom webhook logic.
+- You prefer flat pricing over a recovered-revenue percentage.
+
+Where it may not fit:
+
+- You need multi-gateway payment orchestration.
+- You need cancellation-save flows and customer success automation.
+- You are replacing your billing platform.
+
+If your main problem is "good customers disappear because Stripe payments fail silently", Dunlo is built for that narrow problem.
+
+## 3. FlyCode
+
+Best for: teams that want no-code payment recovery and broader revenue optimization around Stripe.
+
+FlyCode is useful when the team wants a more mature recovery product and is comfortable evaluating a broader platform. It can be a good fit once billing operations are already a meaningful part of the company.
+
+Where it works:
+
+- You want a dedicated commercial recovery product.
+- You have enough failed-payment volume to justify a fuller setup.
+- You care about payment recovery beyond basic retry timing.
+
+Where Dunlo is simpler:
+
+- Dunlo is narrower and Stripe-first.
+- Dunlo is easier to evaluate when you only need failed-payment recovery.
+- Dunlo avoids turning dunning into a larger revenue-operations project.
+
+## 4. Churn Buster
+
+Best for: SaaS teams that want a mature dunning platform with branded recovery campaigns.
+
+Churn Buster is one of the better-known dunning tools. It is strongest when you want a dedicated failed-payment recovery platform and have enough volume to tune campaigns, copy, and workflows.
+
+Where it works:
+
+- You want a mature dunning workflow.
+- You care about branded recovery pages and campaigns.
+- You have a team member who can own the recovery funnel.
+
+Where Dunlo is simpler:
+
+- Dunlo is more focused on Stripe failure codes.
+- Dunlo is built for founder-led SaaS teams that want less operational surface area.
+- Dunlo does not take a recovered-revenue percentage.
+
+## 5. Baremetrics Recover
+
+Best for: SaaS teams already using Baremetrics for subscription analytics.
+
+Baremetrics Recover can make sense when Baremetrics is already part of your metrics stack. The recovery product fits naturally next to subscription analytics and MRR reporting.
+
+Where it works:
+
+- You already trust Baremetrics as your analytics layer.
+- You want recovery to sit close to MRR reporting.
+- You prefer a known subscription metrics brand.
+
+Where Dunlo is simpler:
+
+- Dunlo is not trying to become your analytics suite.
+- Dunlo starts from Stripe failure reasons and recovery actions.
+- Dunlo is a better fit if your analytics stack is already decided.
+
+## 6. Churnkey
+
+Best for: teams that need cancellation flows and failed-payment recovery in one retention platform.
+
+Churnkey is stronger when voluntary churn and involuntary churn both matter. If cancellation saves, deflection offers, and retention experiments are part of the project, it deserves a look.
+
+Where it works:
+
+- You want cancellation surveys and save offers.
+- You need a broader retention system.
+- You have enough churn volume to run experiments.
+
+Where Dunlo is simpler:
+
+- Dunlo does not try to manage cancellation flows.
+- Dunlo is built around Stripe payment failures only.
+- Dunlo keeps setup smaller for teams that are not ready for a retention suite.
+
+## 7. Recurly Recover
+
+Best for: teams already on Recurly.
+
+Recurly Recover is a natural option if Recurly is your subscription platform. It is less relevant if you are using Stripe directly and do not want to move billing operations into Recurly.
+
+Where it works:
+
+- You already use Recurly.
+- You want recovery integrated with Recurly billing.
+- You have subscription operations beyond Stripe Billing.
+
+Where Dunlo is simpler:
+
+- Dunlo layers onto Stripe.
+- Dunlo does not require a billing-platform migration.
+- Dunlo is built for teams that want to keep Stripe as the source of truth.
+
+## 8. Chargebee
+
+Best for: teams that need subscription billing operations, not just dunning.
+
+Chargebee is a much broader billing platform. Its recovery features can be valuable, but choosing Chargebee for dunning alone is usually more platform than a Stripe-first SaaS needs.
+
+Where it works:
+
+- Billing operations are a larger company project.
+- You need subscription management, invoices, tax, and revenue operations.
+- You are already evaluating a billing-platform change.
+
+Where Dunlo is simpler:
+
+- Dunlo is a recovery layer, not a billing-platform replacement.
+- Dunlo is easier to adopt if Stripe already works for billing.
+- Dunlo keeps the dunning decision separate from a finance-stack decision.
+
+## What about custom Stripe webhooks?
+
+Custom webhooks can be the right answer if your engineering team wants full control. A good internal build listens to Stripe failure events, maps decline codes to recovery actions, sends emails, tracks outcomes, and alerts the team when important accounts fail.
+
+The hidden cost is maintenance. Stripe events change, email copy drifts, retry logic gets patched, and reporting ends up in a spreadsheet. Custom webhooks are best when recovery logic is strategically important enough to own forever.
+
+If you want the comparison in more detail, read [Dunlo vs custom Stripe webhooks](/alternatives/custom-stripe-webhooks).
+
+## Recommended shortlist by stage
+
+**Under $5k MRR:** turn on Stripe Smart Retries and keep the system simple.
+
+**$5k-$20k MRR:** use Smart Retries as the baseline, then add Dunlo if failed payments are visible enough to matter.
+
+**$20k-$80k MRR:** use a dedicated recovery workflow. At this stage, silent payment failures are usually expensive enough to track weekly.
+
+**$80k+ MRR:** evaluate whether you need Dunlo, Churn Buster, Churnkey, Recurly, Chargebee, or a custom system based on your billing stack and team ownership.
+
+## The buying rule
+
+Choose the smallest tool that solves the real problem.
+
+If the problem is retry timing, use Stripe Smart Retries. If the problem is Stripe failed-payment recovery, use Dunlo. If the problem is cancellation churn, use a retention suite. If the problem is billing operations, evaluate billing platforms.
+
+That separation keeps dunning from becoming a bigger project than it needs to be.

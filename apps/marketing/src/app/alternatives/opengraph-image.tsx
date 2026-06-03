@@ -2,7 +2,7 @@ import { createDunloOgImage, ogImageSize } from "@/lib/og";
 
 const title = "Stripe Payment Recovery Alternatives";
 const description =
-  "Compare Dunlo with Churn Buster, Paddle Retain, Slicker, Stripe Smart Retries, and Triggla for Stripe failed payment recovery.";
+  "Compare Dunlo with Stripe Smart Retries, custom Stripe webhooks, FlyCode, RetryFix, Revive, Recurly Recover, and other payment recovery tools.";
 
 export const alt = title;
 export const size = ogImageSize;
@@ -14,6 +14,6 @@ export default function Image() {
     description,
     badge: "Comparison guide",
     metricLabel: "tools",
-    metricValue: "5",
+    metricValue: "18",
   });
 }
