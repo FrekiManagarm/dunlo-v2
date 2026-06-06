@@ -16,6 +16,8 @@ Not because Stripe is bad at retries. But because dunning — the process of rec
 
 This guide covers everything: what dunning is, how Stripe's native tools work, where they fall short, and how to build a process that consistently recovers 60–75% of failed payments instead of 20–30%.
 
+If you want the shorter product-focused version first, start with the [Stripe failed payments recovery page](/stripe-failed-payments).
+
 ---
 
 ## What Is Dunning?
@@ -35,6 +37,8 @@ Stripe provides two native tools for recovering failed payments: Smart Retries a
 ### Smart Retries
 
 Smart Retries (part of Stripe's Revenue Recovery feature) uses machine learning to determine the optimal time to retry a failed charge. Instead of retrying on a fixed schedule, Stripe analyzes signals like time of day, card network patterns, and historical success rates to pick retry moments most likely to succeed.
+
+For a deeper breakdown, read the [Stripe Smart Retries limits and dunning guide](/blog/stripe-smart-retries-review).
 
 **How to enable it:** Stripe Dashboard → Settings → Billing → Revenue Recovery → Smart Retries
 

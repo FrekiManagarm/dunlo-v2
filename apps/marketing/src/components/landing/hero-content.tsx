@@ -85,6 +85,12 @@ export function HeroContent() {
           className="mt-5 grid max-w-[21rem] gap-2 text-xs font-semibold text-gray-500 sm:flex sm:max-w-none sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2"
         >
           <Link
+            href="/stripe-failed-payments"
+            className="transition-colors hover:text-gray-950"
+          >
+            Stripe failed payments
+          </Link>
+          <Link
             href="/alternatives/stripe-smart-retries"
             className="transition-colors hover:text-gray-950"
           >

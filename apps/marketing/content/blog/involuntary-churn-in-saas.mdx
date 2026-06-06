@@ -119,6 +119,8 @@ That $6,000 difference is real margin. For a bootstrapped founder, that's a sign
 
 Before you can fix it, you need to see it. Tag failed-payment churn separately in your analytics. In Stripe, you can identify this through `invoice.payment_failed` webhooks. Any subscription that lapses following a payment failure — not a manual cancellation — is involuntary churn.
 
+If Stripe is your billing system, use the [Stripe failed payments recovery guide](/stripe-failed-payments) as the operating view: failed invoice, failure code, customer message, retry timing, and recovery state.
+
 ### Step 2: Understand why the payment failed
 
 Not all failed payments are the same. Stripe returns a failure reason code with every declined charge:
@@ -174,6 +176,8 @@ Stripe Smart Retries and automated billing emails cover the basics. The problem:
 
 **Dedicated dunning tools**
 Tools like [Dunlo](https://dunlo.io) are built specifically for this — they connect to Stripe, detect failure codes, send the right email at the right time, and escalate high-value accounts to the founder. Better for bootstrapped founders who want automation without the enterprise pricing of tools like Churn Buster or Churnkey.
+
+For the dunning sequence itself, see the [Stripe dunning workflow guide](/stripe-dunning).
 
 ---
 

@@ -220,11 +220,11 @@ Possible causes include: card restrictions, account issues, temporary bank holds
 
 You'll see these less frequently, but knowing how to handle them prevents recoverable payments from slipping through.
 
-### `card_velocity_exceed`
+### `card_velocity_exceeded`
 
-**What it means:** Too many charges have been attempted on this card in a short time period. Stripe or the card network has throttled the attempts.
+**What it means:** The customer exceeded the balance, credit limit, transaction amount limit, or card velocity limit available on their card. Some teams shorten this in notes as `card_velocity_exceed`, but Stripe's decline code is `card_velocity_exceeded`.
 
-**What to do:** Wait 24 hours before attempting any retry. Do not email the customer urgently — this will resolve itself. A calm notification is appropriate, but the main action is on your side (pause retries).
+**What to do:** Wait at least 24 hours before attempting any retry. Do not email the customer urgently. A calm notification is appropriate, but the main action is on your side: pause retries, let the issuer limit clear, and ask the customer to approve the charge or use another card if the code repeats.
 
 ---
 
@@ -274,7 +274,7 @@ You'll see these less frequently, but knowing how to handle them prevents recove
 | `insufficient_funds`        | D+3                 | Calm, no judgment      | Retry link, or wait         |
 | `do_not_honor`              | Within hours        | Explanatory            | Call bank OR new card       |
 | `card_declined`             | Same day            | Helpful                | New card OR retry           |
-| `card_velocity_exceed`      | D+1                 | Calm                   | Pause retries 24h           |
+| `card_velocity_exceeded`    | D+1                 | Calm                   | Pause retries 24h           |
 | `fraudulent`                | Same day            | Security-framed        | Update card                 |
 | `lost_card` / `stolen_card` | Same day            | Neutral                | Update card (no alarm)      |
 | `processing_error`          | Only if retry fails | Matter-of-fact         | Retry first                 |

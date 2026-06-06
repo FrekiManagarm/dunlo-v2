@@ -1,6 +1,6 @@
 ---
-title: "Stripe Smart Retries: An Honest Review"
-description: "A founder-to-founder review of Stripe Smart Retries: what it does well, what it misses, and when SaaS teams need more payment recovery control."
+title: "Stripe Smart Retries: Limits and Dunning Guide"
+description: "Learn how Stripe Smart Retries works, where it helps failed payments, where it falls short, and when SaaS teams should add dunning emails."
 author: "Dunlo team"
 date: "2026-05-04"
 published: true
@@ -14,11 +14,11 @@ keywords:
   ]
 ---
 
-## The shortest possible summary
+## How Stripe Smart Retries works, where it helps, and where it stops
 
 Stripe Smart Retries is a free machine-learning feature that automatically reschedules failed subscription payments at times the model predicts will succeed. It's built into Stripe Billing. It's enabled by default for new accounts. And it is, for most early-stage SaaS, both the easiest place to start and the wrong place to stop.
 
-This review walks through what it does well, what it doesn't, and how to know whether you've outgrown it.
+This review walks through how Smart Retries works, what it does well, what it doesn't, and when you need a fuller [Stripe failed payment recovery workflow](/stripe-failed-payments) with customer emails, failure-code logic, and dunning visibility.
 
 ## What Smart Retries actually does
 
@@ -105,3 +105,5 @@ This is a real engineering project — typically two to four weeks for a careful
 Smart Retries is a good free baseline that you should absolutely have on. It is also, by design, a generic solution to a problem that has nothing generic about it. The companies recovering the most revenue treat it as a starting point, not an endpoint.
 
 If you want categorized retries, custom emails, real-time alerts, and proper recovery analytics without writing the code yourself, that's literally what [Dunlo](https://dunlo.io) does. We layer on top of Stripe — Smart Retries can stay on or off — and the setup takes about 5 minutes.
+
+For the full implementation path, read the [Stripe dunning workflow guide](/stripe-dunning) and the [Stripe failed payments recovery page](/stripe-failed-payments).

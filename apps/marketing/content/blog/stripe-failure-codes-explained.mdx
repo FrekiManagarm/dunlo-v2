@@ -188,13 +188,15 @@ The long tail of Stripe payment decline codes can be small in volume but painful
 
 ### `card_velocity_exceeded`
 
-The customer hit a transaction, spending, or card velocity limit. Do not keep retrying quickly. Space attempts out, explain that the bank limited the charge, and give the customer a chance to approve it or use another method.
+The customer hit a balance, credit, transaction amount, or card velocity limit. Stripe surfaces this as `card_velocity_exceeded`, and some founders search for it as `card_velocity_exceed`. Treat both phrases as the same operational problem: the card is not necessarily dead, but another immediate retry is likely to fail.
 
 Recommended copy:
 
 > Your bank limited this charge. You can approve it with the bank or switch to another card here: [secure billing link].
 
-Recommended timing: wait at least 24 hours before retrying, and avoid repeated attempts unless the customer says the limit is resolved.
+Recommended timing: wait at least 24 hours before retrying, avoid repeated attempts unless the customer says the limit is resolved, and move high-value accounts into manual follow-up if the same code appears twice.
+
+For the full recovery workflow around failed invoices, see the [Stripe failed payments guide](/stripe-failed-payments).
 
 ### `lost_card` and `stolen_card`
 
