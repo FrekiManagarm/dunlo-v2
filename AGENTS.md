@@ -11,7 +11,8 @@ Dunlo is a **Stripe payment recovery SaaS** that helps SaaS founders recover fai
 ```
 dunlo-v2/
 ├── apps/
-│   └── web/                  # TanStack Start SSR app (main frontend + API)
+│   ├── marketing/            # Next.js app for landing page, blog, SEO pages, and public marketing content
+│   └── web/                  # TanStack Start SSR app for authenticated product, dashboard, and API
 ├── packages/
 │   ├── auth/                 # better-auth config (shared server-side)
 │   ├── config/               # Shared TypeScript / tooling config
@@ -32,8 +33,10 @@ dunlo-v2/
 
 | Layer | Technology |
 |---|---|
-| Framework | TanStack Start (SSR, Vite + Nitro) |
-| Router | TanStack Router (file-based, type-safe) |
+| Product app framework | TanStack Start (SSR, Vite + Nitro) in `apps/web` |
+| Product app router | TanStack Router (file-based, type-safe) |
+| Marketing app framework | Next.js App Router in `apps/marketing` |
+| Marketing content | MDX/Fumadocs blog content in `apps/marketing/content` |
 | Auth | better-auth + `tanstackStartCookies` plugin |
 | Database | Drizzle ORM + Neon PostgreSQL (serverless) |
 | Styling | Tailwind CSS v4 |
@@ -87,12 +90,27 @@ Pill shapes preferred (`rounded-full`). Card radius: `rounded-2xl` or `rounded-x
 
 ---
 
-## Routes (`apps/web/src/routes/`)
+## Apps
+
+### `apps/marketing`
+
+Next.js app dedicated to the public marketing surface: landing page, blog, SEO pages, legal pages, benchmarks, alternatives, and other acquisition-focused content. This is where marketing analytics, SEO metadata, public navigation, content pages, and campaign landing pages should live.
+
+Key locations:
+- `src/app/` — Next.js App Router pages, metadata, sitemap, robots, and Open Graph images.
+- `src/components/landing-page.tsx` and `src/components/landing/` — landing page sections.
+- `content/blog/` — MDX blog posts.
+- `src/lib/seo.ts`, `src/lib/site-navigation.ts`, `src/lib/blog.ts` — marketing SEO, navigation, and content helpers.
+
+### `apps/web`
+
+TanStack Start app dedicated to the authenticated product experience and server/API surface: auth, dashboard, payment recovery workflows, and app-only UI.
+
+## Product Routes (`apps/web/src/routes/`)
 
 | File | Path | Description |
 |---|---|---|
 | `__root.tsx` | — | Root layout: fonts, Toaster, devtools. No global header. |
-| `index.tsx` | `/` | Landing page: Nav, Hero, Dashboard mockup, Logo marquee, Features, How it works, Pricing, FAQ, CTA, Footer |
 | `login.tsx` | `/login` | Split-panel auth page: dark left panel (testimonial + perks) + white right panel (tab switcher between SignIn/SignUp forms) |
 | `dashboard.tsx` | `/dashboard` | Protected dashboard: sidebar nav, stat cards, payments table, Stripe connect banner |
 | `api/auth` | `/api/auth/*` | better-auth API handler (catch-all) |
@@ -136,6 +154,8 @@ DATABASE_URL=postgresql://...          # Neon connection string
 BETTER_AUTH_SECRET=...                 # Random 32+ char secret
 BETTER_AUTH_URL=http://localhost:3000  # App origin
 CORS_ORIGIN=http://localhost:3000
+NEXT_PUBLIC_POSTHOG_KEY=phc_...        # Marketing app PostHog public project key
+NEXT_PUBLIC_POSTHOG_HOST=https://...   # Marketing app PostHog host (US/EU project host)
 AUTH_EMAIL_PROVIDER=postmark           # postmark | resend | mailgun | sendgrid
 PLATFORM_EMAIL_FROM="Dunlo <noreply@yourdomain.com>"
 POSTMARK_SERVER_TOKEN=...              # Or RESEND_API_KEY / MAILGUN_* / SENDGRID_API_KEY
@@ -151,6 +171,7 @@ Run from the repo root:
 ```bash
 bun run dev          # Start all apps in parallel (Turborepo)
 bun run dev:web      # Start only the web app
+bun run dev:marketing # Start only the marketing app
 bun run build        # Build all
 bun run check-types  # TypeScript type-check all packages
 
@@ -165,9 +186,10 @@ bun run db:migrate   # Run migrations
 ## Key Conventions
 
 ### Routing
-- File-based: add a file to `apps/web/src/routes/` → automatically a route
-- Every route file exports `Route = createFileRoute("/path")({ component })`
-- Auth guard: check `authClient.useSession()` and redirect if needed
+- Product app routes: add a file to `apps/web/src/routes/` → automatically a TanStack route.
+- Marketing app routes: add a route under `apps/marketing/src/app/` using Next.js App Router conventions.
+- TanStack route files export `Route = createFileRoute("/path")({ component })`.
+- Auth guard in `apps/web`: check `authClient.useSession()` and redirect if needed.
 
 ### Auth Client
 ```ts

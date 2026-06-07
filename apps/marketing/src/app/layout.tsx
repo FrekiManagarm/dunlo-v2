@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { JetBrains_Mono, Outfit } from "next/font/google";
 import "./globals.css";
+import { PostHogProvider } from "@/components/analytics/posthog-provider";
 import {
   DEFAULT_DESCRIPTION,
   DEFAULT_KEYWORDS,
@@ -86,7 +87,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${outfit.variable} ${jetbrainsMono.variable}`}>
-        {children}
+        <PostHogProvider>{children}</PostHogProvider>
         <script
           type="application/ld+json"
           suppressHydrationWarning

@@ -26,6 +26,8 @@ const KEYWORDS = [
   "recover failed Stripe payments",
   "Stripe payment recovery",
   "failed payment recovery SaaS",
+  "payment retry",
+  "Stripe payment retry",
 ] as const;
 
 const FAILURE_REASONS = [
@@ -64,6 +66,29 @@ const FAQS = [
     question: "How is Dunlo different from basic retry logic?",
     answer:
       "Dunlo combines failure-code-specific recovery emails, smart timing, founder escalation, and recovered revenue tracking so SaaS teams can act on the reason each payment failed.",
+  },
+  {
+    question: "Is payment retry enough to recover failed payments?",
+    answer:
+      "Payment retry helps when the failure is temporary, such as insufficient funds or a network issue. It is weaker when the customer needs to update a card, complete authentication, or understand why their bank blocked the charge.",
+  },
+] as const;
+
+const RELATED_GUIDES = [
+  {
+    title: "Stripe dunning workflow",
+    copy: "Build the email cadence, retry windows, and escalation path around each failed invoice.",
+    href: "/stripe-dunning",
+  },
+  {
+    title: "Failed payment rate benchmark",
+    copy: "Compare your failed payment rate with SaaS benchmarks and estimate recoverable revenue.",
+    href: "/benchmark",
+  },
+  {
+    title: "Stripe Smart Retries review",
+    copy: "See where Stripe retry logic helps and where a dedicated recovery workflow adds control.",
+    href: "/blog/stripe-smart-retries-review",
   },
 ] as const;
 
@@ -287,8 +312,8 @@ export default function StripeFailedPaymentsPage() {
                   },
                   {
                     icon: Clock3,
-                    title: "Timed recovery",
-                    copy: "Follow-ups wait when waiting improves the outcome.",
+                    title: "Payment retry timing",
+                    copy: "Retries are paced around failure type and customer action.",
                   },
                   {
                     icon: BadgeCheck,
@@ -314,6 +339,8 @@ export default function StripeFailedPaymentsPage() {
 
           <FaqSection />
         </section>
+
+        <RelatedGuidesSection />
 
         <CtaSection />
       </main>
@@ -368,6 +395,36 @@ function CtaSection() {
           Connect Stripe
           <ArrowRight size={16} strokeWidth={1.8} />
         </a>
+      </div>
+    </section>
+  );
+}
+
+function RelatedGuidesSection() {
+  return (
+    <section className="mx-auto max-w-6xl">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        {RELATED_GUIDES.map((guide) => (
+          <Link
+            key={guide.href}
+            href={guide.href}
+            className="group rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-[1px] hover:border-dunlo/40"
+          >
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              Guide
+            </p>
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-gray-950">
+              {guide.title}
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-gray-600">
+              {guide.copy}
+            </p>
+            <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-gray-950 transition-colors group-hover:text-dunlo-deep">
+              Read guide
+              <ArrowRight size={15} strokeWidth={1.8} />
+            </span>
+          </Link>
+        ))}
       </div>
     </section>
   );

@@ -3,9 +3,18 @@
 import { motion } from "framer-motion";
 import { ArrowRight, CalendarClock, Percent } from "lucide-react";
 import Link from "next/link";
+import { captureMarketingEvent } from "@/lib/posthog";
 import { RecoveryConsole } from "./recovery-console";
 
 export function HeroContent() {
+  function captureCtaClick(buttonText: string, destination: string) {
+    captureMarketingEvent("cta_clicked", {
+      button_text: buttonText,
+      destination,
+      location: "marketing_hero",
+    });
+  }
+
   return (
     <div className="relative mx-auto grid min-h-[calc(100dvh-8rem)] max-w-6xl min-w-0 gap-12 py-6 md:grid-cols-[0.92fr_1.08fr] md:items-center md:gap-14 md:py-8">
       <div className="min-w-0 max-w-xl">
@@ -65,6 +74,7 @@ export function HeroContent() {
         >
           <Link
             href="/benchmark"
+            onClick={() => captureCtaClick("See your benchmark", "/benchmark")}
             className="inline-flex items-center justify-center gap-2 rounded-full bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.98]"
           >
             See your benchmark
@@ -72,6 +82,9 @@ export function HeroContent() {
           </Link>
           <a
             href="#features"
+            onClick={() =>
+              captureCtaClick("See failure-code recovery", "#features")
+            }
             className="inline-flex items-center justify-center rounded-full border border-gray-300 bg-white/60 px-5 py-3 text-sm font-semibold text-gray-800 transition-all hover:border-gray-400 hover:bg-white active:scale-[0.98]"
           >
             See failure-code recovery

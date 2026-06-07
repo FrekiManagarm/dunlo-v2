@@ -4,7 +4,12 @@ import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { BlogNav } from "@/components/blog-nav";
 import { mdxComponents } from "@/components/mdx-components";
-import { getAllPosts, getBlogSlugs, getPost } from "@/lib/blog";
+import {
+  type BlogPostMeta,
+  getAllPosts,
+  getBlogSlugs,
+  getPost,
+} from "@/lib/blog";
 import {
   SITE_NAME,
   absoluteUrl,
@@ -54,13 +59,51 @@ function TagPill({ tag }: { tag: string }) {
   );
 }
 
+function normalizeTerm(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function scoreRelatedPost({
+  candidate,
+  tags,
+  keywords,
+}: {
+  candidate: BlogPostMeta;
+  tags: Set<string>;
+  keywords: Set<string>;
+}) {
+  const candidateTags = candidate.tags.map(normalizeTerm);
+  const candidateKeywords = candidate.keywords.map(normalizeTerm);
+  const tagScore = candidateTags.filter((tag) => tags.has(tag)).length * 4;
+  const keywordScore =
+    candidateKeywords.filter((keyword) => keywords.has(keyword)).length * 2;
+
+  return tagScore + keywordScore;
+}
+
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
   const post = getPost(slug);
   if (!post) notFound();
 
+  const currentSlug = post.slugs[0] ?? "";
+  const currentTags = new Set(post.data.tags.map(normalizeTerm));
+  const currentKeywords = new Set(post.data.keywords.map(normalizeTerm));
   const related = getAllPosts()
-    .filter((item) => item.slug !== post.slugs[0])
+    .filter((item) => item.slug !== currentSlug)
+    .map((item) => ({
+      ...item,
+      relatedScore: scoreRelatedPost({
+        candidate: item,
+        tags: currentTags,
+        keywords: currentKeywords,
+      }),
+    }))
+    .sort(
+      (a, b) =>
+        b.relatedScore - a.relatedScore ||
+        new Date(b.date).getTime() - new Date(a.date).getTime(),
+    )
     .slice(0, 3);
   const MdxContent = post.data.body;
 
