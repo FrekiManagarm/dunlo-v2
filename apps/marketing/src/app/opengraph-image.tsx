@@ -7,10 +7,10 @@ export const contentType = "image/png";
 
 export default function Image() {
   return createDunloOgImage({
-    title: "Recover failed Stripe payments without burning trust",
+    title: "Recover failed Stripe payments before they quietly churn",
     description: DEFAULT_DESCRIPTION,
     badge: "Free in beta",
-    metricLabel: "recovered",
-    metricValue: "$248",
+    metricLabel: "at risk today",
+    metricValue: "$2.8k",
   });
 }

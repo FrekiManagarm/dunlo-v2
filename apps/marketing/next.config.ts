@@ -7,22 +7,24 @@ const withMDX = createMDX();
 const nextConfig: NextConfig = {
   transpilePackages: ["@dunlo-v2/ui"],
   async redirects() {
-    return [
-      "/login",
-      "/signup",
-      "/register",
-      "/reset-password",
-      "/onboarding",
-      "/benchmark",
-    ].map((source) => ({
-      source,
-      destination: `${appOrigin}${source}`,
-      permanent: false,
-    })).concat({
-      source: "/dashboard/:path*",
-      destination: `${appOrigin}/dashboard/:path*`,
-      permanent: false,
-    });
+    return ["/login", "/signup", "/register", "/reset-password", "/onboarding"]
+      .map((source) => ({
+        source,
+        destination: `${appOrigin}${source}`,
+        permanent: false,
+      }))
+      .concat(
+        {
+          source: "/dashboard/:path*",
+          destination: `${appOrigin}/dashboard/:path*`,
+          permanent: false,
+        },
+        {
+          source: "/alternatives/stripe-smart-retries",
+          destination: "/stripe-smart-retries-alternative",
+          permanent: true,
+        },
+      );
   },
 };
 

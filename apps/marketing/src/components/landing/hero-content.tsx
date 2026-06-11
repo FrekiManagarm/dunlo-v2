@@ -104,7 +104,7 @@ export function HeroContent() {
             Stripe failed payments
           </Link>
           <Link
-            href="/alternatives/stripe-smart-retries"
+            href="/stripe-smart-retries-alternative"
             className="transition-colors hover:text-gray-950"
           >
             vs Stripe Smart Retries

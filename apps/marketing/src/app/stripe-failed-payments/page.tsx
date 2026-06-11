@@ -86,9 +86,9 @@ const RELATED_GUIDES = [
     href: "/benchmark",
   },
   {
-    title: "Stripe Smart Retries review",
-    copy: "See where Stripe retry logic helps and where a dedicated recovery workflow adds control.",
-    href: "/blog/stripe-smart-retries-review",
+    title: "Stripe Smart Retries alternative",
+    copy: "Compare native retry timing with a full customer-facing recovery workflow.",
+    href: "/stripe-smart-retries-alternative",
   },
 ] as const;
 
