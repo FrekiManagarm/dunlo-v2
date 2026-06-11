@@ -41,42 +41,47 @@ const recoveredEvents = [
 
 const signalCards = [
   {
-    title: "Stripe tells you why",
-    body: "Dunlo reads decline codes, account value, retry history, and customer age before a message goes out.",
+    title: "Failure-code detection",
+    body: "Dunlo reads Stripe declines as they happen.",
     icon: SquareActivity,
   },
   {
-    title: "Customers hear the right thing",
-    body: "Expired card, bank decline, SCA, soft decline, and lost payment method each get their own recovery path.",
+    title: "Reason-aware emails",
+    body: "Expired cards, SCA, and soft declines get different copy.",
     icon: MailCheck,
   },
   {
-    title: "You step in only when it matters",
-    body: "High-value accounts and repeated failures get paused with a founder-ready note instead of more automation.",
+    title: "Risky-account pause",
+    body: "Sensitive accounts stop before automation gets noisy.",
     icon: BellRing,
+  },
+  {
+    title: "Recovery tracking",
+    body: "See open, recovered, and paused revenue in one place.",
+    icon: TimerReset,
   },
 ] as const;
 
 const recoveryPaths = [
   {
     code: "expired_card",
-    line: "Customer gets a calm card-update email with Stripe-hosted checkout.",
-    timing: "2 messages over 5 days",
+    label: "card update",
+    timing: "2 emails",
   },
   {
     code: "insufficient_funds",
-    line: "Retry waits for a better window before Dunlo nudges the customer.",
-    timing: "retry + email cadence",
+    label: "retry window",
+    timing: "wait 4h",
   },
   {
     code: "authentication_required",
-    line: "Message explains the bank approval step without sounding like a generic dunning blast.",
-    timing: "SCA-specific copy",
+    label: "bank approval",
+    timing: "SCA copy",
   },
   {
     code: "do_not_honor",
-    line: "Dunlo routes the account to a founder review before the customer relationship gets noisy.",
-    timing: "manual escalation",
+    label: "manual review",
+    timing: "pause",
   },
 ] as const;
 
@@ -104,7 +109,7 @@ const resourceLinks = [
     body: "Estimate how much recoverable revenue is sitting in your Stripe account.",
   },
   {
-    href: "/alternatives/stripe-smart-retries",
+    href: "/stripe-smart-retries-alternative",
     title: "Stripe Smart Retries alternative",
     body: "See where Smart Retries ends and customer-facing payment recovery starts.",
   },
@@ -139,13 +144,11 @@ export function LandingPage() {
       <Nav />
       <main>
         <HeroSection />
-        {/*<ProofStrip />*/}
         <RestoredSection>
           <Escalation />
         </RestoredSection>
         <ResourceLinksSection />
-        <SignalSection />
-        <RecoveryPathsSection />
+        <FeaturesSection />
         <RestoredSection>
           <HowItWorks />
         </RestoredSection>
@@ -353,28 +356,6 @@ function RecoveryDesk() {
   );
 }
 
-function ProofStrip() {
-  return (
-    <section className="px-4 py-8 md:px-6 md:py-12">
-      <div className="mx-auto grid max-w-7xl gap-4 border-y border-gray-200 py-5 md:grid-cols-[1.2fr_0.8fr] md:items-center">
-        <p className="max-w-3xl text-xl font-semibold tracking-tight text-gray-950 md:text-3xl">
-          Built for founders who know failed payments are not cancellations.
-        </p>
-        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 md:grid-cols-2 lg:grid-cols-4">
-          {proofRows.map(([value, label]) => (
-            <div key={label} className="rounded-2xl bg-white/70 p-4">
-              <p className="font-mono text-lg font-semibold">{value}</p>
-              <p className="mt-1 text-xs font-medium leading-4 text-gray-500">
-                {label}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function ResourceLinksSection() {
   return (
     <section className="px-4 py-8 md:px-6 md:py-12">
@@ -413,121 +394,104 @@ function ResourceLinksSection() {
   );
 }
 
-function SignalSection() {
+function FeaturesSection() {
   return (
-    <section id="features" className="px-4 py-12 md:px-6 md:py-20">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid gap-8 md:grid-cols-[0.74fr_1.26fr] md:items-end">
-          <div>
+    <section
+      id="features"
+      className="scroll-mt-24 px-4 py-10 md:px-6 md:py-16"
+    >
+      <div
+        id="recovery-paths"
+        className="mx-auto max-w-7xl scroll-mt-24 border-t border-gray-200 pt-10 md:pt-14"
+      >
+        <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-start">
+          <div className="lg:sticky lg:top-28">
             <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-              Signal to message
+              Features
             </p>
-            <h2 className="mt-4 max-w-lg text-4xl font-semibold leading-none tracking-tight md:text-6xl">
-              The recovery path changes with the failure.
+            <h2 className="mt-4 max-w-md text-4xl font-semibold leading-none tracking-tight md:text-6xl">
+              Everything around Stripe retries.
             </h2>
+            <p className="mt-5 max-w-sm text-base leading-7 text-gray-600">
+              Failed-payment recovery without a finance-suite migration.
+            </p>
           </div>
-          <p className="max-w-2xl text-base leading-7 text-gray-600 md:justify-self-end">
-            The workflow stays visible from the first failed charge: payment
-            context in, customer-safe recovery action out.
-          </p>
-        </div>
-        <div className="mt-10 grid gap-4 md:grid-cols-[1.2fr_0.8fr]">
-          <div className="rounded-[2rem] border border-gray-200 bg-white p-5 shadow-[0_30px_80px_-55px_rgba(15,23,42,0.45)] md:p-7">
-            <div className="grid gap-3 md:grid-cols-3">
-              {signalCards.map((card, index) => {
-                const Icon = card.icon;
+
+          <div className="grid gap-4 md:grid-cols-[1.05fr_0.95fr]">
+            <div className="grid gap-4">
+              {signalCards.map((feature, index) => {
+                const Icon = feature.icon;
                 return (
-                  <div
-                    key={card.title}
-                    className="landing-rise rounded-[1.5rem] border border-gray-100 bg-gray-50 p-4"
-                    style={{ animationDelay: `${index * 120}ms` }}
+                  <article
+                    key={feature.title}
+                    className="landing-rise group rounded-[1.5rem] border border-gray-200 bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-dunlo/40 hover:shadow-[0_24px_60px_-48px_rgba(15,23,42,0.5)] active:scale-[0.99] md:p-6"
+                    style={{ animationDelay: `${index * 110}ms` }}
                   >
-                    <Icon className="text-dunlo-deep" size={22} />
-                    <h3 className="mt-5 text-lg font-semibold tracking-tight">
-                      {card.title}
-                    </h3>
-                    <p className="mt-3 text-sm leading-6 text-gray-600">
-                      {card.body}
-                    </p>
-                  </div>
+                    <div className="flex items-start justify-between gap-5">
+                      <div>
+                        <h3 className="text-xl font-semibold tracking-tight text-gray-950">
+                          {feature.title}
+                        </h3>
+                        <p className="mt-2 max-w-md text-sm leading-6 text-gray-600">
+                          {feature.body}
+                        </p>
+                      </div>
+                      <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-dunlo/12 text-dunlo-deep transition-transform group-hover:scale-105">
+                        <Icon size={20} strokeWidth={2} />
+                      </span>
+                    </div>
+                  </article>
                 );
               })}
             </div>
-          </div>
-          <div className="rounded-[2rem] border border-gray-200 bg-gray-950 p-5 text-white md:p-7">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo">
-              Today
-            </p>
-            <div className="mt-8 space-y-5">
-              <div>
-                <p className="font-mono text-5xl font-semibold tracking-tight">
-                  $2,784
+
+            <div className="rounded-[1.5rem] border border-gray-200 bg-gray-950 p-5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] md:p-6">
+              <div className="flex items-center justify-between gap-4">
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo">
+                  Live queue
                 </p>
-                <p className="mt-2 text-sm font-medium text-white/55">
-                  open failed-payment revenue
-                </p>
+                <span className="rounded-full border border-white/10 bg-white/10 px-3 py-1.5 text-xs font-semibold text-white/70">
+                  Stripe connected
+                </span>
               </div>
-              <div className="h-px bg-white/10" />
-              <div className="grid grid-cols-2 gap-3">
-                {[
-                  ["6", "safe to automate"],
-                  ["3", "needs founder review"],
-                ].map(([value, label]) => (
-                  <div key={label} className="rounded-2xl bg-white/10 p-4">
-                    <p className="font-mono text-3xl font-semibold">{value}</p>
-                    <p className="mt-1 text-xs font-medium text-white/50">
-                      {label}
-                    </p>
+
+              <div className="mt-8 space-y-3">
+                {recoveryPaths.map((path, index) => (
+                  <div
+                    key={path.code}
+                    className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-3"
+                  >
+                    <span className="flex size-8 items-center justify-center rounded-full bg-dunlo/15 font-mono text-[11px] font-semibold text-dunlo">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="truncate font-mono text-xs font-semibold text-white">
+                        {path.code}
+                      </p>
+                      <p className="mt-1 text-xs font-semibold text-white/45">
+                        {path.label}
+                      </p>
+                    </div>
+                    <span className="rounded-full bg-white/10 px-2.5 py-1 text-[11px] font-semibold text-white/65">
+                      {path.timing}
+                    </span>
                   </div>
                 ))}
               </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
 
-function RecoveryPathsSection() {
-  return (
-    <section
-      id="recovery-paths"
-      className="scroll-mt-24 px-4 py-12 md:px-6 md:py-20"
-    >
-      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
-        <div className="lg:sticky lg:top-28">
-          <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-            Recovery paths
-          </p>
-          <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-none tracking-tight md:text-6xl">
-            Same product, different reason, different move.
-          </h2>
-          <p className="mt-5 max-w-[58ch] text-base leading-7 text-gray-600">
-            These are the decisions Dunlo makes around Stripe before your
-            customer ever sees an email.
-          </p>
-        </div>
-        <div className="space-y-3">
-          {recoveryPaths.map((path, index) => (
-            <div
-              key={path.code}
-              className="group grid gap-5 rounded-[1.5rem] border border-gray-200 bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-dunlo/40 md:grid-cols-[0.42fr_1fr_auto] md:items-center md:p-6"
-            >
-              <div className="flex items-center gap-3">
-                <span className="flex size-10 items-center justify-center rounded-full bg-dunlo/12 font-mono text-sm font-semibold text-dunlo-deep">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="font-mono text-sm font-semibold text-gray-950">
-                  {path.code}
+              <div className="mt-5 rounded-2xl bg-white p-4 text-gray-950">
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
+                    recovered this week
+                  </p>
+                  <Check size={16} strokeWidth={2} />
+                </div>
+                <p className="mt-4 font-mono text-4xl font-semibold tracking-tight">
+                  $8,420
                 </p>
               </div>
-              <p className="text-sm leading-6 text-gray-600">{path.line}</p>
-              <span className="w-fit rounded-full border border-gray-200 px-3 py-1.5 text-xs font-semibold text-gray-600 group-hover:border-dunlo/40 group-hover:text-dunlo-deep">
-                {path.timing}
-              </span>
             </div>
-          ))}
+          </div>
         </div>
       </div>
     </section>
