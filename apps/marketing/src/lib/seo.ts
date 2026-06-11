@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 export const SITE_URL = "https://dunlo.io";
 export const SITE_NAME = "Dunlo";
 export const DEFAULT_TITLE =
-  "Dunlo - Stripe Payment Recovery Without Burning Trust";
+  "Dunlo - Recover Failed Stripe Payments Before They Churn";
 export const DEFAULT_DESCRIPTION =
-  "Recover failed Stripe payments without burning customer trust. Dunlo gives Stripe-first SaaS founders failure-code emails, smart retry timing, and founder escalation.";
+  "Dunlo watches failed Stripe payments, sends failure-aware recovery emails, and pauses risky accounts for founder review before revenue quietly churns.";
 export const DEFAULT_KEYWORDS = [
   "Dunlo",
   "dunlo",
@@ -22,7 +22,7 @@ export const DEFAULT_KEYWORDS = [
 ] as const;
 export const DEFAULT_OG_IMAGE = `${SITE_URL}/opengraph-image`;
 export const DEFAULT_OG_IMAGE_ALT =
-  "Dunlo social preview showing failure-reason-specific Stripe payment recovery";
+  "Dunlo social preview showing a Stripe failed-payment recovery desk";
 export const DEFAULT_OG_IMAGE_TYPE = "image/png";
 export const DEFAULT_OG_IMAGE_WIDTH = 1200;
 export const DEFAULT_OG_IMAGE_HEIGHT = 630;

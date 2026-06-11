@@ -11,39 +11,24 @@ import {
 
 const FAQ_JSON_LD = [
   {
-    question: "What is involuntary churn?",
+    question: "Is this just Stripe Smart Retries with nicer emails?",
     answer:
-      "It is churn caused by payment failure rather than a customer choosing to cancel. A good customer can disappear because their card expired, their bank declined a charge, or they missed a payment update email.",
+      "No. Stripe can retry cards. Dunlo handles the customer-facing recovery layer around Stripe: message, timing, founder escalation, and recovered-revenue reporting.",
   },
   {
-    question: "How is Dunlo different from Stripe Smart Retries?",
+    question: "Will customers know an automation sent the email?",
     answer:
-      "Stripe Smart Retries can keep retrying the card. Dunlo handles the customer communication around the failure: why it happened, what message to send, when to follow up, and when a founder should step in so recovery does not burn customer trust.",
+      "The copy is plain, specific, and tied to the payment reason. High-value or sensitive accounts can be paused for a founder note before anything goes out.",
   },
   {
-    question: "How is Dunlo different from Triggla or Churn Buster?",
+    question: "Do I pay during beta?",
     answer:
-      "Dunlo does one thing well: Stripe payment recovery. No lifecycle suite, no recovered-revenue cut, no enterprise pricing. If you're a founder with $5k-$80k MRR who loses customers to silent payment failures, Dunlo is built for exactly that.",
+      "No. Dunlo is free during beta. The public pricing direction exists so founders know what happens after the beta period.",
   },
   {
-    question: "What is the AI escalation feature exactly?",
+    question: "Does Dunlo store card numbers?",
     answer:
-      "When a failed payment crosses your threshold, Dunlo pauses automation and drafts a short personal email from the founder with Stripe context and account value. You can review, regenerate, dismiss, or send it.",
-  },
-  {
-    question: "Is my Stripe data safe?",
-    answer:
-      "Dunlo uses Stripe data to understand failed-payment context and recovery status. It does not store full card numbers or CVCs, and payment updates happen through Stripe-hosted flows.",
-  },
-  {
-    question: "How much setup is involved?",
-    answer:
-      "Connect Stripe, review the default sequences, and add your email provider. The baseline setup does not require an engineering team.",
-  },
-  {
-    question: "What happens during beta?",
-    answer:
-      "Dunlo is free until the beta ends on July 31, 2026. Pricing is visible now so you know the direction before Dunlo starts billing.",
+      "No. Card updates happen through Stripe-hosted flows. Dunlo uses payment and subscription context, not full card numbers or CVC data.",
   },
 ] as const;
 
@@ -68,7 +53,7 @@ export default function Page() {
             name: "Dunlo",
             applicationCategory: "BusinessApplication",
             description:
-              "Stripe payment recovery SaaS that helps Stripe-first SaaS founders recover failed payments without burning customer trust, using failure-code emails, smart retry timing, and founder escalation.",
+              "Stripe payment recovery SaaS that watches failed Stripe payments, sends failure-aware recovery emails, and pauses risky accounts for founder review.",
             operatingSystem: "Web",
             offers: {
               "@type": "Offer",
