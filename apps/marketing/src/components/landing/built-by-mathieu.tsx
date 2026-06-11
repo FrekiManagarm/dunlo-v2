@@ -10,7 +10,7 @@ export function BuiltByMathieu() {
     <FadeIn>
       <section
         id="founder"
-        className="scroll-mt-24 rounded-3xl border border-gray-200/60 bg-white px-5 py-5 md:px-7 md:py-6"
+        className="mx-auto max-w-[920px] scroll-mt-24 rounded-3xl border border-gray-200/60 bg-white px-5 py-5 md:px-7 md:py-6"
       >
         <div className="grid gap-5 md:grid-cols-[auto_minmax(0,1fr)_auto] md:items-center">
           <div className="flex items-center gap-4">

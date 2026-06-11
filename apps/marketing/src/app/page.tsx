@@ -52,8 +52,19 @@ export default function Page() {
             "@type": "SoftwareApplication",
             name: "Dunlo",
             applicationCategory: "BusinessApplication",
-            description:
-              "Stripe payment recovery SaaS that watches failed Stripe payments, sends failure-aware recovery emails, and pauses risky accounts for founder review.",
+            applicationSubCategory: "Stripe payment recovery",
+            description: DEFAULT_DESCRIPTION,
+            featureList: [
+              "Stripe failure-code detection",
+              "Failure-aware recovery emails",
+              "Stripe-hosted payment update links",
+              "Founder review for risky accounts",
+              "Recovered revenue tracking",
+            ],
+            audience: {
+              "@type": "Audience",
+              audienceType: "Stripe-first SaaS founders",
+            },
             operatingSystem: "Web",
             offers: {
               "@type": "Offer",

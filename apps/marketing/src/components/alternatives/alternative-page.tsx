@@ -1120,7 +1120,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
     competitorName: "Custom Stripe webhooks",
     metaTitle: "Dunlo vs Custom Stripe Webhooks - Build or Buy Recovery",
     metaDescription:
-      "Compare Dunlo with building your own Stripe invoice.payment_failed webhook workflow for SaaS failed payment recovery.",
+      "Compare Dunlo with building a Stripe invoice.payment_failed webhook workflow for SaaS recovery, emails, retries, reporting, and maintenance.",
     eyebrow: "Build vs buy",
     headline: "Dunlo vs custom Stripe webhooks",
     intro:
@@ -1394,7 +1394,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
     slug: "recurly-recover",
     path: "/alternatives/recurly-recover",
     competitorName: "Recurly Recover",
-    metaTitle: "Dunlo vs Recurly Recover - Stripe Recovery Without Replatforming",
+    metaTitle: "Dunlo vs Recurly Recover - Stripe Recovery Guide",
     metaDescription:
       "Compare Dunlo and Recurly Recover for dunning, subscription recovery, billing platform fit, reporting, and Stripe-first SaaS teams.",
     eyebrow: "Alternative guide",
@@ -1454,7 +1454,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
     slug: "revaly-flexpay",
     path: "/alternatives/revaly-flexpay",
     competitorName: "Revaly / FlexPay",
-    metaTitle: "Dunlo vs Revaly FlexPay - Payment Performance vs Stripe Recovery",
+    metaTitle: "Dunlo vs Revaly FlexPay - Stripe Recovery Guide",
     metaDescription:
       "Compare Dunlo and Revaly FlexPay for payment performance management, failed payment recovery, enterprise fit, and Stripe-first SaaS recovery.",
     eyebrow: "Alternative guide",

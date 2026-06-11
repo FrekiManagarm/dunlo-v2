@@ -13,7 +13,7 @@ type SitemapEntry = {
 const STATIC_ROUTES = [
   {
     path: "/",
-    lastModified: "2026-05-23",
+    lastModified: "2026-06-11",
     changeFrequency: "weekly",
     priority: 1,
   },

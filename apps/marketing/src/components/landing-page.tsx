@@ -1,4 +1,5 @@
 import Link from "next/link";
+import type { ReactNode } from "react";
 import {
   ArrowRight,
   BellRing,
@@ -11,8 +12,11 @@ import {
 } from "lucide-react";
 import { SIGNUP_URL } from "@/lib/app-url";
 import { BuiltByMathieu } from "@/components/landing/built-by-mathieu";
+import { Escalation } from "@/components/landing/escalation";
 import { Footer } from "@/components/landing/footer";
+import { HowItWorks } from "@/components/landing/how-it-works";
 import { Nav } from "@/components/landing/nav";
+import { RoiCalculator } from "@/components/landing/roi-calculator";
 
 const recoveredEvents = [
   {
@@ -83,21 +87,26 @@ const proofRows = [
   ["0%", "recovered-revenue fee"],
 ] as const;
 
-const workflowSteps = [
+const resourceLinks = [
   {
-    step: "01",
-    title: "Connect Stripe",
-    body: "Dunlo starts reading failed invoices, charge outcomes, and subscription context.",
+    href: "/stripe-failed-payments",
+    title: "Stripe failed payments guide",
+    body: "Learn why payments fail and which decline reasons deserve a different recovery path.",
   },
   {
-    step: "02",
-    title: "Map failure reasons",
-    body: "Each decline code gets a message, wait time, and retry posture that fits the situation.",
+    href: "/stripe-dunning",
+    title: "Stripe dunning strategy",
+    body: "Compare retry timing, customer emails, and founder escalation for SaaS dunning.",
   },
   {
-    step: "03",
-    title: "Recover or escalate",
-    body: "Straightforward cases run automatically. Risky accounts wait for your review.",
+    href: "/benchmark",
+    title: "Failed-payment benchmark",
+    body: "Estimate how much recoverable revenue is sitting in your Stripe account.",
+  },
+  {
+    href: "/alternatives/stripe-smart-retries",
+    title: "Stripe Smart Retries alternative",
+    body: "See where Smart Retries ends and customer-facing payment recovery starts.",
   },
 ] as const;
 
@@ -130,10 +139,25 @@ export function LandingPage() {
       <Nav />
       <main>
         <HeroSection />
-        <ProofStrip />
+        {/*<ProofStrip />*/}
+        <RestoredSection>
+          <Escalation />
+        </RestoredSection>
+        <ResourceLinksSection />
         <SignalSection />
         <RecoveryPathsSection />
-        <WorkflowSection />
+        <RestoredSection>
+          <HowItWorks />
+        </RestoredSection>
+        <RestoredSection>
+          <RoiCalculator />
+        </RestoredSection>
+        {/*<RestoredSection>
+          <PublicProofLayer compact />
+        </RestoredSection>
+        <RestoredSection>
+          <BetaTestimonialsSection compact showEmptyState />
+        </RestoredSection>*/}
         <PricingSection />
         <FaqSection />
         <section className="px-4 py-6 md:px-6 md:py-8">
@@ -148,26 +172,26 @@ export function LandingPage() {
 
 function HeroSection() {
   return (
-    <section className="relative min-h-[100dvh] overflow-hidden px-4 pb-10 pt-28 md:px-6 md:pb-14 md:pt-32">
+    <section className="relative flex min-h-dvh items-center overflow-hidden px-4 py-28 md:px-6 md:py-32">
       <GridBackdrop />
-      <div className="relative mx-auto grid max-w-[1400px] gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-        <div className="max-w-3xl lg:pl-[5vw]">
+      <div className="relative mx-auto grid w-full max-w-7xl min-w-0 gap-10 lg:grid-cols-[0.95fr_1.05fr] lg:items-center">
+        <div className="min-w-0 max-w-3xl">
           <div className="anim-1 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-sm font-semibold text-gray-700 shadow-[0_16px_40px_-28px_rgba(15,23,42,0.4)] backdrop-blur-md">
             <span className="flex size-2.5 rounded-full bg-dunlo" />
             Stripe payment recovery, free in beta
           </div>
-          <h1 className="anim-2 mt-7 max-w-2xl text-5xl font-semibold leading-none tracking-tight text-gray-950 md:text-6xl lg:text-7xl">
+          <h1 className="anim-2 mt-7 max-w-2xl text-4xl font-semibold leading-none tracking-tight text-gray-950 sm:text-5xl md:text-6xl lg:text-7xl">
             Recover the payments that quietly churn.
           </h1>
           <p className="anim-3 mt-6 max-w-[58ch] text-base leading-7 text-gray-600 md:text-lg">
-            Dunlo watches failed Stripe payments, explains what happened, sends
-            the right recovery message, and pauses the risky accounts for a
+            Dunlo recovers failed Stripe payments by explaining what happened,
+            sending the right recovery message, and pausing risky accounts for
             founder review.
           </p>
           <div className="anim-4 mt-8 flex flex-col gap-3 sm:flex-row">
             <Link
               href={SIGNUP_URL}
-              className="group inline-flex items-center justify-center gap-2 rounded-full bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.98]"
+              className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.98] sm:w-auto"
             >
               Start free in beta
               <ArrowRight
@@ -178,13 +202,13 @@ function HeroSection() {
             </Link>
             <a
               href="#recovery-paths"
-              className="inline-flex items-center justify-center gap-2 rounded-full border border-gray-300 bg-white/75 px-5 py-3 text-sm font-semibold text-gray-800 transition-all hover:border-gray-400 hover:bg-white active:scale-[0.98]"
+              className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white/75 px-5 py-3 text-sm font-semibold text-gray-800 transition-all hover:border-gray-400 hover:bg-white active:scale-[0.98] sm:w-auto"
             >
               See recovery paths
               <ChevronRight size={16} strokeWidth={2} />
             </a>
           </div>
-          <div className="anim-5 mt-10 grid max-w-xl grid-cols-3 divide-x divide-gray-200 border-y border-gray-200 py-4">
+          {/*<div className="anim-5 mt-10 grid max-w-xl grid-cols-3 divide-x divide-gray-200 border-y border-gray-200 py-4">
             {proofRows.slice(0, 3).map(([value, label]) => (
               <div key={label} className="px-4 first:pl-0 last:pr-0">
                 <p className="font-mono text-lg font-semibold tracking-tight text-gray-950 md:text-2xl">
@@ -195,10 +219,10 @@ function HeroSection() {
                 </p>
               </div>
             ))}
-          </div>
+          </div>*/}
         </div>
 
-        <div className="anim-3 lg:pr-[2vw]">
+        <div className="anim-3 min-w-0">
           <RecoveryDesk />
         </div>
       </div>
@@ -206,18 +230,17 @@ function HeroSection() {
   );
 }
 
+function RestoredSection({ children }: { children: ReactNode }) {
+  return (
+    <section className="px-4 py-8 md:px-6 md:py-14">
+      <div className="mx-auto max-w-7xl">{children}</div>
+    </section>
+  );
+}
+
 function RecoveryDesk() {
   return (
-    <div className="relative mx-auto max-w-2xl">
-      <div className="absolute -left-8 top-12 hidden w-36 rotate-[-7deg] rounded-[1.5rem] border border-dunlo/20 bg-white/80 p-4 shadow-[0_24px_70px_-42px_rgba(15,23,42,0.5)] backdrop-blur-md md:block">
-        <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-dunlo-deep">
-          Live signal
-        </p>
-        <p className="mt-3 text-3xl font-semibold tracking-tight text-gray-950">
-          13
-        </p>
-        <p className="text-xs font-medium text-gray-500">payments at risk</p>
-      </div>
+    <div className="relative mx-auto w-full min-w-0 max-w-2xl overflow-hidden rounded-[2rem]">
       <div className="relative overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-[0_40px_100px_-55px_rgba(15,23,42,0.58)]">
         <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50/70 px-4 py-3 md:px-5">
           <div className="flex items-center gap-2">
@@ -291,11 +314,8 @@ function RecoveryDesk() {
                 <Sparkles size={20} className="text-dunlo" />
               </div>
               <div className="mt-5 space-y-2.5 rounded-2xl bg-white/10 p-4 text-sm leading-6 text-white/72">
-                <p>Subject: Quick help with your RivetDesk subscription</p>
-                <p>
-                  Their bank is asking for authentication. The note explains the
-                  step, keeps the tone personal, and links back to Stripe.
-                </p>
+                <p>Subject: RivetDesk payment approval</p>
+                <p>The note explains the bank step and links back to Stripe.</p>
               </div>
               <div className="mt-4 grid grid-cols-3 gap-2">
                 {["Review", "Regenerate", "Send"].map((action) => (
@@ -336,7 +356,7 @@ function RecoveryDesk() {
 function ProofStrip() {
   return (
     <section className="px-4 py-8 md:px-6 md:py-12">
-      <div className="mx-auto grid max-w-[1400px] gap-4 border-y border-gray-200 py-5 md:grid-cols-[1.2fr_0.8fr] md:items-center">
+      <div className="mx-auto grid max-w-7xl gap-4 border-y border-gray-200 py-5 md:grid-cols-[1.2fr_0.8fr] md:items-center">
         <p className="max-w-3xl text-xl font-semibold tracking-tight text-gray-950 md:text-3xl">
           Built for founders who know failed payments are not cancellations.
         </p>
@@ -355,10 +375,48 @@ function ProofStrip() {
   );
 }
 
+function ResourceLinksSection() {
+  return (
+    <section className="px-4 py-8 md:px-6 md:py-12">
+      <div className="mx-auto grid max-w-7xl gap-5 rounded-[2rem] border border-gray-200 bg-white/75 p-5 md:grid-cols-[0.72fr_1.28fr] md:p-6">
+        <div>
+          <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+            Learn
+          </p>
+          <h2 className="mt-3 max-w-sm text-3xl font-semibold leading-none tracking-tight md:text-4xl">
+            Stripe payment recovery, from diagnosis to action.
+          </h2>
+        </div>
+        <div className="grid gap-3 sm:grid-cols-2">
+          {resourceLinks.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="group rounded-3xl border border-gray-100 bg-stone-50 p-4 transition-all hover:-translate-y-0.5 hover:border-dunlo/40 hover:bg-white active:scale-[0.99]"
+            >
+              <span className="flex items-center gap-2 text-sm font-semibold text-gray-950">
+                {item.title}
+                <ChevronRight
+                  className="text-dunlo-deep transition-transform group-hover:translate-x-0.5"
+                  size={15}
+                  strokeWidth={2}
+                />
+              </span>
+              <span className="mt-2 block text-sm leading-6 text-gray-600">
+                {item.body}
+              </span>
+            </Link>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 function SignalSection() {
   return (
     <section id="features" className="px-4 py-12 md:px-6 md:py-20">
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-7xl">
         <div className="grid gap-8 md:grid-cols-[0.74fr_1.26fr] md:items-end">
           <div>
             <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
@@ -416,9 +474,7 @@ function SignalSection() {
                   ["3", "needs founder review"],
                 ].map(([value, label]) => (
                   <div key={label} className="rounded-2xl bg-white/10 p-4">
-                    <p className="font-mono text-3xl font-semibold">
-                      {value}
-                    </p>
+                    <p className="font-mono text-3xl font-semibold">{value}</p>
                     <p className="mt-1 text-xs font-medium text-white/50">
                       {label}
                     </p>
@@ -439,7 +495,7 @@ function RecoveryPathsSection() {
       id="recovery-paths"
       className="scroll-mt-24 px-4 py-12 md:px-6 md:py-20"
     >
-      <div className="mx-auto grid max-w-[1400px] gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
+      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.9fr_1.1fr] lg:items-start">
         <div className="lg:sticky lg:top-28">
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
             Recovery paths
@@ -478,53 +534,10 @@ function RecoveryPathsSection() {
   );
 }
 
-function WorkflowSection() {
-  return (
-    <section className="px-4 py-12 md:px-6 md:py-20">
-      <div className="mx-auto max-w-[1400px] overflow-hidden rounded-[2rem] border border-gray-200 bg-white">
-        <div className="grid gap-0 lg:grid-cols-[0.8fr_1.2fr]">
-          <div className="border-b border-gray-200 p-6 md:p-10 lg:border-b-0 lg:border-r">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-              Setup
-            </p>
-            <h2 className="mt-4 max-w-md text-4xl font-semibold leading-none tracking-tight md:text-6xl">
-              Eight minutes from Stripe to recovery.
-            </h2>
-            <Link
-              href={SIGNUP_URL}
-              className="mt-8 inline-flex items-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
-            >
-              Connect Stripe
-              <ArrowRight size={16} />
-            </Link>
-          </div>
-          <div className="divide-y divide-gray-200">
-            {workflowSteps.map((item) => (
-              <div key={item.step} className="grid gap-4 p-6 md:grid-cols-[96px_1fr] md:p-8">
-                <p className="font-mono text-sm font-semibold text-dunlo-deep">
-                  {item.step}
-                </p>
-                <div>
-                  <h3 className="text-2xl font-semibold tracking-tight">
-                    {item.title}
-                  </h3>
-                  <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-600">
-                    {item.body}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </section>
-  );
-}
-
 function PricingSection() {
   return (
     <section id="pricing" className="scroll-mt-24 px-4 py-12 md:px-6 md:py-20">
-      <div className="mx-auto grid max-w-[1400px] gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
+      <div className="mx-auto grid max-w-7xl gap-8 lg:grid-cols-[0.75fr_1.25fr] lg:items-start">
         <div>
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
             Beta pricing
@@ -586,7 +599,7 @@ function PricingSection() {
 function FaqSection() {
   return (
     <section id="faq" className="scroll-mt-24 px-4 py-12 md:px-6 md:py-20">
-      <div className="mx-auto grid max-w-[1400px] gap-8 md:grid-cols-[0.7fr_1.3fr]">
+      <div className="mx-auto grid max-w-7xl gap-8 md:grid-cols-[0.7fr_1.3fr]">
         <h2 className="max-w-md text-4xl font-semibold leading-none tracking-tight md:text-6xl">
           Straight answers for cautious founders.
         </h2>
@@ -619,7 +632,7 @@ function FaqSection() {
 function FinalCta() {
   return (
     <section className="px-4 py-6 md:px-6 md:py-10">
-      <div className="mx-auto grid max-w-[1400px] gap-8 rounded-[2rem] bg-gray-950 p-6 text-white md:p-10 lg:grid-cols-[1fr_auto] lg:items-end">
+      <div className="mx-auto grid max-w-7xl gap-8 rounded-[2rem] bg-gray-950 p-6 text-white md:p-10 lg:grid-cols-[1fr_auto] lg:items-end">
         <div>
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo">
             Recover before churn
@@ -644,7 +657,7 @@ function FinalCta() {
 function GridBackdrop() {
   return (
     <div className="pointer-events-none absolute inset-0" aria-hidden>
-      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.045)_1px,transparent_1px)] bg-[size:72px_72px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.055)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.045)_1px,transparent_1px)] bg-size[72px_72px]" />
       <div className="absolute left-[5vw] top-0 h-full w-px bg-gray-200" />
       <div className="absolute right-[7vw] top-0 h-full w-px bg-gray-200" />
       <div className="absolute inset-x-0 bottom-0 h-40 bg-linear-to-t from-stone-50 to-transparent" />

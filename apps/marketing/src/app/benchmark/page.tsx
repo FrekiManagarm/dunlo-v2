@@ -6,7 +6,7 @@ import { breadcrumbJsonLd, pageSeoMetadata } from "@/lib/seo";
 
 const TITLE = "Stripe Failed Payment Benchmark - Dunlo";
 const DESCRIPTION =
-  "Estimate your Stripe failed payment rate, MRR at risk, and recovery potential before connecting your account.";
+  "Use Dunlo's Stripe failed payment benchmark to estimate failed payment rate, MRR at risk, and recovery potential before connecting your account.";
 const KEYWORDS = [
   "Stripe failed payment benchmark",
   "failed payment rate calculator",

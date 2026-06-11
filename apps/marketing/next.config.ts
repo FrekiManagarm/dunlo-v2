@@ -13,7 +13,6 @@ const nextConfig: NextConfig = {
       "/register",
       "/reset-password",
       "/onboarding",
-      "/benchmark",
     ].map((source) => ({
       source,
       destination: `${appOrigin}${source}`,

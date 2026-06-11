@@ -5,7 +5,7 @@ export const SITE_NAME = "Dunlo";
 export const DEFAULT_TITLE =
   "Dunlo - Recover Failed Stripe Payments Before They Churn";
 export const DEFAULT_DESCRIPTION =
-  "Dunlo watches failed Stripe payments, sends failure-aware recovery emails, and pauses risky accounts for founder review before revenue quietly churns.";
+  "Recover failed Stripe payments with failure-aware emails, Stripe-hosted update links, and founder review. Start free in beta before revenue quietly churns.";
 export const DEFAULT_KEYWORDS = [
   "Dunlo",
   "dunlo",
@@ -68,7 +68,7 @@ export function pageSeoMetadata({
     description,
     keywords: [...keywords],
     alternates: {
-      canonical: path,
+      canonical: absoluteUrl(path),
     },
     openGraph: {
       type,
@@ -76,7 +76,7 @@ export function pageSeoMetadata({
       locale: "en_US",
       title,
       description,
-      url: path,
+      url: absoluteUrl(path),
       images: [
         {
           url: ogImage,
