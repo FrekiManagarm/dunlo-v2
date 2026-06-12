@@ -60,7 +60,10 @@ function TagPill({ tag }: { tag: string }) {
 }
 
 function normalizeTerm(value: string) {
-  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, " ")
+    .trim();
 }
 
 function scoreRelatedPost({
@@ -80,6 +83,24 @@ function scoreRelatedPost({
 
   return tagScore + keywordScore;
 }
+
+const RECOVERY_RESOURCES = [
+  {
+    href: "/stripe-failed-payments",
+    title: "Stripe failed payments",
+    description: "Recover failed invoices before they become quiet churn.",
+  },
+  {
+    href: "/stripe-dunning",
+    title: "Stripe dunning workflow",
+    description: "Plan the email cadence, retry timing, and escalation path.",
+  },
+  {
+    href: "/benchmark",
+    title: "Failed payment benchmark",
+    description: "Estimate failed MRR and recovery potential before signup.",
+  },
+] as const;
 
 export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const { slug } = await params;
@@ -133,7 +154,9 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               {post.data.description}
             </p>
             <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-              <time dateTime={post.data.date}>{formatDate(post.data.date)}</time>
+              <time dateTime={post.data.date}>
+                {formatDate(post.data.date)}
+              </time>
               {post.data.readingTime && <span>{post.data.readingTime}</span>}
               {post.data.author && <span>{post.data.author}</span>}
             </div>
@@ -143,6 +166,28 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             <MdxContent components={mdxComponents} />
           </div>
         </article>
+
+        <section className="mt-14 rounded-2xl border border-dunlo/20 bg-dunlo/[0.06] p-6">
+          <h2 className="text-xl font-semibold tracking-tight">
+            Turn this into a recovery workflow
+          </h2>
+          <div className="mt-5 grid gap-4 md:grid-cols-3">
+            {RECOVERY_RESOURCES.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-2xl border border-dunlo/20 bg-white/80 p-4 transition-colors hover:border-dunlo/40"
+              >
+                <p className="text-sm font-semibold leading-snug">
+                  {item.title}
+                </p>
+                <p className="mt-2 text-xs leading-relaxed text-muted-foreground">
+                  {item.description}
+                </p>
+              </Link>
+            ))}
+          </div>
+        </section>
 
         {related.length > 0 && (
           <section className="mt-16 border-t border-border pt-10">

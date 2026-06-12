@@ -85,6 +85,34 @@ const BENCHMARK_COPY = {
     submit: "Get my full benchmark report",
     success: "Report requested",
     cta: "Connect Stripe to see your real numbers",
+    methodologyEyebrow: "Benchmark methodology",
+    methodologyTitle:
+      "Use the estimate as a first pass, then inspect Stripe by failure reason.",
+    methodologyBody:
+      "The calculator starts with MRR because it is the number most founders know before they export Stripe data. Dunlo then applies a failed-payment rate by SaaS stage and a conservative recoverability assumption. Your real number will move with billing interval, plan price, customer geography, card age, and whether Stripe Smart Retries, failed-payment emails, and payment update links are already configured.",
+    checklistTitle: "What to check after the benchmark",
+    checklist: [
+      "Export failed invoices and group them by Stripe decline code, not just total failed amount.",
+      "Separate soft declines like insufficient funds from hard declines that need a new payment method.",
+      "Compare failed MRR, recovered MRR, and churned MRR so recovery is measured as revenue, not email activity.",
+    ],
+    nextLinks: [
+      {
+        label: "Stripe failed payments",
+        href: "/stripe-failed-payments",
+        body: "Turn the benchmark into a recovery workflow for failed invoices.",
+      },
+      {
+        label: "Stripe dunning",
+        href: "/stripe-dunning",
+        body: "Build the email and retry sequence around the failure context.",
+      },
+      {
+        label: "Stripe Smart Retries alternative",
+        href: "/stripe-smart-retries-alternative",
+        body: "See where native retries stop and customer communication starts.",
+      },
+    ],
   },
   audit: {
     badge: "Stripe Failed Payment Audit",
@@ -100,10 +128,40 @@ const BENCHMARK_COPY = {
     submit: "Send my audit checklist",
     success: "Audit checklist requested",
     cta: "Connect Stripe for the real audit",
+    methodologyEyebrow: "Audit checklist",
+    methodologyTitle:
+      "A good Stripe failed payment audit follows the money and the customer path.",
+    methodologyBody:
+      "Start with the failed invoices in Stripe, then trace what happened next: which decline code appeared, when the next retry was scheduled, whether the customer received a useful email, whether the update link was clear, and whether high-value accounts were escalated before churn became final. The goal is to find recoverable payment failures that are currently treated like generic billing noise.",
+    checklistTitle: "What the audit should review",
+    checklist: [
+      "Confirm Stripe retries, customer emails, and hosted payment update links are enabled for the right billing flows.",
+      "Review failure-code-specific messaging for expired cards, insufficient funds, bank blocks, and authentication failures.",
+      "Set an escalation threshold so valuable accounts get founder review before an automated sequence gives up.",
+    ],
+    nextLinks: [
+      {
+        label: "Stripe dunning workflow",
+        href: "/stripe-dunning",
+        body: "Map each audit finding to a safer payment recovery sequence.",
+      },
+      {
+        label: "Failed payment recovery",
+        href: "/stripe-failed-payments",
+        body: "See how Dunlo turns failure codes into recovery actions.",
+      },
+      {
+        label: "Failed payment benchmark",
+        href: "/benchmark",
+        body: "Estimate the MRR at risk before connecting your Stripe account.",
+      },
+    ],
   },
 } as const;
 
-export function PublicBenchmark({ variant = "benchmark" }: PublicBenchmarkProps) {
+export function PublicBenchmark({
+  variant = "benchmark",
+}: PublicBenchmarkProps) {
   const copy = BENCHMARK_COPY[variant];
   const [mrr, setMrr] = useState(24_000);
   const [email, setEmail] = useState("");
@@ -307,7 +365,9 @@ export function PublicBenchmark({ variant = "benchmark" }: PublicBenchmarkProps)
 
               <button
                 type="submit"
-                disabled={captureState === "submitting" || captureState === "success"}
+                disabled={
+                  captureState === "submitting" || captureState === "success"
+                }
                 className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-zinc-950 px-5 text-sm font-bold text-white transition-all hover:bg-zinc-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-zinc-300"
               >
                 {captureState === "success" ? (
@@ -364,6 +424,59 @@ export function PublicBenchmark({ variant = "benchmark" }: PublicBenchmarkProps)
                 </div>
               ))}
             </div>
+          </div>
+        </section>
+
+        <section className="mt-8 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
+          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-[0_18px_48px_-34px_rgba(24,24,27,0.2)] md:p-8">
+            <p className="text-xs font-semibold uppercase tracking-widest text-dunlo-dim">
+              {copy.methodologyEyebrow}
+            </p>
+            <h2 className="mt-4 max-w-2xl text-3xl font-bold tracking-tight text-zinc-950">
+              {copy.methodologyTitle}
+            </h2>
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-zinc-600 md:text-base">
+              {copy.methodologyBody}
+            </p>
+          </div>
+
+          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-[0_18px_48px_-34px_rgba(24,24,27,0.2)] md:p-8">
+            <h2 className="text-xl font-bold tracking-tight text-zinc-950">
+              {copy.checklistTitle}
+            </h2>
+            <ul className="mt-5 space-y-4">
+              {copy.checklist.map((item) => (
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-6 text-zinc-600"
+                >
+                  <span className="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-dunlo/15 text-dunlo-deep">
+                    <Check size={13} />
+                  </span>
+                  <span>{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </section>
+
+        <section className="mt-8 rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-[0_18px_48px_-34px_rgba(24,24,27,0.2)] md:p-8">
+          <h2 className="text-2xl font-bold tracking-tight text-zinc-950">
+            Keep building your Stripe recovery workflow.
+          </h2>
+          <div className="mt-5 grid gap-4 md:grid-cols-3">
+            {copy.nextLinks.map((item) => (
+              <Link
+                key={item.href}
+                href={item.href}
+                className="rounded-3xl border border-zinc-200 p-5 transition-colors hover:border-dunlo/40"
+              >
+                <p className="font-semibold text-zinc-950">{item.label}</p>
+                <p className="mt-2 text-sm leading-6 text-zinc-500">
+                  {item.body}
+                </p>
+              </Link>
+            ))}
           </div>
         </section>
       </main>
