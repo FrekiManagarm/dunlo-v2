@@ -2,276 +2,230 @@
 
 import Link from "next/link";
 import { SIGNUP_URL } from "@/lib/app-url";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
-  BarChart3,
+  ArrowRight,
   Check,
-  ChevronRight,
   CreditCard,
   MailCheck,
+  Radar,
+  Route,
 } from "lucide-react";
 import { useEffect, useState } from "react";
-import { FadeIn, SectionPill } from "./shared";
 
-const HIW_STEPS = [
+const steps = [
   {
     n: "01",
-    title: "Connect Stripe",
-    kicker: "Data intake",
-    body: "Authorize Dunlo with Stripe OAuth so it can monitor payment failures and set up the recovery plumbing around them.",
-    Icon: CreditCard,
+    label: "Connect Stripe",
+    title: "Dunlo reads failed charges as they happen.",
+    body: "Stripe OAuth brings in invoice, customer, payment intent, and decline reason context.",
+    icon: CreditCard,
   },
   {
     n: "02",
-    title: "Tune recovery sequences",
-    kicker: "Messaging",
-    body: "Start with defaults for common failure reasons, then adjust tone, timing, and follow-up windows to match your product.",
-    Icon: MailCheck,
+    label: "Choose the path",
+    title: "Each failure reason gets its own move.",
+    body: "Expired cards, bank approvals, insufficient funds, and hard declines do not share one generic email.",
+    icon: Route,
   },
   {
     n: "03",
-    title: "Monitor recovered revenue",
-    kicker: "Visibility",
-    body: "Track which payments are pending, recovered, or escalated so recovery becomes visible instead of buried in Stripe events.",
-    Icon: BarChart3,
+    label: "Recover or review",
+    title: "Simple cases run. Sensitive accounts pause.",
+    body: "Dunlo either sends the recovery sequence or waits for a founder review when the account is worth it.",
+    icon: MailCheck,
   },
 ] as const;
 
-const PREVIEW_ROWS = [
-  {
-    label: "Failed payment",
-    value: "€418",
-    detail: "card_declined",
-  },
-  {
-    label: "Recovery email",
-    value: "2 min",
-    detail: "queued",
-  },
-  {
-    label: "Recovered",
-    value: "€418",
-    detail: "confirmed",
-  },
+const rows = [
+  ["invoice.payment_failed", "caught", "now"],
+  ["authentication_required", "mapped", "SCA path"],
+  ["founder_threshold", "paused", "$500+"],
+  ["payment_method_updated", "recovered", "$956"],
 ] as const;
-
-const STEP_DURATION = 5900;
-const PANEL_TRANSITION = {
-  duration: 0.52,
-  ease: [0.16, 1, 0.3, 1],
-} as const;
 
 export function HowItWorks() {
+  const reduceMotion = useReducedMotion();
   const [active, setActive] = useState(0);
 
   useEffect(() => {
-    const t = setInterval(
-      () => setActive((a) => (a + 1) % HIW_STEPS.length),
-      STEP_DURATION,
-    );
-    return () => clearInterval(t);
-  }, []);
+    if (reduceMotion) return;
 
-  const activeStep = HIW_STEPS[active]!;
-  const ActiveIcon = activeStep.Icon;
+    const timer = window.setInterval(() => {
+      setActive((current) => (current + 1) % steps.length);
+    }, 2400);
+
+    return () => window.clearInterval(timer);
+  }, [reduceMotion]);
+
+  const activeStep = steps[active]!;
+  const ActiveIcon = activeStep.icon;
 
   return (
-    <FadeIn>
-      <section
-        id="how-it-works"
-        className="overflow-hidden rounded-[2rem] bg-gray-950 [overflow-anchor:none] md:rounded-[2.25rem]"
-      >
-        <div className="relative">
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.045),transparent_44%)]" />
-          <div className="relative grid grid-cols-1 gap-10 px-5 py-8 sm:px-8 sm:py-12 lg:grid-cols-[0.92fr_1.08fr] lg:gap-14 lg:px-14 lg:py-16 xl:px-16">
-            <div className="flex flex-col">
-              <SectionPill dark>How it works</SectionPill>
-              <h2 className="mt-5 max-w-xl text-3xl font-bold leading-tight tracking-tight text-white md:text-5xl md:leading-[0.98]">
-                Set up recovery once. Watch every payment move.
-              </h2>
-              <p className="mt-4 max-w-lg text-sm leading-6 text-white/50 md:text-base">
-                Dunlo connects the failed charge, the customer email, and the
-                recovered revenue in one simple loop.
-              </p>
+    <section
+      id="how-it-works"
+      className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white"
+    >
+      <div className="grid gap-0 lg:grid-cols-[0.72fr_1.28fr]">
+        <div className="border-b border-gray-200 p-6 md:p-9 lg:border-b-0 lg:border-r">
+          <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+            How it works
+          </p>
+          <h2 className="mt-4 max-w-md text-4xl font-semibold leading-none tracking-tight text-gray-950 md:text-6xl">
+            One Stripe event becomes a recovery path.
+          </h2>
+          <p className="mt-5 max-w-[56ch] text-base leading-7 text-gray-600">
+            Dunlo keeps the setup short, then makes every failed payment visible
+            as it moves from signal to message to recovered revenue.
+          </p>
+          <Link
+            href={SIGNUP_URL}
+            className="mt-8 inline-flex items-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+          >
+            Connect Stripe
+            <ArrowRight size={16} strokeWidth={2} />
+          </Link>
+        </div>
 
-              <div className="mt-9 space-y-2">
-                {HIW_STEPS.map((step, i) => {
-                  const isActive = active === i;
-                  const StepIcon = step.Icon;
-                  return (
-                    <button
-                      key={step.n}
-                      onClick={() => setActive(i)}
-                      aria-pressed={isActive}
-                      className={`group grid w-full grid-cols-[2.25rem_1fr] gap-4 rounded-2xl border px-4 py-4 text-left transition-all duration-300 active:scale-[0.99] ${
-                        isActive
-                          ? "border-white/12 bg-white/[0.06]"
-                          : "border-transparent hover:bg-white/[0.03]"
-                      }`}
-                    >
-                      <div
-                        className={`mt-0.5 flex size-9 items-center justify-center rounded-full border transition-colors ${
-                          isActive
-                            ? "border-dunlo/30 bg-dunlo/10 text-dunlo"
-                            : "border-white/8 bg-white/[0.03] text-white/28"
-                        }`}
-                      >
-                        <StepIcon size={16} strokeWidth={2} />
-                      </div>
-                      <div>
-                        <div className="flex items-center gap-3">
-                          <span
-                            className={`font-mono text-[11px] font-bold transition-colors ${
-                              isActive ? "text-dunlo" : "text-white/25"
-                            }`}
-                          >
-                            {step.n}
-                          </span>
-                          <span
-                            className={`text-[11px] font-semibold uppercase tracking-[0.16em] transition-colors ${
-                              isActive ? "text-white/45" : "text-white/24"
-                            }`}
-                          >
-                            {step.kicker}
-                          </span>
-                        </div>
+        <div className="bg-stone-50 p-4 md:p-7">
+          <div className="grid gap-4 lg:grid-cols-[0.72fr_1.28fr]">
+            <div className="space-y-3">
+              {steps.map((step, index) => {
+                const Icon = step.icon;
+                const isActive = active === index;
+
+                return (
+                  <button
+                    key={step.n}
+                    type="button"
+                    onClick={() => setActive(index)}
+                    className={`w-full rounded-[1.35rem] border p-4 text-left transition-all active:scale-[0.99] ${
+                      isActive
+                        ? "border-dunlo/40 bg-white shadow-[0_18px_50px_-42px_rgba(15,23,42,0.5)]"
+                        : "border-gray-200 bg-white/65 hover:bg-white"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
                         <span
-                          className={`mt-1 block text-base font-semibold tracking-tight transition-colors ${
-                            isActive ? "text-white" : "text-white/52"
+                          className={`flex size-9 items-center justify-center rounded-full ${
+                            isActive
+                              ? "bg-dunlo text-white"
+                              : "border border-gray-200 bg-gray-50 text-gray-500"
                           }`}
                         >
-                          {step.title}
+                          <Icon size={17} strokeWidth={2} />
                         </span>
-                        {isActive && (
-                          <motion.div
-                            initial={{ opacity: 0, y: 4 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={PANEL_TRANSITION}
-                          >
-                            <p className="mt-2 max-w-md text-sm leading-6 text-white/46">
-                              {step.body}
-                            </p>
-                            <div className="mt-4 h-px max-w-sm overflow-hidden rounded-full bg-white/10">
-                              <motion.div
-                                key={active}
-                                initial={{ scaleX: 0 }}
-                                animate={{ scaleX: 1 }}
-                                transition={{
-                                  duration: STEP_DURATION / 1000,
-                                  ease: "linear",
-                                }}
-                                style={{ originX: 0 }}
-                                className="h-full bg-dunlo"
-                              />
-                            </div>
-                          </motion.div>
-                        )}
+                        <span className="font-mono text-xs font-semibold text-gray-500">
+                          {step.n}
+                        </span>
                       </div>
-                    </button>
-                  );
-                })}
-              </div>
-
-              <div className="pt-8 lg:mt-auto lg:pt-10">
-                <Link
-                  href={SIGNUP_URL}
-                  className="inline-flex items-center gap-2 rounded-full bg-dunlo px-6 py-3 text-sm font-semibold text-gray-950 transition-all hover:bg-dunlo-hover active:translate-y-px active:scale-[0.98]"
-                >
-                  Connect Stripe now
-                  <ChevronRight size={14} />
-                </Link>
-              </div>
+                      {isActive && (
+                        <span className="h-px w-12 bg-dunlo/50" />
+                      )}
+                    </div>
+                    <p className="mt-4 text-lg font-semibold tracking-tight text-gray-950">
+                      {step.label}
+                    </p>
+                    <p className="mt-2 text-sm leading-6 text-gray-600">
+                      {step.body}
+                    </p>
+                  </button>
+                );
+              })}
             </div>
 
-            <div className="relative flex items-center">
-              <div className="w-full rounded-[1.75rem] border border-white/10 bg-white/[0.045] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] sm:p-6 lg:p-8">
-                <div className="flex items-start justify-between gap-6">
-                  <div>
-                    <div className="text-xs font-semibold uppercase tracking-[0.18em] text-white/35">
-                      Recovery loop
-                    </div>
-                    <h3 className="mt-2 text-2xl font-semibold tracking-tight text-white">
-                      Payment status
-                    </h3>
-                  </div>
+            <div className="rounded-[1.7rem] border border-gray-200 bg-white p-4 shadow-[0_26px_80px_-62px_rgba(15,23,42,0.48)] md:p-5">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-4">
+                <div>
+                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
+                    Recovery loop
+                  </p>
                   <AnimatePresence mode="wait" initial={false}>
-                    <motion.div
-                      key={activeStep.n}
-                      initial={{ opacity: 0, y: 6 }}
+                    <motion.h3
+                      key={activeStep.title}
+                      initial={{ opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -6 }}
-                      transition={PANEL_TRANSITION}
-                      className="flex size-10 items-center justify-center rounded-full bg-dunlo/12 text-dunlo"
+                      exit={{ opacity: 0, y: -8 }}
+                      transition={{ duration: 0.28 }}
+                      className="mt-2 max-w-lg text-2xl font-semibold tracking-tight text-gray-950"
                     >
-                      <ActiveIcon size={18} />
-                    </motion.div>
+                      {activeStep.title}
+                    </motion.h3>
                   </AnimatePresence>
                 </div>
+                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-dunlo/12 text-dunlo-deep">
+                  <ActiveIcon size={19} strokeWidth={2} />
+                </span>
+              </div>
 
-                <div className="mt-8 divide-y divide-white/8">
-                  {PREVIEW_ROWS.map((row, i) => {
-                    const isPast = i <= active;
+              <div className="mt-5 rounded-[1.35rem] bg-gray-950 p-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center gap-2">
+                    <Radar size={17} strokeWidth={2} className="text-dunlo" />
+                    <span className="font-mono text-xs font-semibold text-white/60">
+                      stripe_event_stream
+                    </span>
+                  </div>
+                  <span className="rounded-full bg-dunlo/12 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-dunlo">
+                    live
+                  </span>
+                </div>
+
+                <div className="mt-4 divide-y divide-white/10">
+                  {rows.map(([event, status, detail], index) => {
+                    const isDone = index <= active + 1;
                     return (
                       <div
-                        key={row.label}
-                        className="grid grid-cols-[1fr_auto] items-center gap-4 py-4 first:pt-0 last:pb-0"
+                        key={event}
+                        className="grid grid-cols-[1fr_auto_auto] items-center gap-3 py-3 first:pt-0 last:pb-0"
                       >
-                        <div className="flex items-center gap-3">
-                          <div
-                            className={`flex size-7 items-center justify-center rounded-full border ${
-                              isPast
-                                ? "border-dunlo/30 bg-dunlo/12 text-dunlo"
-                                : "border-white/10 text-white/28"
-                            }`}
-                          >
-                            {isPast ? (
-                              <Check size={13} strokeWidth={2} />
-                            ) : (
-                              <span className="size-1.5 rounded-full bg-white/24" />
-                            )}
-                          </div>
-                          <div>
-                            <div className="text-sm font-semibold text-white/80">
-                              {row.label}
-                            </div>
-                            <div className="mt-0.5 font-mono text-xs text-white/32">
-                              {row.detail}
-                            </div>
-                          </div>
+                        <div className="min-w-0">
+                          <p className="truncate font-mono text-xs font-semibold text-white/80">
+                            {event}
+                          </p>
+                          <p className="mt-1 text-xs text-white/35">
+                            {detail}
+                          </p>
                         </div>
-                        <div
-                          className={`font-mono text-sm font-semibold ${
-                            isPast ? "text-white" : "text-white/35"
+                        <span
+                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
+                            isDone
+                              ? "bg-dunlo/12 text-dunlo"
+                              : "bg-white/10 text-white/35"
                           }`}
                         >
-                          {row.value}
-                        </div>
+                          {status}
+                        </span>
+                        <span
+                          className={`flex size-6 items-center justify-center rounded-full ${
+                            isDone ? "bg-dunlo text-white" : "bg-white/10"
+                          }`}
+                        >
+                          {isDone && <Check size={13} strokeWidth={2} />}
+                        </span>
                       </div>
                     );
                   })}
                 </div>
+              </div>
 
-                <div className="mt-8 grid grid-cols-2 gap-3 border-t border-white/8 pt-5">
-                  <div>
-                    <div className="font-mono text-2xl font-bold text-dunlo">
-                      €4,817
-                    </div>
-                    <div className="mt-1 text-xs text-white/38">Recovered</div>
+              <div className="mt-4 grid grid-cols-3 gap-2">
+                {["OAuth", "Sequences", "Revenue"].map((label) => (
+                  <div key={label} className="rounded-2xl bg-gray-50 p-3">
+                    <p className="font-mono text-sm font-semibold text-gray-950">
+                      {label}
+                    </p>
+                    <p className="mt-1 text-[11px] font-medium text-gray-500">
+                      connected
+                    </p>
                   </div>
-                  <div>
-                    <div className="font-mono text-2xl font-bold text-white">
-                      27.4%
-                    </div>
-                    <div className="mt-1 text-xs text-white/38">
-                      Recovery rate
-                    </div>
-                  </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
         </div>
-      </section>
-    </FadeIn>
+      </div>
+    </section>
   );
 }

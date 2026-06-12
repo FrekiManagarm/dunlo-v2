@@ -15,6 +15,18 @@ type DunloOgImageProps = {
   metricValue?: string;
 };
 
+const palette = {
+  accent: "#00E87B",
+  accentDeep: "#009950",
+  accentSoft: "#DDFBEA",
+  paper: "#F8FAF7",
+  ink: "#111714",
+  muted: "#55635C",
+  line: "#DDE7DF",
+  dark: "#151A17",
+  white: "#FFFFFF",
+};
+
 const outfitWeights = [400, 500, 700, 800, 900] as const;
 const outfitFonts = Promise.all(
   outfitWeights.map(async (weight) => {
@@ -47,104 +59,229 @@ function clampText(text: string, maxLength: number) {
 }
 
 function titleFontSize(title: string) {
-  if (title.length > 74) return 52;
-  if (title.length > 58) return 58;
-  return 68;
+  if (title.length > 78) return 50;
+  if (title.length > 62) return 56;
+  if (title.length > 48) return 58;
+  return 64;
 }
 
 function LogoMark() {
   return (
-    <svg width="54" height="54" viewBox="0 0 54 54" fill="none">
-      <rect width="54" height="54" rx="15" fill="#00E87B" />
+    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
+      <rect width="56" height="56" rx="17" fill={palette.accent} />
       <path
-        d="M27 41.5A14.5 14.5 0 1 0 12.5 27"
-        stroke="white"
+        d="M28 42.5A14.5 14.5 0 1 0 13.5 28"
+        stroke={palette.white}
         strokeLinecap="round"
-        strokeWidth="4.2"
+        strokeWidth="4.3"
       />
       <path
-        d="M8.8 30.8L12.5 27L16.2 30.8"
-        stroke="white"
+        d="M9.8 31.8L13.5 28L17.2 31.8"
+        stroke={palette.white}
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="4.2"
+        strokeWidth="4.3"
       />
     </svg>
   );
 }
 
-function EditorialAccent() {
+function ProductPreview({
+  metricLabel,
+  metricValue,
+}: {
+  metricLabel: string;
+  metricValue: string;
+}) {
+  const rows = [
+    ["Hearthline", "expired_card", "$87", "email sent"],
+    ["RivetDesk", "authentication_required", "$129", "review"],
+    ["Northstar Labs", "insufficient_funds", "$348", "retry"],
+  ];
+
   return (
     <div
       style={{
         position: "absolute",
-        right: 0,
-        top: 0,
-        width: 430,
-        height: 630,
+        right: 72,
+        top: 82,
+        width: 388,
+        height: 470,
+        borderRadius: 34,
+        border: `1px solid ${palette.line}`,
+        background: palette.white,
+        boxShadow: "0 42px 90px rgba(21, 26, 23, 0.16)",
+        overflow: "hidden",
         display: "flex",
         flexDirection: "column",
-        padding: "76px 70px 72px",
       }}
     >
       <div
         style={{
-          color: "#087A42",
-          fontSize: 18,
-          fontWeight: 800,
-          letterSpacing: 3.2,
-          textTransform: "uppercase",
-        }}
-      >
-        Dunlo
-      </div>
-      <div
-        style={{
-          marginTop: 92,
-          height: 2,
-          width: 256,
-          background: "#BFEBD0",
-        }}
-      />
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          marginTop: 36,
-          color: "rgba(13, 18, 16, 0.08)",
-          fontSize: 74,
-          fontWeight: 900,
-          letterSpacing: -1.4,
-          lineHeight: 0.88,
-          textTransform: "uppercase",
-        }}
-      >
-        Payment
-        <br />
-        Recovery
-      </div>
-      <div style={{ flex: 1 }} />
-      <div
-        style={{
+          height: 60,
+          background: "#F1F5F2",
+          borderBottom: `1px solid ${palette.line}`,
           display: "flex",
           alignItems: "center",
-          gap: 12,
+          justifyContent: "space-between",
+          padding: "0 24px",
         }}
       >
+        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+          <span
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 999,
+              background: "#C8D4CB",
+            }}
+          />
+          <span
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 999,
+              background: "#C8D4CB",
+            }}
+          />
+          <span
+            style={{
+              width: 10,
+              height: 10,
+              borderRadius: 999,
+              background: palette.accent,
+            }}
+          />
+        </div>
         <div
           style={{
-            width: 84,
-            height: 2,
-            background: "#BFEBD0",
+            color: palette.accentDeep,
+            fontSize: 14,
+            fontWeight: 800,
           }}
-        />
+        >
+          monitoring
+        </div>
+      </div>
+
+      <div style={{ padding: 24, display: "flex", flexDirection: "column" }}>
         <div
           style={{
-            width: 38,
-            height: 2,
-            background: "#00C66A",
+            borderRadius: 26,
+            background: palette.dark,
+            color: palette.white,
+            padding: 24,
+            display: "flex",
+            flexDirection: "column",
           }}
-        />
+        >
+          <div
+            style={{
+              color: palette.accent,
+              fontSize: 14,
+              fontWeight: 900,
+              letterSpacing: 2.4,
+              textTransform: "uppercase",
+            }}
+          >
+            {metricLabel}
+          </div>
+          <div
+            style={{
+              marginTop: 18,
+              fontSize: 58,
+              lineHeight: 0.92,
+              fontWeight: 900,
+              letterSpacing: -1,
+            }}
+          >
+            {metricValue}
+          </div>
+          <div
+            style={{
+              marginTop: 12,
+              color: "rgba(255,255,255,0.58)",
+              fontSize: 19,
+              fontWeight: 600,
+            }}
+          >
+            failed-payment revenue in motion
+          </div>
+        </div>
+
+        <div
+          style={{
+            marginTop: 18,
+            display: "flex",
+            flexDirection: "column",
+            gap: 10,
+          }}
+        >
+          {rows.map(([company, code, amount, status]) => (
+            <div
+              key={company}
+              style={{
+                borderRadius: 20,
+                background: "#F5F7F4",
+                border: "1px solid #EDF2EE",
+                padding: "14px 16px",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+              }}
+            >
+              <div style={{ display: "flex", flexDirection: "column" }}>
+                <div
+                  style={{
+                    color: palette.ink,
+                    fontSize: 17,
+                    fontWeight: 800,
+                  }}
+                >
+                  {company}
+                </div>
+                <div
+                  style={{
+                    marginTop: 3,
+                    color: palette.muted,
+                    fontSize: 13,
+                    fontWeight: 700,
+                  }}
+                >
+                  {code}
+                </div>
+              </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                }}
+              >
+                <div
+                  style={{
+                    color: palette.ink,
+                    fontSize: 17,
+                    fontWeight: 900,
+                  }}
+                >
+                  {amount}
+                </div>
+                <div
+                  style={{
+                    marginTop: 3,
+                    color:
+                      status === "review" ? palette.accentDeep : palette.muted,
+                    fontSize: 13,
+                    fontWeight: 800,
+                  }}
+                >
+                  {status}
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
@@ -154,9 +291,11 @@ export async function createDunloOgImage({
   title,
   description,
   badge = "Stripe payment recovery",
+  metricLabel = "recovered",
+  metricValue = "$248",
 }: DunloOgImageProps) {
   const displayTitle = clampText(title.replace(/ - Dunlo( Blog)?$/, ""), 92);
-  const displayDescription = clampText(description, 108);
+  const displayDescription = clampText(description, 118);
   const fonts = await outfitFonts;
 
   return new ImageResponse(
@@ -167,10 +306,10 @@ export async function createDunloOgImage({
           width: "100%",
           height: "100%",
           overflow: "hidden",
-          background: "#FAFEFB",
+          background: palette.paper,
           display: "flex",
           fontFamily: "Outfit, Arial, sans-serif",
-          color: "#0D1210",
+          color: palette.ink,
         }}
       >
         <div
@@ -178,52 +317,10 @@ export async function createDunloOgImage({
             position: "absolute",
             inset: 0,
             backgroundImage:
-              "linear-gradient(90deg, rgba(207, 224, 213, 0.44) 1px, transparent 1px)",
-            backgroundSize: "64px 64px",
-            opacity: 0.52,
+              "linear-gradient(90deg, rgba(17, 23, 20, 0.08) 1px, transparent 1px), linear-gradient(0deg, rgba(17, 23, 20, 0.06) 1px, transparent 1px)",
+            backgroundSize: "72px 72px",
           }}
         />
-        <div
-          style={{
-            position: "absolute",
-            right: 0,
-            top: 0,
-            width: 430,
-            height: 630,
-            background: "#ECFAF1",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            right: 430,
-            top: 0,
-            width: 2,
-            height: 630,
-            background: "#CFE0D5",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            right: 118,
-            top: 74,
-            width: 256,
-            height: 2,
-            background: "#BFEBD0",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            right: 232,
-            bottom: 70,
-            width: 230,
-            height: 2,
-            background: "#BFEBD0",
-          }}
-        />
-
         <div
           style={{
             position: "absolute",
@@ -237,9 +334,9 @@ export async function createDunloOgImage({
           <div
             style={{
               marginLeft: 18,
-              fontSize: 32,
-              fontWeight: 800,
-              letterSpacing: -0.2,
+              fontSize: 34,
+              fontWeight: 900,
+              letterSpacing: -0.4,
             }}
           >
             dunlo
@@ -263,12 +360,12 @@ export async function createDunloOgImage({
               alignSelf: "flex-start",
               height: 42,
               borderRadius: 999,
-              border: "1px solid #CFE0D5",
-              background: "#FFFFFF",
+              border: `1px solid ${palette.line}`,
+              background: palette.white,
               padding: "0 18px",
-              color: "#087A42",
+              color: palette.accentDeep,
               fontSize: 18,
-              fontWeight: 800,
+              fontWeight: 900,
             }}
           >
             <span
@@ -276,7 +373,7 @@ export async function createDunloOgImage({
                 width: 10,
                 height: 10,
                 borderRadius: 999,
-                background: "#00E87B",
+                background: palette.accent,
                 marginRight: 10,
               }}
             />
@@ -286,9 +383,9 @@ export async function createDunloOgImage({
             style={{
               marginTop: 24,
               fontSize: titleFontSize(displayTitle),
-              lineHeight: 0.98,
+              lineHeight: 0.96,
               fontWeight: 900,
-              letterSpacing: -1.1,
+              letterSpacing: -1.2,
             }}
           >
             {displayTitle}
@@ -296,18 +393,18 @@ export async function createDunloOgImage({
           <div
             style={{
               marginTop: 26,
-              width: 548,
-              color: "#3E4E45",
-              fontSize: 28,
-              lineHeight: 1.28,
-              fontWeight: 500,
+              width: 540,
+              color: palette.muted,
+              fontSize: 27,
+              lineHeight: 1.26,
+              fontWeight: 600,
             }}
           >
             {displayDescription}
           </div>
         </div>
 
-        <EditorialAccent />
+        <ProductPreview metricLabel={metricLabel} metricValue={metricValue} />
       </div>
     ),
     {

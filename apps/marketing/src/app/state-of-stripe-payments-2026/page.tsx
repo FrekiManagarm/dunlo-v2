@@ -9,7 +9,7 @@ import { breadcrumbJsonLd, pageSeoMetadata } from "@/lib/seo";
 
 const TITLE = "State of Stripe Failed Payments 2026 - Dunlo";
 const DESCRIPTION =
-  "Dunlo's public report on Stripe failed payment rates, decline codes, and recoverable revenue benchmarks for SaaS teams.";
+  "Explore Stripe failed payment rates, decline codes, and recoverable revenue benchmarks for SaaS teams using Dunlo's public 2026 report.";
 
 const KEYWORDS = [
   "Stripe failed payment report",

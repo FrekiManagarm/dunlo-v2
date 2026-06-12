@@ -181,13 +181,56 @@
 .anim-6 {
   animation: fade-up 0.72s cubic-bezier(0.16, 1, 0.3, 1) 620ms both;
 }
+
+@keyframes landing-float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-6px);
+  }
+}
+.landing-float {
+  animation: landing-float 5.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
+
+@keyframes landing-rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.landing-rise {
+  animation: landing-rise 0.72s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes landing-marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+.landing-marquee {
+  animation: landing-marquee 22s linear infinite;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .anim-1,
   .anim-2,
   .anim-3,
   .anim-4,
   .anim-5,
-  .anim-6 {
+  .anim-6,
+  .landing-float,
+  .landing-rise,
+  .landing-marquee {
     animation: none;
   }
 }

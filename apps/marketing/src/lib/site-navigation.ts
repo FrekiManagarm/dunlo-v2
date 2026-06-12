@@ -34,7 +34,7 @@ export const ALTERNATIVE_LINKS = [
   { label: "Dunlo vs Slicker", href: "/alternatives/slicker" },
   {
     label: "Dunlo vs Stripe Smart Retries",
-    href: "/alternatives/stripe-smart-retries",
+    href: "/stripe-smart-retries-alternative",
   },
   { label: "Dunlo vs Triggla", href: "/alternatives/triggla" },
   { label: "Revaly/FlexPay alternative", href: "/alternatives/revaly-flexpay" },
@@ -45,7 +45,7 @@ const FOOTER_COMPARE_LINKS = [
   { label: "All alternatives", href: "/alternatives" },
   {
     label: "Stripe Smart Retries",
-    href: "/alternatives/stripe-smart-retries",
+    href: "/stripe-smart-retries-alternative",
   },
   {
     label: "Custom Stripe webhooks",
@@ -76,7 +76,7 @@ export const FOOTER_SECTIONS = [
       { label: "Alternatives", href: "/alternatives" },
       { label: "Stripe failed payments", href: "/stripe-failed-payments" },
       { label: "Stripe dunning", href: "/stripe-dunning" },
-      { label: "Stripe Smart Retries", href: "/alternatives/stripe-smart-retries" },
+      { label: "Stripe Smart Retries", href: "/stripe-smart-retries-alternative" },
     ],
   },
   {
