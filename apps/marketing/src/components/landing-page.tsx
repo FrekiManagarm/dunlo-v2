@@ -85,11 +85,10 @@ const recoveryPaths = [
   },
 ] as const;
 
-const proofRows = [
-  ["$18.4k", "failed MRR watched"],
-  ["47.2%", "accounts need custom timing"],
-  ["8 min", "median setup path"],
-  ["0%", "recovered-revenue fee"],
+const founderStats = [
+  ["$3.8k", "MRR recovered"],
+  ["$9.6k", "MRR at risk"],
+  ["12", "accounts saved"],
 ] as const;
 
 const resourceLinks = [
@@ -303,50 +302,51 @@ function RecoveryDesk() {
               ))}
             </div>
           </div>
-          <div className="p-4 md:p-5">
-            <div className="rounded-[1.5rem] border border-gray-100 bg-gray-950 p-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] md:p-5">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-dunlo">
-                    Founder escalation
-                  </p>
-                  <h3 className="mt-2 text-lg font-semibold tracking-tight">
-                    Draft ready for RivetDesk
-                  </h3>
-                </div>
-                <Sparkles size={20} className="text-dunlo" />
-              </div>
-              <div className="mt-5 space-y-2.5 rounded-2xl bg-white/10 p-4 text-sm leading-6 text-white/72">
-                <p>Subject: RivetDesk payment approval</p>
-                <p>The note explains the bank step and links back to Stripe.</p>
-              </div>
-              <div className="mt-4 grid grid-cols-3 gap-2">
-                {["Review", "Regenerate", "Send"].map((action) => (
-                  <button
-                    key={action}
-                    className="rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-semibold text-white/80 transition-all hover:bg-white/15 active:scale-[0.98]"
-                    type="button"
-                  >
-                    {action}
-                  </button>
-                ))}
-              </div>
-            </div>
-            <div className="mt-4 overflow-hidden rounded-2xl border border-gray-100 bg-gray-50 p-3">
-              <div className="landing-marquee flex w-max gap-3">
-                {[...proofRows, ...proofRows].map(([value, label], index) => (
+          <div className="relative overflow-hidden p-4 md:p-5">
+            <div className="space-y-4 lg:absolute lg:left-5 lg:right-auto lg:top-8 lg:w-[calc(100%+6rem)]">
+              <div className="grid grid-cols-3 gap-2">
+                {founderStats.map(([value, label], index) => (
                   <div
-                    key={`${label}-${index}`}
-                    className="flex min-w-40 items-center gap-3 rounded-full bg-white px-3 py-2"
+                    key={label}
+                    className="landing-rise rounded-2xl border border-gray-100 bg-gray-50 p-3"
+                    style={{ animationDelay: `${360 + index * 90}ms` }}
                   >
-                    <span className="font-mono text-sm font-semibold">
+                    <p className="font-mono text-base font-semibold tracking-tight text-gray-950">
                       {value}
-                    </span>
-                    <span className="text-xs font-medium text-gray-500">
+                    </p>
+                    <p className="mt-1 text-[11px] font-semibold leading-4 text-gray-500">
                       {label}
-                    </span>
+                    </p>
                   </div>
                 ))}
+              </div>
+              <div className="rounded-[1.5rem] border border-gray-100 bg-gray-950 p-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] md:p-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-dunlo">
+                      Founder escalation
+                    </p>
+                    <h3 className="mt-2 text-lg font-semibold tracking-tight">
+                      Draft ready for RivetDesk
+                    </h3>
+                  </div>
+                  <Sparkles size={20} className="text-dunlo" />
+                </div>
+                <div className="mt-5 space-y-2.5 rounded-2xl bg-white/10 p-4 text-sm leading-6 text-white/72">
+                  <p>Subject: RivetDesk payment approval</p>
+                  <p>The note explains the bank step and links back to Stripe.</p>
+                </div>
+                <div className="mt-4 grid grid-cols-3 gap-2">
+                  {["Review", "Regenerate", "Send"].map((action) => (
+                    <button
+                      key={action}
+                      className="rounded-full border border-white/10 bg-white/10 px-3 py-2 text-xs font-semibold text-white/80 transition-all hover:bg-white/15 active:scale-[0.98]"
+                      type="button"
+                    >
+                      {action}
+                    </button>
+                  ))}
+                </div>
               </div>
             </div>
           </div>

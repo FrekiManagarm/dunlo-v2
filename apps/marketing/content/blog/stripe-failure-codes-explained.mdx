@@ -4,7 +4,14 @@ description: "Learn what card_expired, insufficient_funds, do_not_honor, and car
 date: "2026-05-18"
 published: true
 tags: ["stripe", "failure codes", "recovery"]
-keywords: ["stripe failure code emails", "stripe payment retry timing", "stripe card_expired email", "stripe insufficient_funds recovery", "stripe do_not_honor what to do"]
+keywords:
+  [
+    "stripe failure code emails",
+    "stripe payment retry timing",
+    "stripe card_expired email",
+    "stripe insufficient_funds recovery",
+    "stripe do_not_honor what to do",
+  ]
 readingTime: "14 min"
 ---
 
@@ -244,17 +251,17 @@ Recommended copy, if an email is needed:
 
 ## Summary table
 
-| Code | Frequency | Email | Timing | Recovery avg |
-| -- | -- | -- | -- | -- |
-| `card_expired` / `expired_card` | ~0.8% | Friendly update link | Day 0 | 63% |
-| `insufficient_funds` | ~1.9% | Empathetic wait | Day 3 | 31% |
-| `do_not_honor` | ~0.7% | Bank explanation | Day 0 | 44% |
-| `card_declined` / `generic_decline` | ~1.6% | Conservative dual-option | Day 1 | 28% |
-| `card_velocity_exceeded` | Low volume | Bank limit explanation | Wait 24h+ | Lower |
-| `lost_card` / `stolen_card` | Low volume | Generic new-card request | No same-card retry | Depends |
-| `authentication_required` | Market-dependent | Authentication link | After confirmation | High if handled |
-| `incorrect_cvc` / `incorrect_zip` | Low volume | Re-enter card details | After correction | Medium |
-| `issuer_not_available` / `processing_error` | Low volume | Usually no email first | Retry later | Medium |
+| Code                                        | Frequency        | Email                    | Timing             | Recovery avg    |
+| ------------------------------------------- | ---------------- | ------------------------ | ------------------ | --------------- |
+| `card_expired` / `expired_card`             | ~0.8%            | Friendly update link     | Day 0              | 63%             |
+| `insufficient_funds`                        | ~1.9%            | Empathetic wait          | Day 3              | 31%             |
+| `do_not_honor`                              | ~0.7%            | Bank explanation         | Day 0              | 44%             |
+| `card_declined` / `generic_decline`         | ~1.6%            | Conservative dual-option | Day 1              | 28%             |
+| `card_velocity_exceeded`                    | Low volume       | Bank limit explanation   | Wait 24h+          | Lower           |
+| `lost_card` / `stolen_card`                 | Low volume       | Generic new-card request | No same-card retry | Depends         |
+| `authentication_required`                   | Market-dependent | Authentication link      | After confirmation | High if handled |
+| `incorrect_cvc` / `incorrect_zip`           | Low volume       | Re-enter card details    | After correction   | Medium          |
+| `issuer_not_available` / `processing_error` | Low volume       | Usually no email first   | Retry later        | Medium          |
 
 ## How to turn the code into an actual dunning sequence
 
@@ -333,4 +340,4 @@ Stripe failure codes are not just technical labels. They are recovery instructio
 
 `card_expired` needs a calm update link. `insufficient_funds` needs empathy and time. `do_not_honor` needs bank-context copy before another retry. Generic `card_declined` needs conservative language and clear options. Sensitive codes need customer-safe wording. Authentication codes need an authentication flow.
 
-This is exactly what Dunlo automates: it reads the failure code first, then sends the right email at the right time. If you want the benchmark and recovery logic handled for you, [connect Stripe to Dunlo](/login). It is free during beta.
+This is exactly what Dunlo automates: it reads the failure code first, then sends the right email at the right time. If you want the benchmark and recovery logic handled for you, [connect Stripe to Dunlo](https://app.dunlo.io/login?mode=signup). It is free during beta.
