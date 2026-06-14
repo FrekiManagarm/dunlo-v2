@@ -187,21 +187,27 @@ function DashboardLayout() {
                 </li>
               );
             })}
-            <li>
-              <button
-                onClick={openGuide}
-                className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-zinc-500 transition-all hover:bg-zinc-50 hover:text-zinc-800"
-              >
-                <BookOpen
-                  size={15}
-                  strokeWidth={2}
-                  className="text-zinc-400 transition-colors group-hover:text-zinc-600"
-                />
-                How it works
-              </button>
-            </li>
           </ul>
         </nav>
+
+        <div className="space-y-px border-t border-zinc-100 px-3 py-3">
+          <FeedbackWidget
+            user={session?.user}
+            path={location.pathname}
+            variant="sidebar"
+          />
+          <button
+            onClick={openGuide}
+            className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-zinc-500 transition-all hover:bg-zinc-50 hover:text-zinc-800 active:scale-[0.98]"
+          >
+            <BookOpen
+              size={15}
+              strokeWidth={2}
+              className="text-zinc-400 transition-colors group-hover:text-zinc-600"
+            />
+            How it works
+          </button>
+        </div>
 
         {/* User card */}
         <div className="border-t border-zinc-100 p-4">
@@ -233,7 +239,6 @@ function DashboardLayout() {
       </main>
 
       <WelcomeGuide open={guideOpen} onClose={closeGuide} />
-      <FeedbackWidget user={session?.user} path={location.pathname} />
     </div>
   );
 }

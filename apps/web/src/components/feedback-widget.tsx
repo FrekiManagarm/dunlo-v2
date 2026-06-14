@@ -26,6 +26,7 @@ type FeedbackWidgetProps = {
     name?: string | null;
   };
   path: string;
+  variant?: "floating" | "sidebar";
 };
 
 const FEEDBACK_OPTIONS = [
@@ -35,7 +36,11 @@ const FEEDBACK_OPTIONS = [
   { value: "praise", label: "Praise" },
 ] as const;
 
-export function FeedbackWidget({ user, path }: FeedbackWidgetProps) {
+export function FeedbackWidget({
+  user,
+  path,
+  variant = "floating",
+}: FeedbackWidgetProps) {
   const posthog = usePostHog();
   const [open, setOpen] = useState(false);
   const [category, setCategory] =
@@ -45,10 +50,10 @@ export function FeedbackWidget({ user, path }: FeedbackWidgetProps) {
   const feedbackSurveyId = env.VITE_POSTHOG_FEEDBACK_SURVEY_ID;
 
   const trimmedMessage = message.trim();
-  const buttonLabel = useMemo(
-    () => (feedbackSurveyId ? "Open survey" : "Feedback"),
-    [feedbackSurveyId],
-  );
+  const buttonLabel = useMemo(() => {
+    if (variant === "sidebar") return "Feedback";
+    return feedbackSurveyId ? "Open survey" : "Feedback";
+  }, [feedbackSurveyId, variant]);
 
   const openFeedback = () => {
     posthog.capture("feedback_widget_opened", {
@@ -118,21 +123,42 @@ export function FeedbackWidget({ user, path }: FeedbackWidgetProps) {
 
   return (
     <>
-      <motion.button
-        type="button"
-        id="dunlo-feedback-button"
-        onClick={openFeedback}
-        whileHover={{ y: -2 }}
-        whileTap={{ scale: 0.98 }}
-        transition={{ type: "spring", stiffness: 420, damping: 28 }}
-        className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full border border-zinc-200 bg-white/90 px-4 py-2.5 text-xs font-semibold text-zinc-800 shadow-[0_16px_40px_-24px_rgba(24,24,27,0.55)] backdrop-blur-xl transition-colors hover:border-dunlo/40 hover:text-dunlo-deep"
-      >
-        <span className="relative flex size-7 items-center justify-center rounded-full bg-zinc-950 text-white">
-          <MessageSquareText size={14} strokeWidth={2} />
-          <span className="absolute -right-0.5 -top-0.5 size-2 rounded-full bg-dunlo ring-2 ring-white" />
-        </span>
-        <span className="hidden sm:inline">{buttonLabel}</span>
-      </motion.button>
+      {variant === "sidebar" ? (
+        <motion.button
+          type="button"
+          id="dunlo-feedback-button"
+          onClick={openFeedback}
+          whileTap={{ scale: 0.98 }}
+          transition={{ type: "spring", stiffness: 420, damping: 28 }}
+          className="group flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-[13px] font-medium text-zinc-500 transition-all hover:bg-zinc-50 hover:text-zinc-800"
+        >
+          <span className="relative flex size-[15px] items-center justify-center">
+            <MessageSquareText
+              size={15}
+              strokeWidth={2}
+              className="text-zinc-400 transition-colors group-hover:text-zinc-600"
+            />
+            <span className="absolute -right-1 -top-0.5 size-1.5 rounded-full bg-dunlo" />
+          </span>
+          {buttonLabel}
+        </motion.button>
+      ) : (
+        <motion.button
+          type="button"
+          id="dunlo-feedback-button"
+          onClick={openFeedback}
+          whileHover={{ y: -2 }}
+          whileTap={{ scale: 0.98 }}
+          transition={{ type: "spring", stiffness: 420, damping: 28 }}
+          className="fixed bottom-5 right-5 z-30 flex items-center gap-2 rounded-full border border-zinc-200 bg-white/90 px-4 py-2.5 text-xs font-semibold text-zinc-800 shadow-[0_16px_40px_-24px_rgba(24,24,27,0.55)] backdrop-blur-xl transition-colors hover:border-dunlo/40 hover:text-dunlo-deep"
+        >
+          <span className="relative flex size-7 items-center justify-center rounded-full bg-zinc-950 text-white">
+            <MessageSquareText size={14} strokeWidth={2} />
+            <span className="absolute -right-0.5 -top-0.5 size-2 rounded-full bg-dunlo ring-2 ring-white" />
+          </span>
+          <span className="hidden sm:inline">{buttonLabel}</span>
+        </motion.button>
+      )}
 
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogContent className="max-w-[calc(100%-2rem)] gap-0 overflow-hidden rounded-2xl border border-zinc-200 bg-white p-0 text-zinc-900 shadow-[0_24px_80px_-44px_rgba(24,24,27,0.65)] sm:max-w-md">
