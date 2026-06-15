@@ -1,6 +1,6 @@
 ---
 title: "Stripe Failure Codes: The Complete Guide"
-description: "Stripe payment failures each have a reason code. Learn what the codes mean and how SaaS teams should respond to recover revenue."
+description: "Stripe payment failures each have a reason code. Learn what card_expired, insufficient_funds, do_not_honor, and generic_decline mean, plus the email and retry timing to use next."
 published: true
 author: "Dunlo team"
 date: "2026-05-22"
@@ -8,39 +8,44 @@ tags: ["stripe", "failure codes", "saas"]
 keywords:
   [
     "stripe failure codes",
-    "stripe payment failed reason",
     "stripe decline codes",
+    "stripe payment failed reason",
     "stripe payment failure codes",
+    "stripe failure code emails",
+    "stripe payment retry timing",
+    "stripe do_not_honor what to do",
   ]
+readingTime: "16 min"
 ---
 
 ## What each Stripe failure code means and what to do about it
 
-When a Stripe payment fails, most SaaS founders send the same email to everyone.
+When a Stripe payment fails, most SaaS founders send the same email to everyone:
 
-"Your payment failed. Please update your billing information."
+> Your payment failed. Please update your billing information.
 
-It's the wrong move — and it's costing you recoverable revenue every month.
+That is the expensive mistake. A failed subscription payment is not one problem. It can mean the card expired, the customer has a temporary cash issue, the bank blocked the charge, the issuer needs authentication, or the payment network had a bad moment.
 
-Every failed payment in Stripe comes with a reason code. That code tells you exactly what went wrong: whether the card expired, whether the bank blocked the charge, whether it was a temporary funds issue. Each situation calls for a completely different response, different timing, and different tone.
+Stripe gives you the first clue in the failure code. Your recovery workflow should use it.
 
-This guide covers every Stripe failure code you're likely to encounter, what it means, and precisely what to do — so you can stop treating all failed payments the same way.
+This guide covers the Stripe failure codes SaaS teams are most likely to see, what each code means, when to retry, what email to send, and when a founder should step in manually.
 
----
+If you want to compare your own numbers before fixing the workflow, use the free [Stripe failed payment benchmark](/benchmark). For the full recovery system around failed invoices, read the [Stripe failed payments guide](/stripe-failed-payments).
 
-## How Stripe Failure Codes Work
+## How Stripe failure codes work
 
-When a charge fails, Stripe returns two pieces of data:
+When a charge fails, Stripe can return two useful pieces of data:
 
-- **`decline_code`** — the specific reason the card network or bank declined the charge (e.g., `card_expired`, `insufficient_funds`, `do_not_honor`)
-- **`failure_code`** — a broader category code on the charge or PaymentIntent object
+- **`decline_code`** - the specific reason the card network or bank declined the charge, such as `expired_card`, `insufficient_funds`, or `do_not_honor`.
+- **`failure_code`** - a broader failure category on the charge or PaymentIntent object.
 
-For dunning purposes, `decline_code` is what matters. It's the most granular signal you have about what actually went wrong.
+For payment recovery, `decline_code` is usually the most valuable signal. It tells you whether the customer needs to update a card, wait for a retry, call the bank, authenticate a payment, or use a different payment method.
 
-You can access it in two ways:
+You can find the signal in two places:
 
-**Via webhook (recommended):**
-Listen for `invoice.payment_failed` events. The charge object inside the event contains `failure_code` and `last_payment_error.decline_code`.
+**Via webhook**
+
+Listen for `invoice.payment_failed` events. The invoice's payment error can include the failure code and decline code.
 
 ```json
 {
@@ -57,259 +62,347 @@ Listen for `invoice.payment_failed` events. The charge object inside the event c
 }
 ```
 
-**Via Stripe Dashboard:**
-Go to Payments → find the failed charge → look under "Failure reason" in the charge detail view.
+**Via Stripe Dashboard**
 
----
+Go to Payments, open the failed charge, and look for the failure reason in the charge detail view.
 
-## The 4 Failure Codes You'll See Most Often
+## Why Stripe payments fail
 
-These four codes account for the vast majority of failed payments in SaaS billing. Get these right and you'll recover most of your involuntary churn.
+Most failed Stripe payments fall into five practical groups.
 
----
+| Failure group | Common Stripe codes | What it means | Recovery posture |
+| --- | --- | --- | --- |
+| Expired or replaced card | `expired_card`, often searched as `card_expired` | The customer has a new card but Stripe still has the old one. | Send an immediate update-link email. |
+| Temporary funds or limit issue | `insufficient_funds`, `card_velocity_exceeded` | The card may work later, but not right now. | Wait, retry carefully, and avoid shaming copy. |
+| Bank block | `do_not_honor`, `restricted_card` | The issuer blocked the transaction without giving you a clean reason. | Explain the bank block and offer two actions. |
+| Generic decline | `generic_decline`, `card_declined` | The bank declined the payment but did not share enough detail. | Use conservative copy and offer another card. |
+| Customer action required | `authentication_required`, `incorrect_cvc`, `incorrect_zip` | The customer needs to confirm or correct something. | Send the right secure action link. |
 
-### 1. `card_expired`
+The point is not to show raw codes to customers. The point is to translate each code into the safest next action.
 
-**What it means:** The expiration date on the card has passed. The card number is still valid, the customer still has the account — they just haven't updated their card details with you.
+## The 4 most common Stripe failure codes in SaaS
 
-**How common:** Very common. Cards typically expire every 2–3 years, and customers rarely update their details proactively. Expiry-related failures tend to cluster around January (post-holiday card refreshes) and throughout the year as individual cards hit their expiry dates.
+These four buckets cover the highest-leverage recovery work for most small SaaS teams. The exact mix varies by geography, price point, card type, and customer segment, but the email logic is stable.
 
-**What the customer needs to do:** Update to a new card. That's it. They almost certainly already have a replacement card from their bank.
+### `expired_card` or `card_expired` - the easy card update
 
-**The right recovery approach:**
+Stripe commonly documents this as `expired_card`, while founders often search for `card_expired`. For recovery purposes, treat them as the same branch.
 
-- **Timing:** Send immediately — within an hour of the failure. The customer is likely at their desk, and this is an easy fix. Don't wait.
-- **Tone:** Friendly, zero pressure. Frame it as a quick admin task, not a billing crisis. "Happens to everyone" goes a long way here.
-- **Action:** One clear call to action — a direct link to update their payment method. Don't ask them to log in, navigate to billing, and find the update button. Give them a one-click link.
-- **Subject line example:** `Quick note about your [Product] subscription, [Name]`
+**What it means**
 
-**Email template:**
+The saved card is out of date. The card number may still belong to the customer, but the expiration date has passed. The customer probably has a replacement card already.
 
-> Hey [Name],
+**What the customer experiences**
+
+Usually nothing. They may have updated the card for personal services and forgotten your SaaS still has the old one saved. They are not necessarily unhappy, and they are not necessarily trying to cancel.
+
+**Email recommended**
+
+Use a friendly, specific card-update email. The tone should be calm, not urgent.
+
+Subject:
+
+> Your card on file expired
+
+Body:
+
+> Hi [Name],
 >
-> The card we have on file for your [Product] subscription expired at the end of [month] — totally normal, happens to everyone.
+> Your payment for [Product] did not go through because the card on file appears to be expired.
 >
-> Here's a one-click link to update it: **[Update payment method →]**
+> You can update it here in under a minute: [secure billing link].
 >
-> Takes about 30 seconds. Once updated, your subscription continues without any interruption.
+> After that, we will retry the invoice automatically.
+
+**Timing**
+
+Send this on day 0, as soon as the payment fails. Do not wait several days to notify the customer. The fix is obvious and the tone can be light.
+
+**What not to do**
+
+Do not make it sound like the customer did something wrong. Do not use aggressive suspension language in the first email. Do not keep retrying the same expired card every few hours.
+
+**Stripe Smart Retries fit**
+
+Low. The underlying issue does not resolve itself, so retries will usually keep failing until the customer updates the card.
+
+### `insufficient_funds` - the timing problem
+
+**What it means**
+
+The issuer declined the payment because the customer did not have enough available funds, credit, or card limit at that moment.
+
+This does not always mean the customer is in financial trouble. It can be a temporary balance issue, a debit card waiting for payroll, a corporate card limit, or a bank rule that resets later.
+
+**What the customer experiences**
+
+The customer may know exactly what happened. A heavy-handed message can feel embarrassing. The recovery path is less about "fix your card" and more about "we will try again later."
+
+**Email recommended**
+
+Use an empathetic wait-and-retry email. Keep the update link available, but make it optional.
+
+Subject:
+
+> We will retry your payment in a few days
+
+Body:
+
+> Hi [Name],
 >
-> Let me know if you run into any issues.
+> Your payment for [Product] did not go through today.
 >
-> [Your name]
-
-**What not to do:** Don't send an urgent, high-pressure email. The customer didn't do anything wrong — their card just expired. Treat it as a helpful nudge, not a warning.
-
-**Stripe Smart Retries effectiveness:** Low. The underlying issue (expiry) doesn't resolve itself, so retries will keep failing until the card is updated. Email outreach is essential here.
-
----
-
-### 2. `insufficient_funds`
-
-**What it means:** The customer's account didn't have enough balance to cover the charge at the time of the attempt. The card itself works fine — it was just a bad moment to charge it.
-
-**How common:** Very common, especially for consumer-facing and lower-price-point SaaS. Also spikes at end-of-month when billing cycles from other services have already hit.
-
-**What the customer needs to do:** Usually nothing. Wait for their account to replenish. The card will work again in a few days.
-
-**The right recovery approach:**
-
-- **Timing:** Do NOT send an email immediately. Wait 3 days before reaching out. Emailing someone the same day their card declined for insufficient funds piles on at the worst possible moment and can damage the relationship.
-- **Tone:** Calm, non-judgmental, no urgency. They know what happened. They don't need it spelled out.
-- **Action:** Let them know there was an issue with their payment, without making them feel bad about it. Offer a retry or a payment link — but don't make the email feel like a collections notice.
-- **Subject line example:** `A quick note about your [Product] subscription`
-
-**Email template:**
-
-> Hey [Name],
+> No action is needed right now - we will retry it automatically in a few days.
 >
-> Just a heads up — we had a small issue processing your [Product] subscription payment recently.
+> If you would rather use another card, you can update your payment method here: [secure billing link].
+
+**Timing**
+
+Wait before escalating. For many SaaS teams, day 3 and day 7 retries perform better than repeated immediate retries. If the account is high-value, add a short human note before the last attempt.
+
+**What not to do**
+
+Do not retry instantly in a tight loop. Do not lead with "update your card" unless you see repeated failures or the customer asks for another method. Do not spell out "insufficient funds" in customer copy.
+
+**Stripe Smart Retries fit**
+
+High. This is one of the cases where a delayed retry can work well because the card may succeed later without any customer action.
+
+### `do_not_honor` - the bank block
+
+**What it means**
+
+The issuing bank blocked the transaction and did not share a public reason. It can be fraud prevention, risk scoring, geography, merchant category, card settings, or another bank-side rule.
+
+**What the customer experiences**
+
+This is confusing. The card may work elsewhere five minutes later. From the customer's perspective, nothing is wrong with the card. From your perspective, Stripe says the bank blocked this charge.
+
+That means the customer needs two clear paths: approve the charge with the bank, or use a different payment method.
+
+**Email recommended**
+
+Explain the bank block without sounding accusatory.
+
+Subject:
+
+> Your bank blocked this subscription charge
+
+Body:
+
+> Hi [Name],
 >
-> It's likely just a timing thing. If you'd like to retry the payment now, you can do that here: **[Retry payment →]**
+> Your bank did not approve the latest [Product] payment. This can happen even when the card works elsewhere.
 >
-> Otherwise, we'll try again automatically in a few days. No action needed if you'd prefer to wait.
+> You can either approve the charge with your bank, or add another card here: [secure billing link].
 >
-> [Your name]
+> Once that is done, we will retry the invoice.
 
-**What not to do:** Don't send an urgent email the same day. Don't tell them their card "was declined for insufficient funds" — they know, and spelling it out is embarrassing. Don't suggest they update their payment method (their card works fine).
+**Timing**
 
-**Stripe Smart Retries effectiveness:** High. This is exactly the scenario Smart Retries is designed for — Stripe will wait and retry when the probability of success is higher. Enable Smart Retries and let it do its job before escalating to email.
+Send on day 0. Another silent retry often repeats the same decline, so give the customer context before the next attempt.
 
----
+**What not to do**
 
-### 3. `do_not_honor`
+Do not say "Stripe blocked your card" if the issuer was the blocker. Do not imply the customer entered bad information. Do not send only a generic card-update email.
 
-**What it means:** The customer's bank rejected the transaction without giving a specific reason. This is one of the most frustrating codes for customers because it's vague — their card appears to work, and they may not understand why the charge failed.
+**Stripe Smart Retries fit**
 
-Common causes:
+Low to moderate. A later retry may succeed if the bank's risk filter clears, but the customer often needs to authorize the charge or use another card.
 
-- The bank's fraud detection flagged the transaction (especially common for SaaS subscriptions billed from unfamiliar merchant names or foreign entities)
-- The card has international transaction restrictions
-- The bank has a temporary hold on the card
-- A security freeze the customer may not be aware of
+### `generic_decline` or `card_declined` - the unclear decline
 
-**How common:** Second most common decline code after `insufficient_funds`. Particularly frequent for international customers or businesses with generic merchant names on statements.
+**What it means**
 
-**What the customer needs to do:** Either call their bank to authorize the transaction, or use a different card.
+The card was declined, but the failure does not give a precise customer-safe reason. Stripe may show `generic_decline`, a `card_declined` error type, or a failure state where the useful detail is limited.
 
-**The right recovery approach:**
+**What the customer experiences**
 
-- **Timing:** Send within a few hours. This is time-sensitive — the longer you wait, the more likely the customer assumes everything is fine or mentally moves on.
-- **Tone:** Explanatory. The customer is likely confused. Your job is to explain what happened in plain language and give them two clear options.
-- **Action:** Two paths — call your bank, or use a different card. Don't give them one option; some customers can't or won't call their bank, and giving them an alternative increases recovery significantly.
-- **Subject line example:** `Issue with your [Product] payment — here's what happened`
+The customer gets little context. They may assume your product is broken, their bank is broken, or they did something wrong. Your email should reduce uncertainty without pretending to know the exact cause.
 
-**Email template:**
+**Email recommended**
 
-> Hey [Name],
+Use conservative dual-option copy.
+
+Subject:
+
+> We could not process your payment
+
+Body:
+
+> Hi [Name],
 >
-> We had an issue processing your [Product] subscription payment, and I wanted to explain what happened.
+> The bank did not approve the latest [Product] payment.
 >
-> Your bank blocked the transaction — this is pretty common with subscription billing and usually isn't caused by anything on your end. Banks occasionally flag recurring charges from unfamiliar merchant names as a precaution.
->
-> You have two options to fix it:
->
-> **Option 1:** Call the number on the back of your card and ask them to authorize recurring payments from [Your Company/Merchant Name]. Then click here to retry: **[Retry payment →]**
->
-> **Option 2:** Update to a different card: **[Update payment method →]**
->
-> Either works. Let me know if you have any questions — happy to help sort this out.
->
-> [Your name]
+> You can try another card here: [secure billing link], or approve the charge with your bank and we will retry the invoice.
 
-**What not to do:** Don't just send a generic "update your card" email. The card works — that's not the problem. Customers who try to update to the same card will see it fail again and give up entirely.
+**Timing**
 
-**Stripe Smart Retries effectiveness:** Low to moderate. If the bank's fraud filter clears (which sometimes happens automatically), a retry may succeed. But in most cases, the customer needs to take action before the charge will go through.
+Send after one clean delayed retry window, unless Stripe advice says customer action is needed immediately. If the same code repeats, switch from automated retry to customer action.
 
----
+**What not to do**
 
-### 4. `card_declined` (generic)
+Do not over-explain. Do not diagnose the exact issue when Stripe did not give you one. Do not keep sending the same generic "payment failed" email every day.
 
-**What it means:** The card was declined, but Stripe didn't receive (or can't share) a more specific reason. This is the catch-all decline code — it covers situations where the bank declines without providing detailed information.
+## Less frequent codes that still matter
 
-Possible causes include: card restrictions, account issues, temporary bank holds, or decline policies that banks don't expose to merchants.
-
-**How common:** Common, but less informative than the specific codes above. When you see this, you know something went wrong but not exactly what.
-
-**What the customer needs to do:** Try a different card, or contact their bank to understand why it was declined.
-
-**The right recovery approach:**
-
-- **Timing:** Same day — within a few hours.
-- **Tone:** Helpful and low-pressure. You don't know exactly what happened, so don't pretend you do.
-- **Action:** Offer two paths (retry with a different card, or contact support) without creating urgency.
-- **Subject line example:** `We had trouble processing your [Product] payment`
-
-**Email template:**
-
-> Hey [Name],
->
-> We had trouble processing your [Product] subscription payment. Unfortunately, we don't have more detail on the specific reason — these things happen occasionally.
->
-> If you'd like to try a different card, you can update your payment method here: **[Update payment method →]**
->
-> Or if you'd prefer to retry with the same card: **[Retry payment →]**
->
-> Either way, let me know if you need any help sorting this out.
->
-> [Your name]
-
-**Stripe Smart Retries effectiveness:** Variable. Depends on the underlying reason. Smart Retries may succeed if it was a temporary bank issue; it won't succeed if the underlying issue persists.
-
----
-
-## Less Common But Important Failure Codes
-
-You'll see these less frequently, but knowing how to handle them prevents recoverable payments from slipping through.
+The long tail of Stripe decline codes can be small in volume but painful when handled incorrectly.
 
 ### `card_velocity_exceeded`
 
-**What it means:** The customer exceeded the balance, credit limit, transaction amount limit, or card velocity limit available on their card. Some teams shorten this in notes as `card_velocity_exceed`, but Stripe's decline code is `card_velocity_exceeded`.
+The customer hit a balance, credit, transaction amount, or card velocity limit. Some founders search for this as `card_velocity_exceed`, but Stripe's decline code is `card_velocity_exceeded`.
 
-**What to do:** Wait at least 24 hours before attempting any retry. Do not email the customer urgently. A calm notification is appropriate, but the main action is on your side: pause retries, let the issuer limit clear, and ask the customer to approve the charge or use another card if the code repeats.
+Recommended copy:
 
----
+> Your bank limited this charge. You can approve it with the bank or switch to another card here: [secure billing link].
+
+Recommended timing: wait at least 24 hours before retrying, avoid repeated attempts unless the customer says the limit is resolved, and move high-value accounts into manual follow-up if the same code appears twice.
+
+### `lost_card` and `stolen_card`
+
+Do not send an email that literally says "your card was stolen." Sensitive decline codes should usually be translated into generic customer-safe copy.
+
+Recommended copy:
+
+> Your bank did not approve this card. Please add a different payment method to keep your subscription active.
+
+Recommended timing: do not retry the same card. Ask for a new payment method.
 
 ### `fraudulent`
 
-**What it means:** The bank has flagged this transaction as potentially fraudulent. In some cases, this may indicate a stolen or compromised card.
+This usually deserves caution. Do not retry aggressively. Send one neutral email asking for a different payment method, then route repeated cases to manual review.
 
-**What to do:** This is one of the few codes where caution is warranted on your end. Don't retry aggressively. Send a single gentle email asking the customer to update their payment method, framed as a security precaution. If you receive multiple `fraudulent` codes from the same customer account, consider flagging for manual review.
+### `authentication_required`
 
----
+The card may be fine, but the issuer requires a confirmation step such as 3D Secure or Strong Customer Authentication. A normal card-update email is not enough.
 
-### `lost_card` / `stolen_card`
+Recommended copy:
 
-**What it means:** The card has been reported lost or stolen. The bank will not authorize any further charges.
+> Your bank needs one extra confirmation before we can process this subscription payment. Use this secure link to approve it: [authentication link].
 
-**What to do:** The customer needs to provide a new card. They may not be aware their card was flagged as lost/stolen (bank fraud systems sometimes act before the customer reports it). Send a polite email asking them to update their payment method, without referencing "lost" or "stolen" — that can create unnecessary alarm.
+Recommended timing: do not retry off-session until the customer completes authentication.
 
----
+### `incorrect_cvc`, `incorrect_zip`, and `incorrect_number`
 
-### `expired_card`
+These point to wrong card details. Do not retry the same details. Ask the customer to re-enter payment information through a secure link.
 
-**What it means:** Functionally identical to `card_expired`. Handle the same way — immediate email, friendly tone, one-click update link.
+Recommended copy:
 
----
+> The bank could not verify part of your card information. Please re-enter your payment details here: [secure billing link].
 
-### `processing_error`
+### `issuer_not_available` and `processing_error`
 
-**What it means:** A technical error occurred during processing — not a customer issue, not a card issue. Usually transient.
+These are often temporary processor, network, or issuer issues. In many cases, the best first step is a quiet retry later, not an immediate customer email.
 
-**What to do:** Retry immediately (or let Smart Retries handle it). If the retry succeeds, no email needed. If it fails again with a different code, treat the new code as the primary issue.
+Recommended copy, if an email is needed:
 
----
+> The payment network could not complete the charge. We will retry automatically. No action is needed right now.
 
 ### `currency_not_supported`
 
-**What it means:** The card doesn't support the currency you're charging in.
+The card does not support the currency you are charging in. Ask the customer to use a card that supports your billing currency, and include the currency in the email.
 
-**What to do:** Email the customer explaining that their current card doesn't support the billing currency, and ask them to update to a card that does. Include your billing currency in the email so they know what to look for.
+## Summary table
 
----
+| Code | Email | Timing | Retry posture |
+| --- | --- | --- | --- |
+| `expired_card` / `card_expired` | Friendly update link | Day 0 | Retry after update |
+| `insufficient_funds` | Empathetic wait-and-retry | Day 3 | Delayed retry |
+| `do_not_honor` | Bank explanation | Day 0 | Retry after customer action |
+| `generic_decline` / `card_declined` | Conservative dual-option email | Day 1 | Delayed retry, then action |
+| `card_velocity_exceeded` | Bank limit explanation | Wait 24h+ | Avoid tight retry loops |
+| `lost_card` / `stolen_card` | Generic new-card request | Same day | Do not retry same card |
+| `fraudulent` | Neutral new-card request | Same day | Manual review if repeated |
+| `authentication_required` | Authentication link | Immediately | Wait for authentication |
+| `incorrect_cvc` / `incorrect_zip` | Re-enter card details | Same day | Retry after correction |
+| `issuer_not_available` / `processing_error` | Usually no email first | Retry later | Quiet retry first |
+| `currency_not_supported` | Explain currency mismatch | Same day | Ask for another card |
 
-## Quick Reference: Failure Code Action Table
+## How to turn the code into a dunning sequence
 
-| Decline code                | Email timing        | Tone                   | Primary action              |
-| --------------------------- | ------------------- | ---------------------- | --------------------------- |
-| `card_expired`              | Immediate           | Friendly, low pressure | Update card link            |
-| `insufficient_funds`        | D+3                 | Calm, no judgment      | Retry link, or wait         |
-| `do_not_honor`              | Within hours        | Explanatory            | Call bank OR new card       |
-| `card_declined`             | Same day            | Helpful                | New card OR retry           |
-| `card_velocity_exceeded`    | D+1                 | Calm                   | Pause retries 24h           |
-| `fraudulent`                | Same day            | Security-framed        | Update card                 |
-| `lost_card` / `stolen_card` | Same day            | Neutral                | Update card (no alarm)      |
-| `processing_error`          | Only if retry fails | Matter-of-fact         | Retry first                 |
-| `currency_not_supported`    | Same day            | Informational          | Card that supports currency |
+A code-aware recovery system does not need hundreds of templates. It needs a few clean branches.
 
----
+Start with four primary tracks:
 
-## Implementing Failure-Code-Specific Dunning
+- Expired card: send a day 0 update-link email, then retry after update.
+- Funds issue: wait, retry gently, and keep the update link optional.
+- Bank block: explain the issuer block immediately and offer bank approval or another card.
+- Generic decline: use conservative language and move to customer action if it repeats.
 
-The most direct path to implementing this:
+Then add guardrails:
 
-**Option 1: Build it yourself**
-Listen for `invoice.payment_failed` webhooks, parse the `last_payment_error.decline_code` field, and trigger the appropriate email sequence via your email provider (Resend, Postmark, etc.). A day or two of development work.
+- Sensitive hard declines should not expose the literal failure reason.
+- Authentication failures should route to an authentication flow, not a generic billing link.
+- Temporary network failures should get quiet retries before you bother the customer.
+- High-value accounts should trigger a founder or support escalation before the last retry.
 
-**Option 2: Use a dedicated tool**
-[Dunlo](https://dunlo.io) handles this automatically — it reads the failure code from Stripe, routes to the right email sequence, handles timing, and flags high-value accounts for personal escalation. Free during beta.
+This is where many SaaS teams recover more revenue without sending more email. They send fewer generic messages and more precise ones.
 
-Either way, the principle is the same: the failure code is the most valuable signal you have. Use it.
+## Example recovery sequence by code
 
----
+For `expired_card`:
 
-## The Bottom Line
+- Day 0: friendly update-link email.
+- Day 2: reminder with the same link.
+- Day 5: final notice before access is paused.
 
-Stripe tells you exactly why every payment failed. Most founders ignore that information and send the same generic email to everyone.
+For `insufficient_funds`:
 
-The difference between a 20% recovery rate and a 70% recovery rate isn't marketing sophistication or technical complexity. It's reading the failure code and responding appropriately.
+- Day 0: light internal note or quiet retry planning.
+- Day 3: retry automatically.
+- Day 4: optional update-link email if the retry failed.
+- Day 7: final retry and human note for high-value accounts.
 
-`card_expired` → immediate, friendly, one-click link.
-`insufficient_funds` → wait 3 days, calm email, no urgency.
-`do_not_honor` → explain what happened, give two options.
-`card_declined` → same day, helpful, low pressure.
+For `do_not_honor`:
 
-That's it. Four different responses to four different problems. Start there, and you'll recover most of what you're currently losing.
+- Day 0: explain that the bank blocked the charge.
+- Day 1: retry only if the customer acted or Stripe advice allows it.
+- Day 3: ask them to call the bank or use another card.
+- Day 7: founder note for accounts worth saving manually.
 
----
+For `generic_decline`:
 
-_Want this handled automatically? [Dunlo](https://dunlo.io) connects to Stripe, reads every failure code, and sends the right email at the right time — without you having to think about it. Free during beta._
+- Day 1: conservative dual-option email.
+- Day 3: delayed retry.
+- Day 5: ask for another payment method.
+- Day 7: final reminder before suspension.
+
+These are starting points. Your price point, customer type, geography, and invoice amount will change the best cadence. But the principle stays the same: the failure code chooses the first message and the retry posture.
+
+## Build vs buy
+
+**Build it yourself**
+
+Listen for `invoice.payment_failed` webhooks, parse the payment error, map failure codes to recovery branches, generate secure billing links, and trigger the right email through your provider.
+
+That is viable if you have engineering time and only need basic logic.
+
+**Use a dedicated tool**
+
+[Dunlo](https://dunlo.io) reads the failure code from Stripe, routes to the right email sequence, handles timing, tracks recovered revenue, and flags high-value accounts for founder review. It is free during beta.
+
+## FAQ
+
+### Is `card_expired` the same as `expired_card`?
+
+For recovery purposes, yes. Stripe commonly documents `expired_card`, while many founders search for `card_expired`. Treat both as the expired-card recovery branch.
+
+### Should I mention Stripe failure codes to customers?
+
+Usually no. Codes are useful internally, but customers need plain language. Say "your card appears to be expired," "your bank did not approve this charge," or "we will retry in a few days."
+
+### Should I retry every failed payment immediately?
+
+No. Immediate retries can work for temporary processor failures, but they are usually wrong for `insufficient_funds`, hard declines, authentication failures, and bank blocks. Let the code guide the retry timing.
+
+### What if Stripe gives me an advice code too?
+
+Use it. Stripe advice codes can give more specific next-action guidance. The failure code explains what happened; advice can help decide whether to retry, wait, or request customer action.
+
+## The bottom line
+
+Stripe failure codes are not just technical labels. They are recovery instructions.
+
+`expired_card` needs a calm update link. `insufficient_funds` needs empathy and time. `do_not_honor` needs bank-context copy before another retry. Generic declines need conservative language and clear options. Sensitive codes need customer-safe wording. Authentication codes need an authentication flow.
+
+This is exactly what Dunlo automates: it reads the failure code first, then sends the right email at the right time. If you want the benchmark and recovery logic handled for you, [connect Stripe to Dunlo](https://app.dunlo.io/login?mode=signup). It is free during beta.

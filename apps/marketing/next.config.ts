@@ -24,6 +24,36 @@ const nextConfig: NextConfig = {
           destination: "/stripe-smart-retries-alternative",
           permanent: true,
         },
+        {
+          source: "/blog/stripe-failure-codes-explained",
+          destination: "/blog/stripe-failure-codes-the-complete-guide",
+          permanent: true,
+        },
+        {
+          source: "/blog/5-reasons-stripe-payments-fail",
+          destination: "/blog/stripe-failure-codes-the-complete-guide",
+          permanent: true,
+        },
+        {
+          source: "/blog/complete-guide-involuntary-churn-saas",
+          destination: "/blog/involuntary-churn-in-saas",
+          permanent: true,
+        },
+        {
+          source: "/blog/dunning-guide-for-saas",
+          destination: "/stripe-dunning",
+          permanent: true,
+        },
+        {
+          source: "/blog/complete-guide-to-stripe-dunning",
+          destination: "/stripe-dunning",
+          permanent: true,
+        },
+        {
+          source: "/blog/stripe-smart-retries-review",
+          destination: "/stripe-smart-retries-alternative",
+          permanent: true,
+        },
       );
   },
 };

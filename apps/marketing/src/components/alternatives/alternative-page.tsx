@@ -1579,7 +1579,9 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
 };
 
 export const ALTERNATIVE_ROUTE_PAGES = Object.values(ALTERNATIVES).filter(
-  (page) => page.path.startsWith("/alternatives/"),
+  (page) =>
+    page.path.startsWith("/alternatives/") &&
+    page.slug !== "stripe-smart-retries",
 );
 
 export const VS_ROUTE_PAGES = Object.values(ALTERNATIVES).filter((page) =>
