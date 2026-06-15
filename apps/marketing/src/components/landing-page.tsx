@@ -246,18 +246,12 @@ function RecoveryDesk() {
       <div className="relative overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-[0_40px_100px_-55px_rgba(15,23,42,0.58)]">
         <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50/70 px-4 py-3 md:px-5">
           <div className="flex items-center gap-2">
-            <div className="flex gap-1.5">
-              <span className="size-2.5 rounded-full bg-gray-300" />
-              <span className="size-2.5 rounded-full bg-gray-300" />
+            <div className="flex gap-1.5 py-1">
+              <span className="size-2.5 rounded-full bg-red-500" />
+              <span className="size-2.5 rounded-full bg-yellow-500" />
               <span className="size-2.5 rounded-full bg-dunlo" />
             </div>
-            <span className="ml-2 font-mono text-xs font-semibold text-gray-500">
-              recovery-desk
-            </span>
           </div>
-          <span className="rounded-full border border-dunlo/30 bg-dunlo/10 px-3 py-1 text-xs font-semibold text-dunlo-deep">
-            monitoring
-          </span>
         </div>
         <div className="grid gap-0 lg:grid-cols-[0.92fr_1.08fr]">
           <div className="border-b border-gray-200 p-4 md:p-5 lg:border-b-0 lg:border-r">
@@ -334,7 +328,9 @@ function RecoveryDesk() {
                 </div>
                 <div className="mt-5 space-y-2.5 rounded-2xl bg-white/10 p-4 text-sm leading-6 text-white/72">
                   <p>Subject: RivetDesk payment approval</p>
-                  <p>The note explains the bank step and links back to Stripe.</p>
+                  <p>
+                    The note explains the bank step and links back to Stripe.
+                  </p>
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-2">
                   {["Review", "Regenerate", "Send"].map((action) => (
@@ -396,10 +392,7 @@ function ResourceLinksSection() {
 
 function FeaturesSection() {
   return (
-    <section
-      id="features"
-      className="scroll-mt-24 px-4 py-10 md:px-6 md:py-16"
-    >
+    <section id="features" className="scroll-mt-24 px-4 py-10 md:px-6 md:py-16">
       <div
         id="recovery-paths"
         className="mx-auto max-w-7xl scroll-mt-24 border-t border-gray-200 pt-10 md:pt-14"
