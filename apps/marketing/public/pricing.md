@@ -1,6 +1,16 @@
 # Pricing - Dunlo
 
-Dunlo is free during beta. Published prices show the intended pricing direction after beta.
+Last updated: 2026-06-15
+
+Dunlo is free during beta until July 31, 2026. Published prices show the intended pricing direction after beta.
+
+Billing model:
+
+- Currency: USD
+- Billing cadence: monthly
+- Revenue share: none
+- Recovered-revenue percentage: none
+- Trial after beta: first 30 days free when billing starts
 
 ## Solo
 
@@ -64,7 +74,9 @@ Dunlo is free during beta. Published prices show the intended pricing direction 
 
 ## Trial and Billing Notes
 
-- Beta: free during beta
+- Beta: free until July 31, 2026
 - Trial: first 30 days free when billing starts
 - Revenue share: none
+- Recovered-revenue percentage: none
+- Card data: card updates happen through Stripe-hosted flows; Dunlo does not store full card numbers or CVCs
 - Contact: hello@dunlo.io

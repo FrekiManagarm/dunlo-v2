@@ -85,6 +85,21 @@ const STATIC_ROUTES = [
   },
 ] satisfies SitemapEntry[];
 
+const MACHINE_READABLE_ROUTES = [
+  {
+    path: "/llms.txt",
+    lastModified: "2026-06-15",
+    changeFrequency: "weekly",
+    priority: 0.7,
+  },
+  {
+    path: "/pricing.md",
+    lastModified: "2026-06-15",
+    changeFrequency: "weekly",
+    priority: 0.7,
+  },
+] satisfies SitemapEntry[];
+
 function toRoute(entry: SitemapEntry): MetadataRoute.Sitemap[number] {
   return {
     url: absoluteUrl(entry.path),
@@ -117,6 +132,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   return [
     ...STATIC_ROUTES.map(toRoute),
+    ...MACHINE_READABLE_ROUTES.map(toRoute),
     ...alternativeRoutes,
     ...blogRoutes,
   ];

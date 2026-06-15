@@ -2,13 +2,33 @@
 
 > Dunlo is a Stripe-first payment recovery SaaS for SaaS founders. It helps teams recover failed Stripe payments without burning customer trust, using failure-code-specific recovery emails, smart follow-up timing, founder escalation drafts, and recovered revenue tracking.
 
+Last updated: 2026-06-15
+
 ## Product
 
 - Category: Stripe payment recovery software, dunning software, involuntary churn reduction.
 - Primary audience: SaaS founders and small teams using Stripe, especially around $5k-$80k MRR.
 - Core workflow: connect Stripe, review recovery email sequences, connect an email provider, monitor failed payments, track recovered revenue.
 - Key differentiation: Dunlo focuses on Stripe payment failures instead of a broad lifecycle suite. It uses the Stripe failure reason to tailor the recovery message and can draft a personal founder escalation for high-value accounts, so payment recovery feels customer-friendly instead of aggressive.
-- Beta status: Dunlo is in beta. The product is free during beta.
+- Beta status: Dunlo is in beta. The product is free until beta ends on July 31, 2026.
+
+## Quick Answers
+
+### What is Dunlo?
+
+Dunlo is Stripe payment recovery software for SaaS founders. It monitors failed Stripe payments, sends recovery emails matched to the failure reason, gives customers Stripe-hosted update links, flags sensitive accounts for founder review, and reports recovered revenue.
+
+### Who is Dunlo for?
+
+Dunlo is for Stripe-first SaaS founders and small teams that want a focused failed-payment recovery workflow without moving billing platforms or building custom webhook logic.
+
+### How is Dunlo different from Stripe Smart Retries?
+
+Stripe Smart Retries optimizes retry timing inside Stripe Billing. Dunlo adds the customer-facing recovery layer around those retries: failure-aware emails, secure payment update links, recovered-revenue visibility, and founder escalation for high-value failed accounts.
+
+### What does Dunlo cost?
+
+Dunlo is free during beta until July 31, 2026. Planned post-beta tiers are flat monthly plans by MRR range, starting at $19/month, with no recovered-revenue percentage.
 
 ## Key Pages
 
@@ -18,15 +38,39 @@
 - Stripe failed payments: https://dunlo.io/stripe-failed-payments
 - Stripe dunning: https://dunlo.io/stripe-dunning
 - Stripe failed payment benchmark: https://dunlo.io/benchmark
+- Stripe failed payment audit: https://dunlo.io/stripe-failed-payment-audit
+- Stripe Smart Retries alternative: https://dunlo.io/stripe-smart-retries-alternative
 - State of Stripe failed payments 2026: https://dunlo.io/state-of-stripe-payments-2026
+
+## Blog Guides
+
+- Best Stripe dunning tools for SaaS: https://dunlo.io/blog/best-stripe-dunning-tools-for-saas
+- How to build a SaaS dunning strategy: https://dunlo.io/blog/how-to-build-a-dunning-strategy
+- What is involuntary churn in SaaS?: https://dunlo.io/blog/involuntary-churn-in-saas
+- Stripe failure codes guide: https://dunlo.io/blog/stripe-failure-codes-the-complete-guide
+- Normal Stripe failed payment rate for SaaS: https://dunlo.io/blog/whats-a-normal-failed-payment-rate-for-saas
 
 ## Comparisons
 
-- Dunlo vs Stripe Smart Retries: https://dunlo.io/alternatives/stripe-smart-retries
+- Dunlo vs Stripe Smart Retries: https://dunlo.io/stripe-smart-retries-alternative
+- Dunlo vs Baremetrics: https://dunlo.io/vs/baremetrics
 - Dunlo vs Churn Buster: https://dunlo.io/alternatives/churn-buster
 - Dunlo vs Paddle Retain: https://dunlo.io/alternatives/paddle-retain
 - Dunlo vs Triggla: https://dunlo.io/alternatives/triggla
 - Dunlo vs Slicker: https://dunlo.io/alternatives/slicker
+- Dunlo vs Recurflux: https://dunlo.io/alternatives/recurflux
+- Dunlo vs Churnkey: https://dunlo.io/alternatives/churnkey
+- Dunlo vs RevenueCat: https://dunlo.io/alternatives/revenuecat
+- Dunlo vs ProfitWell: https://dunlo.io/alternatives/profitwell
+- Dunlo vs Chargebee: https://dunlo.io/alternatives/chargebee
+- Dunlo vs FlyCode: https://dunlo.io/alternatives/flycode
+- Dunlo vs custom Stripe webhooks: https://dunlo.io/alternatives/custom-stripe-webhooks
+- Dunlo vs Loops dunning: https://dunlo.io/alternatives/loops-dunning
+- Dunlo vs RetryFix: https://dunlo.io/alternatives/retryfix
+- Dunlo vs Revive: https://dunlo.io/alternatives/revive
+- Dunlo vs Recurly Recover: https://dunlo.io/alternatives/recurly-recover
+- Dunlo vs Revaly FlexPay: https://dunlo.io/alternatives/revaly-flexpay
+- Dunlo vs Gr4vy: https://dunlo.io/alternatives/gr4vy
 
 ## Product Facts
 
@@ -35,6 +79,19 @@
 - Payment updates happen through Stripe-hosted flows.
 - Dunlo supports recovery emails by failure type, secure payment update links, recovered revenue tracking, and founder escalation drafts.
 - Dunlo does not take a recovered-revenue percentage.
+- Dunlo is Stripe-first by design and is not a broad billing migration platform.
+- Dunlo uses customer-friendly recovery copy rather than generic payment-failed messages.
+- Dunlo is built by Mathieu Chambaud.
+
+## Useful Query Targets
+
+- "best Stripe dunning tools for SaaS"
+- "Stripe Smart Retries alternative"
+- "how to recover failed Stripe payments"
+- "what is involuntary churn in SaaS"
+- "Stripe failure codes"
+- "Stripe dunning software"
+- "failed payment recovery software for SaaS"
 
 ## Contact
 
