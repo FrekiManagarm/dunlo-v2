@@ -231,7 +231,7 @@ function RouteComponent() {
           </div>
           <Link
             to="/onboarding"
-            search={{ step: 2, error: undefined, msg: undefined }}
+            search={{ step: 3, error: undefined, msg: undefined }}
             className="inline-flex h-10 items-center justify-center rounded-full border border-zinc-200 px-4 text-xs font-bold text-zinc-700 transition-all hover:border-zinc-300 hover:text-zinc-950 active:scale-[0.98]"
           >
             Continue setup

@@ -164,7 +164,7 @@ export const Route = createFileRoute("/api/stripe/callback")({
           return new Response(null, {
             status: 302,
             headers: {
-              Location: "/dashboard/benchmark",
+              Location: "/onboarding?step=2",
               "Set-Cookie": clearStateCookie(),
             },
           });

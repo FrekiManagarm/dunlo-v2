@@ -10,7 +10,15 @@ import {
 import { useForm } from "@tanstack/react-form";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, redirect, useNavigate } from "@tanstack/react-router";
-import { Check, ChevronRight, ExternalLink, Loader2 } from "lucide-react";
+import {
+  BarChart3,
+  Check,
+  ChevronRight,
+  ExternalLink,
+  Gauge,
+  Loader2,
+  TrendingUp,
+} from "lucide-react";
 import { useEffect } from "react";
 import { toast } from "sonner";
 import { z } from "zod";
@@ -18,7 +26,11 @@ import { z } from "zod";
 import { Logo } from "@/components/logo";
 import { saveEmailProvider } from "@/functions/email-provider";
 import { getUser } from "@/functions/get-user";
-import { onboardingStateQueryOptions } from "@/lib/queries";
+import { formatRate } from "@/lib/benchmark";
+import {
+  onboardingStateQueryOptions,
+  userBenchmarkQueryOptions,
+} from "@/lib/queries";
 
 const EMAIL_PROVIDER_OPTIONS = [
   { value: "postmark", label: "Postmark" },
@@ -30,7 +42,7 @@ const EMAIL_PROVIDER_OPTIONS = [
 type EmailProviderValue = (typeof EMAIL_PROVIDER_OPTIONS)[number]["value"];
 
 const searchSchema = z.object({
-  step: z.coerce.number().int().min(1).max(3).catch(1),
+  step: z.coerce.number().int().min(1).max(4).catch(1),
   error: z.string().optional(),
   msg: z.string().optional(),
 });
@@ -88,6 +100,98 @@ function StepConnector({ done }: { done: boolean }) {
   );
 }
 
+function BenchmarkStep({ onContinue }: { onContinue: () => void }) {
+  const { data: benchmark } = useSuspenseQuery(userBenchmarkQueryOptions());
+  const biggestBreakdown = benchmark.breakdown.slice(0, 3);
+  const isAboveAverage = benchmark.userRate > benchmark.averageRate;
+
+  return (
+    <div>
+      <div className="inline-flex items-center gap-2 rounded-full border border-dunlo/25 bg-dunlo/8 px-3 py-1 text-xs font-semibold text-dunlo-deep">
+        <BarChart3 size={13} />
+        Benchmark ready
+      </div>
+
+      <h1 className="mt-4 text-2xl font-bold text-gray-900">
+        Your Stripe benchmark is ready
+      </h1>
+      <p className="mt-2 text-sm leading-6 text-gray-500">
+        Similar SaaS companies average {formatRate(benchmark.averageRate)}.
+        Your Stripe data shows a failed payment rate of{" "}
+        <span
+          className={
+            isAboveAverage
+              ? "font-semibold text-red-600"
+              : "font-semibold text-dunlo-deep"
+          }
+        >
+          {formatRate(benchmark.userRate)}
+        </span>
+        .
+      </p>
+
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+          <Gauge size={15} className="mb-3 text-gray-400" />
+          <p className="font-mono text-lg font-bold text-gray-900">
+            Top {benchmark.percentile}%
+          </p>
+          <p className="text-xs text-gray-400">Percentile</p>
+        </div>
+        <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+          <TrendingUp size={15} className="mb-3 text-gray-400" />
+          <p className="font-mono text-lg font-bold text-gray-900">
+            {benchmark.estimatedMonthlyLeakFormatted}
+          </p>
+          <p className="text-xs text-gray-400">Monthly leak</p>
+        </div>
+        <div className="rounded-xl border border-gray-100 bg-gray-50 p-4">
+          <Check size={15} className="mb-3 text-gray-400" />
+          <p className="font-mono text-lg font-bold text-gray-900">
+            {benchmark.recoveredFailureCount}
+          </p>
+          <p className="text-xs text-gray-400">Recovered</p>
+        </div>
+      </div>
+
+      <div className="mt-5 overflow-hidden rounded-xl border border-gray-100">
+        {biggestBreakdown.map((item) => (
+          <div
+            key={item.code}
+            className="flex items-center justify-between gap-4 border-b border-gray-100 px-4 py-3 last:border-b-0"
+          >
+            <div>
+              <p className="text-sm font-semibold text-gray-900">
+                {item.label}
+              </p>
+              <p className="text-xs text-gray-400">
+                Avg {formatRate(item.averageRate)}
+              </p>
+            </div>
+            <p
+              className={`rounded-full border px-2 py-1 font-mono text-xs font-bold ${
+                item.status === "above"
+                  ? "border-red-100 bg-red-50 text-red-600"
+                  : "border-dunlo/20 bg-dunlo/8 text-dunlo-deep"
+              }`}
+            >
+              {formatRate(item.rate)}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <button
+        onClick={onContinue}
+        className="mt-8 flex h-11 w-full items-center justify-center gap-1.5 rounded-full bg-dunlo text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+      >
+        Continue setup
+        <ChevronRight size={14} />
+      </button>
+    </div>
+  );
+}
+
 function RouteComponent() {
   const {
     data: { stripeConnected, emailConfigured },
@@ -115,7 +219,7 @@ function RouteComponent() {
       try {
         await saveEmailProvider({ data: value });
         toast.success("Email provider configured");
-        navigate({ to: "/onboarding", search: { step: 3 } });
+        navigate({ to: "/onboarding", search: { step: 4 } });
       } catch (e) {
         toast.error(e instanceof Error ? e.message : "Failed to save");
       }
@@ -144,7 +248,7 @@ function RouteComponent() {
     <div className="flex min-h-dvh flex-col bg-[#f7f8fa] font-sans">
       <header className="flex items-center justify-between px-8 py-6">
         <Logo size={26} />
-        <p className="text-xs text-gray-400">Step {step} of 3</p>
+        <p className="text-xs text-gray-400">Step {step} of 4</p>
       </header>
 
       <main className="mx-auto flex w-full max-w-xl flex-1 flex-col items-center justify-center px-6 pb-16">
@@ -158,10 +262,16 @@ function RouteComponent() {
           <StepDot
             n={2}
             active={step === 2}
-            done={step > 2 || emailConfigured}
+            done={step > 2}
           />
           <StepConnector done={step > 2} />
-          <StepDot n={3} active={step === 3} done={false} />
+          <StepDot
+            n={3}
+            active={step === 3}
+            done={step > 3 || emailConfigured}
+          />
+          <StepConnector done={step > 3} />
+          <StepDot n={4} active={step === 4} done={false} />
         </div>
 
         <div className="w-full rounded-2xl border border-gray-100 bg-white p-8 shadow-sm">
@@ -208,6 +318,35 @@ function RouteComponent() {
           )}
 
           {step === 2 && (
+            stripeConnected ? (
+              <BenchmarkStep
+                onContinue={() =>
+                  navigate({ to: "/onboarding", search: { step: 3 } })
+                }
+              />
+            ) : (
+              <div>
+                <h1 className="text-2xl font-bold text-gray-900">
+                  Connect Stripe first
+                </h1>
+                <p className="mt-2 text-sm text-gray-500">
+                  The benchmark unlocks after Dunlo can read your recent Stripe
+                  payment activity.
+                </p>
+                <button
+                  onClick={() =>
+                    navigate({ to: "/onboarding", search: { step: 1 } })
+                  }
+                  className="mt-8 flex h-11 items-center gap-1 rounded-full bg-dunlo px-5 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+                >
+                  Back to Stripe
+                  <ChevronRight size={14} />
+                </button>
+              </div>
+            )
+          )}
+
+          {step === 3 && (
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
                 Configure email sending
@@ -394,7 +533,7 @@ function RouteComponent() {
                   <button
                     type="button"
                     onClick={() =>
-                      navigate({ to: "/onboarding", search: { step: 3 } })
+                      navigate({ to: "/onboarding", search: { step: 4 } })
                     }
                     className="text-sm font-medium text-gray-500 hover:text-gray-700"
                   >
@@ -432,7 +571,7 @@ function RouteComponent() {
             </div>
           )}
 
-          {step === 3 && (
+          {step === 4 && (
             <div>
               <h1 className="text-2xl font-bold text-gray-900">
                 You're all set

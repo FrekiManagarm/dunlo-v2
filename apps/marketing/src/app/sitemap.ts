@@ -30,6 +30,12 @@ const STATIC_ROUTES = [
     priority: 0.85,
   },
   {
+    path: "/product-hunt",
+    lastModified: "2026-06-15",
+    changeFrequency: "weekly",
+    priority: 0.88,
+  },
+  {
     path: "/benchmark",
     lastModified: "2026-05-27",
     changeFrequency: "weekly",
