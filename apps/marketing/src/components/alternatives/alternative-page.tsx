@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowRight, BadgeCheck, Check, Gauge, ShieldCheck } from "lucide-react";
 import { SIGNUP_URL } from "@/lib/app-url";
 import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials";
 import { Logo } from "@/components/logo";
@@ -1518,6 +1519,265 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
       },
     ],
   },
+  "stripe-customer-emails": {
+    slug: "stripe-customer-emails",
+    path: "/alternatives/stripe-customer-emails",
+    competitorName: "Stripe customer emails",
+    metaTitle: "Stripe Customer Emails vs Dunlo - Failed Payment Recovery",
+    metaDescription:
+      "Compare Stripe customer emails with Dunlo for failed payment recovery, dunning sequences, failure-code messaging, founder escalation, and recovery tracking.",
+    eyebrow: "Native Stripe comparison",
+    headline: "Stripe customer emails vs Dunlo",
+    intro:
+      "Stripe customer emails are the native starting point for failed subscription payments. Dunlo is the recovery workflow around those moments: failure-aware copy, founder visibility, and recovery tracking for Stripe-first SaaS teams.",
+    verdict:
+      "Turn on Stripe customer emails first if you have no failed-payment communication. Add Dunlo when the problem is not just sending an email, but deciding what to say, when to escalate, and which accounts are still at risk.",
+    competitorSummary:
+      "A native Stripe Billing setting that automatically emails customers after failed card payments and points them toward updating their payment method.",
+    dunloSummary:
+      "A Stripe-first recovery layer for SaaS teams that need failure-code-specific outreach, recovered revenue visibility, and founder-reviewed follow-up.",
+    decisionSections: [
+      {
+        title: "Separate intent",
+        body: "This page is about native failed-payment emails, not Stripe Smart Retries. Retries decide when to charge again; emails decide what the customer sees.",
+      },
+      {
+        title: "Best baseline",
+        body: "Stripe customer emails are a sensible default for teams that have not set up any dunning communication yet.",
+      },
+      {
+        title: "When to layer",
+        body: "Dunlo fits once failed payments need segmentation by decline reason, value, customer status, and human review.",
+      },
+    ],
+    comparisonRows: [
+      {
+        label: "Primary job",
+        competitor:
+          "Automatically notify customers when a Stripe subscription card payment fails.",
+        dunlo:
+          "Turn failed Stripe payments into a recovery workflow with tailored messaging, tracking, and escalation.",
+      },
+      {
+        label: "Message logic",
+        competitor:
+          "Useful baseline customer notification tied to Stripe Billing revenue recovery settings.",
+        dunlo:
+          "Different recovery posture for expired cards, insufficient funds, issuer blocks, authentication, and unclear declines.",
+      },
+      {
+        label: "Founder visibility",
+        competitor:
+          "The email is customer-facing; follow-up still depends on your team checking Stripe and deciding what matters.",
+        dunlo:
+          "High-value failures can surface for founder review with a personal email draft before the account quietly churns.",
+      },
+      {
+        label: "Reporting",
+        competitor:
+          "Stripe shows native revenue recovery analytics inside the dashboard.",
+        dunlo:
+          "Focuses the view on failed invoices, recovered revenue, unresolved risk, and what still needs action.",
+      },
+      {
+        label: "Setup",
+        competitor:
+          "Enable the failed-payment email setting in Stripe Billing revenue recovery.",
+        dunlo:
+          "Connect Stripe, review recovery defaults, and keep Stripe as the billing source of truth.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Teams that want the simplest native email layer and do not need a separate recovery workflow.",
+        dunlo:
+          "Stripe SaaS founders who want clearer emails and a tighter process around accounts worth saving.",
+      },
+    ],
+    competitorUseCases: [
+      "You have no failed-payment emails enabled today.",
+      "You want to stay entirely inside native Stripe Billing settings.",
+      "Your failed-payment volume is low enough that manual review still works.",
+    ],
+    dunloUseCases: [
+      "You want customer messaging to reflect the actual Stripe failure reason.",
+      "You need visibility into unresolved failures, not just sent emails.",
+      "You want founder escalation for important accounts while keeping Stripe as the billing system.",
+    ],
+    sourceLinks: [
+      {
+        label: "Stripe customer emails",
+        href: "https://docs.stripe.com/billing/revenue-recovery/customer-emails",
+      },
+      {
+        label: "Stripe revenue recovery",
+        href: "https://docs.stripe.com/billing/revenue-recovery",
+      },
+      {
+        label: "Stripe recovery analytics",
+        href: "https://docs.stripe.com/billing/revenue-recovery/recovery-analytics",
+      },
+    ],
+  },
+  stunning: {
+    slug: "stunning",
+    path: "/alternatives/stunning",
+    competitorName: "Stunning",
+    metaTitle: "Dunlo vs Stunning - Stripe Dunning Alternative",
+    metaDescription:
+      "Compare Dunlo and Stunning for Stripe dunning, failed payment emails, SMS, retries, setup, pricing, and the right fit for SaaS teams.",
+    eyebrow: "Alternative guide",
+    headline: "Dunlo vs Stunning",
+    intro:
+      "Stunning is a long-running failed payment recovery product with dunning emails, SMS, in-app notifications, retries, update pages, and lifecycle emails. Dunlo is narrower: Stripe failed-payment recovery for small SaaS teams that want fast setup and founder-visible follow-up.",
+    verdict:
+      "Choose Stunning when you want a mature multi-channel dunning system with broad customer communication features. Choose Dunlo when you use Stripe, want a lighter recovery layer, and care most about failure-code emails plus founder escalation.",
+    competitorSummary:
+      "Failed payment recovery and customer communication for Stripe, Foxy, and Subbly, including retries, SMS, in-app notices, update pages, reporting, and lifecycle emails.",
+    dunloSummary:
+      "Focused Stripe payment recovery for SaaS founders: failure-aware emails, recovery tracking, and AI-drafted founder follow-up.",
+    comparisonRows: [
+      {
+        label: "Product scope",
+        competitor:
+          "Broad failed-payment recovery plus lifecycle communication features such as receipts, trial expiration emails, and subscription management.",
+        dunlo:
+          "Focused on failed Stripe subscription payments and the workflow before they turn into involuntary churn.",
+      },
+      {
+        label: "Channels",
+        competitor:
+          "Email, SMS, in-app notification bars, payment update pages, Slack notifications, and longer unpaid sequences.",
+        dunlo:
+          "Email-first recovery with founder-reviewed escalation for high-value accounts during beta.",
+      },
+      {
+        label: "Payment stack",
+        competitor:
+          "Works with Stripe, Foxy, and Subbly and offers failed payment consultations for other stacks.",
+        dunlo:
+          "Stripe-only by design, which keeps setup and recovery logic simpler for Stripe SaaS teams.",
+      },
+      {
+        label: "Pricing model",
+        competitor:
+          "Fixed monthly pricing based on MRR, with a public pricing slider and a 15-day trial.",
+        dunlo:
+          "Free during beta. Planned pricing is flat by MRR tier with no percentage of recovered revenue.",
+      },
+      {
+        label: "Recovery logic",
+        competitor:
+          "Optimizes retries, dunning messages, update pages, and unpaid reactivation over a longer recovery window.",
+        dunlo:
+          "Starts from the Stripe failure context and uses different customer-safe language for different decline reasons.",
+      },
+      {
+        label: "Best fit",
+        competitor:
+          "Teams that want a mature, configurable dunning suite with several customer contact surfaces.",
+        dunlo:
+          "Solo founders and small SaaS teams that want the recovery leak handled before adopting a larger dunning platform.",
+      },
+    ],
+    competitorUseCases: [
+      "You want SMS, in-app notices, payment pages, and lifecycle emails in one mature dunning product.",
+      "You use Stripe, Foxy, or Subbly and want a configurable recovery suite.",
+      "You already know failed-payment recovery is a recurring operational process for your team.",
+    ],
+    dunloUseCases: [
+      "You run a Stripe-first SaaS and want a small, direct recovery layer.",
+      "You want failure-code-specific messages without configuring a broad lifecycle email system.",
+      "You want high-value failures to surface for personal founder follow-up.",
+    ],
+    sourceLinks: [
+      { label: "Stunning homepage", href: "https://stunning.co/" },
+      { label: "Stunning features", href: "https://stunning.co/features" },
+      {
+        label: "Stripe revenue recovery",
+        href: "https://docs.stripe.com/billing/revenue-recovery",
+      },
+    ],
+  },
+  recoveriq: {
+    slug: "recoveriq",
+    path: "/alternatives/recoveriq",
+    competitorName: "RecoverIQ",
+    metaTitle: "RecoverIQ Alternative for Stripe Failed Payments | Dunlo",
+    metaDescription:
+      "Compare RecoverIQ and Dunlo for Stripe failed payment recovery, decline classification, recovery emails, retry workflows, and founder escalation.",
+    eyebrow: "Stripe Marketplace alternative",
+    headline: "RecoverIQ alternative for Stripe SaaS",
+    intro:
+      "RecoverIQ is a Stripe Marketplace app for automatically recovering failed subscription payments. Dunlo is built for Stripe SaaS founders who want failed-payment recovery to stay simple, visible, and tied to customer-safe messaging.",
+    verdict:
+      "Choose RecoverIQ if you want a Stripe Marketplace recovery app centered on automatic recovery and decline classification. Choose Dunlo if you want a founder-friendly workflow with clear failure-code emails, recovered revenue tracking, and manual escalation for accounts that matter.",
+    competitorSummary:
+      "A Stripe App Marketplace product that recovers failed subscription payments and classifies decline reasons such as insufficient funds and expired cards.",
+    dunloSummary:
+      "A Stripe-first dunning and recovery layer for SaaS founders who want clearer customer outreach and visible account risk.",
+    comparisonRows: [
+      {
+        label: "Primary job",
+        competitor:
+          "Automatically recover failed Stripe subscription payments through a Stripe Marketplace app.",
+        dunlo:
+          "Help founders understand, message, recover, and review failed Stripe payments before churn is final.",
+      },
+      {
+        label: "Decline handling",
+        competitor:
+          "Positions around classifying payment declines and triggering recovery automatically.",
+        dunlo:
+          "Uses Stripe failure context to shape the customer email and decide whether a founder should step in.",
+      },
+      {
+        label: "Founder workflow",
+        competitor:
+          "Best evaluated as an automated recovery app inside the Stripe Marketplace ecosystem.",
+        dunlo:
+          "Built around founder visibility: which failures recovered, which are unresolved, and which deserve personal outreach.",
+      },
+      {
+        label: "Stage fit",
+        competitor:
+          "Stripe merchants that want an app-store-style recovery layer for failed subscriptions.",
+        dunlo:
+          "Small SaaS teams that want recovery discipline without building a custom webhook and email stack.",
+      },
+      {
+        label: "Positioning",
+        competitor:
+          "Automatic failed payment recovery with decline classification as the core hook.",
+        dunlo:
+          "Customer-friendly dunning, recovery analytics, and founder escalation around Stripe Billing.",
+      },
+    ],
+    competitorUseCases: [
+      "You want to evaluate recovery tools directly from the Stripe App Marketplace.",
+      "You are looking for automatic failed subscription payment recovery.",
+      "Decline classification is the main feature you want to compare.",
+    ],
+    dunloUseCases: [
+      "You want the recovery workflow to be readable by a founder, not only automated in the background.",
+      "You need emails that explain the likely next action without blaming the customer.",
+      "You want to track recovered revenue and unresolved risk from one Stripe-first dashboard.",
+    ],
+    sourceLinks: [
+      {
+        label: "RecoverIQ on Stripe Marketplace",
+        href: "https://marketplace.stripe.com/apps/recoveriq",
+      },
+      {
+        label: "Stripe Marketplace revenue optimization",
+        href: "https://marketplace.stripe.com/categories/revenue_optimization",
+      },
+      {
+        label: "Stripe revenue recovery",
+        href: "https://docs.stripe.com/billing/revenue-recovery",
+      },
+    ],
+  },
   gr4vy: {
     slug: "gr4vy",
     path: "/alternatives/gr4vy",
@@ -1590,18 +1850,21 @@ export const VS_ROUTE_PAGES = Object.values(ALTERNATIVES).filter((page) =>
 
 export function AlternativePage({ page }: { page: AlternativePageData }) {
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-gray-100 font-sans text-gray-950">
+    <div className="min-h-dvh overflow-x-hidden bg-stone-100 font-sans text-gray-950">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 md:px-6 md:py-6">
         <Link href="/" aria-label="Dunlo home">
           <Logo />
         </Link>
         <nav className="flex items-center gap-5 text-sm font-medium text-gray-600">
-          <Link href="/" className="transition-colors hover:text-gray-950">
-            Home
+          <Link
+            href="/alternatives"
+            className="transition-colors hover:text-gray-950"
+          >
+            Alternatives
           </Link>
           <Link
             href={SIGNUP_URL}
-            className="rounded-full bg-gray-950 px-4 py-2 text-white transition-transform active:scale-[0.98]"
+            className="rounded-full bg-gray-950 px-4 py-2 text-white transition-all hover:bg-gray-800 active:scale-[0.98]"
           >
             Start free
           </Link>
@@ -1609,12 +1872,13 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
       </header>
 
       <main className="mx-auto w-full max-w-6xl space-y-4 px-3 pb-8 md:px-4">
-        <section className="overflow-hidden rounded-3xl border border-gray-200 bg-white">
-          <div className="grid gap-0 lg:grid-cols-[1.08fr_0.92fr]">
+        <section className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-[0_34px_100px_-72px_rgba(15,23,42,0.7)]">
+          <div className="grid gap-0 lg:grid-cols-[1.02fr_0.98fr]">
             <div className="min-w-0 px-6 py-10 md:px-10 md:py-14 lg:px-14">
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              <div className="inline-flex items-center gap-2 rounded-full border border-dunlo/25 bg-dunlo/10 px-3 py-1.5 text-sm font-semibold text-dunlo-deep">
+                <BadgeCheck size={15} strokeWidth={2.1} />
                 {page.eyebrow}
-              </p>
+              </div>
               <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[1.04] tracking-tight text-gray-950 md:text-6xl">
                 {page.headline}
               </h1>
@@ -1624,9 +1888,10 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href={SIGNUP_URL}
-                  className="inline-flex h-12 items-center justify-center rounded-full bg-dunlo px-6 text-sm font-semibold text-gray-950 transition-transform active:scale-[0.98]"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.98]"
                 >
                   Start free
+                  <ArrowRight size={15} />
                 </Link>
                 <a
                   href="#comparison"
@@ -1637,15 +1902,77 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
               </div>
             </div>
 
-            <aside className="min-w-0 border-t border-gray-200 bg-gray-50 px-6 py-8 md:px-10 lg:border-l lg:border-t-0 lg:px-12 lg:py-14">
-              <div className="space-y-8">
-                <SummaryBlock
-                  label={page.competitorName}
-                  text={page.competitorSummary}
-                />
-                <SummaryBlock label="Dunlo" text={page.dunloSummary} />
+            <aside className="min-w-0 border-t border-gray-200 bg-gray-950 px-5 py-6 text-white md:px-8 md:py-8 lg:border-l lg:border-t-0 lg:px-10 lg:py-10">
+              <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.06] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo">
+                  Fast verdict
+                </p>
+                <p className="mt-4 text-2xl font-bold leading-tight tracking-tight">
+                  Choose the smallest tool that fixes the failed-payment
+                  moment.
+                </p>
+                <div className="mt-6 divide-y divide-white/10 border-y border-white/10">
+                  <SummaryBlock
+                    label={page.competitorName}
+                    text={page.competitorSummary}
+                    tone="competitor"
+                  />
+                  <SummaryBlock
+                    label="Dunlo"
+                    text={page.dunloSummary}
+                    tone="dunlo"
+                  />
+                </div>
+                <Link
+                  href="/benchmark"
+                  className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-dunlo px-5 text-sm font-bold text-gray-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+                >
+                  Estimate my failed MRR
+                  <ArrowRight size={15} />
+                </Link>
               </div>
             </aside>
+          </div>
+        </section>
+
+        <section className="grid gap-4 md:grid-cols-[0.78fr_1.22fr]">
+          <div className="rounded-[1.5rem] border border-gray-200 bg-white p-6 shadow-sm">
+            <div className="flex items-center gap-3">
+              <span className="flex size-10 items-center justify-center rounded-full bg-dunlo/12 text-dunlo-deep">
+                <Gauge size={18} strokeWidth={2.1} />
+              </span>
+              <div>
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
+                  Conversion path
+                </p>
+                <h2 className="mt-1 text-xl font-bold tracking-tight">
+                  Not ready to connect Stripe?
+                </h2>
+              </div>
+            </div>
+            <p className="mt-4 text-sm leading-6 text-gray-600">
+              Use the benchmark first. It gives visitors a useful estimate
+              before signup and keeps the next step lighter than connecting an
+              account immediately.
+            </p>
+          </div>
+
+          <div className="rounded-[1.5rem] border border-dunlo/25 bg-dunlo/[0.07] p-6">
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo-deep">
+              Dunlo fit
+            </p>
+            <div className="mt-4 grid gap-3 md:grid-cols-3">
+              {page.dunloUseCases.slice(0, 3).map((item) => (
+                <div key={item} className="flex gap-3">
+                  <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-dunlo text-gray-950">
+                    <Check size={14} strokeWidth={2.4} />
+                  </span>
+                  <p className="text-sm font-semibold leading-6 text-gray-800">
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
           </div>
         </section>
 
@@ -1654,7 +1981,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             {page.decisionSections.map((section) => (
               <article
                 key={section.title}
-                className="border-t border-gray-200 bg-white px-1 py-5 md:px-0"
+                className="rounded-[1.5rem] border border-gray-200 bg-white p-5 shadow-sm"
               >
                 <h2 className="text-base font-bold tracking-tight text-gray-950">
                   {section.title}
@@ -1673,9 +2000,9 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
 
         <section
           id="comparison"
-          className="rounded-3xl border border-gray-200 bg-white px-4 py-6 md:px-8 md:py-8"
+          className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white"
         >
-          <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+          <div className="flex flex-col gap-3 border-b border-gray-200 bg-stone-50 px-5 py-6 md:flex-row md:items-end md:justify-between md:px-8">
             <div>
               <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">
                 Comparison
@@ -1690,7 +2017,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             </p>
           </div>
 
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto px-4 py-2 md:px-8 md:py-4">
             <table className="w-full min-w-[760px] border-collapse text-left">
               <thead>
                 <tr className="border-b border-gray-200">
@@ -1700,8 +2027,8 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
                   <th className="w-[39%] px-6 py-4 text-sm font-semibold text-gray-950">
                     {page.competitorName}
                   </th>
-                  <th className="w-[39%] px-6 py-4 text-sm font-semibold text-gray-950">
-                    Dunlo
+                  <th className="w-[39%] px-6 py-4 text-sm font-semibold text-dunlo-deep">
+                    Dunlo beta
                   </th>
                 </tr>
               </thead>
@@ -1714,7 +2041,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
                     <td className="px-6 py-5 align-top text-sm leading-6 text-gray-600">
                       {row.competitor}
                     </td>
-                    <td className="px-6 py-5 align-top text-sm leading-6 text-gray-700">
+                    <td className="px-6 py-5 align-top text-sm font-medium leading-6 text-gray-800">
                       {row.dunlo}
                     </td>
                   </tr>
@@ -1728,10 +2055,12 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
           <UseCasePanel
             title={`Who should use ${page.competitorName}`}
             items={page.competitorUseCases}
+            tone="competitor"
           />
           <UseCasePanel
             title="Who should use Dunlo"
             items={page.dunloUseCases}
+            tone="dunlo"
           />
         </section>
 
@@ -1754,9 +2083,10 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             </div>
             <Link
               href={SIGNUP_URL}
-              className="inline-flex h-12 shrink-0 items-center justify-center rounded-full bg-dunlo px-6 text-sm font-semibold text-gray-950 transition-transform active:scale-[0.98]"
+              className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-semibold text-gray-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
               Start with Dunlo
+              <ArrowRight size={15} />
             </Link>
           </div>
         </section>
@@ -1782,29 +2112,80 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
   );
 }
 
-function SummaryBlock({ label, text }: { label: string; text: string }) {
+function SummaryBlock({
+  label,
+  text,
+  tone,
+}: {
+  label: string;
+  text: string;
+  tone: "competitor" | "dunlo";
+}) {
+  const isDunlo = tone === "dunlo";
+
   return (
-    <div>
-      <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">
-        {label}
-      </p>
-      <p className="mt-3 text-lg font-semibold leading-7 text-gray-950">
+    <div className="py-5">
+      <div className="flex items-center justify-between gap-3">
+        <p
+          className={`font-mono text-xs font-semibold uppercase tracking-[0.16em] ${
+            isDunlo ? "text-dunlo" : "text-white/45"
+          }`}
+        >
+          {label}
+        </p>
+        {isDunlo && (
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-dunlo/25 bg-dunlo/12 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-dunlo">
+            <ShieldCheck size={12} strokeWidth={2.2} />
+            Focused
+          </span>
+        )}
+      </div>
+      <p className="mt-3 text-sm font-semibold leading-6 text-white/72 md:text-base">
         {text}
       </p>
     </div>
   );
 }
 
-function UseCasePanel({ title, items }: { title: string; items: string[] }) {
+function UseCasePanel({
+  title,
+  items,
+  tone,
+}: {
+  title: string;
+  items: string[];
+  tone: "competitor" | "dunlo";
+}) {
+  const isDunlo = tone === "dunlo";
+
   return (
-    <article className="rounded-3xl border border-gray-200 bg-white px-6 py-7 md:px-8">
-      <h2 className="text-xl font-bold tracking-tight text-gray-950">
+    <article
+      className={`rounded-[2rem] border px-6 py-7 md:px-8 ${
+        isDunlo
+          ? "border-gray-900 bg-gray-950 text-white shadow-[0_28px_70px_-50px_rgba(15,23,42,0.7)]"
+          : "border-gray-200 bg-white text-gray-950"
+      }`}
+    >
+      <h2 className="text-xl font-bold tracking-tight">
         {title}
       </h2>
       <ul className="mt-6 space-y-4">
         {items.map((item) => (
-          <li key={item} className="flex gap-3 text-sm leading-6 text-gray-600">
-            <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-dunlo" />
+          <li
+            key={item}
+            className={`flex gap-3 text-sm leading-6 ${
+              isDunlo ? "text-white/70" : "text-gray-600"
+            }`}
+          >
+            <span
+              className={`mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full ${
+                isDunlo
+                  ? "bg-dunlo text-gray-950"
+                  : "border border-gray-200 bg-gray-50 text-dunlo-deep"
+              }`}
+            >
+              <Check size={13} strokeWidth={2.4} />
+            </span>
             <span>{item}</span>
           </li>
         ))}

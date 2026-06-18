@@ -131,6 +131,27 @@ const KEYWORDS: Record<string, string[]> = {
     "payment performance management alternative",
     "failed payment recovery comparison",
   ],
+  "stripe-customer-emails": [
+    "Stripe customer emails",
+    "Stripe failed payment emails",
+    "Stripe customer emails alternative",
+    "Stripe dunning emails",
+    "Dunlo vs Stripe customer emails",
+  ],
+  stunning: [
+    "Stunning alternative",
+    "Dunlo vs Stunning",
+    "Stunning dunning alternative",
+    "Stunning pricing",
+    "Stripe failed payment recovery alternative",
+  ],
+  recoveriq: [
+    "RecoverIQ alternative",
+    "Dunlo vs RecoverIQ",
+    "RecoverIQ Stripe",
+    "Stripe Marketplace failed payment recovery",
+    "decline classification recovery",
+  ],
   gr4vy: [
     "Gr4vy alternative",
     "Dunlo vs Gr4vy",

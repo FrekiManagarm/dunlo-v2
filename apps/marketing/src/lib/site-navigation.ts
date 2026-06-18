@@ -12,6 +12,10 @@ export const HEADER_NAV_LINKS = [
 
 export const ALTERNATIVE_LINKS = [
   { label: "Baremetrics vs Dunlo", href: "/vs/baremetrics" },
+  {
+    label: "Stripe customer emails",
+    href: "/alternatives/stripe-customer-emails",
+  },
   { label: "Dunlo vs Recurflux", href: "/alternatives/recurflux" },
   { label: "Dunlo vs Churnkey", href: "/alternatives/churnkey" },
   { label: "Dunlo vs Churn Buster", href: "/alternatives/churn-buster" },
@@ -27,6 +31,8 @@ export const ALTERNATIVE_LINKS = [
   { label: "Loops for dunning", href: "/alternatives/loops-dunning" },
   { label: "RetryFix alternative", href: "/alternatives/retryfix" },
   { label: "Revive alternative", href: "/alternatives/revive" },
+  { label: "Stunning alternative", href: "/alternatives/stunning" },
+  { label: "RecoverIQ alternative", href: "/alternatives/recoveriq" },
   {
     label: "Recurly Recover alternative",
     href: "/alternatives/recurly-recover",
@@ -51,8 +57,13 @@ const FOOTER_COMPARE_LINKS = [
     label: "Custom Stripe webhooks",
     href: "/alternatives/custom-stripe-webhooks",
   },
+  {
+    label: "Stripe customer emails",
+    href: "/alternatives/stripe-customer-emails",
+  },
   { label: "FlyCode", href: "/alternatives/flycode" },
   { label: "Churn Buster", href: "/alternatives/churn-buster" },
+  { label: "Stunning", href: "/alternatives/stunning" },
 ] as const satisfies readonly SiteLink[];
 
 export const FOOTER_SECTIONS = [
