@@ -5,6 +5,7 @@ import { SIGNUP_URL } from "@/lib/app-url";
 import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, Calculator, Gauge, TrendingUp } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
+import { captureMarketingEvent } from "@/lib/posthog";
 
 const MIN_MRR = 1000;
 const MAX_MRR = 20_000;
@@ -47,6 +48,15 @@ export function RoiCalculator() {
   const annualRecoverable = recovered * 12;
   const roi = recovered / STARTER_PRICE;
   const progress = ((mrr - MIN_MRR) / (MAX_MRR - MIN_MRR)) * 100;
+
+  function captureMrrChange(value: number) {
+    captureMarketingEvent("tool_value_changed", {
+      tool_name: "homepage_roi_calculator",
+      field_name: "mrr",
+      value_bucket:
+        value < 5_000 ? "<$5k" : value < 20_000 ? "$5k-$20k" : "$20k+",
+    });
+  }
 
   return (
     <section
@@ -101,6 +111,12 @@ export function RoiCalculator() {
                 step={STEP}
                 value={mrr}
                 onChange={(event) => setMrr(Number(event.target.value))}
+                onPointerUp={(event) =>
+                  captureMrrChange(Number(event.currentTarget.value))
+                }
+                onKeyUp={(event) =>
+                  captureMrrChange(Number(event.currentTarget.value))
+                }
                 className="peer absolute inset-x-0 top-1/2 h-8 w-full -translate-y-1/2 cursor-pointer opacity-0"
                 aria-describedby="roi-calculator-result"
               />
@@ -182,6 +198,13 @@ export function RoiCalculator() {
               </p>
               <Link
                 href={SIGNUP_URL}
+                onClick={() =>
+                  captureMarketingEvent("cta_clicked", {
+                    button_text: "See my benchmark",
+                    destination: SIGNUP_URL,
+                    location: "homepage_roi_calculator",
+                  })
+                }
                 className="mt-4 inline-flex items-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
               >
                 See my benchmark

@@ -10,6 +10,7 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { SIGNUP_URL } from "@/lib/app-url";
+import { captureMarketingEvent } from "@/lib/posthog";
 
 type AccountType = "selfServe" | "highTouch" | "enterprise";
 type FailureReason =
@@ -157,6 +158,14 @@ export function StripeDunningScheduleCalculator() {
     };
   }, [accountType, failureReason, invoiceAmount, recoveryWindow]);
 
+  function captureToolChange(fieldName: string, value: string | number) {
+    captureMarketingEvent("tool_value_changed", {
+      tool_name: "stripe_dunning_schedule_calculator",
+      field_name: fieldName,
+      value_bucket: String(value),
+    });
+  }
+
   return (
     <section className="mx-auto grid max-w-6xl grid-cols-1 gap-5 lg:grid-cols-[0.82fr_1.18fr]">
       <div className="rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md md:p-8">
@@ -179,9 +188,10 @@ export function StripeDunningScheduleCalculator() {
             </span>
             <select
               value={accountType}
-              onChange={(event) =>
-                setAccountType(event.target.value as AccountType)
-              }
+              onChange={(event) => {
+                setAccountType(event.target.value as AccountType);
+                captureToolChange("account_type", event.target.value);
+              }}
               className="mt-2 h-12 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm font-semibold text-gray-950 outline-none transition-colors focus:border-dunlo"
             >
               {accountOptions.map((option) => (
@@ -204,15 +214,34 @@ export function StripeDunningScheduleCalculator() {
                 step={10}
                 value={invoiceAmount}
                 onChange={(event) => setInvoiceAmount(Number(event.target.value))}
+                onPointerUp={(event) => {
+                  const value = Number(event.currentTarget.value);
+                  captureToolChange(
+                    "invoice_amount",
+                    value < 100 ? "<$100" : value < 500 ? "$100-$500" : "$500+",
+                  );
+                }}
+                onKeyUp={(event) => {
+                  const value = Number(event.currentTarget.value);
+                  captureToolChange(
+                    "invoice_amount",
+                    value < 100 ? "<$100" : value < 500 ? "$100-$500" : "$500+",
+                  );
+                }}
                 className="h-2 flex-1 accent-dunlo"
               />
               <input
                 type="number"
                 min={1}
                 value={invoiceAmount}
-                onChange={(event) =>
-                  setInvoiceAmount(Math.max(1, Number(event.target.value) || 1))
-                }
+                onChange={(event) => {
+                  const value = Math.max(1, Number(event.target.value) || 1);
+                  setInvoiceAmount(value);
+                  captureToolChange(
+                    "invoice_amount",
+                    value < 100 ? "<$100" : value < 500 ? "$100-$500" : "$500+",
+                  );
+                }}
                 className="h-12 w-28 rounded-xl border border-gray-200 bg-white px-3 text-sm font-semibold text-gray-950 outline-none transition-colors focus:border-dunlo"
               />
             </div>
@@ -224,9 +253,10 @@ export function StripeDunningScheduleCalculator() {
             </span>
             <select
               value={failureReason}
-              onChange={(event) =>
-                setFailureReason(event.target.value as FailureReason)
-              }
+              onChange={(event) => {
+                setFailureReason(event.target.value as FailureReason);
+                captureToolChange("failure_reason", event.target.value);
+              }}
               className="mt-2 h-12 w-full rounded-xl border border-gray-200 bg-white px-3 font-mono text-sm font-semibold text-gray-950 outline-none transition-colors focus:border-dunlo"
             >
               {failureOptions.map((option) => (
@@ -246,7 +276,10 @@ export function StripeDunningScheduleCalculator() {
                 <button
                   key={days}
                   type="button"
-                  onClick={() => setRecoveryWindow(days)}
+                  onClick={() => {
+                    setRecoveryWindow(days);
+                    captureToolChange("recovery_window", `${days}_days`);
+                  }}
                   className={`h-11 rounded-full border px-3 text-sm font-bold transition-all ${
                     recoveryWindow === days
                       ? "border-gray-950 bg-gray-950 text-white"
@@ -325,6 +358,13 @@ export function StripeDunningScheduleCalculator() {
         <div className="mt-7 flex flex-col gap-3 sm:flex-row">
           <a
             href={SIGNUP_URL}
+            onClick={() =>
+              captureMarketingEvent("cta_clicked", {
+                button_text: "Automate this in Dunlo",
+                destination: SIGNUP_URL,
+                location: "stripe_dunning_schedule_calculator",
+              })
+            }
             className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
           >
             Automate this in Dunlo

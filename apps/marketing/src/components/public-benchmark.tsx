@@ -1,10 +1,12 @@
 "use client";
 
 import type { FormEvent } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Check, Gauge, Mail, TrendingUp } from "lucide-react";
 import { SIGNUP_URL } from "@/lib/app-url";
+import { captureMarketingEvent } from "@/lib/posthog";
+import { TrackedLink } from "@/components/tracked-link";
 
 const MIN_MRR = 1_000;
 const MAX_MRR = 100_000;
@@ -43,6 +45,12 @@ const BENCHMARK_RANGES = [
 ] as const;
 
 const DEFAULT_RANGE = BENCHMARK_RANGES[BENCHMARK_RANGES.length - 1]!;
+const METHODOLOGY_ASSUMPTIONS = [
+  "The public calculator is a directional estimate, not a guarantee of recovery.",
+  "MRR ranges use simple failed-payment rate assumptions so founders can benchmark before connecting Stripe.",
+  "The recovery potential applies a conservative recoverability rate to failed MRR; real results depend on decline-code mix, card age, geography, billing interval, retry settings, and email quality.",
+  "The connected-product benchmark should replace this estimate once Stripe data is available.",
+] as const;
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-US", {
@@ -64,6 +72,14 @@ function getRange(mrr: number) {
     BENCHMARK_RANGES.find((range) => mrr >= range.min && mrr < range.max) ??
     DEFAULT_RANGE
   );
+}
+
+function moneyBucket(value: number) {
+  if (value < 1_000) return "<$1k";
+  if (value < 5_000) return "$1k-$5k";
+  if (value < 20_000) return "$5k-$20k";
+  if (value < 80_000) return "$20k-$80k";
+  return "$80k+";
 }
 
 type PublicBenchmarkProps = {
@@ -183,9 +199,48 @@ export function PublicBenchmark({
     };
   }, [mrr]);
 
+  useEffect(() => {
+    captureBenchmarkResult(mrr);
+  }, []);
+
+  function captureBenchmarkResult(value: number) {
+    const range = getRange(value);
+    const failedMrr = Math.round(value * (range.failedRate / 100));
+    const recoverableMrr = Math.round(failedMrr * BASE_RECOVERY_RATE);
+
+    captureMarketingEvent("tool_result_viewed", {
+      tool_name: "stripe_failed_payment_benchmark",
+      variant,
+      mrr_range: range.label,
+      failed_payment_rate: range.failedRate,
+      failed_mrr_bucket: moneyBucket(failedMrr),
+      recoverable_mrr_bucket: moneyBucket(recoverableMrr),
+    });
+  }
+
+  function captureMrrChange(value: number) {
+    captureMarketingEvent("tool_value_changed", {
+      tool_name: "stripe_failed_payment_benchmark",
+      field_name: "mrr",
+      value_bucket: moneyBucket(value),
+      variant,
+    });
+    captureBenchmarkResult(value);
+  }
+
   async function submitEmail(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setCaptureState("submitting");
+    const eventProperties = {
+      form_type: `${variant}_report`,
+      source: variant,
+      mrr_range: result.range.label,
+      failed_payment_rate: result.range.failedRate,
+      failed_mrr_bucket: moneyBucket(result.failedMrr),
+      recoverable_mrr_bucket: moneyBucket(result.recoverableMrr),
+    };
+
+    captureMarketingEvent("lead_form_submitted", eventProperties);
 
     try {
       const response = await fetch("/api/benchmark-lead", {
@@ -204,8 +259,13 @@ export function PublicBenchmark({
 
       if (!response.ok) throw new Error("Lead capture failed");
       setCaptureState("success");
+      captureMarketingEvent("lead_form_succeeded", eventProperties);
     } catch {
       setCaptureState("error");
+      captureMarketingEvent("lead_form_failed", {
+        form_type: `${variant}_report`,
+        source: variant,
+      });
     }
   }
 
@@ -274,6 +334,12 @@ export function PublicBenchmark({
                 step={STEP}
                 value={mrr}
                 onChange={(event) => setMrr(Number(event.target.value))}
+                onPointerUp={(event) =>
+                  captureMrrChange(Number(event.currentTarget.value))
+                }
+                onKeyUp={(event) =>
+                  captureMrrChange(Number(event.currentTarget.value))
+                }
                 className="mt-5 w-full accent-dunlo"
               />
               <div className="mt-2 flex justify-between font-mono text-xs text-zinc-400">
@@ -388,13 +454,18 @@ export function PublicBenchmark({
               )}
             </form>
 
-            <Link
+            <TrackedLink
               href={SIGNUP_URL}
+              eventProperties={{
+                button_text: copy.cta,
+                destination: SIGNUP_URL,
+                location: `${variant}_tool_cta`,
+              }}
               className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-bold text-zinc-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
               {copy.cta}
               <ArrowRight size={15} />
-            </Link>
+            </TrackedLink>
           </div>
         </section>
 
@@ -438,6 +509,17 @@ export function PublicBenchmark({
             <p className="mt-4 max-w-2xl text-sm leading-7 text-zinc-600 md:text-base">
               {copy.methodologyBody}
             </p>
+            <ul className="mt-5 space-y-3 border-t border-zinc-100 pt-5">
+              {METHODOLOGY_ASSUMPTIONS.map((assumption) => (
+                <li
+                  key={assumption}
+                  className="flex gap-3 text-sm leading-6 text-zinc-600"
+                >
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-dunlo" />
+                  <span>{assumption}</span>
+                </li>
+              ))}
+            </ul>
           </div>
 
           <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-[0_18px_48px_-34px_rgba(24,24,27,0.2)] md:p-8">

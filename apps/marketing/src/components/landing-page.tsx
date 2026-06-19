@@ -17,6 +17,7 @@ import { Footer } from "@/components/landing/footer";
 import { HowItWorks } from "@/components/landing/how-it-works";
 import { Nav } from "@/components/landing/nav";
 import { RoiCalculator } from "@/components/landing/roi-calculator";
+import { TrackedLink } from "@/components/tracked-link";
 
 const recoveredEvents = [
   {
@@ -191,8 +192,13 @@ function HeroSection() {
             founder review.
           </p>
           <div className="anim-4 mt-8 flex flex-col gap-3 sm:flex-row">
-            <Link
+            <TrackedLink
               href={SIGNUP_URL}
+              eventProperties={{
+                button_text: "Start free in beta",
+                destination: SIGNUP_URL,
+                location: "homepage_hero",
+              }}
               className="group inline-flex w-full items-center justify-center gap-2 rounded-full bg-gray-950 px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.98] sm:w-auto"
             >
               Start free in beta
@@ -201,7 +207,7 @@ function HeroSection() {
                 strokeWidth={2}
                 className="transition-transform group-hover:translate-x-0.5"
               />
-            </Link>
+            </TrackedLink>
             <a
               href="#recovery-paths"
               className="inline-flex w-full items-center justify-center gap-2 rounded-full border border-gray-300 bg-white/75 px-5 py-3 text-sm font-semibold text-gray-800 transition-all hover:border-gray-400 hover:bg-white active:scale-[0.98] sm:w-auto"
@@ -517,13 +523,18 @@ function PricingSection() {
               <p className="mt-2 text-sm font-medium text-white/55">
                 until beta ends
               </p>
-              <Link
+              <TrackedLink
                 href={SIGNUP_URL}
+                eventProperties={{
+                  button_text: "Start free",
+                  destination: SIGNUP_URL,
+                  location: "homepage_pricing",
+                }}
                 className="mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full bg-dunlo px-4 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
               >
                 Start free
                 <ArrowRight size={16} />
-              </Link>
+              </TrackedLink>
             </div>
             <div className="grid gap-2">
               {[
@@ -599,13 +610,18 @@ function FinalCta() {
             next step.
           </h2>
         </div>
-        <Link
+        <TrackedLink
           href={SIGNUP_URL}
+          eventProperties={{
+            button_text: "Start free in beta",
+            destination: SIGNUP_URL,
+            location: "homepage_final_cta",
+          }}
           className="inline-flex items-center justify-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
         >
           Start free in beta
           <ArrowRight size={16} />
-        </Link>
+        </TrackedLink>
       </div>
     </section>
   );
