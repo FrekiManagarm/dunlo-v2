@@ -15,6 +15,8 @@ const PERKS = [
   "Cancel anytime, no lock-in",
 ];
 
+const MARKETING_SITE_URL = "https://dunlo.io";
+
 export function AuthPage({ initialMode }: { initialMode: AuthMode }) {
   const [mode, setMode] = useState<AuthMode>(initialMode);
 
@@ -36,9 +38,9 @@ export function AuthPage({ initialMode }: { initialMode: AuthMode }) {
           aria-hidden
         />
 
-        <Link to="/" className="relative z-10">
+        <a href={MARKETING_SITE_URL} className="relative z-10">
           <Logo size={26} dark />
-        </Link>
+        </a>
 
         <div className="relative z-10 space-y-10">
           <div>
@@ -81,12 +83,12 @@ export function AuthPage({ initialMode }: { initialMode: AuthMode }) {
 
       <div className="flex flex-1 flex-col">
         <div className="flex items-center justify-between border-b border-gray-100 bg-white px-6 py-4 lg:hidden">
-          <Link to="/" className="flex items-center gap-2">
+          <a href={MARKETING_SITE_URL} className="flex items-center gap-2">
             <span className="flex size-6 items-center justify-center rounded-full bg-dunlo text-[10px] font-bold text-white">
               D
             </span>
             <span className="text-sm font-semibold text-gray-900">dunlo</span>
-          </Link>
+          </a>
           <Link to="/" className="text-xs text-gray-500 hover:text-gray-700">
             ← Back
           </Link>
