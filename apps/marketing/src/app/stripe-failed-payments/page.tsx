@@ -76,19 +76,19 @@ const FAQS = [
 
 const RELATED_GUIDES = [
   {
+    title: "Stripe recovery software",
+    copy: "See the full software layer for failed-payment emails, retries, escalation, and reporting.",
+    href: "/stripe-failed-payment-recovery-software",
+  },
+  {
     title: "Stripe dunning workflow",
     copy: "Build the email cadence, retry windows, and escalation path around each failed invoice.",
     href: "/stripe-dunning",
   },
   {
-    title: "Failed payment rate benchmark",
-    copy: "Compare your failed payment rate with SaaS benchmarks and estimate recoverable revenue.",
-    href: "/benchmark",
-  },
-  {
-    title: "Stripe Smart Retries alternative",
-    copy: "Compare native retry timing with a full customer-facing recovery workflow.",
-    href: "/stripe-smart-retries-alternative",
+    title: "Dunning schedule calculator",
+    copy: "Plan the first email, retry window, escalation, and final notice from the failure reason.",
+    href: "/stripe-dunning-schedule-calculator",
   },
 ] as const;
 

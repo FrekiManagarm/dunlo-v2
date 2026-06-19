@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { ALTERNATIVES } from "@/components/alternatives/alternative-page";
+import { COMPARE_ROUTE_PAGES } from "@/components/compare/compare-page";
 import { getAllPosts } from "@/lib/blog";
 import { absoluteUrl } from "@/lib/seo";
 
@@ -40,6 +41,18 @@ const STATIC_ROUTES = [
     lastModified: "2026-05-27",
     changeFrequency: "weekly",
     priority: 0.9,
+  },
+  {
+    path: "/stripe-failed-payment-recovery-software",
+    lastModified: "2026-06-19",
+    changeFrequency: "weekly",
+    priority: 0.96,
+  },
+  {
+    path: "/stripe-dunning-schedule-calculator",
+    lastModified: "2026-06-19",
+    changeFrequency: "weekly",
+    priority: 0.91,
   },
   {
     path: "/stripe-failed-payment-audit",
@@ -88,7 +101,7 @@ const STATIC_ROUTES = [
 const MACHINE_READABLE_ROUTES = [
   {
     path: "/llms.txt",
-    lastModified: "2026-06-15",
+    lastModified: "2026-06-19",
     changeFrequency: "weekly",
     priority: 0.7,
   },
@@ -130,10 +143,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
+  const compareRoutes = COMPARE_ROUTE_PAGES.map((page) =>
+    toRoute({
+      path: page.path,
+      lastModified: "2026-06-19",
+      changeFrequency: "monthly",
+      priority: 0.7,
+    }),
+  );
+
   return [
     ...STATIC_ROUTES.map(toRoute),
     ...MACHINE_READABLE_ROUTES.map(toRoute),
     ...alternativeRoutes,
+    ...compareRoutes,
     ...blogRoutes,
   ];
 }

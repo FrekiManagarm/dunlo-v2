@@ -93,24 +93,24 @@ const founderStats = [
 
 const resourceLinks = [
   {
+    href: "/stripe-failed-payment-recovery-software",
+    title: "Stripe recovery software",
+    body: "See how Dunlo turns failed Stripe payments into emails, retries, escalation, and reporting.",
+  },
+  {
+    href: "/stripe-dunning-schedule-calculator",
+    title: "Dunning schedule calculator",
+    body: "Plan failed-payment emails, retry timing, escalation, and final notices from the Stripe failure reason.",
+  },
+  {
     href: "/stripe-failed-payments",
     title: "Stripe failed payments guide",
     body: "Learn why payments fail and which decline reasons deserve a different recovery path.",
   },
   {
-    href: "/stripe-dunning",
-    title: "Stripe dunning strategy",
-    body: "Compare retry timing, customer emails, and founder escalation for SaaS dunning.",
-  },
-  {
     href: "/benchmark",
     title: "Failed-payment benchmark",
     body: "Estimate how much recoverable revenue is sitting in your Stripe account.",
-  },
-  {
-    href: "/stripe-smart-retries-alternative",
-    title: "Stripe Smart Retries alternative",
-    body: "See where Smart Retries ends and customer-facing payment recovery starts.",
   },
 ] as const;
 

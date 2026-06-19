@@ -70,6 +70,24 @@ const FAQS = [
   },
 ] as const;
 
+const RELATED_LINKS = [
+  {
+    title: "Stripe dunning schedule calculator",
+    copy: "Turn account value and failure reason into a practical recovery cadence.",
+    href: "/stripe-dunning-schedule-calculator",
+  },
+  {
+    title: "Stripe recovery software",
+    copy: "See how Dunlo turns Stripe failures into emails, retries, escalation, and reporting.",
+    href: "/stripe-failed-payment-recovery-software",
+  },
+  {
+    title: "Stripe failure codes guide",
+    copy: "Decode the failure reason before choosing the message or retry timing.",
+    href: "/blog/stripe-failure-codes-the-complete-guide",
+  },
+] as const;
+
 export const metadata: Metadata = pageSeoMetadata({
   title: TITLE,
   description: DESCRIPTION,
@@ -118,10 +136,10 @@ export default function StripeDunningPage() {
                 <ArrowRight size={16} strokeWidth={1.8} />
               </a>
               <Link
-                href="/stripe-failed-payments"
+                href="/stripe-dunning-schedule-calculator"
                 className="inline-flex h-12 items-center justify-center rounded-full border border-gray-300 px-6 text-sm font-semibold text-gray-800 transition-all duration-300 hover:-translate-y-[1px] hover:border-gray-950 active:scale-[0.98]"
               >
-                Learn failed payment recovery
+                Calculate your schedule
               </Link>
             </div>
           </div>
@@ -275,10 +293,40 @@ export default function StripeDunningPage() {
           <FaqSection />
           <CtaSection />
         </section>
+
+        <RelatedLinksSection />
       </main>
       <Footer />
       <JsonLd />
     </div>
+  );
+}
+
+function RelatedLinksSection() {
+  return (
+    <section className="mx-auto max-w-6xl">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+        {RELATED_LINKS.map((link) => (
+          <Link
+            key={link.href}
+            href={link.href}
+            className="group rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md transition-all duration-300 hover:-translate-y-px hover:border-dunlo/40"
+          >
+            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              Related
+            </p>
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-gray-950">
+              {link.title}
+            </h2>
+            <p className="mt-3 text-sm leading-6 text-gray-600">{link.copy}</p>
+            <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-gray-950 transition-colors group-hover:text-dunlo-deep">
+              Open page
+              <ArrowRight size={15} strokeWidth={1.8} />
+            </span>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
 

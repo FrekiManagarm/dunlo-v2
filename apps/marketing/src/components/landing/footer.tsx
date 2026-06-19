@@ -3,8 +3,8 @@ import { FOOTER_SECTIONS } from "@/lib/site-navigation";
 
 export function Footer() {
   return (
-    <footer className="border-t border-gray-300/50 bg-stone-100 px-4 py-12">
-      <div className="mx-auto grid max-w-6xl gap-10 lg:grid-cols-[1fr_1.45fr]">
+    <footer className="border-t border-gray-300/50 bg-stone-100 px-4 py-9">
+      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1fr_1.45fr]">
         <div className="max-w-sm">
           <div className="flex items-center gap-3">
             <Logo size={22} />
@@ -12,7 +12,7 @@ export function Footer() {
               Stop losing revenue to failed payments.
             </span>
           </div>
-          <p className="mt-6 max-w-sm text-xs leading-6 text-gray-500">
+          <p className="mt-5 max-w-sm text-xs leading-6 text-gray-500">
             Stripe-first recovery for teams that want precise dunning without a
             recovered-revenue cut.
           </p>
@@ -55,13 +55,13 @@ export function Footer() {
         </div>
 
         <div>
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-4">
             {FOOTER_SECTIONS.map((section) => (
               <nav key={section.title} aria-label={section.title}>
                 <h2 className="text-xs font-semibold text-gray-900">
                   {section.title}
                 </h2>
-                <ul className="mt-4 space-y-3">
+                <ul className="mt-3 space-y-2.5">
                   {section.links.map((link) => (
                     <li key={link.href}>
                       <a
@@ -77,7 +77,7 @@ export function Footer() {
             ))}
           </div>
 
-          <div className="mt-9 flex flex-col gap-2 border-t border-gray-300/50 pt-5 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-7 flex flex-col gap-2 border-t border-gray-300/50 pt-5 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between">
             <span>© {new Date().getFullYear()} Dunlo</span>
             <span>Built for Stripe-first SaaS founders.</span>
           </div>

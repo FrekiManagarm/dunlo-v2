@@ -54,16 +54,17 @@ const FOOTER_COMPARE_LINKS = [
     href: "/stripe-smart-retries-alternative",
   },
   {
-    label: "Custom Stripe webhooks",
-    href: "/alternatives/custom-stripe-webhooks",
+    label: "Churn Buster vs Churnkey",
+    href: "/compare/churn-buster-vs-churnkey",
   },
   {
-    label: "Stripe customer emails",
-    href: "/alternatives/stripe-customer-emails",
+    label: "Churn Buster vs Chargebee",
+    href: "/compare/churn-buster-vs-chargebee",
   },
-  { label: "FlyCode", href: "/alternatives/flycode" },
-  { label: "Churn Buster", href: "/alternatives/churn-buster" },
-  { label: "Stunning", href: "/alternatives/stunning" },
+  {
+    label: "Chargebee vs Stripe",
+    href: "/compare/chargebee-vs-stripe",
+  },
 ] as const satisfies readonly SiteLink[];
 
 export const FOOTER_SECTIONS = [
@@ -72,12 +73,12 @@ export const FOOTER_SECTIONS = [
     links: [
       { label: "Features", href: "/#features" },
       { label: "Pricing", href: "/#pricing" },
+      {
+        label: "Recovery software",
+        href: "/stripe-failed-payment-recovery-software",
+      },
       { label: "Benchmark", href: "/benchmark" },
       { label: "Stripe audit", href: "/stripe-failed-payment-audit" },
-      {
-        label: "State of Stripe Payments",
-        href: "/state-of-stripe-payments-2026",
-      },
     ],
   },
   {
@@ -87,7 +88,10 @@ export const FOOTER_SECTIONS = [
       { label: "Alternatives", href: "/alternatives" },
       { label: "Stripe failed payments", href: "/stripe-failed-payments" },
       { label: "Stripe dunning", href: "/stripe-dunning" },
-      { label: "Stripe Smart Retries", href: "/stripe-smart-retries-alternative" },
+      {
+        label: "Dunning calculator",
+        href: "/stripe-dunning-schedule-calculator",
+      },
     ],
   },
   {

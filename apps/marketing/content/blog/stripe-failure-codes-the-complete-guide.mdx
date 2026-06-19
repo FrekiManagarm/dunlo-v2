@@ -14,6 +14,9 @@ keywords:
     "stripe failure code emails",
     "stripe payment retry timing",
     "stripe do_not_honor what to do",
+    "stripe card_velocity_exceeded",
+    "stripe transaction_not_allowed",
+    "stripe generic_decline",
   ]
 readingTime: "16 min"
 ---
@@ -30,7 +33,35 @@ Stripe gives you the first clue in the failure code. Your recovery workflow shou
 
 This guide covers the Stripe failure codes SaaS teams are most likely to see, what each code means, when to retry, what email to send, and when a founder should step in manually.
 
-If you want to compare your own numbers before fixing the workflow, use the free [Stripe failed payment benchmark](/benchmark). For the full recovery system around failed invoices, read the [Stripe failed payments guide](/stripe-failed-payments).
+If you want to compare your own numbers before fixing the workflow, use the free [Stripe failed payment benchmark](/benchmark). For the full recovery system around failed invoices, read the [Stripe failed payment recovery software guide](/stripe-failed-payment-recovery-software). If you already know the failure reason and need a cadence, use the [Stripe dunning schedule calculator](/stripe-dunning-schedule-calculator).
+
+## Quick answers for common Stripe failure codes
+
+| Stripe code | What it usually means | What to do next | Customer-safe message |
+| --- | --- | --- | --- |
+| `expired_card` / `card_expired` | The saved card is out of date. | Send an update-card link immediately. | "Your card on file appears to be expired." |
+| `insufficient_funds` | The card did not have enough available balance or limit at that moment. | Wait, retry later, and keep an optional update link available. | "We will retry your payment in a few days." |
+| `do_not_honor` | The issuing bank blocked the charge without giving a public reason. | Explain the bank block and offer bank approval or another card. | "Your bank did not approve this subscription charge." |
+| `generic_decline` | The bank declined the payment without a useful customer-safe reason. | Use conservative copy and offer another card or bank approval. | "We could not process your payment." |
+| `card_velocity_exceeded` | The card hit a velocity, amount, or limit rule. | Wait at least 24 hours before retrying and avoid tight retry loops. | "Your bank limited this charge." |
+| `transaction_not_allowed` | The card or bank settings do not allow this type of transaction. | Ask the customer to contact the bank or use a different payment method. | "Your bank did not allow this subscription charge." |
+| `authentication_required` | The customer needs to approve the payment with the bank. | Send an authentication link, not just a generic billing link. | "Your bank needs one extra confirmation." |
+
+### What does `card_velocity_exceeded` mean in Stripe?
+
+`card_velocity_exceeded` means the card hit a bank, issuer, amount, frequency, or card-limit rule. The safest next step is to wait before retrying, explain that the bank limited the charge, and offer a secure billing link for another card.
+
+### What does `do_not_honor` mean in Stripe?
+
+`do_not_honor` means the customer's bank declined the charge without giving Stripe a clear public reason. Do not blame Stripe or the customer. Tell the customer the bank did not approve the subscription charge, then offer two paths: approve it with the bank or add another card.
+
+### What does `transaction_not_allowed` mean in Stripe?
+
+`transaction_not_allowed` means the card or bank settings do not permit the attempted charge. This can happen with corporate cards, debit cards, cross-border transactions, card controls, or subscription restrictions. Ask the customer to contact the bank or use another payment method.
+
+### What does `generic_decline` mean in Stripe?
+
+`generic_decline` means the payment failed but the issuer did not provide a precise reason you can safely pass to the customer. Keep the email short, offer a secure billing link, and avoid inventing a diagnosis.
 
 ## How Stripe failure codes work
 
@@ -76,7 +107,7 @@ Most failed Stripe payments fall into five practical groups.
 | Temporary funds or limit issue | `insufficient_funds`, `card_velocity_exceeded` | The card may work later, but not right now. | Wait, retry carefully, and avoid shaming copy. |
 | Bank block | `do_not_honor`, `restricted_card` | The issuer blocked the transaction without giving you a clean reason. | Explain the bank block and offer two actions. |
 | Generic decline | `generic_decline`, `card_declined` | The bank declined the payment but did not share enough detail. | Use conservative copy and offer another card. |
-| Customer action required | `authentication_required`, `incorrect_cvc`, `incorrect_zip` | The customer needs to confirm or correct something. | Send the right secure action link. |
+| Customer action required | `authentication_required`, `incorrect_cvc`, `incorrect_zip`, `transaction_not_allowed` | The customer needs to confirm, correct, approve, or change something. | Send the right secure action link or payment-method path. |
 
 The point is not to show raw codes to customers. The point is to translate each code into the safest next action.
 
@@ -258,6 +289,16 @@ Recommended copy:
 
 Recommended timing: wait at least 24 hours before retrying, avoid repeated attempts unless the customer says the limit is resolved, and move high-value accounts into manual follow-up if the same code appears twice.
 
+### `transaction_not_allowed`
+
+The bank or card settings do not allow this type of transaction. This can show up when a card blocks subscriptions, online payments, international charges, business spend categories, or merchant categories.
+
+Recommended copy:
+
+> Your bank did not allow this subscription charge. You can approve it with the bank or use another payment method here: [secure billing link].
+
+Recommended timing: do not keep retrying the same card without customer action. Send the explanation on day 0, then retry after the customer confirms the bank setting changed or adds a new card.
+
 ### `lost_card` and `stolen_card`
 
 Do not send an email that literally says "your card was stolen." Sensitive decline codes should usually be translated into generic customer-safe copy.
@@ -311,6 +352,7 @@ The card does not support the currency you are charging in. Ask the customer to 
 | `do_not_honor` | Bank explanation | Day 0 | Retry after customer action |
 | `generic_decline` / `card_declined` | Conservative dual-option email | Day 1 | Delayed retry, then action |
 | `card_velocity_exceeded` | Bank limit explanation | Wait 24h+ | Avoid tight retry loops |
+| `transaction_not_allowed` | Bank/card setting explanation | Same day | Retry after customer action |
 | `lost_card` / `stolen_card` | Generic new-card request | Same day | Do not retry same card |
 | `fraudulent` | Neutral new-card request | Same day | Manual review if repeated |
 | `authentication_required` | Authentication link | Immediately | Wait for authentication |
@@ -328,6 +370,7 @@ Start with four primary tracks:
 - Funds issue: wait, retry gently, and keep the update link optional.
 - Bank block: explain the issuer block immediately and offer bank approval or another card.
 - Generic decline: use conservative language and move to customer action if it repeats.
+- Transaction not allowed: ask for bank approval or a different payment method before another retry.
 
 Then add guardrails:
 
@@ -369,6 +412,8 @@ For `generic_decline`:
 
 These are starting points. Your price point, customer type, geography, and invoice amount will change the best cadence. But the principle stays the same: the failure code chooses the first message and the retry posture.
 
+If you want a starting cadence for your own invoice value and account type, use the free [Stripe dunning schedule calculator](/stripe-dunning-schedule-calculator).
+
 ## Build vs buy
 
 **Build it yourself**
@@ -379,7 +424,7 @@ That is viable if you have engineering time and only need basic logic.
 
 **Use a dedicated tool**
 
-[Dunlo](https://dunlo.io) reads the failure code from Stripe, routes to the right email sequence, handles timing, tracks recovered revenue, and flags high-value accounts for founder review. It is free during beta.
+[Dunlo](https://dunlo.io/stripe-failed-payment-recovery-software) reads the failure code from Stripe, routes to the right email sequence, handles timing, tracks recovered revenue, and flags high-value accounts for founder review. It is free during beta.
 
 ## FAQ
 
