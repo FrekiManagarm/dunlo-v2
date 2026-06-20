@@ -32,6 +32,11 @@ export type EscalationRow = {
   };
 };
 
+export type GeneratedEscalationDraft = {
+  draftSubject: string;
+  draftBody: string;
+};
+
 export const getEscalations = createServerFn({ method: "GET" })
   .middleware([authMiddleware])
   .handler(async ({ context }): Promise<EscalationRow[]> => {
@@ -282,7 +287,7 @@ export const updateEscalationSettings = createServerFn({ method: "POST" })
  */
 export async function generateEscalationDraft(
   escalationId: string,
-): Promise<void> {
+): Promise<GeneratedEscalationDraft | null> {
   const [row] = await db
     .select()
     .from(escalation)
@@ -290,7 +295,7 @@ export async function generateEscalationDraft(
     .where(eq(escalation.id, escalationId))
     .limit(1);
 
-  if (!row) return;
+  if (!row) return null;
 
   const payment = row.failed_payment;
   const customerName = payment.customerName ?? "there";
@@ -319,6 +324,8 @@ export async function generateEscalationDraft(
         updatedAt: new Date(),
       })
       .where(eq(escalation.id, escalationId));
+
+    return { draftSubject: subject, draftBody: body };
   } catch (e) {
     console.error("[escalations] AI draft generation failed:", e);
     await db
@@ -329,6 +336,11 @@ export async function generateEscalationDraft(
         updatedAt: new Date(),
       })
       .where(eq(escalation.id, escalationId));
+
+    return {
+      draftSubject: fallback.subject,
+      draftBody: fallback.body,
+    };
   }
 }
 
@@ -354,6 +366,8 @@ export const regenerateEscalationDraft = createServerFn({ method: "POST" })
 
     if (!owned) throw new Error("Escalation not found");
 
-    await generateEscalationDraft(data.escalationId);
-    return { ok: true };
+    const draft = await generateEscalationDraft(data.escalationId);
+    if (!draft) throw new Error("Escalation not found");
+
+    return draft;
   });

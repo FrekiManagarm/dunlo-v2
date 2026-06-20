@@ -23,6 +23,7 @@ import {
   sendEscalationEmail,
   updateEscalationDraft,
 } from "@/functions/escalations";
+import { applyEscalationDraftPatch } from "@/lib/escalations-cache";
 import { escalationsQueryOptions } from "@/lib/queries";
 import { formatAmount, humanizeFailureCode } from "@/lib/template";
 
@@ -163,18 +164,22 @@ function RouteComponent() {
   const regenerateMutation = useMutation({
     mutationFn: (id: string) =>
       regenerateEscalationDraft({ data: { escalationId: id } }),
-    onSuccess: async (_result, id) => {
-      const refreshed = await queryClient.fetchQuery(escalationsQueryOptions());
-      const updated = refreshed.find((e) => e.id === id);
-      if (updated) {
-        setEdits((prev) => ({
-          ...prev,
-          [id]: {
-            subject: updated.draftSubject ?? "",
-            body: updated.draftBody ?? "",
-          },
-        }));
-      }
+    onMutate: (id) => {
+      clearTimeout(saveTimers.current[id]);
+    },
+    onSuccess: (draft, id) => {
+      queryClient.setQueryData(
+        escalationsQueryOptions().queryKey,
+        (current: typeof items | undefined) =>
+          applyEscalationDraftPatch(current, id, draft),
+      );
+      setEdits((prev) => ({
+        ...prev,
+        [id]: {
+          subject: draft.draftSubject ?? "",
+          body: draft.draftBody ?? "",
+        },
+      }));
       toast.success("Draft regenerated");
     },
     onError: (e) => {
