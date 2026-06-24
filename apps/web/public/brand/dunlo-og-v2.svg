@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630" fill="none">
-  <title>Dunlo - Recover failed Stripe payments</title>
-  <desc>Recover failed Stripe payments — with the right email for each failure reason.</desc>
+  <title>Dunlo - Recover failed payments</title>
+  <desc>Recover failed payments — with the right email for each failure reason.</desc>
   <rect width="1200" height="630" fill="#F8FCF9"/>
   <path d="M746 0H1200V630H676C724 516 738 395 719 294C700 191 710 88 746 0Z" fill="#E7F7ED"/>
   <circle cx="1012" cy="148" r="188" fill="#D9F5E4"/>

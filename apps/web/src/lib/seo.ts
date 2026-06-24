@@ -3,13 +3,13 @@ export const SITE_URL =
 export const SITE_NAME = "Dunlo";
 export const DEFAULT_TITLE = "Dunlo - Stripe Payment Recovery for SaaS";
 export const DEFAULT_DESCRIPTION =
-  "Dunlo helps SaaS founders recover failed Stripe payments with failure-code emails, smart timing, founder escalation, and revenue tracking.";
+  "Dunlo helps SaaS founders recover failed payments with failure-code emails, smart timing, founder escalation, and revenue tracking.";
 export const DEFAULT_KEYWORDS = [
   "Dunlo",
   "Stripe payment recovery",
   "failed payment recovery",
   "dunning software for SaaS",
-  "recover failed Stripe payments",
+  "recover failed payments",
   "involuntary churn",
   "Stripe dunning",
   "SaaS payment recovery",

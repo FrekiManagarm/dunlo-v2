@@ -7,7 +7,7 @@ export const contentType = "image/png";
 
 export default function Image() {
   return createDunloOgImage({
-    title: "Recover failed Stripe payments before they quietly churn",
+    title: "Recover failed payments before they quietly churn",
     description: DEFAULT_DESCRIPTION,
     badge: "Free in beta",
     metricLabel: "at risk today",

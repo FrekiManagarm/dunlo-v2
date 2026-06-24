@@ -17,13 +17,13 @@ import {
   pageSeoMetadata,
 } from "@/lib/seo";
 
-const TITLE = "Stripe Failed Payments: Recover SaaS Revenue | Dunlo";
+const TITLE = "Failed Payments: Recover SaaS Revenue | Dunlo";
 const DESCRIPTION =
-  "Recover failed Stripe payments with failure-code emails, smart retry timing, founder escalation, and revenue tracking built for SaaS teams.";
+  "Recover failed payments with failure-code emails, smart retry timing, founder escalation, and revenue tracking built for SaaS teams.";
 const KEYWORDS = [
   "Stripe failed payments",
   "failed Stripe payment recovery",
-  "recover failed Stripe payments",
+  "recover failed payments",
   "Stripe payment recovery",
   "failed payment recovery SaaS",
   "payment retry",
@@ -122,8 +122,7 @@ export default function StripeFailedPaymentsPage() {
                 </span>
               </div>
               <h1 className="mt-8 max-w-xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:text-5xl sm:leading-[0.98] md:text-6xl">
-                Recover failed Stripe payments before they turn into quiet
-                churn.
+                Recover failed payments before they turn into quiet churn.
               </h1>
               <p className="mt-5 max-w-lg border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700">
                 Dunlo turns raw Stripe decline events into a recovery workflow:

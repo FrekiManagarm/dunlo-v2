@@ -1,7 +1,12 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, test } from "vitest";
-import { DEFAULT_OG_IMAGE, DEFAULT_OG_IMAGE_ALT, SITE_URL, ogMeta } from "./seo";
+import {
+  DEFAULT_OG_IMAGE,
+  DEFAULT_OG_IMAGE_ALT,
+  SITE_URL,
+  ogMeta,
+} from "./seo";
 
 const publicDir = join(process.cwd(), "public");
 const brandDir = join(process.cwd(), "public", "brand");
@@ -30,8 +35,14 @@ describe("social preview metadata", () => {
       property: "og:image:type",
       content: "image/png",
     });
-    expect(tags).toContainEqual({ property: "og:image:width", content: "1200" });
-    expect(tags).toContainEqual({ property: "og:image:height", content: "630" });
+    expect(tags).toContainEqual({
+      property: "og:image:width",
+      content: "1200",
+    });
+    expect(tags).toContainEqual({
+      property: "og:image:height",
+      content: "630",
+    });
     expect(tags).toContainEqual({
       name: "twitter:image",
       content: DEFAULT_OG_IMAGE,
@@ -44,10 +55,8 @@ describe("social preview metadata", () => {
     const svg = readFileSync(join(brandDir, "dunlo-og-v2.svg"), "utf8");
 
     expect(pngDimensions).toEqual({ width: 1200, height: 630 });
-    expect(svg).toContain("Recover failed Stripe payments");
-    expect(svg).toContain(
-      "with the right email for each failure reason.",
-    );
+    expect(svg).toContain("Recover failed payments");
+    expect(svg).toContain("with the right email for each failure reason.");
   });
 });
 

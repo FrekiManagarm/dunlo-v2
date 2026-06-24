@@ -1,5 +1,11 @@
 import Link from "next/link";
-import { ArrowRight, BadgeCheck, Check, Gauge, ShieldCheck } from "lucide-react";
+import {
+  ArrowRight,
+  BadgeCheck,
+  Check,
+  Gauge,
+  ShieldCheck,
+} from "lucide-react";
 import { SIGNUP_URL } from "@/lib/app-url";
 import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials";
 import { Logo } from "@/components/logo";
@@ -731,7 +737,8 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Cancellation flows",
         competitor:
           "Yes. Cancel flows, adaptive offers, segmentation, and testing are core Churnkey products.",
-        dunlo: "No. Dunlo is focused on involuntary churn from payment failures.",
+        dunlo:
+          "No. Dunlo is focused on involuntary churn from payment failures.",
       },
       {
         label: "Failure-code-specific emails",
@@ -967,8 +974,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Primary job",
         competitor:
           "Billing infrastructure: subscriptions, usage-based billing, invoicing, taxes, revenue workflows, and payment operations.",
-        dunlo:
-          "Failed payment recovery on top of an existing Stripe setup.",
+        dunlo: "Failed payment recovery on top of an existing Stripe setup.",
       },
       {
         label: "Dunning",
@@ -1017,7 +1023,10 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
       "You want founder escalation for high-value failures without a billing migration.",
     ],
     sourceLinks: [
-      { label: "Chargebee pricing", href: "https://www.chargebee.com/pricing/" },
+      {
+        label: "Chargebee pricing",
+        href: "https://www.chargebee.com/pricing/",
+      },
       {
         label: "Chargebee dunning docs",
         href: "https://www.chargebee.com/docs/payments/2.0/dunning.html",
@@ -1165,8 +1174,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Reporting",
         competitor:
           "You need to build MRR at risk, recovery rate, recovered amount, and open recovery state yourself.",
-        dunlo:
-          "Recovery visibility is part of the product surface.",
+        dunlo: "Recovery visibility is part of the product surface.",
       },
       {
         label: "Maintenance",
@@ -1230,21 +1238,19 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Primary job",
         competitor:
           "Send product, lifecycle, and transactional emails through a SaaS email platform.",
-        dunlo: "Recover failed Stripe payments with context-aware workflows.",
+        dunlo: "Recover failed payments with context-aware workflows.",
       },
       {
         label: "Stripe logic",
         competitor:
           "You build the Stripe event handling and decide when each email should send.",
-        dunlo:
-          "Stripe failure context is the starting point for the workflow.",
+        dunlo: "Stripe failure context is the starting point for the workflow.",
       },
       {
         label: "Recovery reporting",
         competitor:
           "Email engagement can be tracked, but recovered invoice reporting must be built separately.",
-        dunlo:
-          "Tracks recovery outcomes rather than only email delivery.",
+        dunlo: "Tracks recovery outcomes rather than only email delivery.",
       },
       {
         label: "Best fit",
@@ -1295,7 +1301,8 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
     comparisonRows: [
       {
         label: "Pricing model",
-        competitor: "Public site positions pricing as 10% of recovered revenue.",
+        competitor:
+          "Public site positions pricing as 10% of recovered revenue.",
         dunlo:
           "Free during beta. Planned tiers are flat by MRR with no recovered-revenue percentage.",
       },
@@ -1352,8 +1359,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
     comparisonRows: [
       {
         label: "Recovery motion",
-        competitor:
-          "Autopilot recovery with retries and email sequences.",
+        competitor: "Autopilot recovery with retries and email sequences.",
         dunlo:
           "Automated recovery plus founder review for high-value accounts.",
       },
@@ -1366,8 +1372,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
       },
       {
         label: "Customer trust",
-        competitor:
-          "Positioned around automatic recovery.",
+        competitor: "Positioned around automatic recovery.",
         dunlo:
           "Positioned around recovering failed payments without burning customer trust.",
       },
@@ -1424,16 +1429,14 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
       },
       {
         label: "Migration",
-        competitor:
-          "Usually part of a billing-platform decision.",
+        competitor: "Usually part of a billing-platform decision.",
         dunlo: "No billing migration required.",
       },
       {
         label: "Best fit",
         competitor:
           "Teams with subscription billing complexity and an appetite for a billing platform.",
-        dunlo:
-          "Stripe-first founders who need recovery without replatforming.",
+        dunlo: "Stripe-first founders who need recovery without replatforming.",
       },
     ],
     competitorUseCases: [
@@ -1447,8 +1450,14 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
       "You want founder-friendly visibility into failed payments.",
     ],
     sourceLinks: [
-      { label: "Recurly dunning dashboard", href: "https://docs.recurly.com/docs/dunning-summary" },
-      { label: "Recurly dunning effectiveness", href: "https://docs.recurly.com/recurly-subscriptions/docs/dunning-effectiveness" },
+      {
+        label: "Recurly dunning dashboard",
+        href: "https://docs.recurly.com/docs/dunning-summary",
+      },
+      {
+        label: "Recurly dunning effectiveness",
+        href: "https://docs.recurly.com/recurly-subscriptions/docs/dunning-effectiveness",
+      },
     ],
   },
   "revaly-flexpay": {
@@ -1480,13 +1489,11 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Stage",
         competitor:
           "Best suited to larger merchants with payment operations complexity.",
-        dunlo:
-          "Best suited to early and growing Stripe SaaS teams.",
+        dunlo: "Best suited to early and growing Stripe SaaS teams.",
       },
       {
         label: "Recovery style",
-        competitor:
-          "Optimization-first, focused on transaction performance.",
+        competitor: "Optimization-first, focused on transaction performance.",
         dunlo:
           "Communication-first, focused on failure reason, customer action, and founder visibility.",
       },
@@ -1800,8 +1807,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Primary job",
         competitor:
           "Payment orchestration across PSPs, payment methods, and payment infrastructure.",
-        dunlo:
-          "Failed Stripe payment recovery for subscription SaaS.",
+        dunlo: "Failed Stripe payment recovery for subscription SaaS.",
       },
       {
         label: "Payment stack",
@@ -1811,10 +1817,8 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
       },
       {
         label: "Setup motion",
-        competitor:
-          "Infrastructure decision involving payments architecture.",
-        dunlo:
-          "Recovery workflow added beside Stripe.",
+        competitor: "Infrastructure decision involving payments architecture.",
+        dunlo: "Recovery workflow added beside Stripe.",
       },
       {
         label: "Best fit",
@@ -1908,8 +1912,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
                   Fast verdict
                 </p>
                 <p className="mt-4 text-2xl font-bold leading-tight tracking-tight">
-                  Choose the smallest tool that fixes the failed-payment
-                  moment.
+                  Choose the smallest tool that fixes the failed-payment moment.
                 </p>
                 <div className="mt-6 divide-y divide-white/10 border-y border-white/10">
                   <SummaryBlock
@@ -2075,7 +2078,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
                 Free beta
               </p>
               <h2 className="mt-3 text-2xl font-bold tracking-tight md:text-3xl">
-                Recover failed Stripe payments before they become churn.
+                Recover failed payments before they become churn.
               </h2>
               <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-300">
                 {page.verdict}
@@ -2166,9 +2169,7 @@ function UseCasePanel({
           : "border-gray-200 bg-white text-gray-950"
       }`}
     >
-      <h2 className="text-xl font-bold tracking-tight">
-        {title}
-      </h2>
+      <h2 className="text-xl font-bold tracking-tight">{title}</h2>
       <ul className="mt-6 space-y-4">
         {items.map((item) => (
           <li

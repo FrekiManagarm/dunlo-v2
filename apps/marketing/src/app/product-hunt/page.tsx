@@ -17,7 +17,7 @@ import { Nav } from "@/components/landing/nav";
 import { SIGNUP_URL } from "@/lib/app-url";
 import { SITE_NAME, SITE_URL, pageSeoMetadata } from "@/lib/seo";
 
-const TITLE = "Dunlo on Product Hunt - Recover Failed Stripe Payments";
+const TITLE = "Dunlo on Product Hunt - Recover Failed Payments";
 const DESCRIPTION =
   "Dunlo helps Stripe-first SaaS founders recover failed payments with failure-aware emails, smarter retry timing, founder review, and recovered revenue tracking.";
 const KEYWORDS = [
@@ -123,8 +123,8 @@ export default function ProductHuntPage() {
               </h1>
               <p className="mt-6 max-w-[60ch] border-l-2 border-dunlo pl-4 text-base leading-7 text-gray-700 md:text-lg">
                 We turn Stripe decline reasons into the right recovery email,
-                retry timing, founder escalation, and revenue tracking, so
-                good customers do not disappear over a failed card.
+                retry timing, founder escalation, and revenue tracking, so good
+                customers do not disappear over a failed card.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
@@ -179,8 +179,7 @@ export default function ProductHuntPage() {
                 Why this launch exists
               </p>
               <h2 className="mt-4 text-3xl font-semibold tracking-tight text-gray-950 md:text-5xl">
-                Failed payments are a product problem, not just a billing
-                retry.
+                Failed payments are a product problem, not just a billing retry.
               </h2>
             </div>
             <div className="mt-8 grid gap-4 md:grid-cols-3">
@@ -249,10 +248,7 @@ export default function ProductHuntPage() {
           </div>
         </section>
 
-        <section
-          id="feedback"
-          className="px-4 py-10 md:px-6 md:py-16"
-        >
+        <section id="feedback" className="px-4 py-10 md:px-6 md:py-16">
           <div className="mx-auto grid max-w-7xl overflow-hidden rounded-2xl border border-gray-200 bg-gray-950 text-white lg:grid-cols-[1.05fr_0.95fr]">
             <div className="p-6 md:p-10">
               <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo">

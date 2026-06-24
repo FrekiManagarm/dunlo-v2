@@ -192,5 +192,5 @@ Existing unused or alternative landing components should not be removed unless i
 
 ## Implementation Notes
 
-- Final headline wording can be refined during implementation, but it should keep the approved promise: recover failed Stripe payments before good customers disappear.
+- Final headline wording can be refined during implementation, but it should keep the approved promise: recover failed payments before good customers disappear.
 - The exact number of expert proof blocks should be chosen while editing the page, based on visual density and mobile readability.

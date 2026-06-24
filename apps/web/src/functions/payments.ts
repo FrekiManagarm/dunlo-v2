@@ -28,6 +28,43 @@ function startOfMonth(d: Date): Date {
   return new Date(d.getFullYear(), d.getMonth(), 1);
 }
 
+function recoveryTrend(rows: (typeof failedPayment.$inferSelect)[], now: Date) {
+  const monthStart = startOfMonth(now);
+  const daysElapsed = now.getDate();
+  const buckets = Array.from({ length: daysElapsed }, (_, index) => {
+    const date = new Date(
+      monthStart.getFullYear(),
+      monthStart.getMonth(),
+      index + 1,
+    );
+
+    return {
+      key: date.toISOString().slice(0, 10),
+      label: date.toLocaleDateString("en-US", {
+        month: "short",
+        day: "numeric",
+      }),
+      failedAmount: 0,
+      recoveredAmount: 0,
+    };
+  });
+
+  const bucketByKey = new Map(buckets.map((bucket) => [bucket.key, bucket]));
+
+  for (const row of rows) {
+    const key = row.createdAt.toISOString().slice(0, 10);
+    const bucket = bucketByKey.get(key);
+    if (!bucket) continue;
+
+    bucket.failedAmount += row.amount;
+    if (row.status === "recovered") {
+      bucket.recoveredAmount += row.amount;
+    }
+  }
+
+  return buckets;
+}
+
 function relativeTime(from: Date, now: Date = new Date()): string {
   const diffMs = now.getTime() - from.getTime();
   const sec = Math.max(0, Math.floor(diffMs / 1000));
@@ -53,6 +90,121 @@ function customerDisplayName(row: {
   }
   const prefix = row.customerEmail.split("@")[0] ?? row.customerEmail;
   return prefix;
+}
+
+function toIsoFromUnix(timestamp: number | null | undefined): string | null {
+  return typeof timestamp === "number"
+    ? new Date(timestamp * 1000).toISOString()
+    : null;
+}
+
+async function getStripeCustomerContext({
+  encryptedAccessToken,
+  stripeCustomerId,
+  currency,
+}: {
+  encryptedAccessToken: string;
+  stripeCustomerId: string;
+  currency: string;
+}) {
+  if (!stripeCustomerId) return null;
+
+  try {
+    const [{ decrypt }, { getConnectedStripe }] = await Promise.all([
+      import("@dunlo-v2/db/encrypt"),
+      import("@/lib/stripe"),
+    ]);
+    const stripe = getConnectedStripe(decrypt(encryptedAccessToken));
+
+    const [customer, subscriptions, paidInvoices] = await Promise.all([
+      stripe.customers.retrieve(stripeCustomerId),
+      stripe.subscriptions.list({
+        customer: stripeCustomerId,
+        status: "all",
+        limit: 10,
+      }),
+      stripe.invoices.list({
+        customer: stripeCustomerId,
+        status: "paid",
+        limit: 100,
+      }),
+    ]);
+
+    const sortedSubscriptions = [...subscriptions.data].sort((a, b) => {
+      const statusWeight = (status: string) =>
+        status === "active"
+          ? 0
+          : status === "trialing"
+            ? 1
+            : status === "past_due"
+              ? 2
+              : 3;
+      return (
+        statusWeight(a.status) - statusWeight(b.status) ||
+        b.created - a.created
+      );
+    });
+    const subscription = sortedSubscriptions[0] ?? null;
+    const item = subscription?.items.data[0] ?? null;
+    const price = item?.price ?? null;
+    const interval = price?.recurring?.interval ?? null;
+    const intervalCount = price?.recurring?.interval_count ?? null;
+    const paidInvoiceTimestamps = paidInvoices.data
+      .map((invoice) => invoice.created)
+      .filter((created): created is number => typeof created === "number");
+    const payingSince =
+      paidInvoiceTimestamps.length > 0
+        ? Math.min(...paidInvoiceTimestamps)
+        : subscription?.created;
+    const totalPaid = paidInvoices.data.reduce(
+      (sum, invoice) => sum + (invoice.amount_paid ?? 0),
+      0,
+    );
+    const invoiceCurrency = paidInvoices.data[0]?.currency ?? currency;
+
+    return {
+      stripeAvailable: true,
+      customerCreatedAt:
+        "deleted" in customer && customer.deleted
+          ? null
+          : toIsoFromUnix(customer.created),
+      payingSince: toIsoFromUnix(payingSince),
+      totalPaid,
+      totalPaidFormatted: formatAmount(totalPaid, invoiceCurrency),
+      paidInvoiceCount: paidInvoices.data.length,
+      lastPaidInvoiceAt: toIsoFromUnix(paidInvoices.data[0]?.created),
+      subscription: subscription
+        ? {
+            id: subscription.id,
+            status: subscription.status,
+            startedAt: toIsoFromUnix(subscription.created),
+            currentPeriodEnd: toIsoFromUnix(subscription.current_period_end),
+            plan:
+              price?.nickname ??
+              price?.lookup_key ??
+              (typeof price?.product === "string" ? price.product : null) ??
+              price?.id ??
+              "Subscription",
+            interval:
+              interval && intervalCount && intervalCount > 1
+                ? `${intervalCount} ${interval}s`
+                : interval,
+          }
+        : null,
+    };
+  } catch (error) {
+    console.error("[payments] Stripe customer context failed", error);
+    return {
+      stripeAvailable: false,
+      customerCreatedAt: null,
+      payingSince: null,
+      totalPaid: null,
+      totalPaidFormatted: null,
+      paidInvoiceCount: null,
+      lastPaidInvoiceAt: null,
+      subscription: null,
+    };
+  }
 }
 
 export const getDashboardData = createServerFn({ method: "GET" })
@@ -84,11 +236,13 @@ export const getDashboardData = createServerFn({ method: "GET" })
         },
         recentPayments: [],
         pendingEscalations: 0,
+        recoveryTrend: [],
         currency,
       };
     }
 
-    const monthStart = startOfMonth(new Date());
+    const now = new Date();
+    const monthStart = startOfMonth(now);
 
     const monthRows = await db
       .select()
@@ -145,7 +299,6 @@ export const getDashboardData = createServerFn({ method: "GET" })
       .orderBy(desc(failedPayment.createdAt))
       .limit(20);
 
-    const now = new Date();
     const recentPayments = recentRows.map((row) => ({
       id: row.id,
       name: customerDisplayName(row),
@@ -179,6 +332,7 @@ export const getDashboardData = createServerFn({ method: "GET" })
       },
       recentPayments,
       pendingEscalations: pendingEscalationRows.length,
+      recoveryTrend: recoveryTrend(monthRows, now),
       currency,
     };
   });
@@ -277,7 +431,10 @@ export const getPaymentDetail = createServerFn({ method: "GET" })
     const userId = context.session.user.id;
 
     const [conn] = await db
-      .select({ stripeAccountId: stripeConnection.stripeAccountId })
+      .select({
+        stripeAccountId: stripeConnection.stripeAccountId,
+        accessToken: stripeConnection.accessToken,
+      })
       .from(stripeConnection)
       .where(eq(stripeConnection.userId, userId))
       .orderBy(desc(stripeConnection.updatedAt))
@@ -320,6 +477,37 @@ export const getPaymentDetail = createServerFn({ method: "GET" })
       .where(eq(escalation.failedPaymentId, row.id))
       .limit(1);
 
+    const customerPayments = await db
+      .select()
+      .from(failedPayment)
+      .where(
+        and(
+          eq(failedPayment.userId, userId),
+          eq(failedPayment.stripeAccountId, conn.stripeAccountId),
+          eq(failedPayment.stripeCustomerId, row.stripeCustomerId),
+        ),
+      )
+      .orderBy(desc(failedPayment.createdAt));
+
+    const firstFailedPaymentAt =
+      customerPayments.length > 0
+        ? customerPayments.reduce((earliest, payment) =>
+            payment.createdAt < earliest ? payment.createdAt : earliest,
+          customerPayments[0]!.createdAt)
+        : row.createdAt;
+    const recoveredCustomerPayments = customerPayments.filter(
+      (payment) => payment.status === "recovered",
+    );
+    const localRecoveredAmount = recoveredCustomerPayments.reduce(
+      (sum, payment) => sum + payment.amount,
+      0,
+    );
+    const stripeCustomerContext = await getStripeCustomerContext({
+      encryptedAccessToken: conn.accessToken,
+      stripeCustomerId: row.stripeCustomerId,
+      currency: row.currency,
+    });
+
     return {
       id: row.id,
       customerName: row.customerName,
@@ -336,6 +524,19 @@ export const getPaymentDetail = createServerFn({ method: "GET" })
       stripeAccountId: row.stripeAccountId ?? conn.stripeAccountId,
       createdAt: row.createdAt.toISOString(),
       recoveredAt: row.recoveredAt?.toISOString() ?? null,
+      customerContext: {
+        stripeCustomerId: row.stripeCustomerId,
+        firstFailedPaymentAt: firstFailedPaymentAt.toISOString(),
+        failedPaymentCount: customerPayments.length,
+        previousFailedPaymentCount: Math.max(customerPayments.length - 1, 0),
+        recoveredFailedPaymentCount: recoveredCustomerPayments.length,
+        localRecoveredAmount,
+        localRecoveredAmountFormatted: formatAmount(
+          localRecoveredAmount,
+          row.currency,
+        ),
+        stripe: stripeCustomerContext,
+      },
       attempts: attempts.map((a) => ({
         id: a.id,
         status: a.status,

@@ -10,16 +10,16 @@ import {
 
 const BLOG_TITLE = "Stripe Payment Recovery Blog - Dunlo";
 const BLOG_DESCRIPTION =
-  "Practical guides for SaaS teams to recover failed Stripe payments, reduce involuntary churn, and improve dunning workflows.";
+  "Practical guides for SaaS teams to recover failed payments, reduce involuntary churn, and improve dunning workflows.";
 
 const BLOG_KEYWORDS = [
-    "Stripe payment recovery blog",
-    "SaaS dunning guide",
-    "failed payment recovery articles",
-    "involuntary churn guides",
-    "Stripe failure codes",
-    "dunning email strategy",
-  ] as const;
+  "Stripe payment recovery blog",
+  "SaaS dunning guide",
+  "failed payment recovery articles",
+  "involuntary churn guides",
+  "Stripe failure codes",
+  "dunning email strategy",
+] as const;
 
 export const metadata: Metadata = pageSeoMetadata({
   title: BLOG_TITLE,

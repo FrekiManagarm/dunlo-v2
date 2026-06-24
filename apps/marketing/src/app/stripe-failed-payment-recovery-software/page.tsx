@@ -21,12 +21,12 @@ import {
 
 const TITLE = "Stripe Failed Payment Recovery Software | Dunlo";
 const DESCRIPTION =
-  "Recover failed Stripe payments with failure-code emails, Stripe-hosted update links, founder escalation, and recovered revenue tracking for SaaS.";
+  "Recover failed payments with failure-code emails, Stripe-hosted update links, founder escalation, and recovered revenue tracking for SaaS.";
 const PATH = "/stripe-failed-payment-recovery-software";
 const KEYWORDS = [
   "Stripe failed payment recovery software",
   "failed Stripe payment recovery",
-  "recover failed Stripe payments",
+  "recover failed payments",
   "Stripe payment recovery software",
   "SaaS payment recovery software",
   "Stripe dunning software",
@@ -78,7 +78,8 @@ const COMPARISON_ROWS = [
     dimension: "Recovery reporting",
     stripe: "Billing events and invoice status.",
     diy: "Custom dashboards or exports.",
-    dunlo: "Recovered revenue, at-risk revenue, and recovery state in one workflow.",
+    dunlo:
+      "Recovered revenue, at-risk revenue, and recovery state in one workflow.",
   },
 ] as const;
 

@@ -26,7 +26,7 @@ Dunlo
 
 ### Tagline
 
-Recover failed Stripe payments before they churn
+Recover failed payments before they churn
 
 Alternative tagline options:
 

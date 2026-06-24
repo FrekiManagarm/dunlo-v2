@@ -2,7 +2,7 @@ import { createDunloOgImage, ogImageSize } from "@/lib/og";
 
 const title = "Stripe Failed Payments: Recover SaaS Revenue";
 const description =
-  "Recover failed Stripe payments with failure-code emails, smart retry timing, founder escalation, and revenue tracking.";
+  "Recover failed payments with failure-code emails, smart retry timing, founder escalation, and revenue tracking.";
 
 export const alt = title;
 export const size = ogImageSize;

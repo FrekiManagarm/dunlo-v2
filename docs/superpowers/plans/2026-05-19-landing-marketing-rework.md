@@ -35,9 +35,9 @@ In `apps/web/src/lib/seo.ts`, replace `DEFAULT_TITLE` and `DEFAULT_DESCRIPTION` 
 
 ```ts
 export const DEFAULT_TITLE =
-  "Dunlo - Recover Failed Stripe Payments Before Customers Disappear";
+  "Dunlo - Recover Failed Payments Before Customers Disappear";
 export const DEFAULT_DESCRIPTION =
-  "Dunlo helps SaaS founders recover failed Stripe payments with failure-code-specific emails, founder escalation for high-value accounts, and clear recovered-revenue tracking.";
+  "Dunlo helps SaaS founders recover failed payments with failure-code-specific emails, founder escalation for high-value accounts, and clear recovered-revenue tracking.";
 ```
 
 - [ ] **Step 2: Update the JSON-LD application description**
@@ -158,7 +158,7 @@ Free during beta
 ```
 
 ```tsx
-Recover failed Stripe payments before good customers disappear.
+Recover failed payments before good customers disappear.
 ```
 
 ```tsx

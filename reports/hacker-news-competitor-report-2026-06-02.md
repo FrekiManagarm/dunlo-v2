@@ -423,7 +423,7 @@ Dunlo opportunity:
 
 Dunlo can integrate with products like Autumn or position as a specialized layer:
 
-> Use Autumn to manage pricing and entitlements; use Dunlo to recover failed Stripe payments.
+> Use Autumn to manage pricing and entitlements; use Dunlo to recover failed payments.
 
 ### 13. Loops and Email Platforms
 
@@ -733,4 +733,3 @@ Official/product sources:
 - PayCircuit: https://paycircuit.eu/
 - Recoupt: https://www.recoupt.app/
 - ChurnRecover: https://churnrecover.com/
-
