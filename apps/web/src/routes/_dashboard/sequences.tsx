@@ -10,7 +10,6 @@ import {
   CheckCircle2,
   ChevronDown,
   Clock,
-  Copy,
   Plus,
   RotateCcw,
   Trash2,
@@ -304,41 +303,41 @@ function RouteComponent() {
 
   return (
     <div className="min-h-[100dvh] bg-zinc-50">
-      <header className="sticky top-0 z-20 border-b border-zinc-200/70 bg-zinc-50/90 px-4 py-4 backdrop-blur-md sm:px-6">
-        <div className="flex items-center justify-between gap-4">
+      <header className="sticky top-0 z-20 border-b border-zinc-200/70 bg-white/90 px-4 py-4 backdrop-blur-md sm:px-6">
+        <div className="mx-auto flex w-full max-w-[1500px] items-center justify-between gap-4">
           <div>
             <h1 className="text-xl font-semibold tracking-tight text-zinc-950 sm:text-2xl">
-              Recovery sequences
+              Recovery emails
             </h1>
             <p className="mt-1 text-sm text-zinc-500">
-              Edit the emails sent after a payment fails.
+              Keep failed-payment follow-up simple, clear, and on brand.
             </p>
           </div>
           <button
             onClick={handleReset}
             disabled={resetMutation.isPending}
-            className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full border border-zinc-200 bg-white px-3.5 text-xs font-semibold text-zinc-600 transition-all hover:bg-zinc-50 active:scale-[0.98] disabled:opacity-50"
+            className="inline-flex h-9 shrink-0 items-center gap-2 rounded-full px-3.5 text-xs font-semibold text-zinc-500 transition-all hover:bg-zinc-100 hover:text-zinc-900 active:scale-[0.98] disabled:opacity-50"
           >
             <RotateCcw
               size={13}
               strokeWidth={2}
               className={resetMutation.isPending ? "animate-spin" : ""}
             />
-            Reset
+            Reset defaults
           </button>
         </div>
       </header>
 
-      <main className="w-full space-y-5 px-4 py-5 sm:px-6">
-        <div className="overflow-x-auto rounded-2xl border border-zinc-200/70 bg-white p-2">
-          <div className="flex min-w-max gap-1">
+      <main className="mx-auto w-full max-w-[1500px] space-y-5 px-4 py-5 sm:px-6">
+        <div className="overflow-x-auto rounded-[1.35rem] border border-zinc-200/70 bg-white p-1.5">
+          <div className="flex min-w-max gap-1.5">
             {sequences.map((seq) => {
               const active = seq.id === selectedSeq?.id;
               return (
                 <button
                   key={seq.id}
                   onClick={() => handleSelectSeq(seq.id)}
-                  className={`inline-flex items-center gap-2 rounded-xl px-3 py-2 text-sm font-semibold transition-all active:scale-[0.98] ${
+                  className={`inline-flex items-center gap-2 rounded-2xl px-3.5 py-2.5 text-sm font-semibold transition-all active:scale-[0.98] ${
                     active
                       ? "bg-zinc-950 text-white"
                       : "text-zinc-500 hover:bg-zinc-50 hover:text-zinc-900"
@@ -364,9 +363,9 @@ function RouteComponent() {
         </div>
 
         {selectedSeq && (
-          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_340px]">
-            <section className="overflow-hidden rounded-2xl border border-zinc-200/70 bg-white">
-              <div className="flex flex-col gap-5 border-b border-zinc-100 px-5 py-5">
+          <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
+            <section className="overflow-hidden rounded-[1.75rem] border border-zinc-200/70 bg-white">
+              <div className="border-b border-zinc-100 px-5 py-5 sm:px-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
                     <div className="flex flex-wrap items-center gap-2">
@@ -377,11 +376,19 @@ function RouteComponent() {
                         {selectedSeq.failureCode}
                       </span>
                     </div>
-                    <p className="mt-1 text-sm text-zinc-500">
-                      {selectedSeq.steps.length}{" "}
-                      {selectedSeq.steps.length === 1 ? "email" : "emails"} in
-                      this sequence
-                    </p>
+                    <div className="mt-3 flex flex-wrap gap-2">
+                      <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600">
+                        <Zap size={12} strokeWidth={2.2} className="text-dunlo" />
+                        Starts when payment fails
+                      </span>
+                      <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600">
+                        {selectedSeq.steps.length}{" "}
+                        {selectedSeq.steps.length === 1 ? "email" : "emails"}
+                      </span>
+                      <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600">
+                        {totalDelayLabel(selectedSeq.steps)} window
+                      </span>
+                    </div>
                   </div>
                   <div className="flex items-center gap-3">
                     <span
@@ -416,41 +423,11 @@ function RouteComponent() {
                     </button>
                   </div>
                 </div>
-
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
-                  <SequenceStat
-                    label="Steps"
-                    value={String(selectedSeq.steps.length)}
-                  />
-                  <SequenceStat
-                    label="Runway"
-                    value={totalDelayLabel(selectedSeq.steps)}
-                  />
-                  <SequenceStat
-                    label="Mode"
-                    value={selectedSeq.isActive ? "Active" : "Paused"}
-                  />
-                  <SequenceStat label="Save" value="Auto" />
-                </div>
               </div>
 
-              <div className="px-4 py-5 sm:px-5">
+              <div className="px-4 py-5 sm:px-6">
                 <div className="relative">
-                  <div className="absolute bottom-8 left-[15px] top-2 w-px bg-zinc-200" />
-                  <div className="relative mb-4 flex items-start gap-4">
-                    <div className="relative z-10 flex size-8 shrink-0 items-center justify-center rounded-full bg-zinc-950 ring-4 ring-white">
-                      <Zap size={13} strokeWidth={2} className="text-dunlo" />
-                    </div>
-                    <div className="pt-0.5">
-                      <p className="text-sm font-semibold text-zinc-950">
-                        Payment fails
-                      </p>
-                      <p className="mt-1 text-xs text-zinc-400">
-                        Trigger for this sequence
-                      </p>
-                    </div>
-                  </div>
-
+                  <div className="absolute bottom-8 left-[15px] top-4 w-px bg-zinc-200" />
                   <div className="space-y-3">
                     {selectedSeq.steps.map((step) => (
                       <StepCard
@@ -491,7 +468,7 @@ function RouteComponent() {
               </div>
             </section>
 
-            <aside className="space-y-5 lg:sticky lg:top-[94px] lg:self-start">
+            <aside className="xl:sticky xl:top-[94px] xl:self-start">
               {previewStep && previewEdit && (
                 <PreviewPanel
                   step={previewStep}
@@ -499,24 +476,10 @@ function RouteComponent() {
                   status={saveStatus[previewStep.id] ?? "idle"}
                 />
               )}
-              <VariablesPanel />
             </aside>
           </div>
         )}
       </main>
-    </div>
-  );
-}
-
-function SequenceStat({ label, value }: { label: string; value: string }) {
-  return (
-    <div className="rounded-xl border border-zinc-100 bg-zinc-50/70 px-3 py-2.5">
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
-        {label}
-      </p>
-      <p className="mt-1 truncate font-mono text-sm font-semibold text-zinc-950">
-        {value}
-      </p>
     </div>
   );
 }
@@ -738,42 +701,6 @@ function PreviewPanel({
           body={edit.body}
           delayHours={edit.delayHours}
         />
-      </div>
-    </section>
-  );
-}
-
-function VariablesPanel() {
-  return (
-    <section className="overflow-hidden rounded-2xl border border-zinc-200/70 bg-white">
-      <div className="border-b border-zinc-100 px-4 py-3.5">
-        <p className="text-[10px] font-bold uppercase tracking-widest text-zinc-400">
-          Variables
-        </p>
-        <p className="mt-1 text-sm font-semibold text-zinc-950">
-          Insert from the editor
-        </p>
-      </div>
-      <div className="grid grid-cols-1 divide-y divide-zinc-100">
-        {TEMPLATE_VARS.map((variable) => (
-          <button
-            key={variable}
-            onClick={() => {
-              void navigator.clipboard?.writeText(`{{${variable}}}`);
-              toast.success("Variable copied");
-            }}
-            className="group flex items-center justify-between gap-3 px-4 py-2.5 text-left transition-colors hover:bg-zinc-50 active:bg-zinc-100"
-          >
-            <span className="min-w-0 truncate font-mono text-[11px] font-semibold text-zinc-600">
-              {`{{${variable}}}`}
-            </span>
-            <Copy
-              size={12}
-              strokeWidth={2}
-              className="shrink-0 text-zinc-300 group-hover:text-dunlo"
-            />
-          </button>
-        ))}
       </div>
     </section>
   );

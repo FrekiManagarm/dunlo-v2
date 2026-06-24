@@ -13,12 +13,11 @@ import {
   Activity,
   ArrowRight,
   CheckCircle2,
-  CircleDollarSign,
   Clock3,
   ExternalLink,
+  type LucideIcon,
   MailWarning,
   Settings,
-  ShieldCheck,
   Zap,
 } from "lucide-react";
 
@@ -70,7 +69,7 @@ type Metric = {
   label: string;
   value: string;
   meta: string;
-  icon: typeof CircleDollarSign;
+  icon: LucideIcon;
   tone: "green" | "amber" | "red" | "zinc";
 };
 
@@ -90,27 +89,13 @@ function RouteComponent() {
   const closedCount = recentPayments.filter((p) =>
     ["recovered", "failed", "dismissed"].includes(p.status),
   ).length;
-  const recoveredRecentCount = recentPayments.filter(
-    (p) => p.status === "recovered",
-  ).length;
-  const activeRecentCount = recentPayments.filter((p) =>
-    ["in_recovery", "escalated"].includes(p.status),
-  ).length;
-
   const metrics: Metric[] = [
     {
-      label: "Recovered this month",
-      value: formatAmount(s.recoveredAmount, currency),
-      meta: s.recoveredAmount > 0 ? "posted to MRR" : "waiting for first win",
-      icon: CircleDollarSign,
-      tone: s.recoveredAmount > 0 ? "green" : "zinc",
-    },
-    {
-      label: "Recovery rate",
-      value: `${s.successRate.toFixed(1)}%`,
-      meta: s.successRate > 0 ? "of closed failures" : "no closed cohort yet",
-      icon: Activity,
-      tone: s.successRate > 0 ? "green" : "zinc",
+      label: "MRR at risk",
+      value: formatAmount(s.mrrAtRisk, currency),
+      meta: s.mrrAtRisk > 0 ? "still exposed" : "no active exposure",
+      icon: MailWarning,
+      tone: s.mrrAtRisk > 0 ? "red" : "zinc",
     },
     {
       label: "In recovery",
@@ -120,29 +105,18 @@ function RouteComponent() {
       tone: s.inRecoveryCount > 0 ? "amber" : "zinc",
     },
     {
-      label: "MRR at risk",
-      value: formatAmount(s.mrrAtRisk, currency),
-      meta: s.mrrAtRisk > 0 ? "needs attention" : "no active exposure",
+      label: "Handled",
+      value: String(closedCount),
+      meta: "recent failures",
+      icon: CheckCircle2,
+      tone: closedCount > 0 ? "green" : "zinc",
+    },
+    {
+      label: "Needs attention",
+      value: String(pendingEscalations),
+      meta: pendingEscalations > 0 ? "quick founder review" : "nothing urgent",
       icon: MailWarning,
-      tone: s.mrrAtRisk > 0 ? "red" : "zinc",
-    },
-  ];
-
-  const statusRows = [
-    {
-      label: "Recovered",
-      value: recoveredRecentCount,
-      className: "bg-dunlo",
-    },
-    {
-      label: "Active recovery",
-      value: activeRecentCount,
-      className: "bg-amber-400",
-    },
-    {
-      label: "Closed cohort",
-      value: closedCount,
-      className: "bg-zinc-300",
+      tone: pendingEscalations > 0 ? "red" : "zinc",
     },
   ];
 
@@ -170,7 +144,7 @@ function RouteComponent() {
         </div>
       </div>
 
-      <div className="w-full space-y-5 px-4 py-5 sm:px-6 lg:py-6">
+      <div className="mx-auto w-full max-w-[1520px] space-y-5 px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
         <AnimatePresence>
           {!stripeConnected && (
             <motion.div
@@ -211,273 +185,231 @@ function RouteComponent() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="grid grid-cols-1 gap-5 xl:grid-cols-[minmax(0,1.55fr)_minmax(320px,0.75fr)]"
+          className="grid gap-6 xl:grid-cols-[360px_minmax(0,1fr)]"
         >
-          <div className="overflow-hidden rounded-[2rem] border border-zinc-200/70 bg-white shadow-[0_24px_60px_-42px_rgba(24,24,27,0.6)]">
-            <div className="grid gap-0 lg:grid-cols-[0.78fr_1.22fr]">
-              <div className="border-b border-zinc-100 p-6 lg:border-b-0 lg:border-r lg:p-8">
-                <div className="inline-flex items-center gap-2 rounded-full border border-dunlo/20 bg-dunlo/[0.06] px-3 py-1 text-[11px] font-semibold text-dunlo-deep">
-                  <ShieldCheck size={13} strokeWidth={2} />
-                  Monthly recovery pulse
-                </div>
-                <p className="mt-7 text-[13px] font-semibold uppercase tracking-widest text-zinc-400">
-                  Recovered
-                </p>
-                <p className="mt-3 font-mono text-4xl font-bold tracking-tight text-zinc-950 sm:text-5xl">
-                  {formatAmount(s.recoveredAmount, currency)}
-                </p>
-                <p className="mt-4 max-w-sm text-sm leading-relaxed text-zinc-500">
-                  {s.recoveredAmount > 0
-                    ? "Recovered revenue is moving back into the account this month."
-                    : stripeConnected
-                      ? "The graph will start moving after the first recovered payment."
-                      : "Connect Stripe and Dunlo will build this view from live failures."}
-                </p>
-              </div>
-
-              <div className="p-4 sm:p-6 lg:p-8">
-                <RecoveryTrendChart
-                  currency={currency}
-                  data={recoveryTrend}
-                />
-              </div>
+          <aside className="space-y-5 xl:sticky xl:top-24 xl:self-start">
+            <div className="overflow-hidden rounded-[2.25rem] bg-zinc-950 p-6 text-white shadow-[0_28px_80px_-46px_rgba(24,24,27,0.85)] sm:p-7">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-500">
+                Money back
+              </p>
+              <p className="mt-3 font-mono text-5xl font-bold tracking-tight text-white">
+                {formatAmount(s.recoveredAmount, currency)}
+              </p>
+              <p className="mt-5 max-w-[32ch] text-sm leading-relaxed text-zinc-400">
+                {s.recoveredAmount > 0
+                  ? "Recovered from failed charges while you stay focused on building the product."
+                  : stripeConnected
+                    ? "Dunlo will show recovered revenue here as soon as the first payment comes back."
+                    : "Connect Stripe once, then let Dunlo watch failed payments in the background."}
+              </p>
             </div>
 
-            <div className="grid grid-cols-1 border-t border-zinc-100 sm:grid-cols-2 xl:grid-cols-4">
-              {metrics.map((metric, index) => (
-                <MetricTile key={metric.label} metric={metric} index={index} />
-              ))}
-            </div>
-          </div>
-
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-1">
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.08, duration: 0.26 }}
-              className="rounded-[2rem] border border-zinc-200/70 bg-white p-6 shadow-[0_24px_60px_-42px_rgba(24,24,27,0.55)]"
-            >
-              <div className="flex items-start justify-between gap-4">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
-                    Exposure
-                  </p>
-                  <p className="mt-2 font-mono text-3xl font-bold tracking-tight text-zinc-950">
-                    {formatAmount(s.mrrAtRisk, currency)}
-                  </p>
-                </div>
-                <div
-                  className={`flex size-10 items-center justify-center rounded-2xl ${
-                    s.mrrAtRisk > 0 ? "bg-red-50" : "bg-dunlo/[0.08]"
-                  }`}
-                >
-                  <MailWarning
-                    size={18}
-                    strokeWidth={2}
-                    className={
-                      s.mrrAtRisk > 0 ? "text-red-600" : "text-dunlo"
-                    }
-                  />
-                </div>
+            <div className="rounded-[2rem] border border-zinc-200/70 bg-white p-5">
+              <div className="flex flex-col gap-1 border-b border-zinc-100 pb-5">
+                <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
+                  Next actions
+                </p>
+                <p className="text-sm font-semibold text-zinc-950">
+                  {pendingEscalations > 0
+                    ? `${pendingEscalations} customer${pendingEscalations === 1 ? "" : "s"} to review`
+                    : "Nothing urgent right now"}
+                </p>
               </div>
 
-              <div className="mt-7 space-y-4">
-                {statusRows.map((row) => (
-                  <div key={row.label}>
-                    <div className="flex items-center justify-between text-xs">
-                      <span className="font-medium text-zinc-500">
-                        {row.label}
-                      </span>
-                      <span className="font-mono font-semibold text-zinc-900">
-                        {row.value}
-                      </span>
-                    </div>
-                    <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-zinc-100">
-                      <div
-                        className={`h-full rounded-full ${row.className}`}
-                        style={{
-                          width: `${Math.min(100, Math.max(8, row.value * 18))}%`,
-                        }}
-                      />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </motion.div>
-
-            <motion.div
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.14, duration: 0.26 }}
-              className="rounded-[2rem] border border-zinc-200/70 bg-white p-6 shadow-[0_24px_60px_-42px_rgba(24,24,27,0.55)]"
-            >
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
-                    Control queue
-                  </p>
-                  <p className="mt-1 text-sm font-semibold text-zinc-950">
-                    {pendingEscalations} pending escalation
-                    {pendingEscalations === 1 ? "" : "s"}
-                  </p>
-                </div>
-                <span className="flex size-2.5 rounded-full bg-dunlo ring-4 ring-dunlo/15" />
-              </div>
-
-              <div className="mt-6 divide-y divide-zinc-100">
+              <div className="mt-4 grid gap-3">
                 <QuickAction
                   icon={Zap}
-                  label="Recovery sequences"
-                  meta="Tune email timing"
+                  label="Recovery emails"
+                  meta="Adjust timing and tone"
                   to="/sequences"
                 />
                 <QuickAction
                   icon={Settings}
-                  label="Escalation threshold"
-                  meta="Set high-value alerts"
+                  label="Founder alerts"
+                  meta="Choose when Dunlo pings you"
                   to="/settings"
                 />
               </div>
-            </motion.div>
-          </div>
-        </motion.section>
-
-        <motion.section
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.16, duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="overflow-hidden rounded-[2rem] border border-zinc-200/70 bg-white shadow-[0_24px_60px_-42px_rgba(24,24,27,0.55)]"
-        >
-          <div className="flex flex-col gap-4 border-b border-zinc-100 px-5 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
-            <div>
-              <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
-                Payments
-              </p>
-              <h2 className="mt-1 text-lg font-semibold tracking-tight text-zinc-950">
-                Recent failed charges
-              </h2>
             </div>
-            <Link
-              to="/payments"
-              className="inline-flex items-center gap-2 text-sm font-semibold text-dunlo-dim transition-all hover:gap-2.5 active:scale-[0.98]"
-            >
-              View all
-              <ArrowRight size={14} strokeWidth={2} />
-            </Link>
-          </div>
+          </aside>
 
-          {recentPayments.length === 0 ? (
-            <div className="flex flex-col items-center justify-center px-6 py-20 text-center">
-              <div className="mb-5 flex size-14 items-center justify-center rounded-[1.4rem] bg-zinc-50">
-                <CheckCircle2 size={22} strokeWidth={2} className="text-zinc-300" />
-              </div>
-              <p className="text-sm font-semibold text-zinc-800">
-                No failed payments yet
-              </p>
-              <p className="mt-2 max-w-sm text-sm leading-relaxed text-zinc-500">
-                This table will populate automatically when Stripe sends a
-                failed charge into Dunlo.
-              </p>
-            </div>
-          ) : (
-            <div className="overflow-x-auto">
-              <table className="w-full min-w-[760px]">
-                <thead>
-                  <tr className="border-b border-zinc-100">
-                    {["Customer", "Failure", "Amount", "Status", ""].map(
-                      (h, i) => (
-                        <th
-                          key={i}
-                          className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400 first:pl-6 last:pr-6"
-                        >
-                          {h}
-                        </th>
-                      ),
-                    )}
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-zinc-100">
-                  {recentPayments.map((p, index) => (
-                    <motion.tr
-                      key={p.id}
-                      initial={{ opacity: 0, y: 6 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{
-                        delay: index * 0.025,
-                        duration: 0.22,
-                        ease: [0.16, 1, 0.3, 1],
-                      }}
-                      className="group transition-colors hover:bg-zinc-50/80"
-                    >
-                      <td className="px-5 py-4 pl-6">
-                        <Link
-                          to="/payments/$id"
-                          params={{ id: p.id }}
-                          className="block"
-                        >
-                          <p className="text-sm font-semibold text-zinc-950 transition-colors group-hover:text-dunlo-deep">
-                            {p.name}
-                          </p>
-                          <p className="mt-0.5 text-xs text-zinc-400">
-                            {p.email}
-                          </p>
-                        </Link>
-                      </td>
-                      <td className="px-5 py-4">
-                        <Link
-                          to="/payments/$id"
-                          params={{ id: p.id }}
-                          className="block text-sm text-zinc-500"
-                        >
-                          {p.type}
-                        </Link>
-                      </td>
-                      <td className="px-5 py-4">
-                        <Link
-                          to="/payments/$id"
-                          params={{ id: p.id }}
-                          className="block"
-                        >
-                          <span className="font-mono text-sm font-semibold text-zinc-950">
-                            {p.amount}
-                          </span>
-                        </Link>
-                      </td>
-                      <td className="px-5 py-4">
-                        <Link
-                          to="/payments/$id"
-                          params={{ id: p.id }}
-                          className="block"
-                        >
-                          <span
-                            className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${STATUS_STYLE[p.status] ?? STATUS_STYLE.failed}`}
-                          >
-                            {STATUS_LABEL[p.status] ?? p.status}
-                          </span>
-                        </Link>
-                      </td>
-                      <td className="px-5 py-4 pr-6 text-right">
-                        <Link
-                          to="/payments/$id"
-                          params={{ id: p.id }}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-300 opacity-0 transition-all group-hover:opacity-100 group-hover:text-dunlo-dim"
-                        >
-                          Detail <ArrowRight size={12} strokeWidth={2} />
-                        </Link>
-                      </td>
-                    </motion.tr>
+          <div className="min-w-0 space-y-6">
+            <div className="rounded-[2.25rem] border border-zinc-200/70 bg-white p-5 sm:p-6 lg:p-8">
+              <div className="mb-7">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+                  <div>
+                    <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
+                      Founder brief
+                    </p>
+                    <h2 className="mt-1 text-lg font-semibold tracking-tight text-zinc-950">
+                      What changed this month
+                    </h2>
+                  </div>
+                  <span className="w-fit rounded-full border border-zinc-200 px-3 py-1 font-mono text-[10px] font-semibold text-zinc-400">
+                    This month
+                  </span>
+                </div>
+
+                <div className="mt-5 grid gap-px overflow-hidden rounded-[1.5rem] border border-zinc-100 bg-zinc-100 sm:grid-cols-2 xl:grid-cols-4">
+                  {metrics.map((metric, index) => (
+                    <BriefMetric
+                      key={metric.label}
+                      metric={metric}
+                      index={index}
+                    />
                   ))}
-                </tbody>
-              </table>
+                </div>
+              </div>
+
+              <RecoveryTrendChart currency={currency} data={recoveryTrend} />
             </div>
-          )}
+
+            <motion.section
+              initial={{ opacity: 0, y: 12 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                delay: 0.16,
+                duration: 0.3,
+                ease: [0.16, 1, 0.3, 1],
+              }}
+              className="overflow-hidden rounded-[2rem] border border-zinc-200/70 bg-white"
+            >
+              <div className="grid gap-4 border-b border-zinc-100 px-5 py-5 sm:grid-cols-[1fr_auto] sm:items-end sm:px-6">
+                <div>
+                  <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
+                    Customer follow-up
+                  </p>
+                  <h2 className="mt-1 text-lg font-semibold tracking-tight text-zinc-950">
+                    Failed charges to watch
+                  </h2>
+                </div>
+                <Link
+                  to="/payments"
+                  className="inline-flex items-center gap-2 text-sm font-semibold text-dunlo-dim transition-all hover:gap-2.5 active:scale-[0.98]"
+                >
+                  View all
+                  <ArrowRight size={14} strokeWidth={2} />
+                </Link>
+              </div>
+
+              {recentPayments.length === 0 ? (
+                <div className="flex flex-col items-center justify-center px-6 py-20 text-center">
+                  <div className="mb-5 flex size-14 items-center justify-center rounded-full bg-zinc-50">
+                    <CheckCircle2
+                      size={22}
+                      strokeWidth={2}
+                      className="text-zinc-300"
+                    />
+                  </div>
+                  <p className="text-sm font-semibold text-zinc-800">
+                    No failed payments to chase
+                  </p>
+                  <p className="mt-2 max-w-sm text-sm leading-relaxed text-zinc-500">
+                    When Stripe sends a failed charge, Dunlo will put the
+                    customer here with the amount, reason, and recovery state.
+                  </p>
+                </div>
+              ) : (
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[760px]">
+                    <thead>
+                      <tr className="border-b border-zinc-100">
+                        {["Customer", "Failure", "Amount", "Status", ""].map(
+                          (h, i) => (
+                            <th
+                              key={i}
+                              className="px-5 py-3 text-left text-[10px] font-semibold uppercase tracking-widest text-zinc-400 first:pl-6 last:pr-6"
+                            >
+                              {h}
+                            </th>
+                          ),
+                        )}
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-zinc-100">
+                      {recentPayments.map((p, index) => (
+                        <motion.tr
+                          key={p.id}
+                          initial={{ opacity: 0, y: 6 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          transition={{
+                            delay: index * 0.025,
+                            duration: 0.22,
+                            ease: [0.16, 1, 0.3, 1],
+                          }}
+                          className="group transition-colors hover:bg-zinc-50/80"
+                        >
+                          <td className="px-5 py-4 pl-6">
+                            <Link
+                              to="/payments/$id"
+                              params={{ id: p.id }}
+                              className="block"
+                            >
+                              <p className="text-sm font-semibold text-zinc-950 transition-colors group-hover:text-dunlo-deep">
+                                {p.name}
+                              </p>
+                              <p className="mt-0.5 text-xs text-zinc-400">
+                                {p.email}
+                              </p>
+                            </Link>
+                          </td>
+                          <td className="px-5 py-4">
+                            <Link
+                              to="/payments/$id"
+                              params={{ id: p.id }}
+                              className="block text-sm text-zinc-500"
+                            >
+                              {p.type}
+                            </Link>
+                          </td>
+                          <td className="px-5 py-4">
+                            <Link
+                              to="/payments/$id"
+                              params={{ id: p.id }}
+                              className="block"
+                            >
+                              <span className="font-mono text-sm font-semibold text-zinc-950">
+                                {p.amount}
+                              </span>
+                            </Link>
+                          </td>
+                          <td className="px-5 py-4">
+                            <Link
+                              to="/payments/$id"
+                              params={{ id: p.id }}
+                              className="block"
+                            >
+                              <span
+                                className={`rounded-full border px-2.5 py-1 text-[10px] font-semibold ${STATUS_STYLE[p.status] ?? STATUS_STYLE.failed}`}
+                              >
+                                {STATUS_LABEL[p.status] ?? p.status}
+                              </span>
+                            </Link>
+                          </td>
+                          <td className="px-5 py-4 pr-6 text-right">
+                            <Link
+                              to="/payments/$id"
+                              params={{ id: p.id }}
+                              className="inline-flex items-center gap-1.5 text-xs font-semibold text-zinc-300 opacity-0 transition-all group-hover:opacity-100 group-hover:text-dunlo-dim"
+                            >
+                              Detail <ArrowRight size={12} strokeWidth={2} />
+                            </Link>
+                          </td>
+                        </motion.tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              )}
+            </motion.section>
+          </div>
         </motion.section>
       </div>
     </div>
   );
 }
 
-function MetricTile({ metric, index }: { metric: Metric; index: number }) {
+function BriefMetric({ metric, index }: { metric: Metric; index: number }) {
   const Icon = metric.icon;
   const toneClass = {
     green: "bg-dunlo/[0.08] text-dunlo",
@@ -495,14 +427,14 @@ function MetricTile({ metric, index }: { metric: Metric; index: number }) {
         duration: 0.24,
         ease: [0.16, 1, 0.3, 1],
       }}
-      className="border-b border-zinc-100 p-5 last:border-b-0 sm:odd:border-r xl:border-b-0 xl:border-r xl:last:border-r-0"
+      className="bg-white p-4"
     >
       <div className="flex items-center justify-between gap-3">
         <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400">
           {metric.label}
         </p>
         <span
-          className={`flex size-8 shrink-0 items-center justify-center rounded-xl ${toneClass}`}
+          className={`flex size-8 shrink-0 items-center justify-center rounded-full ${toneClass}`}
         >
           <Icon size={15} strokeWidth={2} />
         </span>
@@ -529,7 +461,7 @@ function QuickAction({
   return (
     <Link
       to={to}
-      className="group flex items-center justify-between gap-4 py-4 first:pt-0 last:pb-0 active:scale-[0.99]"
+      className="group flex items-center justify-between gap-4 rounded-[1.25rem] bg-zinc-50/70 px-4 py-3 transition-all hover:bg-zinc-50 active:scale-[0.99]"
     >
       <div className="flex min-w-0 items-center gap-3">
         <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-zinc-50 text-zinc-400 transition-colors group-hover:bg-dunlo/[0.08] group-hover:text-dunlo">
@@ -579,14 +511,14 @@ function RecoveryTrendChart({
   } satisfies ChartConfig;
 
   return (
-    <div className="relative min-h-[320px]">
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+    <div className="relative min-h-[340px]">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
           <p className="text-sm font-semibold text-zinc-950">
-            Month-to-date movement
+            Recovery curve
           </p>
           <p className="mt-1 text-xs text-zinc-400">
-            Failed exposure against recovered value
+            Failed charges against money brought back
           </p>
         </div>
         <div className="flex items-center gap-4 text-[11px] font-medium text-zinc-400">
@@ -601,16 +533,16 @@ function RecoveryTrendChart({
         </div>
       </div>
 
-      <div className="relative overflow-hidden rounded-[1.5rem] border border-zinc-100 bg-zinc-50/70 p-3">
+      <div className="relative overflow-hidden rounded-[1.6rem] bg-zinc-50/70 p-4">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[240px] w-full"
-          initialDimension={{ width: 680, height: 240 }}
+          className="aspect-auto h-[260px] w-full"
+          initialDimension={{ width: 720, height: 260 }}
         >
           <AreaChart
             accessibilityLayer
             data={data}
-            margin={{ top: 12, right: 14, bottom: 4, left: 0 }}
+            margin={{ top: 12, right: 14, bottom: 4, left: 4 }}
           >
             <CartesianGrid
               vertical={false}
@@ -626,7 +558,7 @@ function RecoveryTrendChart({
               minTickGap={26}
             />
             <YAxis
-              width={44}
+              width={62}
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -685,11 +617,11 @@ function RecoveryTrendChart({
           <div className="absolute inset-3 flex flex-col items-center justify-center rounded-[1.25rem] bg-white/80 text-center backdrop-blur-sm">
             <Activity size={20} strokeWidth={2} className="text-zinc-300" />
             <p className="mt-3 text-sm font-semibold text-zinc-700">
-              No monthly movement yet
+              Nothing to read yet
             </p>
             <p className="mt-1 max-w-xs text-xs leading-relaxed text-zinc-400">
-              Failed and recovered values will appear here as payment events
-              arrive.
+              Once a failed payment arrives, this turns into a simple recovery
+              curve you can scan in a few seconds.
             </p>
           </div>
         ) : null}
