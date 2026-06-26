@@ -1,14 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import {
-  Area,
-  AreaChart,
-  Bar,
-  CartesianGrid,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Area, AreaChart, Bar, CartesianGrid, XAxis, YAxis } from "recharts";
 import {
   Activity,
   ArrowRight,
@@ -121,12 +114,12 @@ function RouteComponent() {
   ];
 
   return (
-    <div className="min-h-[100dvh] bg-zinc-50">
+    <div className="min-h-dvh bg-zinc-50">
       <div className="sticky top-0 z-20 border-b border-zinc-200/70 bg-zinc-50/85 px-4 py-3 backdrop-blur-md sm:px-6">
         <div className="flex w-full items-center justify-between gap-4">
           <div>
             <p className="text-[11px] font-semibold uppercase tracking-widest text-zinc-400">
-              Revenue recovery
+              Dashboard
             </p>
             <h1 className="mt-1 text-xl font-semibold tracking-tight text-zinc-950 sm:text-2xl">
               Good morning, {firstName}
@@ -144,7 +137,7 @@ function RouteComponent() {
         </div>
       </div>
 
-      <div className="mx-auto w-full max-w-[1520px] space-y-5 px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
+      <div className="mx-auto w-full max-w-380 space-y-5 px-4 py-5 sm:px-6 lg:px-8 lg:py-7">
         <AnimatePresence>
           {!stripeConnected && (
             <motion.div
@@ -156,7 +149,7 @@ function RouteComponent() {
             >
               <div className="grid gap-4 p-5 sm:grid-cols-[1fr_auto] sm:items-center sm:p-6">
                 <div className="flex items-start gap-4">
-                  <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-dunlo/[0.08]">
+                  <div className="flex size-11 shrink-0 items-center justify-center rounded-2xl bg-dunlo/8">
                     <Zap size={18} strokeWidth={2} className="text-dunlo" />
                   </div>
                   <div>
@@ -311,7 +304,7 @@ function RouteComponent() {
                 </div>
               ) : (
                 <div className="overflow-x-auto">
-                  <table className="w-full min-w-[760px]">
+                  <table className="w-full min-w-190">
                     <thead>
                       <tr className="border-b border-zinc-100">
                         {["Customer", "Failure", "Amount", "Status", ""].map(
@@ -461,10 +454,10 @@ function QuickAction({
   return (
     <Link
       to={to}
-      className="group flex items-center justify-between gap-4 rounded-[1.25rem] bg-zinc-50/70 px-4 py-3 transition-all hover:bg-zinc-50 active:scale-[0.99]"
+      className="group flex items-center justify-between gap-4 rounded-3xl bg-zinc-50/70 px-4 py-3 transition-all hover:bg-zinc-50 active:scale-[0.99]"
     >
       <div className="flex min-w-0 items-center gap-3">
-        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-zinc-50 text-zinc-400 transition-colors group-hover:bg-dunlo/[0.08] group-hover:text-dunlo">
+        <span className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-zinc-50 text-zinc-400 transition-colors group-hover:bg-dunlo/8 group-hover:text-dunlo">
           <Icon size={15} strokeWidth={2} />
         </span>
         <span className="min-w-0">
@@ -511,12 +504,10 @@ function RecoveryTrendChart({
   } satisfies ChartConfig;
 
   return (
-    <div className="relative min-h-[340px]">
+    <div className="relative min-h-85">
       <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
         <div>
-          <p className="text-sm font-semibold text-zinc-950">
-            Recovery curve
-          </p>
+          <p className="text-sm font-semibold text-zinc-950">Recovery curve</p>
           <p className="mt-1 text-xs text-zinc-400">
             Failed charges against money brought back
           </p>
@@ -536,7 +527,7 @@ function RecoveryTrendChart({
       <div className="relative overflow-hidden rounded-[1.6rem] bg-zinc-50/70 p-4">
         <ChartContainer
           config={chartConfig}
-          className="aspect-auto h-[260px] w-full"
+          className="aspect-auto h-65 w-full"
           initialDimension={{ width: 720, height: 260 }}
         >
           <AreaChart
@@ -614,7 +605,7 @@ function RecoveryTrendChart({
         </ChartContainer>
 
         {!hasData ? (
-          <div className="absolute inset-3 flex flex-col items-center justify-center rounded-[1.25rem] bg-white/80 text-center backdrop-blur-sm">
+          <div className="absolute inset-3 flex flex-col items-center justify-center rounded-3xl bg-white/80 text-center backdrop-blur-sm">
             <Activity size={20} strokeWidth={2} className="text-zinc-300" />
             <p className="mt-3 text-sm font-semibold text-zinc-700">
               Nothing to read yet

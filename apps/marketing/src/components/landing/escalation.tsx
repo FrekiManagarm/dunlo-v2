@@ -120,7 +120,7 @@ export function Escalation() {
         </div>
 
         <div className="relative bg-stone-50 p-4 md:p-8">
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-[size:52px_52px]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-size-[52px_52px]" />
           <div className="relative mx-auto max-w-2xl">
             <div className="rounded-[1.7rem] border border-gray-200 bg-white shadow-[0_24px_80px_-62px_rgba(15,23,42,0.55)]">
               <div className="flex items-center justify-between border-b border-gray-200 bg-gray-50/80 px-4 py-3">
@@ -139,7 +139,7 @@ export function Escalation() {
 
               <div className="p-4 md:p-5">
                 <div className="grid gap-3 md:grid-cols-[0.74fr_1.26fr]">
-                  <div className="rounded-[1.25rem] border border-gray-100 bg-gray-50 p-4">
+                  <div className="rounded-3xl border border-gray-100 bg-gray-50 p-4">
                     <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
                       Account
                     </p>
@@ -151,17 +151,13 @@ export function Escalation() {
                     </p>
                     <div className="mt-5 grid grid-cols-2 gap-2">
                       <div className="rounded-2xl bg-white p-3">
-                        <p className="font-mono text-lg font-semibold">
-                          $956
-                        </p>
+                        <p className="font-mono text-lg font-semibold">$956</p>
                         <p className="text-[11px] font-medium text-gray-500">
                           failed
                         </p>
                       </div>
                       <div className="rounded-2xl bg-white p-3">
-                        <p className="font-mono text-lg font-semibold">
-                          3y
-                        </p>
+                        <p className="font-mono text-lg font-semibold">3y</p>
                         <p className="text-[11px] font-medium text-gray-500">
                           customer
                         </p>
@@ -169,7 +165,7 @@ export function Escalation() {
                     </div>
                   </div>
 
-                  <div className="rounded-[1.25rem] bg-gray-950 p-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+                  <div className="rounded-3xl bg-gray-950 p-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
                     <div className="flex items-start justify-between gap-4">
                       <div>
                         <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-dunlo">
@@ -200,7 +196,8 @@ export function Escalation() {
                       {steps.map((step, index) => {
                         const Icon = step.icon;
                         const isActive = index === active;
-                        const isDone = index < active || active === steps.length - 1;
+                        const isDone =
+                          index < active || active === steps.length - 1;
 
                         return (
                           <div
@@ -232,12 +229,16 @@ export function Escalation() {
                   </div>
                 </div>
 
-                <div className="mt-3 rounded-[1.25rem] border border-gray-100 bg-gray-50 p-4">
+                <div className="mt-3 rounded-3xl border border-gray-100 bg-gray-50 p-4">
                   <div className="flex items-center justify-between gap-4">
                     <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
                       Founder draft
                     </p>
-                    <Mail size={17} strokeWidth={2} className="text-dunlo-deep" />
+                    <Mail
+                      size={17}
+                      strokeWidth={2}
+                      className="text-dunlo-deep"
+                    />
                   </div>
                   <div className="mt-4 space-y-2">
                     {draftLines.map((line, index) => (

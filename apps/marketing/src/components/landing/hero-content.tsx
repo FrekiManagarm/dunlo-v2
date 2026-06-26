@@ -50,7 +50,7 @@ export function HeroContent() {
           initial={{ opacity: 0, y: 18 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.78, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-8 max-w-[21rem] text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:max-w-xl sm:text-5xl sm:leading-[0.98] md:text-6xl"
+          className="mt-8 max-w-84 text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:max-w-xl sm:text-5xl sm:leading-[0.98] md:text-6xl"
         >
           Recover failed payments without burning customer trust
         </motion.h1>
@@ -59,7 +59,7 @@ export function HeroContent() {
           initial={{ opacity: 0, y: 12 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.68, delay: 0.17, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-5 max-w-[21rem] border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700 sm:max-w-lg"
+          className="mt-5 max-w-84 border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700 sm:max-w-lg"
         >
           Dunlo turns Stripe failure codes into smart recovery emails, retry
           timing, and founder escalation for Stripe-first SaaS teams, so good
@@ -70,7 +70,7 @@ export function HeroContent() {
           initial={{ opacity: 0, y: 14 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, delay: 0.24, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-8 flex max-w-[21rem] flex-col gap-3 sm:max-w-none sm:flex-row"
+          className="mt-8 flex max-w-84 flex-col gap-3 sm:max-w-none sm:flex-row"
         >
           <Link
             href="/benchmark"
@@ -95,7 +95,7 @@ export function HeroContent() {
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.62, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          className="mt-5 grid max-w-[21rem] gap-2 text-xs font-semibold text-gray-500 sm:flex sm:max-w-none sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2"
+          className="mt-5 grid max-w-84 gap-2 text-xs font-semibold text-gray-500 sm:flex sm:max-w-none sm:flex-wrap sm:items-center sm:gap-x-4 sm:gap-y-2"
         >
           <Link
             href="/stripe-failed-payments"

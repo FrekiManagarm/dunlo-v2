@@ -103,134 +103,136 @@ export default function StripeDunningPage() {
         <section className="relative -mx-3 px-3 md:-mx-4 md:px-4">
           <OrganicBackdrop />
           <div className="relative mx-auto grid min-h-[calc(100dvh-8rem)] max-w-6xl min-w-0 gap-12 py-6 md:grid-cols-[0.92fr_1.08fr] md:items-center md:gap-14 md:py-8">
-          <div className="min-w-0 max-w-xl">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-              Stripe dunning for SaaS
-            </p>
-            <div className="mt-5 flex flex-wrap gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-dunlo/30 bg-dunlo/15 px-3 py-1.5 text-xs font-bold text-dunlo-deep">
-                <BellRing size={13} strokeWidth={2.2} />
-                Event-driven dunning
-              </span>
-              <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-xs font-bold text-gray-700 shadow-sm">
-                <CalendarClock size={13} strokeWidth={2.2} />
-                Timed recovery sequence
-              </span>
-            </div>
-            <h1 className="mt-8 max-w-xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:text-5xl sm:leading-[0.98] md:text-6xl">
-              A dunning workflow that treats failed payments like customers, not
-              errors.
-            </h1>
-            <p className="mt-5 max-w-lg border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700">
-              Dunlo gives every failed Stripe invoice a recovery path: a clear
-              customer email, a timed retry, a payment update link, and founder
-              escalation before a valuable account quietly disappears.
-            </p>
-
-            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <a
-                href={SIGNUP_URL}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-[1px] hover:bg-gray-800 active:scale-[0.98]"
-              >
-                Build your dunning flow
-                <ArrowRight size={16} strokeWidth={1.8} />
-              </a>
-              <Link
-                href="/stripe-dunning-schedule-calculator"
-                className="inline-flex h-12 items-center justify-center rounded-full border border-gray-300 px-6 text-sm font-semibold text-gray-800 transition-all duration-300 hover:-translate-y-[1px] hover:border-gray-950 active:scale-[0.98]"
-              >
-                Calculate your schedule
-              </Link>
-            </div>
-          </div>
-
-          <aside className="relative min-w-0 md:pl-10">
-            <div className="overflow-hidden rounded-[1.75rem] border border-gray-200/70 bg-white shadow-[0_24px_70px_-52px_rgba(17,24,39,0.45)]">
-              <div className="border-b border-gray-100 bg-gray-50 px-5 py-4">
-                <div className="flex items-center justify-between gap-4">
-                  <div>
-                    <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400">
-                      Dunning sequence
-                    </p>
-                    <h2 className="mt-1 text-base font-bold tracking-tight text-gray-900">
-                      Past-due invoice
-                    </h2>
-                  </div>
-                  <span className="rounded-full border border-dunlo/25 bg-dunlo/10 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-dunlo-deep">
-                    active
-                  </span>
-                </div>
-                <div className="mt-4 grid grid-cols-2 gap-2">
-                  <div className="rounded-xl border border-gray-200 bg-white px-3 py-2">
-                    <p className="font-mono text-xl font-bold text-dunlo">
-                      4
-                    </p>
-                    <p className="text-[11px] font-medium text-gray-400">
-                      recovery steps
-                    </p>
-                  </div>
-                  <div className="rounded-xl border border-gray-200 bg-white px-3 py-2">
-                    <p className="font-mono text-xl font-bold text-gray-900">
-                      2m
-                    </p>
-                    <p className="text-[11px] font-medium text-gray-400">
-                      first email
-                    </p>
-                  </div>
-                </div>
+            <div className="min-w-0 max-w-xl">
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+                Stripe dunning for SaaS
+              </p>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-dunlo/30 bg-dunlo/15 px-3 py-1.5 text-xs font-bold text-dunlo-deep">
+                  <BellRing size={13} strokeWidth={2.2} />
+                  Event-driven dunning
+                </span>
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-xs font-bold text-gray-700 shadow-sm">
+                  <CalendarClock size={13} strokeWidth={2.2} />
+                  Timed recovery sequence
+                </span>
               </div>
+              <h1 className="mt-8 max-w-xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:text-5xl sm:leading-[0.98] md:text-6xl">
+                A dunning workflow that treats failed payments like customers,
+                not errors.
+              </h1>
+              <p className="mt-5 max-w-lg border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700">
+                Dunlo gives every failed Stripe invoice a recovery path: a clear
+                customer email, a timed retry, a payment update link, and
+                founder escalation before a valuable account quietly disappears.
+              </p>
 
-              <div className="p-5">
-                <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
-                  Sequence status
-                </p>
-                <div className="mt-4 space-y-1">
-                  {[
-                    ["invoice failed", "detected"],
-                    ["email one", "sent"],
-                    ["retry window", "waiting"],
-                    ["founder note", "ready"],
-                  ].map(([label, state], index) => (
-                    <div
-                      key={label}
-                      className="grid grid-cols-[24px_1fr_auto] items-center gap-3 py-3"
-                    >
-                      <span
-                        className={`size-2.5 rounded-full ${
-                          index === 2 ? "animate-pulse bg-dunlo" : "bg-gray-300"
-                        }`}
-                      />
-                      <span className="text-sm font-semibold text-gray-950">
-                        {label}
-                      </span>
-                      <span className="font-mono text-xs text-gray-500">
-                        {state}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-2 gap-3">
-              {[
-                { label: "Detect", icon: BellRing },
-                { label: "Message", icon: Mail },
-                { label: "Retry", icon: CalendarClock },
-                { label: "Recover", icon: ShieldCheck },
-              ].map(({ label, icon: Icon }) => (
-                <div
-                  key={label}
-                  className="rounded-xl border border-dunlo/20 bg-dunlo/[0.07] p-3"
+              <div className="mt-8 flex flex-col gap-3 sm:flex-row">
+                <a
+                  href={SIGNUP_URL}
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
                 >
-                  <Icon size={17} className="text-dunlo-deep" />
-                  <p className="mt-2 text-sm font-bold text-gray-950">
-                    {label}
-                  </p>
-                </div>
-              ))}
+                  Build your dunning flow
+                  <ArrowRight size={16} strokeWidth={1.8} />
+                </a>
+                <Link
+                  href="/stripe-dunning-schedule-calculator"
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-gray-300 px-6 text-sm font-semibold text-gray-800 transition-all duration-300 hover:-translate-y-px hover:border-gray-950 active:scale-[0.98]"
+                >
+                  Calculate your schedule
+                </Link>
+              </div>
             </div>
-          </aside>
+
+            <aside className="relative min-w-0 md:pl-10">
+              <div className="overflow-hidden rounded-4xl border border-gray-200/70 bg-white shadow-[0_24px_70px_-52px_rgba(17,24,39,0.45)]">
+                <div className="border-b border-gray-100 bg-gray-50 px-5 py-4">
+                  <div className="flex items-center justify-between gap-4">
+                    <div>
+                      <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400">
+                        Dunning sequence
+                      </p>
+                      <h2 className="mt-1 text-base font-bold tracking-tight text-gray-900">
+                        Past-due invoice
+                      </h2>
+                    </div>
+                    <span className="rounded-full border border-dunlo/25 bg-dunlo/10 px-3 py-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-dunlo-deep">
+                      active
+                    </span>
+                  </div>
+                  <div className="mt-4 grid grid-cols-2 gap-2">
+                    <div className="rounded-xl border border-gray-200 bg-white px-3 py-2">
+                      <p className="font-mono text-xl font-bold text-dunlo">
+                        4
+                      </p>
+                      <p className="text-[11px] font-medium text-gray-400">
+                        recovery steps
+                      </p>
+                    </div>
+                    <div className="rounded-xl border border-gray-200 bg-white px-3 py-2">
+                      <p className="font-mono text-xl font-bold text-gray-900">
+                        2m
+                      </p>
+                      <p className="text-[11px] font-medium text-gray-400">
+                        first email
+                      </p>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="p-5">
+                  <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gray-400">
+                    Sequence status
+                  </p>
+                  <div className="mt-4 space-y-1">
+                    {[
+                      ["invoice failed", "detected"],
+                      ["email one", "sent"],
+                      ["retry window", "waiting"],
+                      ["founder note", "ready"],
+                    ].map(([label, state], index) => (
+                      <div
+                        key={label}
+                        className="grid grid-cols-[24px_1fr_auto] items-center gap-3 py-3"
+                      >
+                        <span
+                          className={`size-2.5 rounded-full ${
+                            index === 2
+                              ? "animate-pulse bg-dunlo"
+                              : "bg-gray-300"
+                          }`}
+                        />
+                        <span className="text-sm font-semibold text-gray-950">
+                          {label}
+                        </span>
+                        <span className="font-mono text-xs text-gray-500">
+                          {state}
+                        </span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 grid grid-cols-2 gap-3">
+                {[
+                  { label: "Detect", icon: BellRing },
+                  { label: "Message", icon: Mail },
+                  { label: "Retry", icon: CalendarClock },
+                  { label: "Recover", icon: ShieldCheck },
+                ].map(({ label, icon: Icon }) => (
+                  <div
+                    key={label}
+                    className="rounded-xl border border-dunlo/20 bg-dunlo/[0.07] p-3"
+                  >
+                    <Icon size={17} className="text-dunlo-deep" />
+                    <p className="mt-2 text-sm font-bold text-gray-950">
+                      {label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </aside>
           </div>
         </section>
 
@@ -333,18 +335,14 @@ function RelatedLinksSection() {
 function FaqSection() {
   return (
     <section className="rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md md:p-8">
-      <h2 className="text-2xl font-bold tracking-tight">
-        Stripe dunning FAQ
-      </h2>
+      <h2 className="text-2xl font-bold tracking-tight">Stripe dunning FAQ</h2>
       <div className="mt-6 divide-y divide-gray-200 border-y border-gray-200">
         {FAQS.map((faq) => (
           <div key={faq.question} className="py-5">
             <h3 className="text-base font-bold tracking-tight">
               {faq.question}
             </h3>
-            <p className="mt-2 text-sm leading-6 text-gray-600">
-              {faq.answer}
-            </p>
+            <p className="mt-2 text-sm leading-6 text-gray-600">{faq.answer}</p>
           </div>
         ))}
       </div>
@@ -367,7 +365,7 @@ function CtaSection() {
       </p>
       <a
         href={SIGNUP_URL}
-        className="mt-7 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-gray-950 transition-all duration-300 hover:-translate-y-[1px] hover:bg-dunlo-hover active:scale-[0.98]"
+        className="mt-7 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-gray-950 transition-all duration-300 hover:-translate-y-px hover:bg-dunlo-hover active:scale-[0.98]"
       >
         Start recovery
         <ArrowRight size={16} strokeWidth={1.8} />

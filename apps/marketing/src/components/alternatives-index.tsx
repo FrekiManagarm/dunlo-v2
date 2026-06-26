@@ -34,79 +34,89 @@ export function AlternativesIndex() {
         <section className="relative overflow-hidden rounded-[2rem] border border-gray-200 bg-gray-950 text-white shadow-[0_34px_100px_-68px_rgba(15,23,42,0.8)]">
           <div
             aria-hidden
-            className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-[size:38px_38px]"
+            className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-size-[38px_38px]"
           />
           <div
             aria-hidden
             className="absolute -right-28 top-12 h-64 w-64 rounded-full bg-dunlo/20 blur-3xl"
           />
           <div className="relative grid gap-8 px-5 py-8 md:px-8 md:py-10 lg:grid-cols-[1.04fr_0.96fr] lg:items-end lg:px-10 lg:py-12">
-          <motion.div
-            initial={{ opacity: 0, y: 14 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={spring}
-          >
-            <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-1.5 text-sm font-semibold text-white/75 shadow-sm">
-              <RouteIcon size={15} className="text-dunlo" />
-              Stripe recovery alternatives
-            </div>
-            <h1 className="max-w-3xl text-4xl font-bold leading-none tracking-tight md:text-6xl">
-              Find the recovery tool that fits your Stripe leak.
-            </h1>
-            <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/68 md:text-lg">
-              Compare broad churn suites, retry engines, billing platforms, and
-              focused failed-payment recovery tools without losing the practical
-              question: what should happen after Stripe says a payment failed?
-            </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/benchmark"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-gray-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
-              >
-                Estimate my payment leak
-                <ArrowRight size={15} />
-              </Link>
-              <Link
-                href={SIGNUP_URL}
-                className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/8 px-6 text-sm font-bold text-white transition-all hover:border-white/30 hover:bg-white/12 active:scale-[0.98]"
-              >
-                Start free
-              </Link>
-            </div>
-          </motion.div>
-
-          <motion.div
-            initial={{ opacity: 0, y: 18 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ ...spring, delay: 0.08 }}
-            className="rounded-[1.5rem] border border-white/10 bg-white/[0.06] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur"
-          >
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo">
-              Decision shortcut
-            </p>
-            <div className="mt-5 space-y-4">
-              {[
-                ["Need retry timing only?", "Start with Stripe Smart Retries."],
-                ["Need a broader churn suite?", "Look at Churnkey or Recurflux."],
-                ["Need Stripe failed-payment recovery?", "Dunlo is the focused path."],
-              ].map(([question, answer], index) => (
-                <div
-                  key={question}
-                  className="grid grid-cols-[auto_1fr] gap-3 border-t border-white/10 pt-4 first:border-t-0 first:pt-0"
+            <motion.div
+              initial={{ opacity: 0, y: 14 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={spring}
+            >
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-1.5 text-sm font-semibold text-white/75 shadow-sm">
+                <RouteIcon size={15} className="text-dunlo" />
+                Stripe recovery alternatives
+              </div>
+              <h1 className="max-w-3xl text-4xl font-bold leading-none tracking-tight md:text-6xl">
+                Find the recovery tool that fits your Stripe leak.
+              </h1>
+              <p className="mt-5 max-w-2xl text-base leading-relaxed text-white/68 md:text-lg">
+                Compare broad churn suites, retry engines, billing platforms,
+                and focused failed-payment recovery tools without losing the
+                practical question: what should happen after Stripe says a
+                payment failed?
+              </p>
+              <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href="/benchmark"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-gray-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
                 >
-                  <span className="flex size-8 items-center justify-center rounded-full bg-dunlo/15 font-mono text-xs font-bold text-dunlo">
-                    {index + 1}
-                  </span>
-                  <div>
-                    <p className="text-sm font-bold text-white">{question}</p>
-                    <p className="mt-1 text-sm leading-6 text-white/55">
-                      {answer}
-                    </p>
+                  Estimate my payment leak
+                  <ArrowRight size={15} />
+                </Link>
+                <Link
+                  href={SIGNUP_URL}
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-white/15 bg-white/8 px-6 text-sm font-bold text-white transition-all hover:border-white/30 hover:bg-white/12 active:scale-[0.98]"
+                >
+                  Start free
+                </Link>
+              </div>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, y: 18 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ ...spring, delay: 0.08 }}
+              className="rounded-[1.5rem] border border-white/10 bg-white/6 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur"
+            >
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo">
+                Decision shortcut
+              </p>
+              <div className="mt-5 space-y-4">
+                {[
+                  [
+                    "Need retry timing only?",
+                    "Start with Stripe Smart Retries.",
+                  ],
+                  [
+                    "Need a broader churn suite?",
+                    "Look at Churnkey or Recurflux.",
+                  ],
+                  [
+                    "Need Stripe failed-payment recovery?",
+                    "Dunlo is the focused path.",
+                  ],
+                ].map(([question, answer], index) => (
+                  <div
+                    key={question}
+                    className="grid grid-cols-[auto_1fr] gap-3 border-t border-white/10 pt-4 first:border-t-0 first:pt-0"
+                  >
+                    <span className="flex size-8 items-center justify-center rounded-full bg-dunlo/15 font-mono text-xs font-bold text-dunlo">
+                      {index + 1}
+                    </span>
+                    <div>
+                      <p className="text-sm font-bold text-white">{question}</p>
+                      <p className="mt-1 text-sm leading-6 text-white/55">
+                        {answer}
+                      </p>
+                    </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </motion.div>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </section>
 
@@ -198,7 +208,7 @@ export function AlternativesIndex() {
                       {page.competitorSummary}
                     </p>
                   </div>
-                  <div className="bg-dunlo/[0.06] p-5">
+                  <div className="bg-dunlo/6 p-5">
                     <p className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-dunlo-deep">
                       Dunlo
                     </p>

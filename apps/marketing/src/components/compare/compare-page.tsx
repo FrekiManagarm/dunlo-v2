@@ -102,8 +102,7 @@ export const COMPARE_PAGES: Record<string, ComparePageData> = {
       },
       {
         label: "Team stage",
-        first:
-          "Fits teams ready to run a dedicated dunning system.",
+        first: "Fits teams ready to run a dedicated dunning system.",
         second:
           "Fits teams ready to invest in broader retention infrastructure.",
         takeaway:
@@ -111,8 +110,7 @@ export const COMPARE_PAGES: Record<string, ComparePageData> = {
       },
       {
         label: "Operational weight",
-        first:
-          "More focused setup because the recovery surface is narrower.",
+        first: "More focused setup because the recovery surface is narrower.",
         second:
           "More strategic setup because the product touches several churn and retention workflows.",
         takeaway:
@@ -196,17 +194,14 @@ export const COMPARE_PAGES: Record<string, ComparePageData> = {
       },
       {
         label: "Billing migration",
-        first:
-          "Generally evaluated as an add-on recovery layer.",
-        second:
-          "Usually evaluated as a billing platform rollout or migration.",
+        first: "Generally evaluated as an add-on recovery layer.",
+        second: "Usually evaluated as a billing platform rollout or migration.",
         takeaway:
           "Chargebee can solve more billing problems, but it is a bigger operational decision.",
       },
       {
         label: "Dunning workflow",
-        first:
-          "Built around recovery campaigns and failed-payment follow-up.",
+        first: "Built around recovery campaigns and failed-payment follow-up.",
         second:
           "Smart Dunning is part of a broader billing and payment operations system.",
         takeaway:
@@ -218,13 +213,11 @@ export const COMPARE_PAGES: Record<string, ComparePageData> = {
           "Subscription teams that already have billing in place and want stronger payment recovery.",
         second:
           "Teams that need billing automation, invoicing, tax, revenue workflows, and dunning together.",
-        takeaway:
-          "This is a scope question before it is a feature question.",
+        takeaway: "This is a scope question before it is a feature question.",
       },
       {
         label: "Implementation",
-        first:
-          "Recovery-focused configuration around failed payments.",
+        first: "Recovery-focused configuration around failed payments.",
         second:
           "Billing-platform implementation that can touch products, invoices, taxes, and revenue workflows.",
         takeaway:
@@ -265,7 +258,10 @@ export const COMPARE_PAGES: Record<string, ComparePageData> = {
     ],
     sourceLinks: [
       { label: "Churn Buster", href: "https://churnbuster.io/" },
-      { label: "Chargebee pricing", href: "https://www.chargebee.com/pricing/" },
+      {
+        label: "Chargebee pricing",
+        href: "https://www.chargebee.com/pricing/",
+      },
       {
         label: "Chargebee dunning docs",
         href: "https://www.chargebee.com/docs/payments/2.0/dunning.html",
@@ -308,8 +304,7 @@ export const COMPARE_PAGES: Record<string, ComparePageData> = {
       },
       {
         label: "Revenue recovery",
-        first:
-          "Smart Dunning is part of the broader billing product set.",
+        first: "Smart Dunning is part of the broader billing product set.",
         second:
           "Stripe includes Smart Retries, customer emails, hosted payment updates, and recovery analytics.",
         takeaway:
@@ -319,8 +314,7 @@ export const COMPARE_PAGES: Record<string, ComparePageData> = {
         label: "Migration scope",
         first:
           "Adopting Chargebee is a platform decision that can affect billing operations.",
-        second:
-          "Staying on Stripe avoids a billing-platform migration.",
+        second: "Staying on Stripe avoids a billing-platform migration.",
         takeaway:
           "Do not migrate billing just to solve a small failed-payment leak.",
       },
@@ -330,15 +324,12 @@ export const COMPARE_PAGES: Record<string, ComparePageData> = {
           "Teams with subscription complexity, billing operations, tax, invoicing, and revenue workflow needs.",
         second:
           "Teams that want a direct Stripe-native billing stack and lighter operations.",
-        takeaway:
-          "The right answer changes as billing complexity grows.",
+        takeaway: "The right answer changes as billing complexity grows.",
       },
       {
         label: "Dunning depth",
-        first:
-          "Dunning sits inside a broader billing automation environment.",
-        second:
-          "Revenue recovery settings sit inside Stripe Billing.",
+        first: "Dunning sits inside a broader billing automation environment.",
+        second: "Revenue recovery settings sit inside Stripe Billing.",
         takeaway:
           "If you need recovery emails, tracking, and human escalation around Stripe, add a recovery layer rather than replacing billing.",
       },
@@ -376,7 +367,10 @@ export const COMPARE_PAGES: Record<string, ComparePageData> = {
       },
     ],
     sourceLinks: [
-      { label: "Chargebee pricing", href: "https://www.chargebee.com/pricing/" },
+      {
+        label: "Chargebee pricing",
+        href: "https://www.chargebee.com/pricing/",
+      },
       {
         label: "Chargebee dunning docs",
         href: "https://www.chargebee.com/docs/payments/2.0/dunning.html",
@@ -464,14 +458,14 @@ export function ComparePage({ page }: { page: ComparePageData }) {
               </h2>
             </div>
             <p className="max-w-xl text-sm leading-6 text-gray-500">
-              This page targets the neutral {page.firstName} vs {page.secondName}{" "}
-              search intent. Dunlo appears as a third option only where the
-              Stripe recovery use case is narrower.
+              This page targets the neutral {page.firstName} vs{" "}
+              {page.secondName} search intent. Dunlo appears as a third option
+              only where the Stripe recovery use case is narrower.
             </p>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px] border-collapse text-left">
+            <table className="w-full min-w-225 border-collapse text-left">
               <thead>
                 <tr className="border-b border-gray-200">
                   <th className="w-[18%] py-4 pr-5 text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">

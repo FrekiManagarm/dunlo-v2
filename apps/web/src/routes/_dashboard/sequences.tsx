@@ -302,9 +302,9 @@ function RouteComponent() {
   }
 
   return (
-    <div className="min-h-[100dvh] bg-zinc-50">
+    <div className="min-h-dvh bg-zinc-50">
       <header className="sticky top-0 z-20 border-b border-zinc-200/70 bg-white/90 px-4 py-4 backdrop-blur-md sm:px-6">
-        <div className="mx-auto flex w-full max-w-[1500px] items-center justify-between gap-4">
+        <div className="mx-auto flex w-full max-w-375 items-center justify-between gap-4">
           <div>
             <h1 className="text-xl font-semibold tracking-tight text-zinc-950 sm:text-2xl">
               Recovery emails
@@ -328,7 +328,7 @@ function RouteComponent() {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1500px] space-y-5 px-4 py-5 sm:px-6">
+      <main className="mx-auto w-full max-w-375 space-y-5 px-4 py-5 sm:px-6">
         <div className="overflow-x-auto rounded-[1.35rem] border border-zinc-200/70 bg-white p-1.5">
           <div className="flex min-w-max gap-1.5">
             {sequences.map((seq) => {
@@ -364,7 +364,7 @@ function RouteComponent() {
 
         {selectedSeq && (
           <div className="grid gap-5 xl:grid-cols-[minmax(0,1fr)_380px]">
-            <section className="overflow-hidden rounded-[1.75rem] border border-zinc-200/70 bg-white">
+            <section className="overflow-hidden rounded-4xl border border-zinc-200/70 bg-white">
               <div className="border-b border-zinc-100 px-5 py-5 sm:px-6">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                   <div>
@@ -378,7 +378,11 @@ function RouteComponent() {
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       <span className="inline-flex items-center gap-1.5 rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600">
-                        <Zap size={12} strokeWidth={2.2} className="text-dunlo" />
+                        <Zap
+                          size={12}
+                          strokeWidth={2.2}
+                          className="text-dunlo"
+                        />
                         Starts when payment fails
                       </span>
                       <span className="rounded-full bg-zinc-100 px-3 py-1 text-xs font-semibold text-zinc-600">
@@ -427,7 +431,7 @@ function RouteComponent() {
 
               <div className="px-4 py-5 sm:px-6">
                 <div className="relative">
-                  <div className="absolute bottom-8 left-[15px] top-4 w-px bg-zinc-200" />
+                  <div className="absolute bottom-8 left-3.75 top-4 w-px bg-zinc-200" />
                   <div className="space-y-3">
                     {selectedSeq.steps.map((step) => (
                       <StepCard
@@ -468,7 +472,7 @@ function RouteComponent() {
               </div>
             </section>
 
-            <aside className="xl:sticky xl:top-[94px] xl:self-start">
+            <aside className="xl:sticky xl:top-23.5 xl:self-start">
               {previewStep && previewEdit && (
                 <PreviewPanel
                   step={previewStep}
@@ -636,7 +640,7 @@ function StepCard({
                       <button
                         key={v}
                         onClick={() => insertVar(v)}
-                        className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 font-mono text-[10px] font-semibold text-zinc-500 transition-all hover:border-dunlo/40 hover:bg-dunlo/[0.06] hover:text-dunlo-deep active:scale-[0.98]"
+                        className="rounded-full border border-zinc-200 bg-white px-2.5 py-1 font-mono text-[10px] font-semibold text-zinc-500 transition-all hover:border-dunlo/40 hover:bg-dunlo/6 hover:text-dunlo-deep active:scale-[0.98]"
                       >
                         {v}
                       </button>
@@ -737,7 +741,7 @@ function SaveBadge({ status }: { status: SaveStatus }) {
           animate={{ opacity: 1, scale: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.15 }}
-          className="inline-flex items-center gap-1 rounded-full bg-dunlo/[0.08] px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-dunlo-deep"
+          className="inline-flex items-center gap-1 rounded-full bg-dunlo/8 px-2 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-dunlo-deep"
         >
           <span className="size-1 rounded-full bg-dunlo" />
           Saved

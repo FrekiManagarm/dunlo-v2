@@ -32,7 +32,7 @@ function FeaturedCard({ post }: { post: Post }) {
       href={`/blog/${post.slug}`}
       className="group relative block overflow-hidden rounded-2xl border border-border bg-card p-8 md:p-10 hover:border-dunlo/40 transition-all duration-300 hover:shadow-[0_12px_40px_-12px_rgba(0,232,123,0.18)]"
     >
-      <div className="absolute left-0 top-8 bottom-8 w-[3px] bg-dunlo rounded-r-full opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
+      <div className="absolute left-0 top-8 bottom-8 w-0.75 bg-dunlo rounded-r-full opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
 
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
         <div className="flex-1 min-w-0">
@@ -72,13 +72,7 @@ function FeaturedCard({ post }: { post: Post }) {
   );
 }
 
-function ArticleCard({
-  post,
-  postNumber,
-}: {
-  post: Post;
-  postNumber: string;
-}) {
+function ArticleCard({ post, postNumber }: { post: Post; postNumber: string }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
@@ -126,12 +120,8 @@ function EmptyState() {
       <div className="w-10 h-10 rounded-full bg-dunlo/10 border border-dunlo/20 flex items-center justify-center mb-4">
         <div className="w-4 h-4 rounded-sm border-2 border-dunlo/50" />
       </div>
-      <p className="font-semibold text-foreground mb-1">
-        No articles yet
-      </p>
-      <p className="text-sm text-muted-foreground">
-        Guides coming soon.
-      </p>
+      <p className="font-semibold text-foreground mb-1">No articles yet</p>
+      <p className="text-sm text-muted-foreground">Guides coming soon.</p>
     </div>
   );
 }
@@ -150,7 +140,7 @@ export function BlogIndex({ posts }: { posts: Post[] }) {
           transition={spring}
         >
           <div className="flex items-center gap-3 mb-5">
-            <span className="block w-6 h-[2px] bg-dunlo rounded-full" />
+            <span className="block w-6 h-0.5 bg-dunlo rounded-full" />
             <span className="text-xs font-semibold uppercase tracking-widest text-dunlo-dim">
               Resources
             </span>
@@ -159,7 +149,8 @@ export function BlogIndex({ posts }: { posts: Post[] }) {
             Stripe payment recovery blog
           </h1>
           <p className="text-muted-foreground text-lg max-w-[48ch]">
-            Practical guides for recovering failed Stripe payments and reducing involuntary churn.
+            Practical guides for recovering failed Stripe payments and reducing
+            involuntary churn.
           </p>
         </motion.div>
 

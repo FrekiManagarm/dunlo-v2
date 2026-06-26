@@ -129,7 +129,7 @@ export function RoiCalculator() {
         </div>
 
         <div className="relative bg-stone-50 p-4 md:p-7">
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-[size:52px_52px]" />
+          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-size-[52px_52px]" />
           <div className="relative rounded-[1.7rem] border border-gray-200 bg-white p-4 shadow-[0_24px_80px_-62px_rgba(15,23,42,0.48)] md:p-5">
             <div className="rounded-[1.35rem] bg-gray-950 p-5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
               <div className="flex items-center justify-between">
@@ -178,7 +178,11 @@ export function RoiCalculator() {
                     key={item.label}
                     className="rounded-[1.2rem] border border-gray-100 bg-stone-50 p-4"
                   >
-                    <Icon className="text-dunlo-deep" size={18} strokeWidth={2} />
+                    <Icon
+                      className="text-dunlo-deep"
+                      size={18}
+                      strokeWidth={2}
+                    />
                     <p className="mt-4 font-mono text-xl font-semibold tracking-tight text-gray-950">
                       {item.value}
                     </p>
@@ -192,9 +196,9 @@ export function RoiCalculator() {
 
             <div className="mt-3 rounded-[1.2rem] border border-gray-100 bg-white p-4">
               <p className="text-sm leading-6 text-gray-600">
-                Based on a 5% failed-payment rate and 63% recoverability.
-                Actual recovery depends on decline reason mix, customer segment,
-                retry timing, and message quality.
+                Based on a 5% failed-payment rate and 63% recoverability. Actual
+                recovery depends on decline reason mix, customer segment, retry
+                timing, and message quality.
               </p>
               <Link
                 href={SIGNUP_URL}

@@ -17,7 +17,6 @@ import {
   Mail,
   ReceiptText,
   TrendingUp,
-  UserRound,
   WalletCards,
   XCircle,
 } from "lucide-react";
@@ -180,7 +179,8 @@ function RouteComponent() {
       ? "First payment issue"
       : `${customerContext.previousFailedPaymentCount} previous issue${customerContext.previousFailedPaymentCount === 1 ? "" : "s"}`;
   const prioritySignal =
-    typeof stripeContext?.totalPaid === "number" && stripeContext.totalPaid > payment.amount * 4
+    typeof stripeContext?.totalPaid === "number" &&
+    stripeContext.totalPaid > payment.amount * 4
       ? "Prioritize recovery"
       : customerContext.previousFailedPaymentCount === 0
         ? "Use a light touch"
@@ -408,7 +408,11 @@ function RouteComponent() {
           <motion.section
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.04, duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+            transition={{
+              delay: 0.04,
+              duration: 0.24,
+              ease: [0.16, 1, 0.3, 1],
+            }}
             className="rounded-[2rem] border border-zinc-200/70 bg-white shadow-[0_18px_45px_-32px_rgba(24,24,27,0.28)]"
           >
             <div className="flex flex-col gap-2 border-b border-zinc-100 px-6 py-5 md:flex-row md:items-end md:justify-between">
@@ -447,7 +451,7 @@ function RouteComponent() {
                       }}
                       className={`relative min-h-36 rounded-[1.35rem] border p-4 transition-transform active:scale-[0.99] ${
                         isResolved
-                          ? "border-dunlo/25 bg-dunlo/[0.06]"
+                          ? "border-dunlo/25 bg-dunlo/6"
                           : item.state === "active"
                             ? "border-zinc-900 bg-zinc-950 text-white"
                             : "border-zinc-100 bg-zinc-50/60"
@@ -513,10 +517,14 @@ function RouteComponent() {
             <motion.section
               initial={{ opacity: 0, y: 10 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.08, duration: 0.24, ease: [0.16, 1, 0.3, 1] }}
+              transition={{
+                delay: 0.08,
+                duration: 0.24,
+                ease: [0.16, 1, 0.3, 1],
+              }}
               className={`rounded-[1.5rem] border px-5 py-4 ${
                 payment.status === "recovered"
-                  ? "border-dunlo/20 bg-dunlo/[0.05]"
+                  ? "border-dunlo/20 bg-dunlo/5"
                   : "border-amber-100 bg-amber-50"
               }`}
             >
@@ -647,7 +655,7 @@ function RouteComponent() {
                 </div>
               </div>
 
-              <div className="mt-6 rounded-2xl border border-dunlo/20 bg-dunlo/[0.05] px-4 py-3">
+              <div className="mt-6 rounded-2xl border border-dunlo/20 bg-dunlo/5 px-4 py-3">
                 <p className="text-sm font-semibold text-dunlo-deep">
                   {prioritySignal}
                 </p>

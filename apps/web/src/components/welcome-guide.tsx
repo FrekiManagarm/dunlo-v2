@@ -83,7 +83,7 @@ export function WelcomeGuide({ open, onClose }: WelcomeGuideProps) {
             animate={{ scale: 1, opacity: 1, y: 0 }}
             exit={{ scale: 0.94, opacity: 0, y: 12 }}
             transition={SPRING}
-            className="relative flex w-full max-w-[600px] overflow-hidden rounded-[28px] bg-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.10),0_0_0_1px_rgba(0,0,0,0.05)]"
+            className="relative flex w-full max-w-150 overflow-hidden rounded-4xl bg-white shadow-[0_40px_100px_-20px_rgba(0,0,0,0.10),0_0_0_1px_rgba(0,0,0,0.05)]"
           >
             {/* Close */}
             <button
@@ -95,7 +95,7 @@ export function WelcomeGuide({ open, onClose }: WelcomeGuideProps) {
             </button>
 
             {/* Left panel */}
-            <div className="hidden w-[210px] shrink-0 flex-col items-center justify-center gap-6 bg-[#f2fdf8] sm:flex">
+            <div className="hidden w-52.5 shrink-0 flex-col items-center justify-center gap-6 bg-[#f2fdf8] sm:flex">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={step}
@@ -105,9 +105,9 @@ export function WelcomeGuide({ open, onClose }: WelcomeGuideProps) {
                   transition={FAST_SPRING}
                   className="relative flex items-center justify-center"
                 >
-                  <div className="absolute size-[130px] rounded-full border border-dunlo/10" />
-                  <div className="absolute size-[88px] rounded-full border border-dunlo/[0.15]" />
-                  <div className="relative z-10 flex size-[60px] items-center justify-center rounded-2xl bg-white shadow-[0_6px_24px_-6px_rgba(0,232,123,0.28),0_0_0_1px_rgba(0,232,123,0.14)]">
+                  <div className="absolute size-32.5 rounded-full border border-dunlo/10" />
+                  <div className="absolute size-22 rounded-full border border-dunlo/15" />
+                  <div className="relative z-10 flex size-15 items-center justify-center rounded-2xl bg-white shadow-[0_6px_24px_-6px_rgba(0,232,123,0.28),0_0_0_1px_rgba(0,232,123,0.14)]">
                     <Icon size={22} strokeWidth={1.75} className="text-dunlo" />
                   </div>
                 </motion.div>
@@ -128,7 +128,7 @@ export function WelcomeGuide({ open, onClose }: WelcomeGuideProps) {
                             : "rgba(0,0,0,0.10)",
                     }}
                     transition={FAST_SPRING}
-                    className="w-[3px] rounded-full"
+                    className="w-0.75 rounded-full"
                   />
                 ))}
               </div>
@@ -136,7 +136,7 @@ export function WelcomeGuide({ open, onClose }: WelcomeGuideProps) {
 
             {/* Right panel */}
             <div className="flex flex-1 flex-col justify-between p-8 pb-7">
-              <div className="mb-8 mt-1 min-h-[130px]">
+              <div className="mb-8 mt-1 min-h-32.5">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={step}
@@ -179,7 +179,7 @@ export function WelcomeGuide({ open, onClose }: WelcomeGuideProps) {
                                 : "rgb(228,228,231)",
                         }}
                         transition={FAST_SPRING}
-                        className="h-[6px] rounded-full group-hover:opacity-80"
+                        className="h-1.5 rounded-full group-hover:opacity-80"
                       />
                     </button>
                   ))}

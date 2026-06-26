@@ -117,7 +117,8 @@ export default function StripeSmartRetriesAlternativePage() {
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline: "Stripe Smart Retries alternative for SaaS failed payment recovery",
+    headline:
+      "Stripe Smart Retries alternative for SaaS failed payment recovery",
     description: DESCRIPTION,
     image: absoluteUrl(`${PATH}/opengraph-image`),
     author: {
@@ -179,14 +180,14 @@ export default function StripeSmartRetriesAlternativePage() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
                   href={SIGNUP_URL}
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-semibold text-white transition-all hover:-translate-y-[1px] hover:bg-gray-800 active:scale-[0.98]"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
                 >
                   Start free in beta
                   <ArrowRight size={16} strokeWidth={2} />
                 </a>
                 <Link
                   href="#comparison"
-                  className="inline-flex h-12 items-center justify-center rounded-full border border-gray-200 px-6 text-sm font-semibold text-gray-900 transition-all hover:-translate-y-[1px] hover:border-gray-300 hover:bg-gray-50 active:scale-[0.98]"
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-gray-200 px-6 text-sm font-semibold text-gray-900 transition-all hover:-translate-y-px hover:border-gray-300 hover:bg-gray-50 active:scale-[0.98]"
                 >
                   Compare with Smart Retries
                 </Link>
@@ -363,8 +364,8 @@ export default function StripeSmartRetriesAlternativePage() {
                 is actually lost. If the only problem is retry timing, native
                 Smart Retries may be enough. If the customer needs to understand
                 the failure, update a payment method, approve a bank challenge,
-                or hear from a founder before the subscription is cancelled,
-                you need a recovery workflow around Stripe.
+                or hear from a founder before the subscription is cancelled, you
+                need a recovery workflow around Stripe.
               </p>
               <p>
                 For SaaS teams, the most important comparison points are
@@ -377,8 +378,14 @@ export default function StripeSmartRetriesAlternativePage() {
                 {[
                   ["Failure code", "Does the workflow change by reason?"],
                   ["Customer action", "Does the email explain what to do?"],
-                  ["Stop rule", "Does it stop once Stripe recovers the invoice?"],
-                  ["Founder review", "Can important accounts pause before send?"],
+                  [
+                    "Stop rule",
+                    "Does it stop once Stripe recovers the invoice?",
+                  ],
+                  [
+                    "Founder review",
+                    "Can important accounts pause before send?",
+                  ],
                 ].map(([label, copy]) => (
                   <div
                     key={label}
@@ -508,15 +515,21 @@ export default function StripeSmartRetriesAlternativePage() {
               </p>
               <p>
                 That distinction matters for SEO and for buyers. Someone
-                searching for a Stripe Smart Retries alternative is rarely asking
-                for a new payments stack. They are asking what to add when retry
-                timing alone does not recover enough revenue.
+                searching for a Stripe Smart Retries alternative is rarely
+                asking for a new payments stack. They are asking what to add
+                when retry timing alone does not recover enough revenue.
               </p>
               <div className="grid gap-3 sm:grid-cols-3">
                 {[
-                  ["Setup", "Connect Stripe, review defaults, monitor failures."],
+                  [
+                    "Setup",
+                    "Connect Stripe, review defaults, monitor failures.",
+                  ],
                   ["Pricing", "Free during beta; no recovered-revenue cut."],
-                  ["Reporting", "Open, recovered, and paused revenue by reason."],
+                  [
+                    "Reporting",
+                    "Open, recovered, and paused revenue by reason.",
+                  ],
                 ].map(([label, copy]) => (
                   <div
                     key={label}
@@ -546,7 +559,10 @@ export default function StripeSmartRetriesAlternativePage() {
                 "Your failed-payment volume is still easy to inspect manually.",
                 "You do not need customer-specific recovery emails yet.",
               ].map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-6 text-gray-600">
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-6 text-gray-600"
+                >
                   <span className="mt-2 size-1.5 shrink-0 rounded-full bg-dunlo" />
                   <span>{item}</span>
                 </li>
@@ -563,7 +579,10 @@ export default function StripeSmartRetriesAlternativePage() {
                 "You want to see open and recovered revenue by failure reason.",
                 "Important accounts should pause for founder review.",
               ].map((item) => (
-                <li key={item} className="flex gap-3 text-sm leading-6 text-white/70">
+                <li
+                  key={item}
+                  className="flex gap-3 text-sm leading-6 text-white/70"
+                >
                   <ShieldCheck
                     className="mt-0.5 shrink-0 text-dunlo"
                     size={17}
@@ -675,40 +694,41 @@ export default function StripeSmartRetriesAlternativePage() {
                 customer recovery workflow around it. Public Stripe docs explain
                 the retry and revenue recovery controls; Dunlo's comparison is
                 about the layer SaaS teams add when payment recovery also needs
-                customer communication, owner visibility, and escalation.
-                The recommendation is intentionally narrow: keep Stripe for
-                billing mechanics, add Dunlo when failed payments require a
+                customer communication, owner visibility, and escalation. The
+                recommendation is intentionally narrow: keep Stripe for billing
+                mechanics, add Dunlo when failed payments require a
                 customer-safe response and a founder-readable recovery queue.
                 That makes the page relevant for buyers comparing alternatives
-                without pretending a recovery layer should replace Stripe itself.
-                Clear positioning beats vague recovery claims for founders now.
+                without pretending a recovery layer should replace Stripe
+                itself. Clear positioning beats vague recovery claims for
+                founders now.
               </p>
             </div>
             <div className="flex flex-wrap gap-3">
-            {[
-              {
-                label: "Stripe Smart Retries docs",
-                href: "https://docs.stripe.com/billing/revenue-recovery/smart-retries",
-              },
-              {
-                label: "Stripe revenue recovery docs",
-                href: "https://docs.stripe.com/billing/revenue-recovery",
-              },
-              {
-                label: "Stripe invoice.payment_failed event",
-                href: "https://docs.stripe.com/api/events/types#event_types-invoice.payment_failed",
-              },
-            ].map((source) => (
-              <a
-                key={source.href}
-                href={source.href}
-                target="_blank"
-                rel="noreferrer"
-                className="rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50"
-              >
-                {source.label}
-              </a>
-            ))}
+              {[
+                {
+                  label: "Stripe Smart Retries docs",
+                  href: "https://docs.stripe.com/billing/revenue-recovery/smart-retries",
+                },
+                {
+                  label: "Stripe revenue recovery docs",
+                  href: "https://docs.stripe.com/billing/revenue-recovery",
+                },
+                {
+                  label: "Stripe invoice.payment_failed event",
+                  href: "https://docs.stripe.com/api/events/types#event_types-invoice.payment_failed",
+                },
+              ].map((source) => (
+                <a
+                  key={source.href}
+                  href={source.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50"
+                >
+                  {source.label}
+                </a>
+              ))}
             </div>
           </div>
         </section>

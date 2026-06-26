@@ -458,7 +458,7 @@ function FeaturesSection() {
                 {recoveryPaths.map((path, index) => (
                   <div
                     key={path.code}
-                    className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.06] p-3"
+                    className="grid grid-cols-[auto_1fr_auto] items-center gap-3 rounded-2xl border border-white/10 bg-white/6 p-3"
                   >
                     <span className="flex size-8 items-center justify-center rounded-full bg-dunlo/15 font-mono text-[11px] font-semibold text-dunlo">
                       {String(index + 1).padStart(2, "0")}

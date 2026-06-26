@@ -1907,7 +1907,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             </div>
 
             <aside className="min-w-0 border-t border-gray-200 bg-gray-950 px-5 py-6 text-white md:px-8 md:py-8 lg:border-l lg:border-t-0 lg:px-10 lg:py-10">
-              <div className="rounded-[1.5rem] border border-white/10 bg-white/[0.06] p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+              <div className="rounded-[1.5rem] border border-white/10 bg-white/6 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
                 <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo">
                   Fast verdict
                 </p>
@@ -2021,7 +2021,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
           </div>
 
           <div className="overflow-x-auto px-4 py-2 md:px-8 md:py-4">
-            <table className="w-full min-w-[760px] border-collapse text-left">
+            <table className="w-full min-w-190 border-collapse text-left">
               <thead>
                 <tr className="border-b border-gray-200">
                   <th className="w-[22%] py-4 pr-6 text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
@@ -2254,7 +2254,7 @@ function FailureCodeColumn({
       className={`px-5 py-6 md:px-6 md:py-8 ${
         isDunlo
           ? "bg-dunlo/10"
-          : "border-b border-white/10 bg-white/[0.03] md:border-b-0 md:border-r"
+          : "border-b border-white/10 bg-white/3 md:border-b-0 md:border-r"
       }`}
     >
       <div className="flex items-center justify-between gap-4">

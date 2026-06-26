@@ -102,7 +102,7 @@ export default function StripeDunningScheduleCalculatorPage() {
             </div>
 
             <aside className="relative md:pl-10">
-              <div className="rounded-[1.75rem] border border-gray-200 bg-white p-5 shadow-[0_24px_70px_-52px_rgba(17,24,39,0.45)]">
+              <div className="rounded-4xl border border-gray-200 bg-white p-5 shadow-[0_24px_70px_-52px_rgba(17,24,39,0.45)]">
                 <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
                   Example output
                 </p>
