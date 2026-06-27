@@ -43,6 +43,18 @@ const STATIC_ROUTES = [
     priority: 0.9,
   },
   {
+    path: "/involuntary-churn-calculator",
+    lastModified: "2026-06-27",
+    changeFrequency: "weekly",
+    priority: 0.9,
+  },
+  {
+    path: "/mrr-at-risk",
+    lastModified: "2026-06-27",
+    changeFrequency: "monthly",
+    priority: 0.88,
+  },
+  {
     path: "/stripe-failed-payment-recovery-software",
     lastModified: "2026-06-19",
     changeFrequency: "weekly",
@@ -65,6 +77,12 @@ const STATIC_ROUTES = [
     lastModified: "2026-06-02",
     changeFrequency: "weekly",
     priority: 0.92,
+  },
+  {
+    path: "/stripe-failed-payment-email-templates",
+    lastModified: "2026-06-27",
+    changeFrequency: "monthly",
+    priority: 0.9,
   },
   {
     path: "/stripe-dunning",

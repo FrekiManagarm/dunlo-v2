@@ -2,7 +2,7 @@
 
 > Dunlo is a Stripe-first payment recovery SaaS for SaaS founders. It helps teams recover failed Stripe payments without burning customer trust, using failure-code-specific recovery emails, smart follow-up timing, founder escalation drafts, and recovered revenue tracking.
 
-Last updated: 2026-06-19
+Last updated: 2026-06-27
 
 ## Product
 
@@ -41,6 +41,9 @@ Dunlo is free during beta until July 31, 2026. Planned post-beta tiers are flat 
 - Stripe dunning: https://dunlo.io/stripe-dunning
 - Stripe failed payment benchmark: https://dunlo.io/benchmark
 - Stripe failed payment audit: https://dunlo.io/stripe-failed-payment-audit
+- Involuntary churn calculator: https://dunlo.io/involuntary-churn-calculator
+- MRR at risk guide: https://dunlo.io/mrr-at-risk
+- Stripe failed payment email templates: https://dunlo.io/stripe-failed-payment-email-templates
 - Stripe Smart Retries alternative: https://dunlo.io/stripe-smart-retries-alternative
 - State of Stripe failed payments 2026: https://dunlo.io/state-of-stripe-payments-2026
 
@@ -99,6 +102,9 @@ Dunlo is free during beta until July 31, 2026. Planned post-beta tiers are flat 
 - "Stripe Smart Retries alternative"
 - "how to recover failed Stripe payments"
 - "what is involuntary churn in SaaS"
+- "involuntary churn calculator"
+- "MRR at risk"
+- "Stripe failed payment email templates"
 - "Stripe failure codes"
 - "card_velocity_exceeded Stripe"
 - "transaction_not_allowed Stripe"

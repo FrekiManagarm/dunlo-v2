@@ -83,7 +83,7 @@ function moneyBucket(value: number) {
 }
 
 type PublicBenchmarkProps = {
-  variant?: "benchmark" | "audit";
+  variant?: "benchmark" | "audit" | "involuntary-churn";
 };
 
 const BENCHMARK_COPY = {
@@ -114,6 +114,11 @@ const BENCHMARK_COPY = {
     ],
     nextLinks: [
       {
+        label: "MRR at risk",
+        href: "/mrr-at-risk",
+        body: "Understand the metric behind failed revenue before it becomes churn.",
+      },
+      {
         label: "Stripe failed payments",
         href: "/stripe-failed-payments",
         body: "Turn the benchmark into a recovery workflow for failed invoices.",
@@ -124,9 +129,9 @@ const BENCHMARK_COPY = {
         body: "Build the email and retry sequence around the failure context.",
       },
       {
-        label: "Stripe Smart Retries alternative",
-        href: "/stripe-smart-retries-alternative",
-        body: "See where native retries stop and customer communication starts.",
+        label: "Involuntary churn calculator",
+        href: "/involuntary-churn-calculator",
+        body: "Estimate the payment-failure churn hiding inside failed invoices.",
       },
     ],
   },
@@ -157,6 +162,11 @@ const BENCHMARK_COPY = {
     ],
     nextLinks: [
       {
+        label: "Failed payment emails",
+        href: "/stripe-failed-payment-email-templates",
+        body: "Review recovery copy for expired cards, bank blocks, and authentication failures.",
+      },
+      {
         label: "Stripe dunning workflow",
         href: "/stripe-dunning",
         body: "Map each audit finding to a safer payment recovery sequence.",
@@ -167,9 +177,52 @@ const BENCHMARK_COPY = {
         body: "See how Dunlo turns failure codes into recovery actions.",
       },
       {
-        label: "Failed payment benchmark",
-        href: "/benchmark",
-        body: "Estimate the MRR at risk before connecting your Stripe account.",
+        label: "MRR at risk",
+        href: "/mrr-at-risk",
+        body: "Separate recoverable failed revenue from final churn in your reporting.",
+      },
+    ],
+  },
+  "involuntary-churn": {
+    badge: "Involuntary churn calculator",
+    headline: "Estimate the involuntary churn hiding in failed payments.",
+    intro:
+      "Use your MRR to estimate failed payment leakage, recoverable revenue, and the monthly churn risk created by billing failures.",
+    resultLabel: "Estimated payment-failure rate",
+    inputTitle: "Start with your current MRR",
+    resultTitle: "Involuntary churn estimate",
+    formTitle: "Send my involuntary churn estimate",
+    formBody:
+      "We will send the benchmark assumptions and a checklist for separating payment failures from true product churn.",
+    submit: "Send my churn estimate",
+    success: "Estimate requested",
+    cta: "Connect Stripe to separate payment churn",
+    methodologyEyebrow: "Involuntary churn methodology",
+    methodologyTitle:
+      "Treat failed payments as revenue at risk before reporting them as churn.",
+    methodologyBody:
+      "The calculator estimates failed MRR from your monthly recurring revenue, then applies a conservative recoverability assumption. This helps separate customers who actively cancelled from customers who may still want the product but need a card update, retry, authentication step, or founder follow-up.",
+    checklistTitle: "How to separate payment churn from product churn",
+    checklist: [
+      "Track failed MRR, recovered MRR, unresolved delinquency, and final churn as separate states.",
+      "Group failed invoices by Stripe decline code so expired cards do not get treated like product dissatisfaction.",
+      "Escalate high-value active accounts before a failed invoice becomes final involuntary churn.",
+    ],
+    nextLinks: [
+      {
+        label: "What is involuntary churn?",
+        href: "/blog/involuntary-churn-in-saas",
+        body: "Learn the difference between voluntary churn, delinquency, and payment-failure churn.",
+      },
+      {
+        label: "MRR at risk",
+        href: "/mrr-at-risk",
+        body: "Use a clearer formula for measuring failed revenue before it becomes churn.",
+      },
+      {
+        label: "Stripe failed payment emails",
+        href: "/stripe-failed-payment-email-templates",
+        body: "Copy the recovery emails that map to common Stripe failure reasons.",
       },
     ],
   },
