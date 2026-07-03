@@ -3,6 +3,10 @@ import { ALTERNATIVES } from "@/components/alternatives/alternative-page";
 import { COMPARE_ROUTE_PAGES } from "@/components/compare/compare-page";
 import { getAllPosts } from "@/lib/blog";
 import { absoluteUrl } from "@/lib/seo";
+import {
+  STRIPE_DECLINE_CODE_GUIDES,
+  declineCodePath,
+} from "@/lib/stripe-decline-codes";
 
 type SitemapEntry = {
   path: string;
@@ -71,6 +75,12 @@ const STATIC_ROUTES = [
     lastModified: "2026-06-02",
     changeFrequency: "weekly",
     priority: 0.9,
+  },
+  {
+    path: "/stripe-decline-codes",
+    lastModified: "2026-07-03",
+    changeFrequency: "weekly",
+    priority: 0.93,
   },
   {
     path: "/stripe-smart-retries-alternative",
@@ -152,11 +162,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
+  const declineCodeRoutes = STRIPE_DECLINE_CODE_GUIDES.map((guide) =>
+    toRoute({
+      path: declineCodePath(guide.slug),
+      lastModified: "2026-07-03",
+      changeFrequency: "monthly",
+      priority: 0.74,
+    }),
+  );
+
   return [
     ...STATIC_ROUTES.map(toRoute),
     ...MACHINE_READABLE_ROUTES.map(toRoute),
     ...alternativeRoutes,
     ...compareRoutes,
+    ...declineCodeRoutes,
     ...blogRoutes,
   ];
 }

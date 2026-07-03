@@ -86,6 +86,11 @@ const RELATED_GUIDES = [
     href: "/stripe-dunning",
   },
   {
+    title: "Stripe decline codes",
+    copy: "Decode the card failure reason before choosing the email, retry timing, or escalation path.",
+    href: "/stripe-decline-codes",
+  },
+  {
     title: "Dunning schedule calculator",
     copy: "Plan the first email, retry window, escalation, and final notice from the failure reason.",
     href: "/stripe-dunning-schedule-calculator",

@@ -82,9 +82,9 @@ const RELATED_LINKS = [
     href: "/stripe-failed-payment-recovery-software",
   },
   {
-    title: "Stripe failure codes guide",
+    title: "Stripe decline codes guide",
     copy: "Decode the failure reason before choosing the message or retry timing.",
-    href: "/blog/stripe-failure-codes-the-complete-guide",
+    href: "/stripe-decline-codes",
   },
 ] as const;
 

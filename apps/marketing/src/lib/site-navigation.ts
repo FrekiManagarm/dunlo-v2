@@ -87,6 +87,7 @@ export const FOOTER_SECTIONS = [
       { label: "Blog", href: "/blog" },
       { label: "Alternatives", href: "/alternatives" },
       { label: "Stripe failed payments", href: "/stripe-failed-payments" },
+      { label: "Stripe decline codes", href: "/stripe-decline-codes" },
       { label: "Stripe dunning", href: "/stripe-dunning" },
       {
         label: "Dunning calculator",
