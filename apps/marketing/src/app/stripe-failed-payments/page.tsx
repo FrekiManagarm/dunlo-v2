@@ -76,6 +76,11 @@ const FAQS = [
 
 const RELATED_GUIDES = [
   {
+    title: "Failed payment email templates",
+    copy: "Copy email examples for expired cards, insufficient funds, bank declines, and authentication-required payments.",
+    href: "/stripe-failed-payment-email-templates",
+  },
+  {
     title: "Stripe recovery software",
     copy: "See the full software layer for failed-payment emails, retries, escalation, and reporting.",
     href: "/stripe-failed-payment-recovery-software",
@@ -406,7 +411,7 @@ function CtaSection() {
 function RelatedGuidesSection() {
   return (
     <section className="mx-auto max-w-6xl">
-      <div className="grid grid-cols-1 gap-5 md:grid-cols-3">
+      <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-4">
         {RELATED_GUIDES.map((guide) => (
           <Link
             key={guide.href}

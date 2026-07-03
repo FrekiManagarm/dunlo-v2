@@ -78,6 +78,7 @@ export const FOOTER_SECTIONS = [
         href: "/stripe-failed-payment-recovery-software",
       },
       { label: "Benchmark", href: "/benchmark" },
+      { label: "MRR at risk", href: "/mrr-at-risk" },
       { label: "Stripe audit", href: "/stripe-failed-payment-audit" },
     ],
   },
@@ -88,6 +89,14 @@ export const FOOTER_SECTIONS = [
       { label: "Alternatives", href: "/alternatives" },
       { label: "Stripe failed payments", href: "/stripe-failed-payments" },
       { label: "Stripe decline codes", href: "/stripe-decline-codes" },
+      {
+        label: "Failed payment emails",
+        href: "/stripe-failed-payment-email-templates",
+      },
+      {
+        label: "Involuntary churn calculator",
+        href: "/involuntary-churn-calculator",
+      },
       { label: "Stripe dunning", href: "/stripe-dunning" },
       {
         label: "Dunning calculator",
