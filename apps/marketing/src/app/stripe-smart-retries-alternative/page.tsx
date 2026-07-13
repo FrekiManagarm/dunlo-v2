@@ -48,12 +48,14 @@ const QUICK_COMPARISON = [
   },
   {
     label: "Best fit",
-    stripe: "Early teams that only need automatic retry timing.",
-    dunlo: "Stripe SaaS teams that need a visible recovery workflow.",
+    stripe:
+      "Teams that want Stripe-native retries and broader Revenue Recovery controls.",
+    dunlo:
+      "Stripe SaaS teams that want failure-specific copy and founder-reviewed escalation.",
   },
   {
     label: "Human fallback",
-    stripe: "No founder review workflow.",
+    stripe: "Stripe supports recovery automations and internal notifications.",
     dunlo: "Pause risky accounts and draft a founder note.",
   },
 ] as const;
@@ -103,7 +105,7 @@ const FAQS = [
   {
     question: "What is the best Stripe Smart Retries alternative?",
     answer:
-      "The best Stripe Smart Retries alternative depends on what you need beyond retry timing. If you use Stripe and want failed-payment emails, founder escalation, and recovery tracking without replacing Stripe Billing, Dunlo is built for that layer.",
+      "The best Stripe Smart Retries alternative depends on what you need beyond retry timing. Stripe Billing already offers native recovery emails, hosted update flows, analytics, customer recovery views, and automations. Dunlo is built for teams that also want failure-specific customer copy, founder-approved outreach, and a focused recovery queue.",
   },
   {
     question: "Should I turn off Stripe Smart Retries if I use Dunlo?",
@@ -113,7 +115,7 @@ const FAQS = [
   {
     question: "Where does Stripe Smart Retries fall short?",
     answer:
-      "Stripe Smart Retries optimizes retry timing, but it does not create a full customer recovery workflow with failure-specific copy, founder review, recovered revenue reporting, and clear visibility into accounts still at risk.",
+      "Smart Retries itself focuses on retry timing. Stripe Billing's broader Revenue Recovery suite adds native emails, hosted update flows, analytics, customer recovery views, and automations. Dunlo adds failure-specific customer copy, founder-reviewed outreach, and a focused workflow for accounts that warrant a human touch.",
   },
   {
     question: "Is Dunlo a dunning tool or a retry tool?",
@@ -259,11 +261,12 @@ export default function StripeSmartRetriesAlternativePage() {
           </article>
           <article className="border-t border-gray-200 bg-white px-1 py-5">
             <h2 className="text-base font-bold tracking-tight text-gray-950">
-              Add Dunlo for recovery
+              Add Dunlo for hands-on recovery
             </h2>
             <p className="mt-3 text-sm leading-6 text-gray-600">
-              Dunlo handles the customer message, update link, owner visibility,
-              and escalation path after the failure.
+              Stripe Billing can provide native customer emails and hosted
+              update flows. Dunlo adds failure-specific copy, founder review,
+              owner visibility, and a focused escalation queue.
             </p>
           </article>
           <article className="border-t border-gray-200 bg-white px-1 py-5">
@@ -287,7 +290,7 @@ export default function StripeSmartRetriesAlternativePage() {
                 Short version
               </p>
               <h2 className="mt-3 max-w-sm text-3xl font-semibold leading-none tracking-tight md:text-5xl">
-                Smart Retries retries. Dunlo recovers.
+                Smart Retries optimizes timing. Dunlo adds the human layer.
               </h2>
               <p className="mt-5 max-w-md text-sm leading-6 text-gray-600">
                 The practical question is not whether Stripe Smart Retries is
@@ -341,10 +344,11 @@ export default function StripeSmartRetriesAlternativePage() {
                 authentication, or understand why their bank blocked the charge.
               </p>
               <p>
-                Those cases need a customer-facing workflow: a clear email, a
-                secure update link, timing that matches the failure reason, and
-                a way for a founder or success owner to step in before the
-                account churns quietly.
+                Stripe Billing's broader Revenue Recovery suite already
+                provides native emails, hosted update pages, analytics, customer
+                recovery views, and automations. Dunlo adds failure-specific
+                customer copy, founder-reviewed outreach, and a focused queue
+                for teams that want a more hands-on recovery layer.
               </p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {[
@@ -377,13 +381,13 @@ export default function StripeSmartRetriesAlternativePage() {
             </div>
             <div className="space-y-5 text-sm leading-7 text-gray-600">
               <p>
-                A Stripe Smart Retries alternative should not be judged by a
-                longer feature list alone. Start with the moment where revenue
-                is actually lost. If the only problem is retry timing, native
-                Smart Retries may be enough. If the customer needs to understand
-                the failure, update a payment method, approve a bank challenge,
-                or hear from a founder before the subscription is cancelled, you
-                need a recovery workflow around Stripe.
+                If retry timing is the only need, Smart Retries may be enough. If
+                you also want native emails, hosted update flows, analytics,
+                customer recovery views, and automations, Stripe Billing's
+                Revenue Recovery suite covers those controls. Evaluate an added
+                recovery layer when you need failure-specific customer copy,
+                founder-reviewed outreach, or a focused queue for hands-on
+                follow-up.
               </p>
               <p>
                 For SaaS teams, the most important comparison points are
@@ -569,13 +573,13 @@ export default function StripeSmartRetriesAlternativePage() {
         <section className="grid gap-4 md:grid-cols-2">
           <article className="rounded-[2rem] border border-gray-200 bg-white px-6 py-7 md:px-8">
             <h2 className="text-2xl font-semibold tracking-tight text-gray-950">
-              Choose Stripe Smart Retries when
+              Choose Stripe's native recovery stack when
             </h2>
             <ul className="mt-6 space-y-4">
               {[
-                "You only need Stripe to pick better retry timing.",
-                "Your failed-payment volume is still easy to inspect manually.",
-                "You do not need customer-specific recovery emails yet.",
+                "You want Smart Retries plus native emails, hosted update flows, analytics, and automations.",
+                "Stripe's customer recovery views are enough for your team.",
+                "You do not need failure-specific customer copy or founder review.",
               ].map((item) => (
                 <li
                   key={item}
@@ -593,8 +597,8 @@ export default function StripeSmartRetriesAlternativePage() {
             </h2>
             <ul className="mt-6 space-y-4">
               {[
-                "Failed payments need clear customer follow-up.",
-                "You want to see open and recovered revenue by failure reason.",
+                "You want failure-specific customer copy.",
+                "You want a focused view of open, recovered, and paused revenue by failure reason.",
                 "Important accounts should pause for founder review.",
               ].map((item) => (
                 <li
@@ -719,6 +723,14 @@ export default function StripeSmartRetriesAlternativePage() {
                 {
                   label: "Stripe invoice.payment_failed event",
                   href: "https://docs.stripe.com/api/events/types#event_types-invoice.payment_failed",
+                },
+                {
+                  label: "Stripe recovery analytics",
+                  href: "https://docs.stripe.com/billing/revenue-recovery/recovery-analytics",
+                },
+                {
+                  label: "Stripe Billing automations",
+                  href: "https://docs.stripe.com/billing/automations",
                 },
               ].map((source) => (
                 <a
