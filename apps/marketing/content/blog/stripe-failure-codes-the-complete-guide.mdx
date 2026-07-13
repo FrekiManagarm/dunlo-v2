@@ -4,6 +4,7 @@ description: "Stripe payment failures each have a reason code. Learn what card_e
 published: true
 author: "Dunlo team"
 date: "2026-05-22"
+updated: "2026-07-13"
 tags: ["stripe", "failure codes", "saas"]
 keywords:
   [
@@ -42,7 +43,7 @@ If you want to compare your own numbers before fixing the workflow, use the free
 | `insufficient_funds` | The card did not have enough available balance or limit at that moment. | Wait, retry later, and keep an optional update link available. | "We will retry your payment in a few days." |
 | `do_not_honor` | The issuing bank blocked the charge without giving a public reason. | Explain the bank block and offer bank approval or another card. | "Your bank did not approve this subscription charge." |
 | `generic_decline` | The bank declined the payment without a useful customer-safe reason. | Use conservative copy and offer another card or bank approval. | "We could not process your payment." |
-| `card_velocity_exceeded` | The card hit a velocity, amount, or limit rule. | Wait at least 24 hours before retrying and avoid tight retry loops. | "Your bank limited this charge." |
+| `card_velocity_exceeded` | The card hit a velocity, amount, or limit rule. | Check Stripe's advice code before retrying; otherwise ask for issuer approval or another payment method. | "Your bank limited this charge." |
 | `transaction_not_allowed` | The card or bank settings do not allow this type of transaction. | Ask the customer to contact the bank or use a different payment method. | "Your bank did not allow this subscription charge." |
 | `authentication_required` | The customer needs to approve the payment with the bank. | Send an authentication link, not just a generic billing link. | "Your bank needs one extra confirmation." |
 
@@ -276,7 +277,7 @@ The long tail of Stripe decline codes can be small in volume but painful when ha
 
 ### `card_velocity_exceeded`
 
-This code usually signals an issuer limit rather than a broken subscription. Wait before another retry and give the customer an issuer-approval or alternate-payment path. Read the [Stripe card_velocity_exceeded recovery guide](/stripe-decline-codes/card-velocity-exceeded) for the full customer message, timing, and escalation workflow.
+This code usually signals an issuer limit rather than a broken subscription. Check Stripe's advice code before another attempt; otherwise give the customer an issuer-approval or alternate-payment path. Read the [Stripe card_velocity_exceeded recovery guide](/stripe-decline-codes/card-velocity-exceeded) for the full customer message, timing, and escalation workflow.
 
 ### `transaction_not_allowed`
 
@@ -340,7 +341,7 @@ The card does not support the currency you are charging in. Ask the customer to 
 | `insufficient_funds` | Empathetic wait-and-retry | Day 3 | Delayed retry |
 | `do_not_honor` | Bank explanation | Day 0 | Retry after customer action |
 | `generic_decline` / `card_declined` | Conservative dual-option email | Day 1 | Delayed retry, then action |
-| `card_velocity_exceeded` | Bank limit explanation | Wait 24h+ | Avoid tight retry loops |
+| `card_velocity_exceeded` | Bank limit explanation | Advice-code dependent | Smart Retry or customer action |
 | `transaction_not_allowed` | Bank/card setting explanation | Same day | Retry after customer action |
 | `lost_card` / `stolen_card` | Generic new-card request | Same day | Do not retry same card |
 | `fraudulent` | Neutral new-card request | Same day | Manual review if repeated |

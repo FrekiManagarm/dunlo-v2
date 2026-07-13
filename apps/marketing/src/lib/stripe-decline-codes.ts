@@ -277,23 +277,23 @@ export const STRIPE_DECLINE_CODE_GUIDES = [
     shortDescription:
       "The issuer applied a balance, credit, transaction, or velocity limit to the card.",
     openingAnswer:
-      "Stripe card_velocity_exceeded usually means the issuer applied a spending or velocity limit. Wait before retrying, then ask the customer to approve the charge with the issuer or use another payment method.",
+      "Stripe card_velocity_exceeded usually means the issuer applied a spending or velocity limit. Ask the customer to contact the issuer or use another payment method, and retry only when Stripe indicates another attempt may help.",
     dateModified: "2026-07-13",
     searchIntent:
-      "Teams searching for card_velocity_exceeded, card_velocity_exceed, or the code with trailing punctuation need a safe retry cadence and a clear customer action.",
+      "SaaS teams need to know whether another attempt is appropriate and which customer action can recover the invoice after this issuer limit.",
     customerMeaning:
       "The card may work later or after issuer approval, but the customer may need another payment method for the current invoice.",
     firstMove:
       "Explain that the issuer limited the charge and give the customer a secure path to use another payment method.",
     retryTiming:
-      "Wait at least 24 hours before another automated retry unless the customer confirms that the issuer limit is resolved.",
+      "Use Stripe Smart Retries or retry only when the PaymentIntent outcome advice_code is try_again_later. Otherwise, ask the customer to contact the issuer or use another payment method.",
     emailAngle:
       "Frame it as a card-limit issue, not a subscription problem. Offer another card or issuer approval as the practical next step.",
     avoid:
       "Avoid immediate retry loops, claiming certainty about the issuer's internal rule, or implying that the customer cancelled.",
     dunloWorkflow: [
       "Classify the failure as limit-related.",
-      "Wait before scheduling another retry.",
+      "Use Stripe's advice code to decide whether another retry is appropriate.",
       "Send a calm card-limit email with a secure update-payment link.",
       "Escalate important accounts if the customer does not act.",
     ],
