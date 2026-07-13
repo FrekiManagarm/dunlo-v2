@@ -30,6 +30,20 @@ describe("involuntary churn SEO owner", () => {
     }
   });
 
+  test("matches the calculator model and current Stripe behavior", () => {
+    expect(source).toContain(
+      "If you want to estimate the leak before reading, use the free [involuntary churn calculator](/involuntary-churn-calculator). It estimates failed MRR, monthly recovery potential, and annualized upside from your MRR band.",
+    );
+    expect(source).toContain(
+      "Run a directional estimate with your own MRR using the [involuntary churn calculator](/involuntary-churn-calculator). It applies MRR-band failure rates and a 62% recovery-potential assumption, so compare the result with actual failed invoices in Stripe.",
+    );
+    expect(source).not.toContain("card_expired");
+    expect(source).toContain("| Expired card | `expired_card` |");
+    expect(source).toContain("https://docs.stripe.com/payments/cards/overview");
+    expect(source).toContain("https://docs.stripe.com/testing");
+    expect(source).not.toContain("Turn on Stripe's card account updater");
+  });
+
   test("cites primary and industry sources", () => {
     for (const url of [
       "https://stripe.com/blog/how-we-built-it-smart-retries",

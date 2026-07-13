@@ -30,7 +30,7 @@ That is involuntary churn. It is one of the most fixable retention problems in S
 
 This guide explains what involuntary churn is, how it differs from voluntary churn, how to measure it correctly, why Stripe payments fail, and the practical workflow that recovers revenue before a failed payment becomes a lost customer.
 
-If you want to estimate the leak before reading, use the free [involuntary churn calculator](/involuntary-churn-calculator). It separates failed MRR, recovered MRR, and the amount that finally becomes churn.
+If you want to estimate the leak before reading, use the free [involuntary churn calculator](/involuntary-churn-calculator). It estimates failed MRR, monthly recovery potential, and annualized upside from your MRR band.
 
 ## What is involuntary churn?
 
@@ -68,7 +68,7 @@ The table below models a company with a 5% monthly failed-payment rate and a 60%
 | $25,000 | $1,250 | $750 |
 | $50,000 | $2,500 | $1,500 |
 
-Run the same scenario with your own MRR using the [involuntary churn calculator](/involuntary-churn-calculator), then compare the estimate with actual failed invoices in Stripe.
+Run a directional estimate with your own MRR using the [involuntary churn calculator](/involuntary-churn-calculator). It applies MRR-band failure rates and a 62% recovery-potential assumption, so compare the result with actual failed invoices in Stripe.
 
 The tragedy is that much of this revenue is recoverable. A customer whose payment failed is often still an active user, still getting value, and still willing to pay if the recovery path is clear.
 
@@ -129,12 +129,14 @@ Every failed payment falls into a practical recovery category. The email and ret
 
 | Failure type | Common Stripe signal | What it means | First response |
 | --- | --- | --- | --- |
-| Expired card | `expired_card` or `card_expired` | The customer needs to update card details. | Send an immediate update link. |
+| Expired card | `expired_card` | The customer needs to update card details. | Send an immediate update link. |
 | Temporary funds issue | `insufficient_funds` | The card may work later. | Wait and retry gently. |
 | Bank block | `do_not_honor` | The issuer blocked the charge. | Explain and offer bank approval or another card. |
 | Generic decline | `generic_decline` or `card_declined` | The reason is unclear. | Use conservative copy and clear options. |
 | Authentication required | `authentication_required` | The bank needs confirmation. | Send an authentication link. |
 | Hard decline | `lost_card`, `stolen_card`, `fraudulent` | The same card should not be retried aggressively. | Ask for a different payment method. |
+
+Use Stripe's [test-card and decline-code reference](https://docs.stripe.com/testing) when validating your failure-code handling.
 
 For the detailed code-by-code playbook, read the [Stripe failure codes guide](/blog/stripe-failure-codes-the-complete-guide).
 
@@ -224,7 +226,7 @@ For the dunning sequence itself, see the [Stripe dunning workflow](/stripe-dunni
 1. Pull 90 days of failed invoice data from Stripe.
 2. Separate voluntary cancellations from failed-payment churn.
 3. Group your last 100 failed payments by failure code.
-4. Turn on Stripe's card account updater if you have not already.
+4. Verify that saved cards are attached to the Stripe Customer, then monitor Stripe's [automatic card updates](https://docs.stripe.com/payments/cards/overview) instead of treating card updating as a manual toggle.
 5. Rewrite your first three recovery emails by failure type.
 6. Add manual founder escalation for high-value accounts.
 7. Review recovery rate weekly until the leak is visible.
