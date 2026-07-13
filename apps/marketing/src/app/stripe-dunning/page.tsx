@@ -61,7 +61,7 @@ const FAQS = [
   {
     question: "Is Stripe Smart Retries enough for dunning?",
     answer:
-      "Stripe Smart Retries optimizes retry timing, and Stripe also provides native recovery emails, hosted update flows, and analytics. A broader dunning workflow becomes useful when the team needs failure-specific messaging, founder escalation, and a focused view of accounts still at risk.",
+      "Stripe Smart Retries optimizes retry timing, and Stripe also provides native recovery emails, hosted update flows, analytics, customer recovery views, and automations. A broader workflow becomes useful when the team needs failure-specific customer copy and founder-reviewed personal outreach for accounts that warrant a human touch.",
   },
   {
     question: "What should a SaaS dunning sequence include?",
@@ -252,7 +252,7 @@ export default function StripeDunningPage() {
 
         <section
           id="workflow"
-          className="mx-auto grid max-w-6xl grid-cols-1 gap-5 lg:grid-cols-[1.22fr_0.78fr]"
+          className="mx-auto grid max-w-6xl scroll-mt-24 grid-cols-1 gap-5 lg:grid-cols-[1.22fr_0.78fr]"
         >
           <div className="rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md md:p-8">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-[0.72fr_1.28fr]">
@@ -328,11 +328,14 @@ export default function StripeDunningPage() {
                   className="rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50"
                 >
                   {source.label}
+                  <span className="sr-only"> (opens in a new tab)</span>
                 </a>
               ))}
             </div>
           </section>
-          <CtaSection />
+          <div className="lg:col-span-2">
+            <CtaSection />
+          </div>
         </section>
 
         <RelatedLinksSection />

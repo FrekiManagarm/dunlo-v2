@@ -19,7 +19,16 @@ describe("Stripe dunning SEO owner", () => {
       "Stripe dunning is the workflow for recovering a failed subscription payment",
     );
     expect(sitemap).toMatch(
-      /path: "\/stripe-dunning"[\s\S]*?lastModified: "2026-07-13"/,
+      /path: "\/stripe-dunning"[^}]*lastModified: "2026-07-13"/,
+    );
+    expect(source).toMatch(
+      /id="workflow"\s+className="[^"]*scroll-mt-24[^"]*"/,
+    );
+    expect(source).toMatch(
+      /className="[^"]*lg:col-span-2[^"]*"[^>]*>\s*<CtaSection \/>/,
+    );
+    expect(source).toContain(
+      "Stripe Smart Retries optimizes retry timing, and Stripe also provides native recovery emails, hosted update flows, analytics, customer recovery views, and automations. A broader workflow becomes useful when the team needs failure-specific customer copy and founder-reviewed personal outreach for accounts that warrant a human touch.",
     );
   });
 
@@ -34,5 +43,6 @@ describe("Stripe dunning SEO owner", () => {
     ]) {
       expect(source).toContain(href);
     }
+    expect(source).toContain("opens in a new tab");
   });
 });
