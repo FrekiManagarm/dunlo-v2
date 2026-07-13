@@ -6,6 +6,7 @@ import { absoluteUrl } from "@/lib/seo";
 import {
   STRIPE_DECLINE_CODE_GUIDES,
   declineCodePath,
+  type StripeDeclineCodeGuide,
 } from "@/lib/stripe-decline-codes";
 
 type SitemapEntry = {
@@ -180,13 +181,14 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
-  const declineCodeRoutes = STRIPE_DECLINE_CODE_GUIDES.map((guide) =>
-    toRoute({
-      path: declineCodePath(guide.slug),
-      lastModified: "2026-07-03",
-      changeFrequency: "monthly",
-      priority: 0.74,
-    }),
+  const declineCodeRoutes = STRIPE_DECLINE_CODE_GUIDES.map(
+    (guide: StripeDeclineCodeGuide) =>
+      toRoute({
+        path: declineCodePath(guide.slug),
+        lastModified: guide.dateModified ?? "2026-07-03",
+        changeFrequency: "monthly",
+        priority: 0.74,
+      }),
   );
 
   return [

@@ -86,9 +86,8 @@ export default async function StripeDeclineCodeDetailPage({
                 {guide.title}
               </h1>
               <p className="mt-5 max-w-lg border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700">
-                {guide.shortDescription} For SaaS subscriptions, the useful
-                question is not just why it failed, but what customer action
-                will actually recover the invoice.
+                {guide.openingAnswer ??
+                  `${guide.shortDescription} For SaaS subscriptions, the useful question is not just why it failed, but what customer action will recover the invoice.`}
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
@@ -301,7 +300,7 @@ export default async function StripeDeclineCodeDetailPage({
             description: guide.metaDescription,
             url: absoluteUrl(path),
             datePublished: "2026-07-03",
-            dateModified: "2026-07-03",
+            dateModified: guide.dateModified ?? "2026-07-03",
             author: {
               "@type": "Person",
               name: "Mathieu Chambaud",

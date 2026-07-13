@@ -5,6 +5,8 @@ export type StripeDeclineCodeGuide = {
   metaTitle: string;
   metaDescription: string;
   shortDescription: string;
+  openingAnswer?: string;
+  dateModified?: string;
   searchIntent: string;
   customerMeaning: string;
   firstMove: string;
@@ -267,34 +269,38 @@ export const STRIPE_DECLINE_CODE_GUIDES = [
   {
     slug: "card-velocity-exceeded",
     code: "card_velocity_exceeded",
-    title: "Stripe card_velocity_exceeded decline code",
-    metaTitle:
-      "Stripe card_velocity_exceeded Decline Code: Recovery Guide | Dunlo",
+    title:
+      "Stripe card_velocity_exceeded: what it means and how to recover the payment",
+    metaTitle: "Stripe card_velocity_exceeded: Meaning & Fix | Dunlo",
     metaDescription:
-      "Learn what Stripe card_velocity_exceeded means and how SaaS teams should recover payments blocked by card limits or velocity controls.",
+      "Learn what Stripe card_velocity_exceeded means, when to retry the payment, and how to guide customers toward issuer approval or another payment method.",
     shortDescription:
-      "The card exceeded an issuer balance, credit, transaction, or velocity limit.",
+      "The issuer applied a balance, credit, transaction, or velocity limit to the card.",
+    openingAnswer:
+      "Stripe card_velocity_exceeded usually means the issuer applied a spending or velocity limit. Wait before retrying, then ask the customer to approve the charge with the issuer or use another payment method.",
+    dateModified: "2026-07-13",
     searchIntent:
-      "Teams need a practical recovery cadence for payments blocked by spending limits instead of a broken card.",
+      "Teams searching for card_velocity_exceeded, card_velocity_exceed, or the code with trailing punctuation need a safe retry cadence and a clear customer action.",
     customerMeaning:
-      "The card may work later or with issuer approval, but the customer may need to use another payment method for the current invoice.",
+      "The card may work later or after issuer approval, but the customer may need another payment method for the current invoice.",
     firstMove:
-      "Send an email that explains the card hit a limit and gives the customer an update-payment path.",
+      "Explain that the issuer limited the charge and give the customer a secure path to use another payment method.",
     retryTiming:
-      "Wait before retrying. A same-moment retry usually repeats the same limit failure.",
+      "Wait at least 24 hours before another automated retry unless the customer confirms that the issuer limit is resolved.",
     emailAngle:
-      "Frame it as a card limit issue, not a subscription problem. Offer another card or bank approval as the practical next step.",
+      "Frame it as a card-limit issue, not a subscription problem. Offer another card or issuer approval as the practical next step.",
     avoid:
-      "Avoid immediate retry loops and avoid implying the customer has cancelled.",
+      "Avoid immediate retry loops, claiming certainty about the issuer's internal rule, or implying that the customer cancelled.",
     dunloWorkflow: [
       "Classify the failure as limit-related.",
-      "Delay retries until a more plausible payment window.",
-      "Send a calm card-limit recovery email.",
-      "Escalate important accounts if no update happens after follow-up.",
+      "Wait before scheduling another retry.",
+      "Send a calm card-limit email with a secure update-payment link.",
+      "Escalate important accounts if the customer does not act.",
     ],
     relatedSlugs: ["insufficient-funds", "do-not-honor", "generic-decline"],
     keywords: [
       "Stripe card_velocity_exceeded",
+      "card_velocity_exceed",
       "card velocity exceeded Stripe",
       "Stripe card limit decline",
       "recover card velocity exceeded payment",
