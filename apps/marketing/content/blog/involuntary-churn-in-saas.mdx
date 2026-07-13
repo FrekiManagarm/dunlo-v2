@@ -1,8 +1,10 @@
 ---
 title: "What Is Involuntary Churn in SaaS?"
-description: "Involuntary churn happens when customers leave because payments fail, not because they chose to cancel. Learn how to measure it, reduce it, and recover failed Stripe payments."
+seoTitle: "Involuntary Churn in SaaS: Causes & Fixes | Dunlo"
+description: "Learn what involuntary churn means for SaaS, how failed payments become churn, how to measure the revenue loss, and which recovery steps reduce it today."
 author: "Dunlo team"
 date: "2026-05-22"
+updated: "2026-07-13"
 published: true
 tags: ["involuntary churn", "churn", "saas", "stripe"]
 keywords:
@@ -28,7 +30,7 @@ That is involuntary churn. It is one of the most fixable retention problems in S
 
 This guide explains what involuntary churn is, how it differs from voluntary churn, how to measure it correctly, why Stripe payments fail, and the practical workflow that recovers revenue before a failed payment becomes a lost customer.
 
-If you want to estimate the size of the leak before reading, use the free [Stripe failed payment benchmark](/benchmark).
+If you want to estimate the leak before reading, use the free [involuntary churn calculator](/involuntary-churn-calculator). It separates failed MRR, recovered MRR, and the amount that finally becomes churn.
 
 ## What is involuntary churn?
 
@@ -55,9 +57,9 @@ This distinction matters for reporting. If you mark someone as churned the momen
 
 ## How common is involuntary churn?
 
-Many subscription businesses see failed payment rates in the low-to-mid single digits each month. The exact rate depends on customer mix, billing interval, geography, card age, invoice amount, and retry settings.
+[Stripe reports that payment failures account for 25% of lapsed subscriptions](https://stripe.com/blog/how-we-built-it-smart-retries). The share varies by customer mix, billing interval, geography, saved payment method, and retry configuration, so your own Stripe history is the useful operating baseline.
 
-The cost becomes real quickly:
+The table below models a company with a 5% monthly failed-payment rate and a 60% recovery assumption. This is a planning scenario, not a universal SaaS benchmark.
 
 | MRR | Estimated monthly failed payments at 5% | Potentially recoverable at 60% |
 | --- | --- | --- |
@@ -65,6 +67,8 @@ The cost becomes real quickly:
 | $10,000 | $500 | $300 |
 | $25,000 | $1,250 | $750 |
 | $50,000 | $2,500 | $1,500 |
+
+Run the same scenario with your own MRR using the [involuntary churn calculator](/involuntary-churn-calculator), then compare the estimate with actual failed invoices in Stripe.
 
 The tragedy is that much of this revenue is recoverable. A customer whose payment failed is often still an active user, still getting value, and still willing to pay if the recovery path is clear.
 
@@ -243,10 +247,16 @@ No. After a few well-timed retries over a recovery window, additional retries us
 
 It depends on price point, geography, and customer type. The useful benchmark is your own trend: if recovery improves after you separate failure codes and rewrite emails, the workflow is working.
 
+## Sources and further reading
+
+- [Stripe: How Smart Retries was built](https://stripe.com/blog/how-we-built-it-smart-retries) explains why retry timing varies by payment failure and customer context.
+- [Stripe revenue recovery documentation](https://docs.stripe.com/billing/revenue-recovery) documents native recovery analytics, retries, and customer communication.
+- [Paddle's payment failure guide](https://www.paddle.com/resources/payment-failure) explains the relationship between failed payments, dunning, and involuntary churn.
+
 ## The bottom line
 
 Involuntary churn is the most fixable form of churn you have. The customers are not necessarily dissatisfied. They may still want the product. They just need the right payment recovery path at the right moment.
 
 Start by separating it from voluntary churn. Then classify failed payments, send code-aware emails, retry with intent, and escalate valuable accounts before they disappear.
 
-Want to see how much involuntary churn might be costing your Stripe account? [Run a free benchmark on Dunlo](https://dunlo.io/benchmark) and estimate your failed payment rate, recovery rate, and recoverable revenue.
+Start with the [free failed-payment benchmark](/benchmark). When you are ready to turn the result into a recovery workflow, [start free with Dunlo](https://app.dunlo.io/login?mode=signup).
