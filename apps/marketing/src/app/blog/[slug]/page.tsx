@@ -10,6 +10,7 @@ import {
   getBlogSlugs,
   getPost,
 } from "@/lib/blog";
+import { getBlogModifiedDate, getBlogSeoTitle } from "@/lib/blog-seo";
 import {
   SITE_NAME,
   absoluteUrl,
@@ -33,7 +34,7 @@ export async function generateMetadata({
   if (!post) return {};
 
   return pageSeoMetadata({
-    title: `${post.data.title} - Dunlo Blog`,
+    title: getBlogSeoTitle(post.data),
     description: post.data.description,
     keywords: post.data.keywords,
     path: `/blog/${post.slugs[0]}`,
@@ -225,7 +226,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
             description: post.data.description,
             image: absoluteUrl(`/blog/${post.slugs[0]}/opengraph-image`),
             datePublished: post.data.date,
-            dateModified: post.data.date,
+            dateModified: getBlogModifiedDate(post.data),
             author: {
               "@type": post.data.author ? "Person" : "Organization",
               name: post.data.author ?? SITE_NAME,
