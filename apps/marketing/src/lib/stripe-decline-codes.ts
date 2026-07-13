@@ -284,17 +284,17 @@ export const STRIPE_DECLINE_CODE_GUIDES = [
     customerMeaning:
       "The card may work later or after issuer approval, but the customer may need another payment method for the current invoice.",
     firstMove:
-      "Explain that the issuer limited the charge and give the customer a secure path to use another payment method.",
+      "Use generic decline language and give the customer a secure path to use another payment method or contact the card issuer.",
     retryTiming:
       "Use Stripe Smart Retries or retry only when Stripe's advice_code is try_again_later. Otherwise, ask the customer to contact the issuer or use another payment method.",
     emailAngle:
-      "Frame it as a card-limit issue, not a subscription problem. Offer another card or issuer approval as the practical next step.",
+      "Treat the customer message like a generic decline. Say the payment could not be processed, then offer another payment method or issuer contact without naming the issuer's internal limit.",
     avoid:
       "Avoid immediate retry loops, claiming certainty about the issuer's internal rule, or implying that the customer cancelled.",
     dunloWorkflow: [
       "Classify the failure as limit-related.",
       "Use Stripe's advice code to decide whether another retry is appropriate.",
-      "Send a calm card-limit email with a secure update-payment link.",
+      "Send a generic decline email with a secure update-payment link.",
       "Escalate important accounts if the customer does not act.",
     ],
     relatedSlugs: ["insufficient-funds", "do-not-honor", "generic-decline"],

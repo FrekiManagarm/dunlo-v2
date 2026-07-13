@@ -22,6 +22,16 @@ const workflowStep =
   "Use Stripe's advice code to decide whether another retry is appropriate.";
 const dedicatedParagraph =
   "This code usually signals an issuer limit rather than a broken subscription. Check Stripe's advice code before another attempt; otherwise give the customer an issuer-approval or alternate-payment path. Read the [Stripe card_velocity_exceeded recovery guide](/stripe-decline-codes/card-velocity-exceeded) for the full customer message, timing, and escalation workflow.";
+const firstMove =
+  "Use generic decline language and give the customer a secure path to use another payment method or contact the card issuer.";
+const emailAngle =
+  "Treat the customer message like a generic decline. Say the payment could not be processed, then offer another payment method or issuer contact without naming the issuer's internal limit.";
+const customerWorkflowStep =
+  "Send a generic decline email with a secure update-payment link.";
+const quickAnswerRow =
+  `| \`card_velocity_exceeded\` | The card hit a velocity, amount, or limit rule. | Check Stripe's advice code before retrying; otherwise ask for issuer approval or another payment method. | "We couldn't process this payment. Please try another payment method or contact your card issuer." |`;
+const summaryRow =
+  "| `card_velocity_exceeded` | Generic decline message | Advice-code dependent | Smart Retry or customer action |";
 
 describe("card velocity SEO owner", () => {
   test("uses focused metadata and an action-oriented opening", () => {
@@ -73,11 +83,23 @@ describe("card velocity SEO owner", () => {
     expect(broadArticle).not.toContain("Wait at least 24 hours");
     expect(broadArticle).not.toContain("Wait 24h+");
     expect(broadArticle).toContain(dedicatedParagraph);
-    expect(broadArticle).toContain(
-      `| \`card_velocity_exceeded\` | The card hit a velocity, amount, or limit rule. | Check Stripe's advice code before retrying; otherwise ask for issuer approval or another payment method. | "Your bank limited this charge." |`,
-    );
-    expect(broadArticle).toContain(
-      "| `card_velocity_exceeded` | Bank limit explanation | Advice-code dependent | Smart Retry or customer action |",
-    );
+  });
+
+  test("uses generic decline language in customer-facing copy", () => {
+    for (const guidance of [firstMove, emailAngle, customerWorkflowStep]) {
+      expect(dataSource).toContain(JSON.stringify(guidance));
+    }
+    expect(broadArticle).toContain(quickAnswerRow);
+    expect(broadArticle).toContain(summaryRow);
+
+    for (const source of [dataSource, broadArticle]) {
+      for (const staleCopy of [
+        "Frame it as a card-limit issue",
+        "card-limit email",
+        '"Your bank limited this charge."',
+      ]) {
+        expect(source).not.toContain(staleCopy);
+      }
+    }
   });
 });
