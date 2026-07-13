@@ -102,7 +102,7 @@ const STATIC_ROUTES = [
   },
   {
     path: "/stripe-smart-retries-alternative",
-    lastModified: "2026-06-11",
+    lastModified: "2026-07-13",
     changeFrequency: "weekly",
     priority: 0.94,
   },

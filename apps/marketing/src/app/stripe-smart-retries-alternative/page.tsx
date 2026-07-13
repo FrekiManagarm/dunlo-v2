@@ -18,11 +18,12 @@ import {
   pageSeoMetadata,
 } from "@/lib/seo";
 
-const TITLE = "Stripe Smart Retries Alternative for SaaS | Dunlo";
+const TITLE = "Stripe Smart Retries: Limits & Alternatives | Dunlo";
 const DESCRIPTION =
-  "Compare Stripe Smart Retries with Dunlo for failed payment recovery, dunning emails, customer follow-up, founder escalation, and SaaS revenue tracking.";
+  "Learn how Stripe Smart Retries works, which payment failures need customer action, and when SaaS teams need a broader failed-payment recovery workflow.";
 const PATH = "/stripe-smart-retries-alternative";
 const PUBLISHED_TIME = "2026-06-11T00:00:00.000Z";
+const MODIFIED_TIME = "2026-07-13T00:00:00.000Z";
 const KEYWORDS = [
   "Stripe Smart Retries alternative",
   "Stripe Smart Retries",
@@ -80,6 +81,24 @@ const DUNLO_FEATURES = [
   },
 ] as const;
 
+const RELATED_GUIDES = [
+  {
+    href: "/stripe-dunning",
+    title: "Stripe dunning",
+    copy: "Build the workflow around retries, customer action, and escalation.",
+  },
+  {
+    href: "/stripe-failed-payment-recovery-software",
+    title: "Recovery software",
+    copy: "See the customer-facing recovery layer around Stripe Billing.",
+  },
+  {
+    href: "/benchmark",
+    title: "Failed-payment benchmark",
+    copy: "Estimate failed MRR and recoverable revenue before signup.",
+  },
+] as const;
+
 const FAQS = [
   {
     question: "What is the best Stripe Smart Retries alternative?",
@@ -117,8 +136,7 @@ export default function StripeSmartRetriesAlternativePage() {
   const articleJsonLd = {
     "@context": "https://schema.org",
     "@type": "Article",
-    headline:
-      "Stripe Smart Retries alternative for SaaS failed payment recovery",
+    headline: "Stripe Smart Retries: what it covers and when SaaS needs more",
     description: DESCRIPTION,
     image: absoluteUrl(`${PATH}/opengraph-image`),
     author: {
@@ -136,7 +154,7 @@ export default function StripeSmartRetriesAlternativePage() {
       },
     },
     datePublished: PUBLISHED_TIME,
-    dateModified: PUBLISHED_TIME,
+    dateModified: MODIFIED_TIME,
     mainEntityOfPage: absoluteUrl(PATH),
     about: [
       "Stripe Smart Retries",
@@ -169,27 +187,27 @@ export default function StripeSmartRetriesAlternativePage() {
                 Stripe Smart Retries alternative
               </p>
               <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 md:text-6xl">
-                Stripe Smart Retries alternative for SaaS recovery.
+                Stripe Smart Retries: what it covers and when SaaS needs more
               </h1>
               <p className="mt-6 max-w-2xl text-base leading-8 text-gray-600 md:text-lg">
-                Stripe Smart Retries is a useful retry engine. Dunlo is the
-                customer-facing recovery layer for SaaS teams that need
-                failure-aware emails, founder escalation, and visibility into
-                failed payment revenue before it turns into churn.
+                Stripe Smart Retries chooses when to retry eligible failed
+                payments. SaaS teams still need a plan for failures that require
+                customer action, clear communication, account escalation, and
+                recovery visibility.
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={SIGNUP_URL}
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
-                >
-                  Start free in beta
-                  <ArrowRight size={16} strokeWidth={2} />
-                </a>
                 <Link
                   href="#comparison"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
+                >
+                  See what Smart Retries covers
+                  <ArrowRight size={16} strokeWidth={2} />
+                </Link>
+                <Link
+                  href="/benchmark"
                   className="inline-flex h-12 items-center justify-center rounded-full border border-gray-200 px-6 text-sm font-semibold text-gray-900 transition-all hover:-translate-y-px hover:border-gray-300 hover:bg-gray-50 active:scale-[0.98]"
                 >
-                  Compare with Smart Retries
+                  Estimate failed MRR
                 </Link>
               </div>
             </div>
@@ -625,23 +643,7 @@ export default function StripeSmartRetriesAlternativePage() {
             Related Stripe recovery guides
           </h2>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
-            {[
-              {
-                href: "/stripe-failed-payments",
-                title: "Stripe failed payments",
-                copy: "Recover failed charges by reason, timing, and customer action.",
-              },
-              {
-                href: "/stripe-dunning",
-                title: "Stripe dunning",
-                copy: "Build the dunning workflow around retries, emails, and escalation.",
-              },
-              {
-                href: "/benchmark",
-                title: "Failed-payment benchmark",
-                copy: "Estimate how much Stripe revenue is currently recoverable.",
-              },
-            ].map((item) => (
+            {RELATED_GUIDES.map((item) => (
               <Link
                 key={item.href}
                 href={item.href}
