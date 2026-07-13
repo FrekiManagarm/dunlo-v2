@@ -73,5 +73,11 @@ describe("card velocity SEO owner", () => {
     expect(broadArticle).not.toContain("Wait at least 24 hours");
     expect(broadArticle).not.toContain("Wait 24h+");
     expect(broadArticle).toContain(dedicatedParagraph);
+    expect(broadArticle).toContain(
+      `| \`card_velocity_exceeded\` | The card hit a velocity, amount, or limit rule. | Check Stripe's advice code before retrying; otherwise ask for issuer approval or another payment method. | "Your bank limited this charge." |`,
+    );
+    expect(broadArticle).toContain(
+      "| `card_velocity_exceeded` | Bank limit explanation | Advice-code dependent | Smart Retry or customer action |",
+    );
   });
 });
