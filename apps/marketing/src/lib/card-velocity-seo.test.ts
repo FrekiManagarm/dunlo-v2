@@ -17,7 +17,7 @@ const openingAnswer =
 const searchIntent =
   "SaaS teams need to know whether another attempt is appropriate and which customer action can recover the invoice after this issuer limit.";
 const retryTiming =
-  "Use Stripe Smart Retries or retry only when the PaymentIntent outcome advice_code is try_again_later. Otherwise, ask the customer to contact the issuer or use another payment method.";
+  "Use Stripe Smart Retries or retry only when Stripe's advice_code is try_again_later. Otherwise, ask the customer to contact the issuer or use another payment method.";
 const workflowStep =
   "Use Stripe's advice code to decide whether another retry is appropriate.";
 const dedicatedParagraph =

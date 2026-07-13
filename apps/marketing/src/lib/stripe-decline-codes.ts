@@ -286,7 +286,7 @@ export const STRIPE_DECLINE_CODE_GUIDES = [
     firstMove:
       "Explain that the issuer limited the charge and give the customer a secure path to use another payment method.",
     retryTiming:
-      "Use Stripe Smart Retries or retry only when the PaymentIntent outcome advice_code is try_again_later. Otherwise, ask the customer to contact the issuer or use another payment method.",
+      "Use Stripe Smart Retries or retry only when Stripe's advice_code is try_again_later. Otherwise, ask the customer to contact the issuer or use another payment method.",
     emailAngle:
       "Frame it as a card-limit issue, not a subscription problem. Offer another card or issuer approval as the practical next step.",
     avoid:
