@@ -17,9 +17,9 @@ import {
   pageSeoMetadata,
 } from "@/lib/seo";
 
-const TITLE = "Stripe Dunning for SaaS: Recover Failed Payments | Dunlo";
+const TITLE = "Stripe Dunning for SaaS: Recovery Guide | Dunlo";
 const DESCRIPTION =
-  "Build a Stripe dunning workflow for SaaS with failure-specific emails, smarter retries, founder escalation, and recovered revenue tracking.";
+  "Learn how Stripe dunning combines retries, customer emails, payment update paths, and recovery measurement to prevent failed-payment churn in SaaS teams.";
 const KEYWORDS = [
   "Stripe dunning",
   "dunning SaaS",
@@ -61,7 +61,7 @@ const FAQS = [
   {
     question: "Is Stripe Smart Retries enough for dunning?",
     answer:
-      "Stripe Smart Retries can help with retry timing, but it does not replace a complete dunning workflow with failure-specific messaging, escalation, and recovered revenue reporting.",
+      "Stripe Smart Retries optimizes retry timing, and Stripe also provides native recovery emails, hosted update flows, and analytics. A broader dunning workflow becomes useful when the team needs failure-specific messaging, founder escalation, and a focused view of accounts still at risk.",
   },
   {
     question: "What should a SaaS dunning sequence include?",
@@ -85,6 +85,21 @@ const RELATED_LINKS = [
     title: "Stripe decline codes guide",
     copy: "Decode the failure reason before choosing the message or retry timing.",
     href: "/stripe-decline-codes",
+  },
+] as const;
+
+const SOURCES = [
+  {
+    label: "Stripe revenue recovery",
+    href: "https://docs.stripe.com/billing/revenue-recovery",
+  },
+  {
+    label: "Stripe Smart Retries",
+    href: "https://docs.stripe.com/billing/revenue-recovery/smart-retries",
+  },
+  {
+    label: "Stripe decline codes",
+    href: "https://docs.stripe.com/declines/codes",
   },
 ] as const;
 
@@ -118,28 +133,27 @@ export default function StripeDunningPage() {
                 </span>
               </div>
               <h1 className="mt-8 max-w-xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:text-5xl sm:leading-[0.98] md:text-6xl">
-                A dunning workflow that treats failed payments like customers,
-                not errors.
+                Stripe dunning for SaaS failed-payment recovery
               </h1>
               <p className="mt-5 max-w-lg border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700">
-                Dunlo gives every failed Stripe invoice a recovery path: a clear
-                customer email, a timed retry, a payment update link, and
-                founder escalation before a valuable account quietly disappears.
+                Stripe dunning is the workflow for recovering a failed subscription payment
+                through retries, customer emails, payment update paths, account handling,
+                and recovery measurement.
               </p>
 
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-                <a
-                  href={SIGNUP_URL}
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
-                >
-                  Build your dunning flow
-                  <ArrowRight size={16} strokeWidth={1.8} />
-                </a>
                 <Link
                   href="/stripe-dunning-schedule-calculator"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
+                >
+                  Plan your dunning schedule
+                  <ArrowRight size={16} strokeWidth={1.8} />
+                </Link>
+                <Link
+                  href="#workflow"
                   className="inline-flex h-12 items-center justify-center rounded-full border border-gray-300 px-6 text-sm font-semibold text-gray-800 transition-all duration-300 hover:-translate-y-px hover:border-gray-950 active:scale-[0.98]"
                 >
-                  Calculate your schedule
+                  See the recovery workflow
                 </Link>
               </div>
             </div>
@@ -236,7 +250,10 @@ export default function StripeDunningPage() {
           </div>
         </section>
 
-        <section className="mx-auto grid max-w-6xl grid-cols-1 gap-5 lg:grid-cols-[1.22fr_0.78fr]">
+        <section
+          id="workflow"
+          className="mx-auto grid max-w-6xl grid-cols-1 gap-5 lg:grid-cols-[1.22fr_0.78fr]"
+        >
           <div className="rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md md:p-8">
             <div className="grid grid-cols-1 gap-8 md:grid-cols-[0.72fr_1.28fr]">
               <div>
@@ -293,6 +310,28 @@ export default function StripeDunningPage() {
 
         <section className="mx-auto grid max-w-6xl grid-cols-1 gap-5 lg:grid-cols-[0.84fr_1.16fr]">
           <FaqSection />
+          <section className="rounded-[2rem] border border-gray-200 bg-white/80 p-6 md:p-8">
+            <h2 className="text-2xl font-bold tracking-tight">
+              Stripe dunning sources
+            </h2>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-gray-600">
+              These Stripe references document the native recovery controls,
+              retry behavior, and decline signals used in this guide.
+            </p>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {SOURCES.map((source) => (
+                <a
+                  key={source.href}
+                  href={source.href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50"
+                >
+                  {source.label}
+                </a>
+              ))}
+            </div>
+          </section>
           <CtaSection />
         </section>
 

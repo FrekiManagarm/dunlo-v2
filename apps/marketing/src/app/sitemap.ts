@@ -91,7 +91,7 @@ const STATIC_ROUTES = [
   },
   {
     path: "/stripe-dunning",
-    lastModified: "2026-06-02",
+    lastModified: "2026-07-13",
     changeFrequency: "weekly",
     priority: 0.9,
   },
