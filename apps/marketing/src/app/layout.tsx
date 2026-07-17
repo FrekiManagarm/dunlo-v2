@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Outfit } from "next/font/google";
+import { Geist, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import { PostHogProvider } from "@/components/analytics/posthog-provider";
 import {
@@ -16,7 +16,7 @@ import {
   absoluteUrl,
 } from "@/lib/seo";
 
-const outfit = Outfit({
+const geist = Geist({
   subsets: ["latin"],
   variable: "--font-sans",
   display: "swap",
@@ -86,7 +86,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${outfit.variable} ${jetbrainsMono.variable}`}>
+      <body className={`${geist.variable} ${jetbrainsMono.variable}`}>
         <PostHogProvider>{children}</PostHogProvider>
         <script
           type="application/ld+json"

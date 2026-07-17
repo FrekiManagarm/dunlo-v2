@@ -12,28 +12,31 @@
   /* Brand green — identique à dunlo.io */
   --dunlo-accent: #00e87b;
   --dunlo-accent-hover: #00ff8c;
-  --dunlo-accent-dim: #00c66a; /* liens sur fond blanc */
-  --dunlo-accent-deep: #009950; /* texte foncé sur fond vert pâle */
+  --dunlo-accent-dim: #00a85b;
+  --dunlo-accent-deep: #006f3d;
+  --dunlo-ink: oklch(0.16 0.015 155);
+  --dunlo-ground: oklch(0.985 0.004 155);
+  --dunlo-line: oklch(0.86 0.008 155);
 
   /* shadcn / Tailwind semantic aliases */
-  --background: oklch(0.985 0 0);
-  --foreground: oklch(0.09 0 0);
+  --background: var(--dunlo-ground);
+  --foreground: var(--dunlo-ink);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.09 0 0);
+  --card-foreground: var(--dunlo-ink);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.09 0 0);
   --primary: var(--dunlo-accent);
-  --primary-foreground: #ffffff;
+  --primary-foreground: var(--dunlo-ink);
   --secondary: oklch(0.96 0 0);
   --secondary-foreground: oklch(0.09 0 0);
   --muted: oklch(0.96 0 0);
   --muted-foreground: oklch(0.5 0 0);
   --accent: var(--dunlo-accent);
-  --accent-foreground: #ffffff;
+  --accent-foreground: var(--dunlo-ink);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.9 0 0);
+  --border: var(--dunlo-line);
   --input: oklch(0.9 0 0);
-  --ring: var(--dunlo-accent);
+  --ring: var(--dunlo-accent-deep);
   --radius: 0.75rem;
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.09 0 0);
@@ -85,6 +88,9 @@
   --color-dunlo-hover: var(--dunlo-accent-hover);
   --color-dunlo-dim: var(--dunlo-accent-dim);
   --color-dunlo-deep: var(--dunlo-accent-deep);
+  --color-dunlo-ink: var(--dunlo-ink);
+  --color-dunlo-ground: var(--dunlo-ground);
+  --color-dunlo-line: var(--dunlo-line);
 
   /* shadcn semantic colors */
   --color-background: var(--background);
@@ -163,36 +169,13 @@
     transform: translateY(0);
   }
 }
-.anim-1 {
-  animation: fade-up 0.72s cubic-bezier(0.16, 1, 0.3, 1) 0ms both;
-}
-.anim-2 {
-  animation: fade-up 0.72s cubic-bezier(0.16, 1, 0.3, 1) 110ms both;
-}
-.anim-3 {
-  animation: fade-up 0.72s cubic-bezier(0.16, 1, 0.3, 1) 220ms both;
-}
-.anim-4 {
-  animation: fade-up 0.72s cubic-bezier(0.16, 1, 0.3, 1) 330ms both;
-}
-.anim-5 {
-  animation: fade-up 0.72s cubic-bezier(0.16, 1, 0.3, 1) 450ms both;
-}
+.anim-1,
+.anim-2,
+.anim-3,
+.anim-4,
+.anim-5,
 .anim-6 {
-  animation: fade-up 0.72s cubic-bezier(0.16, 1, 0.3, 1) 620ms both;
-}
-
-@keyframes landing-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-.landing-float {
-  animation: landing-float 5.6s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+  animation: fade-up 0.56s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
 @keyframes landing-rise {
@@ -216,7 +199,6 @@
   .anim-4,
   .anim-5,
   .anim-6,
-  .landing-float,
   .landing-rise {
     animation: none;
   }
