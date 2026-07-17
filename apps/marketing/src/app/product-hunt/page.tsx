@@ -98,12 +98,15 @@ const faqs = [
   },
 ] as const;
 
-export const metadata: Metadata = pageSeoMetadata({
-  title: TITLE,
-  description: DESCRIPTION,
-  keywords: KEYWORDS,
-  path: "/product-hunt",
-});
+export const metadata: Metadata = {
+  ...pageSeoMetadata({
+    title: TITLE,
+    description: DESCRIPTION,
+    keywords: KEYWORDS,
+    path: "/product-hunt",
+  }),
+  robots: { index: false, follow: true },
+};
 
 export default function ProductHuntPage() {
   return (
