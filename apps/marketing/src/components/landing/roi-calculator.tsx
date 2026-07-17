@@ -2,16 +2,22 @@
 
 import Link from "next/link";
 import { SIGNUP_URL } from "@/lib/app-url";
-import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
+import {
+  motion,
+  useMotionValue,
+  useReducedMotion,
+  useSpring,
+  useTransform,
+} from "framer-motion";
 import { ArrowRight, Calculator, Gauge, TrendingUp } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { captureMarketingEvent } from "@/lib/posthog";
+import { HOMEPAGE_RECOVERABILITY_RATE, HOMEPAGE_RECOVERABILITY_PERCENT, RECOVERY_MODEL_UPDATED } from "@/lib/recovery-assumptions";
 
 const MIN_MRR = 1000;
 const MAX_MRR = 20_000;
 const STEP = 500;
 const FAILED_PAYMENT_RATE = 0.05;
-const RECOVERABLE_RATE = 0.63;
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-US", {
@@ -22,6 +28,7 @@ function formatCurrency(value: number) {
 }
 
 function AnimatedCurrency({ value }: { value: number }) {
+  const shouldReduceMotion = useReducedMotion();
   const raw = useMotionValue(value);
   const spring = useSpring(raw, { stiffness: 120, damping: 22 });
   const display = useTransform(spring, (latest) => formatCurrency(latest));
@@ -29,6 +36,10 @@ function AnimatedCurrency({ value }: { value: number }) {
   useEffect(() => {
     raw.set(value);
   }, [raw, value]);
+
+  if (shouldReduceMotion) {
+    return <span>{formatCurrency(value)}</span>;
+  }
 
   return <motion.span>{display}</motion.span>;
 }
@@ -41,7 +52,7 @@ export function RoiCalculator() {
     [mrr],
   );
   const recovered = useMemo(
-    () => Math.round(monthlyFailed * RECOVERABLE_RATE),
+    () => Math.round(monthlyFailed * HOMEPAGE_RECOVERABILITY_RATE),
     [monthlyFailed],
   );
   const annualRecoverable = recovered * 12;
@@ -88,7 +99,7 @@ export function RoiCalculator() {
                   {formatCurrency(MAX_MRR)}
                 </p>
               </div>
-              <p className="rounded-2xl border border-gray-200 bg-stone-50 px-4 py-2 font-mono text-2xl font-semibold tracking-tight">
+              <p className="rounded-2xl border border-gray-200 bg-stone-50 px-4 py-2 text-2xl font-semibold tracking-tight">
                 {formatCurrency(mrr)}
               </p>
             </div>
@@ -164,7 +175,7 @@ export function RoiCalculator() {
                 },
                 {
                   label: "Recoverability assumption",
-                  value: "63%",
+                  value: HOMEPAGE_RECOVERABILITY_PERCENT,
                   icon: Calculator,
                 },
               ].map((item) => {
@@ -180,7 +191,7 @@ export function RoiCalculator() {
                       strokeWidth={2}
                       aria-hidden
                     />
-                    <p className="mt-4 font-mono text-xl font-semibold tracking-tight text-gray-950">
+                    <p className="mt-4 text-xl font-semibold tracking-tight text-gray-950">
                       {item.value}
                     </p>
                     <p className="mt-1 text-xs font-medium leading-4 text-gray-500">
@@ -194,9 +205,10 @@ export function RoiCalculator() {
             <div className="mt-4 border-t border-dunlo-line pt-4">
               <p className="text-sm leading-6 text-gray-700">
                 Illustrative estimate using an assumed 5% failed-payment rate and
-                63% recoverability. It is not a benchmark result or a guarantee.
-                Actual recovery depends on failure reasons, customer mix, retry
-                timing, and message quality.
+                {" "}{HOMEPAGE_RECOVERABILITY_PERCENT} recoverability. It is not
+                a benchmark result or a guarantee. Actual recovery depends on
+                failure reasons, customer mix, retry timing, and message quality.
+                Model assumptions updated {RECOVERY_MODEL_UPDATED}.
               </p>
               <Link
                 href="/benchmark"

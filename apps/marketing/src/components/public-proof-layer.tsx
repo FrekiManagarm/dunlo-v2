@@ -1,10 +1,14 @@
 import Link from "next/link";
 import { ArrowRight, FileText, ShieldCheck, SquareActivity } from "lucide-react";
+import {
+  HOMEPAGE_RECOVERABILITY_PERCENT,
+  RECOVERY_MODEL_UPDATED,
+} from "@/lib/recovery-assumptions";
 
 const proofItems = [
   {
     title: "Visible assumptions",
-    body: "The public benchmark exposes the illustrative failed-payment bands and 62% recoverability assumption used in its model.",
+    body: `The public benchmark exposes the illustrative failed-payment bands and ${HOMEPAGE_RECOVERABILITY_PERCENT} recoverability assumption used in its model. Updated ${RECOVERY_MODEL_UPDATED}.`,
     href: "/benchmark",
     cta: "Inspect the public model",
     icon: SquareActivity,
@@ -58,8 +62,8 @@ export function PublicProofLayer({ compact = false }: PublicProofLayerProps) {
             policy before it publishes customer outcomes.
           </p>
           <p className="mt-5 border-l border-dunlo-ink pl-4 text-sm font-semibold leading-6 text-dunlo-ink">
-            No anonymous uplift claims. No synthetic logos. No unapproved
-            customer stories.
+            During beta, customer outcomes are published only with approval and
+            enough context to be useful.
           </p>
         </div>
 

@@ -3,7 +3,7 @@
 import { useRef, type KeyboardEvent } from "react";
 import Link from "next/link";
 import { appUrl, SIGNUP_URL } from "@/lib/app-url";
-import { ChevronRight, Menu } from "lucide-react";
+import { ChevronRight, Menu, X } from "lucide-react";
 import { captureMarketingEvent } from "@/lib/posthog";
 import { Logo } from "@/components/logo";
 import { HEADER_NAV_LINKS } from "@/lib/site-navigation";
@@ -74,11 +74,15 @@ export function Nav() {
         <details
           ref={mobileMenuRef}
           onKeyDown={handleMobileMenuKeyDown}
-          className="relative md:hidden"
+          className="relative group md:hidden"
         >
           <summary className="flex size-11 cursor-pointer list-none items-center justify-center rounded-full border border-dunlo-line bg-white text-dunlo-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep [&::-webkit-details-marker]:hidden">
-            <span className="sr-only">Open navigation</span>
-            <Menu size={20} aria-hidden />
+            <span className="sr-only">
+              <span className="group-open:hidden">Open navigation</span>
+              <span className="hidden group-open:inline">Close navigation</span>
+            </span>
+            <Menu className="group-open:hidden" size={20} aria-hidden />
+            <X className="hidden group-open:block" size={20} aria-hidden />
           </summary>
           <nav
             aria-label="Mobile primary"

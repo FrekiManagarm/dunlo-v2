@@ -8,11 +8,11 @@ export function Footer() {
         <div className="max-w-sm">
           <div className="flex items-center gap-3">
             <Logo size={22} />
-            <span className="text-xs text-gray-400">
+            <span className="text-xs text-gray-600">
               Stop losing revenue to failed payments.
             </span>
           </div>
-          <p className="mt-5 max-w-sm text-xs leading-6 text-gray-500">
+          <p className="mt-5 max-w-sm text-xs leading-6 text-gray-600">
             Stripe-first recovery for teams that want precise dunning without a
             recovered-revenue cut.
           </p>
@@ -21,7 +21,7 @@ export function Footer() {
               href="https://x.com/mathchambaud"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex size-11 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
+              className="inline-flex size-11 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors hover:border-gray-300 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
               aria-label="Follow on X"
             >
               <svg
@@ -38,7 +38,7 @@ export function Footer() {
               href="https://www.linkedin.com/company/dunlo"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex size-11 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
+              className="inline-flex size-11 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors hover:border-gray-300 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
               aria-label="Follow Dunlo on LinkedIn"
             >
               <svg
@@ -66,7 +66,7 @@ export function Footer() {
                     <li key={link.href}>
                       <a
                         href={link.href}
-                        className="inline-flex text-xs leading-5 text-gray-500 transition-colors hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
+                        className="inline-flex text-xs leading-5 text-gray-600 transition-colors hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
                       >
                         {link.label}
                       </a>
@@ -77,7 +77,7 @@ export function Footer() {
             ))}
           </div>
 
-          <div className="mt-7 flex flex-col gap-2 border-t border-gray-300/50 pt-5 text-xs text-gray-400 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-7 flex flex-col gap-2 border-t border-gray-300/50 pt-5 text-xs text-gray-600 sm:flex-row sm:items-center sm:justify-between">
             <span>© {new Date().getFullYear()} Dunlo</span>
             <span>Built for Stripe-first SaaS founders.</span>
           </div>

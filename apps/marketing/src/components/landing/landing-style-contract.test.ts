@@ -100,6 +100,8 @@ describe("landing style contract", () => {
     expect(trustStrip).toContain("focus-visible:ring-inset");
     expect(trustStrip).toContain("focus-visible:ring-dunlo-deep");
     expect(trustStrip).toContain("sm:last:border-r-0");
+    expect(trustStrip).toContain("ArrowUpRight");
+    expect(trustStrip).toContain("group-hover:translate-x-0.5");
   });
 
   test("does not render inert escalation buttons", () => {
@@ -183,15 +185,22 @@ describe("landing style contract", () => {
     expect(roi).toMatch(/>\s*Recovery estimate\s*<\/p>/);
     expect(roi).not.toMatch(/>\s*ROI calculator\s*<\/p>/);
     expect(roi).toContain("const FAILED_PAYMENT_RATE = 0.05");
-    expect(roi).toContain("const RECOVERABLE_RATE = 0.63");
+    expect(roi).toContain(
+      'import { HOMEPAGE_RECOVERABILITY_RATE, HOMEPAGE_RECOVERABILITY_PERCENT, RECOVERY_MODEL_UPDATED } from "@/lib/recovery-assumptions";',
+    );
+    expect(roi).toContain(
+      "Math.round(monthlyFailed * HOMEPAGE_RECOVERABILITY_RATE)",
+    );
     expect(roi).toContain("Estimated recoverable this month");
     expect(roi).toMatch(
-      /label: "Recoverability assumption",\s*value: "63%",/,
+      /label: "Recoverability assumption",\s*value: HOMEPAGE_RECOVERABILITY_PERCENT,/,
     );
     expect(roi).toContain("Illustrative estimate");
     expect(roi).toContain("5%");
-    expect(roi).toContain("63%");
-    expect(roi).toContain("not a benchmark result");
+    expect(roi).toContain("HOMEPAGE_RECOVERABILITY_PERCENT");
+    expect(roi).toContain("RECOVERY_MODEL_UPDATED");
+    expect(roi).not.toContain("63%");
+    expect(roi).toMatch(/not\s*\n?\s*a benchmark result/);
     expect(roi).toContain("Start measuring failed payments");
     expect(roi).toContain('href="/benchmark"');
     expect(roi).toContain("Explore the public benchmark");
@@ -211,6 +220,39 @@ describe("landing style contract", () => {
     expect(roi).toMatch(
       /<div className="bg-stone-50 p-4 md:p-7">\s*<div className="rounded-xl border border-gray-200 bg-white p-4 md:p-5">/,
     );
+    expect(roi).toContain("useReducedMotion");
+    expect(roi).toContain("shouldReduceMotion");
+    expect(roi).not.toContain("font-mono");
+  });
+
+  test("centralizes the homepage recovery assumption at 62%", () => {
+    const assumptions = readOptionalSource(
+      "apps/marketing/src/lib/recovery-assumptions.ts",
+    );
+    const roi = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/roi-calculator.tsx",
+      ),
+      "utf8",
+    );
+    const proof = readFileSync(
+      resolve(repoRoot, "apps/marketing/src/components/public-proof-layer.tsx"),
+      "utf8",
+    );
+
+    expect(assumptions).toContain(
+      "export const HOMEPAGE_RECOVERABILITY_RATE = 0.62",
+    );
+    expect(assumptions).toContain(
+      'export const HOMEPAGE_RECOVERABILITY_PERCENT = "62%"',
+    );
+    expect(assumptions).toContain(
+      'export const RECOVERY_MODEL_UPDATED = "July 2026"',
+    );
+    expect(roi).toContain("HOMEPAGE_RECOVERABILITY_RATE");
+    expect(proof).toContain("HOMEPAGE_RECOVERABILITY_PERCENT");
+    expect(`${roi}\n${proof}`).not.toContain("63%");
   });
 
   test("publishes verifiable beta proof without synthetic testimonials", () => {
@@ -223,12 +265,14 @@ describe("landing style contract", () => {
     );
 
     expect(proof).toContain("What can be verified today");
-    expect(proof).toContain("No anonymous uplift claims");
-    expect(proof).toContain("No synthetic logos");
-    expect(proof).toMatch(/No unapproved\s+customer stories/);
-    expect(proof).toContain(
-      "The public benchmark exposes the illustrative failed-payment bands and 62% recoverability assumption used in its model.",
+    expect(proof).not.toContain("No anonymous uplift claims");
+    expect(proof).not.toContain("No synthetic logos");
+    expect(proof).not.toMatch(/No unapproved\s+customer stories/);
+    expect(proof).toMatch(
+      /During beta, customer outcomes are published only with approval and\s+enough context to be useful\./,
     );
+    expect(proof).toContain("HOMEPAGE_RECOVERABILITY_PERCENT");
+    expect(proof).toContain("RECOVERY_MODEL_UPDATED");
     expect(proof).toContain('cta: "Inspect the public model"');
     expect(proof).toContain(
       "Failure reasons, recovery timing, customer update links, and founder review are documented before signup.",
@@ -343,7 +387,6 @@ describe("landing style contract", () => {
     const sections = [
       "<PaymentRecoveryHero />",
       "<TrustStrip />",
-      "<FailureResponseMap />",
       "<Escalation />",
       "<HowItWorks />",
       "<RoiCalculator />",
@@ -351,8 +394,8 @@ describe("landing style contract", () => {
       "<BuiltByMathieu />",
       "<Pricing />",
       "<Faq />",
-      "<FinalCta />",
       "<ResourceLibrary />",
+      "<FinalCta />",
     ];
     const positions = sections.map((section) => landingPage.indexOf(section));
 
@@ -367,6 +410,7 @@ describe("landing style contract", () => {
       /function (?:HeroSection|RestoredSection|RecoveryDesk|ResourceLinksSection|FeaturesSection|PricingSection|FaqSection|FinalCta|GridBackdrop)\b/,
     );
     expect(landingPage).not.toContain("BetaTestimonialsSection");
+    expect(landingPage).not.toContain("FailureResponseMap");
   });
 
   test("uses shared pricing, FAQ, and resource content in extracted sections", () => {
@@ -492,6 +536,48 @@ describe("landing style contract", () => {
     expect(navigationLink).toMatch(
       /className="(?=[^"]*\bfocus-visible:outline-none\b)(?=[^"]*\bfocus-visible:ring-2\b)(?=[^"]*\bfocus-visible:ring-dunlo-deep\b)(?=[^"]*\bfocus-visible:ring-offset-2\b)(?=[^"]*\bfocus-visible:ring-offset-stone-100\b)[^"]*"/,
     );
+    expect(footer).not.toMatch(/\btext-gray-(?:400|500)\b/);
+  });
+
+  test("keeps the mobile navigation control state-correct", () => {
+    const nav = readFileSync(
+      resolve(repoRoot, "apps/marketing/src/components/landing/nav.tsx"),
+      "utf8",
+    );
+
+    expect(nav).toContain("ChevronRight, Menu, X");
+    expect(nav).toMatch(/<details[\s\S]*?className="[^"]*\bgroup\b[^"]*md:hidden"/);
+    expect(nav).toContain('className="group-open:hidden"');
+    expect(nav).toContain(">Open navigation</span>");
+    expect(nav).toContain('className="hidden group-open:inline"');
+    expect(nav).toContain(">Close navigation</span>");
+    expect(nav).toContain(
+      '<Menu className="group-open:hidden" size={20} aria-hidden />',
+    );
+    expect(nav).toContain(
+      '<X className="hidden group-open:block" size={20} aria-hidden />',
+    );
+    expect(nav).toContain('event.key !== "Escape"');
+    expect(nav).toContain("onClick={closeMobileMenu}");
+  });
+
+  test("keeps footer navigation live and small text contrast-safe", () => {
+    const navigation = readFileSync(
+      resolve(repoRoot, "apps/marketing/src/lib/site-navigation.ts"),
+      "utf8",
+    );
+    const footer = readFileSync(
+      resolve(repoRoot, "apps/marketing/src/components/landing/footer.tsx"),
+      "utf8",
+    );
+
+    expect(navigation).toContain(
+      '{ label: "How it works", href: "/#how-it-works" }',
+    );
+    expect(navigation).not.toContain(
+      '{ label: "Features", href: "/#features" }',
+    );
+    expect(footer).not.toMatch(/\btext-gray-(?:400|500)\b/);
   });
 
   test("labels the setup workflow as synthetic without invented revenue", () => {

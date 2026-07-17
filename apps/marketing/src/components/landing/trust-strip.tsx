@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { ArrowUpRight } from "lucide-react";
 import { TRUST_ITEMS } from "./landing-content";
 
 export function TrustStrip() {
@@ -11,8 +12,13 @@ export function TrustStrip() {
             href={item.href}
             className="group min-h-28 border-b border-dunlo-line p-5 last:border-b-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-dunlo-deep sm:border-r sm:last:border-r-0 sm:[&:nth-child(2)]:border-r-0 sm:[&:nth-last-child(-n+2)]:border-b-0 lg:border-b-0 lg:[&:nth-child(2)]:border-r lg:last:border-r-0"
           >
-            <h2 className="text-sm font-semibold text-dunlo-ink group-hover:text-dunlo-deep">
-              {item.title}
+            <h2 className="flex items-center justify-between gap-3 text-sm font-semibold text-dunlo-ink group-hover:text-dunlo-deep">
+              <span>{item.title}</span>
+              <ArrowUpRight
+                className="shrink-0 text-dunlo-deep transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5"
+                size={15}
+                aria-hidden
+              />
             </h2>
             <p className="mt-2 text-sm leading-6 text-gray-700">{item.body}</p>
           </Link>

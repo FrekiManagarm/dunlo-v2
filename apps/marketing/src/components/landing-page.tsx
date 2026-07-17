@@ -1,6 +1,5 @@
 import { BuiltByMathieu } from "@/components/landing/built-by-mathieu";
 import { Escalation } from "@/components/landing/escalation";
-import { FailureResponseMap } from "@/components/landing/failure-response-map";
 import { Faq } from "@/components/landing/faq";
 import { FinalCta } from "@/components/landing/final-cta";
 import { Footer } from "@/components/landing/footer";
@@ -20,7 +19,6 @@ export function LandingPage() {
       <main>
         <PaymentRecoveryHero />
         <TrustStrip />
-        <FailureResponseMap />
         <div className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><Escalation /></div></div>
         <div className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><HowItWorks /></div></div>
         <div className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><RoiCalculator /></div></div>
@@ -28,8 +26,8 @@ export function LandingPage() {
         <div className="px-4 md:px-6"><BuiltByMathieu /></div>
         <Pricing />
         <Faq />
-        <FinalCta />
         <ResourceLibrary />
+        <FinalCta />
       </main>
       <Footer />
     </div>
