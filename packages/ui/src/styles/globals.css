@@ -12,7 +12,7 @@
   /* Brand green — identique à dunlo.io */
   --dunlo-accent: #00e87b;
   --dunlo-accent-hover: #00ff8c;
-  --dunlo-accent-dim: #00a85b;
+  --dunlo-accent-dim: #006f3d;
   --dunlo-accent-deep: #006f3d;
   --dunlo-ink: oklch(0.16 0.015 155);
   --dunlo-ground: oklch(0.985 0.004 155);
@@ -41,7 +41,7 @@
   --sidebar: oklch(0.985 0 0);
   --sidebar-foreground: oklch(0.09 0 0);
   --sidebar-primary: var(--dunlo-accent);
-  --sidebar-primary-foreground: #ffffff;
+  --sidebar-primary-foreground: var(--dunlo-ink);
   --sidebar-accent: oklch(0.96 0 0);
   --sidebar-accent-foreground: oklch(0.09 0 0);
   --sidebar-border: oklch(0.9 0 0);
@@ -80,8 +80,8 @@
 /* ─── Tailwind v4 theme mapping ──────────────────────────────────────────── */
 @theme inline {
   /* Fonts */
-  --font-sans: "Outfit", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
 
   /* Brand colors — utilisables comme bg-dunlo, text-dunlo, border-dunlo, bg-dunlo/20... */
   --color-dunlo: var(--dunlo-accent);
