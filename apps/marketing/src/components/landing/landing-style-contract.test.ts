@@ -207,4 +207,68 @@ describe("landing style contract", () => {
       /<div className="bg-stone-50 p-4 md:p-7">\s*<div className="rounded-xl border border-gray-200 bg-white p-4 md:p-5">/,
     );
   });
+
+  test("publishes verifiable beta proof without synthetic testimonials", () => {
+    const proof = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/public-proof-layer.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(proof).toContain("What can be verified today");
+    expect(proof).toContain("No anonymous uplift claims");
+    expect(proof).toContain("No synthetic logos");
+    expect(proof).toMatch(/No unapproved\s+customer stories/);
+    expect(proof).toContain("/state-of-stripe-payments-2026");
+    expect(proof).toMatch(
+      /type PublicProofLayerProps\s*=\s*\{\s*compact\?\s*:\s*boolean;?\s*\}/s,
+    );
+    expect(proof).toMatch(
+      /export function PublicProofLayer\s*\(\s*\{\s*compact\s*=\s*false\s*\}\s*:\s*PublicProofLayerProps\s*\)/s,
+    );
+    expect(proof).toMatch(/className=\{\s*compact\s*\?/s);
+    expect(
+      [...proof.matchAll(/href:\s*"([^"]+)"/g)].map((match) => match[1]),
+    ).toEqual([
+      "/benchmark",
+      "/stripe-failed-payments",
+      "/state-of-stripe-payments-2026",
+    ]);
+    expect(proof).not.toMatch(/^import\s+.*testimonial.*$/im);
+    expect(proof).toMatch(
+      /<Link\s+href=\{item\.href\}\s+className="[^"]*focus-visible:outline-none[^"]*focus-visible:ring-2[^"]*focus-visible:ring-dunlo-deep[^"]*focus-visible:ring-offset-2[^"]*"/s,
+    );
+  });
+
+  test("keeps founder accountability real and visibly focused", () => {
+    const founder = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/built-by-mathieu.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(founder).toContain(
+      'const X_PROFILE_URL = "https://x.com/mathchambaud"',
+    );
+    expect(founder).toContain(
+      'const FOUNDER_IMAGE_URL = "/founder/mathieu-chambaud-linkedin.jpg"',
+    );
+    expect(founder).toContain("Built and supported by Mathieu");
+    expect(founder).toContain(
+      "A founder-led beta with a public standard for proof.",
+    );
+    expect(founder).toContain("Beta feedback goes directly to me.");
+    expect(founder).toContain('alt="Mathieu Chambaud, founder of Dunlo"');
+    expect(founder).toContain("href={X_PROFILE_URL}");
+    expect(founder).toContain(
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2",
+    );
+    expect(founder).not.toContain("FadeIn");
+    expect(founder).not.toContain("rounded-3xl");
+    expect(founder).not.toMatch(/^import\s+.*testimonial.*$/im);
+  });
 });
