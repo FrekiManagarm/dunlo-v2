@@ -129,7 +129,7 @@ export function RoiCalculator() {
         </div>
 
         <div className="bg-stone-50 p-4 md:p-7">
-          <div className="rounded-2xl border border-gray-200 bg-white p-4 md:p-5">
+          <div className="rounded-xl border border-gray-200 bg-white p-4 md:p-5">
             <div className="rounded-xl bg-gray-950 p-5 text-white">
               <div className="flex items-center justify-between">
                 <div>

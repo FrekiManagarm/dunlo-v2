@@ -170,5 +170,8 @@ describe("landing style contract", () => {
     expect(roi).toContain("Estimated recoverable this month");
     expect(roi).toContain("Start measuring failed payments");
     expect(roi).toContain('href="/benchmark"');
+    expect(roi).toMatch(
+      /<div className="bg-stone-50 p-4 md:p-7">\s*<div className="rounded-xl border border-gray-200 bg-white p-4 md:p-5">/,
+    );
   });
 });
