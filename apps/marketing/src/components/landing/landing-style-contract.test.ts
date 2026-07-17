@@ -221,6 +221,14 @@ describe("landing style contract", () => {
     expect(proof).toContain("No anonymous uplift claims");
     expect(proof).toContain("No synthetic logos");
     expect(proof).toMatch(/No unapproved\s+customer stories/);
+    expect(proof).toContain(
+      "The public benchmark exposes the illustrative failed-payment bands and 62% recoverability assumption used in its model.",
+    );
+    expect(proof).toContain('cta: "Inspect the public model"');
+    expect(proof).toContain(
+      "Failure reasons, recovery timing, customer update links, and founder review are documented before signup.",
+    );
+    expect(proof).not.toContain("Stripe-hosted update links");
     expect(proof).toContain("/state-of-stripe-payments-2026");
     expect(proof).toMatch(
       /type PublicProofLayerProps\s*=\s*\{\s*compact\?\s*:\s*boolean;?\s*\}/s,
@@ -240,6 +248,34 @@ describe("landing style contract", () => {
     expect(proof).toMatch(
       /<Link\s+href=\{item\.href\}\s+className="[^"]*focus-visible:outline-none[^"]*focus-visible:ring-2[^"]*focus-visible:ring-dunlo-deep[^"]*focus-visible:ring-offset-2[^"]*"/s,
     );
+    expect(proof).toMatch(
+      /<div className="(?=[^"]*\bborder-b\b)(?=[^"]*\bborder-dunlo-line\b)(?=[^"]*\blg:border-b-0\b)(?=[^"]*\blg:border-r\b)[^"]*">/,
+    );
+  });
+
+  test("labels public benchmark rates as product modelling assumptions", () => {
+    const benchmark = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/public-benchmark.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(benchmark).toContain(
+      "Illustrative modelled failed-payment rate for",
+    );
+    expect(benchmark).not.toContain("Average failed payment rate");
+    expect(benchmark).toContain(
+      "The model increases assumed failed-payment rates as MRR grows.",
+    );
+    expect(benchmark).toContain(
+      "Modelled failed-payment rates by MRR band are 4.2%, 5.1%, 5.8%, and 6.4%; they are illustrative product assumptions, not measured averages.",
+    );
+    expect(benchmark).toContain(
+      "Recovery potential applies a 62% recoverability assumption",
+    );
+    expect(benchmark).toContain("product modelling assumptions");
   });
 
   test("keeps founder accountability real and visibly focused", () => {
@@ -257,13 +293,15 @@ describe("landing style contract", () => {
     expect(founder).toContain(
       'const FOUNDER_IMAGE_URL = "/founder/mathieu-chambaud-linkedin.jpg"',
     );
-    expect(founder).toContain("Built and supported by Mathieu");
+    expect(founder).toContain("Built and supported by Mathieu Chambaud");
     expect(founder).toContain(
       "A founder-led beta with a public standard for proof.",
     );
     expect(founder).toContain("Beta feedback goes directly to me.");
     expect(founder).toContain('alt="Mathieu Chambaud, founder of Dunlo"');
+    expect(founder).toContain('id="founder"');
     expect(founder).toContain("href={X_PROFILE_URL}");
+    expect(founder).toContain("Follow @mathchambaud");
     expect(founder).toContain(
       "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2",
     );

@@ -19,36 +19,36 @@ const BENCHMARK_RANGES = [
     max: 5_000,
     label: "< $5k MRR",
     failedRate: 4.2,
-    note: "Usually early enough that Stripe defaults hide the leak.",
+    note: "A simple starting assumption for the smallest MRR band.",
   },
   {
     min: 5_000,
     max: 20_000,
     label: "$5k-$20k MRR",
     failedRate: 5.1,
-    note: "The first range where a dedicated recovery workflow usually pays back.",
+    note: "A modelled step-up for the $5k-$20k MRR band.",
   },
   {
     min: 20_000,
     max: 80_000,
     label: "$20k-$80k MRR",
     failedRate: 5.8,
-    note: "Failed payments become a visible retention problem, not just billing noise.",
+    note: "A modelled range assumption for growing SaaS businesses.",
   },
   {
     min: 80_000,
     max: Number.POSITIVE_INFINITY,
     label: "$80k+ MRR",
     failedRate: 6.4,
-    note: "At this stage, recovery needs prioritization and human escalation.",
+    note: "The modelled upper band used by this product calculator.",
   },
 ] as const;
 
 const DEFAULT_RANGE = BENCHMARK_RANGES[BENCHMARK_RANGES.length - 1]!;
 const METHODOLOGY_ASSUMPTIONS = [
-  "The public calculator is a directional estimate, not a guarantee of recovery.",
-  "MRR ranges use simple failed-payment rate assumptions so founders can benchmark before connecting Stripe.",
-  "The recovery potential applies a conservative recoverability rate to failed MRR; real results depend on decline-code mix, card age, geography, billing interval, retry settings, and email quality.",
+  "The public calculator uses product modelling assumptions for an illustrative estimate, not a measured dataset or guarantee of recovery.",
+  "Modelled failed-payment rates by MRR band are 4.2%, 5.1%, 5.8%, and 6.4%; they are illustrative product assumptions, not measured averages.",
+  "Recovery potential applies a 62% recoverability assumption to failed MRR; real results vary with decline-code mix, card age, geography, billing interval, retry settings, and email quality.",
   "The connected-product benchmark should replace this estimate once Stripe data is available.",
 ] as const;
 
@@ -347,7 +347,7 @@ export function PublicBenchmark({
               {result.range.failedRate.toFixed(1)}%
             </p>
             <p className="mt-4 text-sm leading-relaxed text-zinc-500">
-              Average failed payment rate for {result.range.label}.{" "}
+              Illustrative modelled failed-payment rate for {result.range.label}.{" "}
               {result.range.note}
             </p>
           </div>
@@ -529,7 +529,7 @@ export function PublicBenchmark({
                 Benchmarks by MRR range
               </p>
               <h2 className="mt-4 max-w-md text-3xl font-bold tracking-tight text-zinc-950">
-                Failed payment rates usually rise as card volume grows.
+                The model increases assumed failed-payment rates as MRR grows.
               </h2>
             </div>
             <div className="divide-y divide-zinc-100">

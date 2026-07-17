@@ -7,7 +7,10 @@ const FOUNDER_IMAGE_URL = "/founder/mathieu-chambaud-linkedin.jpg";
 
 export function BuiltByMathieu() {
   return (
-    <section className="mx-auto grid max-w-7xl gap-6 border-t border-dunlo-line py-10 md:grid-cols-[auto_1fr_auto] md:items-center">
+    <section
+      id="founder"
+      className="mx-auto grid max-w-7xl gap-6 border-t border-dunlo-line py-10 md:grid-cols-[auto_1fr_auto] md:items-center"
+    >
       <Image
         src={FOUNDER_IMAGE_URL}
         alt="Mathieu Chambaud, founder of Dunlo"
@@ -17,7 +20,7 @@ export function BuiltByMathieu() {
       />
       <div>
         <p className="text-sm font-semibold text-dunlo-deep">
-          Built and supported by Mathieu
+          Built and supported by Mathieu Chambaud
         </p>
         <h2 className="mt-2 text-2xl font-semibold tracking-tight text-dunlo-ink">
           A founder-led beta with a public standard for proof.
@@ -31,7 +34,7 @@ export function BuiltByMathieu() {
         href={X_PROFILE_URL}
         className="inline-flex min-h-11 items-center gap-2 text-sm font-semibold text-dunlo-deep focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2"
       >
-        Follow the build
+        Follow @mathchambaud
         <ArrowUpRight size={15} aria-hidden />
       </Link>
     </section>

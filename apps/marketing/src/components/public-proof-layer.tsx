@@ -4,14 +4,14 @@ import { ArrowRight, FileText, ShieldCheck, SquareActivity } from "lucide-react"
 const proofItems = [
   {
     title: "Visible assumptions",
-    body: "The public benchmark explains the failed-payment and recoverability ranges used in Dunlo estimates.",
+    body: "The public benchmark exposes the illustrative failed-payment bands and 62% recoverability assumption used in its model.",
     href: "/benchmark",
-    cta: "Review methodology",
+    cta: "Inspect the public model",
     icon: SquareActivity,
   },
   {
     title: "Visible mechanics",
-    body: "Failure reasons, recovery timing, Stripe-hosted update links, and founder review are documented before signup.",
+    body: "Failure reasons, recovery timing, customer update links, and founder review are documented before signup.",
     href: "/stripe-failed-payments",
     cta: "See the mechanics",
     icon: ShieldCheck,
@@ -46,7 +46,7 @@ export function PublicProofLayer({ compact = false }: PublicProofLayerProps) {
             : "mx-auto grid max-w-7xl lg:grid-cols-[0.72fr_1.28fr]"
         }
       >
-        <div className="p-6 md:p-10 lg:border-r lg:border-dunlo-line">
+        <div className="border-b border-dunlo-line p-6 md:p-10 lg:border-b-0 lg:border-r lg:border-dunlo-line">
           <p className="text-sm font-semibold text-dunlo-deep">
             Beta transparency
           </p>
