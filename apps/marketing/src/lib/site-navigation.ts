@@ -4,10 +4,9 @@ export type SiteLink = {
 };
 
 export const HEADER_NAV_LINKS = [
-  { label: "Features", href: "/#features" },
+  { label: "Product", href: "/#how-it-works" },
+  { label: "Trust", href: "/#trust" },
   { label: "Pricing", href: "/#pricing" },
-  { label: "Benchmark", href: "/benchmark" },
-  { label: "Blog", href: "/blog" },
 ] as const satisfies readonly SiteLink[];
 
 export const ALTERNATIVE_LINKS = [
@@ -71,7 +70,7 @@ export const FOOTER_SECTIONS = [
   {
     title: "Product",
     links: [
-      { label: "Features", href: "/#features" },
+      { label: "How it works", href: "/#how-it-works" },
       { label: "Pricing", href: "/#pricing" },
       {
         label: "Recovery software",

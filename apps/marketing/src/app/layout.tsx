@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { JetBrains_Mono, Outfit } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { PostHogProvider } from "@/components/analytics/posthog-provider";
 import {
@@ -16,15 +17,21 @@ import {
   absoluteUrl,
 } from "@/lib/seo";
 
-const outfit = Outfit({
-  subsets: ["latin"],
-  variable: "--font-sans",
+const outfit = localFont({
+  src: [
+    { path: "../assets/fonts/outfit-400.woff", weight: "400" },
+    { path: "../assets/fonts/outfit-500.woff", weight: "500" },
+    { path: "../assets/fonts/outfit-700.woff", weight: "700" },
+    { path: "../assets/fonts/outfit-800.woff", weight: "800" },
+    { path: "../assets/fonts/outfit-900.woff", weight: "900" },
+  ],
+  variable: "--font-app-sans",
   display: "swap",
 });
 
 const jetbrainsMono = JetBrains_Mono({
   subsets: ["latin"],
-  variable: "--font-mono",
+  variable: "--font-app-mono",
   display: "swap",
 });
 
