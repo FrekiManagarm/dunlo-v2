@@ -476,7 +476,7 @@ describe("landing style contract", () => {
 
     expect(rangeInput).toBeDefined();
     expect(rangeInput).toMatch(
-      /className="(?=[^"]*\bh-11\b)[^"]*"/,
+      /className="(?=[^"]*\bpeer\b)(?=[^"]*\bh-11\b)(?=[^"]*\bw-full\b)[^"]*"/,
     );
     expect(rangeThumb).toBeDefined();
     expect(rangeThumb).toMatch(
