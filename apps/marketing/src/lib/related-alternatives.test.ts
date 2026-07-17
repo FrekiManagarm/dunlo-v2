@@ -34,14 +34,46 @@ function getAlternativeRegistrySlugs(): string[] {
     throw new Error("Could not find the ALTERNATIVES registry");
   }
 
-  return registry.properties.flatMap((property) => {
+  return registry.properties.map((property) => {
     if (!ts.isPropertyAssignment(property)) {
-      return [];
+      throw new Error(
+        `Unsupported ALTERNATIVES property: ${property.getText(sourceFile)}`,
+      );
     }
 
-    return ts.isIdentifier(property.name) || ts.isStringLiteral(property.name)
-      ? [property.name.text]
-      : [];
+    if (!ts.isIdentifier(property.name) && !ts.isStringLiteral(property.name)) {
+      throw new Error(
+        `Could not extract ALTERNATIVES key: ${property.name.getText(sourceFile)}`,
+      );
+    }
+
+    const registryKey = property.name.text;
+    if (!ts.isObjectLiteralExpression(property.initializer)) {
+      throw new Error(`ALTERNATIVES.${registryKey} is not an object literal`);
+    }
+
+    const slugProperty = property.initializer.properties.find(
+      (nestedProperty) =>
+        ts.isPropertyAssignment(nestedProperty) &&
+        (ts.isIdentifier(nestedProperty.name) ||
+          ts.isStringLiteral(nestedProperty.name)) &&
+        nestedProperty.name.text === "slug",
+    );
+    if (
+      !slugProperty ||
+      !ts.isPropertyAssignment(slugProperty) ||
+      !ts.isStringLiteral(slugProperty.initializer)
+    ) {
+      throw new Error(`ALTERNATIVES.${registryKey} has no string slug`);
+    }
+
+    if (slugProperty.initializer.text !== registryKey) {
+      throw new Error(
+        `ALTERNATIVES.${registryKey} declares slug ${slugProperty.initializer.text}`,
+      );
+    }
+
+    return registryKey;
   });
 }
 
@@ -68,6 +100,7 @@ describe("getRelatedAlternativeSlugs", () => {
     const registrySlugs = getAlternativeRegistrySlugs();
     const registrySlugSet = new Set(registrySlugs);
 
+    expect(registrySlugs.length).toBeGreaterThan(0);
     for (const slug of registrySlugs) {
       const relatedSlugs = getRelatedAlternativeSlugs(slug);
 
