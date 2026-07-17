@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { resolve } from "node:path";
 import { describe, expect, test } from "vitest";
 
@@ -15,6 +15,11 @@ const webRoot = readFileSync(
   resolve(repoRoot, "apps/web/src/routes/__root.tsx"),
   "utf8",
 );
+
+function readOptionalSource(file: string) {
+  const path = resolve(repoRoot, file);
+  return existsSync(path) ? readFileSync(path, "utf8") : "";
+}
 
 describe("landing style contract", () => {
   test("uses an accessible foreground on bright Dunlo green", () => {
@@ -311,5 +316,134 @@ describe("landing style contract", () => {
     expect(founder).not.toContain("FadeIn");
     expect(founder).not.toContain("rounded-3xl");
     expect(founder).not.toMatch(/^import\s+.*testimonial.*$/im);
+  });
+
+  test("removes decorative grids and oversized card radii from the landing composition", () => {
+    const files = [
+      "apps/marketing/src/components/landing-page.tsx",
+      "apps/marketing/src/components/landing/payment-recovery-hero.tsx",
+      "apps/marketing/src/components/landing/escalation.tsx",
+      "apps/marketing/src/components/landing/how-it-works.tsx",
+      "apps/marketing/src/components/landing/roi-calculator.tsx",
+    ];
+    const source = files
+      .map((file) => readFileSync(resolve(repoRoot, file), "utf8"))
+      .join("\n");
+
+    expect(source).not.toContain("linear-gradient(to_right");
+    expect(source).not.toContain("rounded-[2rem]");
+    expect(source).not.toContain("shadow-[0_40px_100px");
+  });
+
+  test("composes the landing sections in the customer-trust narrative order", () => {
+    const landingPage = readFileSync(
+      resolve(repoRoot, "apps/marketing/src/components/landing-page.tsx"),
+      "utf8",
+    );
+    const sections = [
+      "<PaymentRecoveryHero />",
+      "<TrustStrip />",
+      "<FailureResponseMap />",
+      "<Escalation />",
+      "<HowItWorks />",
+      "<RoiCalculator />",
+      "<PublicProofLayer />",
+      "<BuiltByMathieu />",
+      "<Pricing />",
+      "<Faq />",
+      "<FinalCta />",
+      "<ResourceLibrary />",
+    ];
+    const positions = sections.map((section) => landingPage.indexOf(section));
+
+    expect(positions.every((position) => position >= 0)).toBe(true);
+    expect(positions).toEqual([...positions].sort((a, b) => a - b));
+    expect(landingPage).toContain("bg-dunlo-ground");
+    expect(landingPage).not.toContain("{/*");
+    expect(landingPage).not.toMatch(
+      /\b(?:recoveredEvents|signalCards|recoveryPaths|founderStats|resourceLinks|faqItems)\b/,
+    );
+    expect(landingPage).not.toMatch(
+      /function (?:HeroSection|RestoredSection|RecoveryDesk|ResourceLinksSection|FeaturesSection|PricingSection|FaqSection|FinalCta|GridBackdrop)\b/,
+    );
+    expect(landingPage).not.toContain("BetaTestimonialsSection");
+  });
+
+  test("uses shared pricing, FAQ, and resource content in extracted sections", () => {
+    const pricing = readOptionalSource(
+      "apps/marketing/src/components/landing/pricing.tsx",
+    );
+    const faq = readOptionalSource(
+      "apps/marketing/src/components/landing/faq.tsx",
+    );
+    const resources = readOptionalSource(
+      "apps/marketing/src/components/landing/resource-library.tsx",
+    );
+
+    expect(pricing).toContain(
+      'import { PRICING_FEATURES } from "./landing-content";',
+    );
+    expect(pricing).toContain("PRICING_FEATURES.map");
+    expect(faq).toContain('import { FAQ_ITEMS } from "./landing-content";');
+    expect(faq).toContain("FAQ_ITEMS.map");
+    expect(resources).toContain(
+      'import { RESOURCE_LINKS } from "./landing-content";',
+    );
+    expect(resources).toContain("RESOURCE_LINKS.map");
+    expect(resources).toContain('href="/blog"');
+    expect(resources).toContain("last:border-b-0");
+    expect(resources).toContain("md:[&:nth-last-child(-n+2)]:border-b-0");
+    expect(pricing).not.toMatch(/const\s+PRICING_FEATURES\s*=/);
+    expect(faq).not.toMatch(/const\s+FAQ_ITEMS\s*=/);
+    expect(resources).not.toMatch(/const\s+RESOURCE_LINKS\s*=/);
+  });
+
+  test("keeps conversion destinations and analytics accurate", () => {
+    const pricing = readOptionalSource(
+      "apps/marketing/src/components/landing/pricing.tsx",
+    );
+    const finalCta = readOptionalSource(
+      "apps/marketing/src/components/landing/final-cta.tsx",
+    );
+
+    for (const [source, location] of [
+      [pricing, "homepage_pricing"],
+      [finalCta, "homepage_final_cta"],
+    ]) {
+      expect(source).toContain("href={SIGNUP_URL}");
+      expect(source).toContain('button_text: "Start free in beta"');
+      expect(source).toContain("destination: SIGNUP_URL");
+      expect(source).toContain(`location: "${location}"`);
+    }
+  });
+
+  test("gives every extracted interactive element an explicit focus treatment", () => {
+    const pricing = readOptionalSource(
+      "apps/marketing/src/components/landing/pricing.tsx",
+    );
+    const faq = readOptionalSource(
+      "apps/marketing/src/components/landing/faq.tsx",
+    );
+    const resources = readOptionalSource(
+      "apps/marketing/src/components/landing/resource-library.tsx",
+    );
+    const finalCta = readOptionalSource(
+      "apps/marketing/src/components/landing/final-cta.tsx",
+    );
+
+    expect(pricing).toMatch(
+      /<TrackedLink[\s\S]*?className="[^"]*focus-visible:outline-none[^"]*focus-visible:ring-2[^"]*"/,
+    );
+    expect(faq).toMatch(
+      /<summary className="[^"]*focus-visible:outline-none[^"]*focus-visible:ring-2[^"]*"/,
+    );
+    expect(
+      resources.match(
+        /<Link[\s\S]*?className="[^"]*focus-visible:outline-none[^"]*focus-visible:ring-2[^"]*"/g,
+      ),
+    ).toHaveLength(2);
+    expect(finalCta).toMatch(
+      /<TrackedLink[\s\S]*?className="[^"]*focus-visible:outline-none[^"]*focus-visible:ring-2[^"]*"/,
+    );
   });
 });
