@@ -7,6 +7,9 @@ const heroSource = readMarketingSource(
 );
 const sitemapSource = readMarketingSource("src/app/sitemap.ts");
 const productHuntSource = readMarketingSource("src/app/product-hunt/page.tsx");
+const alternativePageSource = readMarketingSource(
+  "src/components/alternatives/alternative-page.tsx",
+);
 
 describe("marketing SEO indexation signals", () => {
   test("uses the approved default homepage title", () => {
@@ -30,5 +33,13 @@ describe("marketing SEO indexation signals", () => {
     expect(productHuntSource).toMatch(
       /robots:\s*\{\s*index:\s*false,\s*follow:\s*true,?\s*\}/,
     );
+  });
+
+  test("links each alternative page to curated related comparisons", () => {
+    expect(alternativePageSource).toContain(
+      "getRelatedAlternativeSlugs(page.slug)",
+    );
+    expect(alternativePageSource).toContain("Related comparisons");
+    expect(alternativePageSource).toContain("relatedPages.map");
   });
 });

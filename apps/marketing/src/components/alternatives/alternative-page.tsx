@@ -10,6 +10,7 @@ import { SIGNUP_URL } from "@/lib/app-url";
 import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials";
 import { Logo } from "@/components/logo";
 import { PublicProofLayer } from "@/components/public-proof-layer";
+import { getRelatedAlternativeSlugs } from "@/lib/related-alternatives";
 
 type ComparisonRow = {
   label: string;
@@ -1853,6 +1854,13 @@ export const VS_ROUTE_PAGES = Object.values(ALTERNATIVES).filter((page) =>
 );
 
 export function AlternativePage({ page }: { page: AlternativePageData }) {
+  const relatedPages = getRelatedAlternativeSlugs(page.slug)
+    .map((slug) => ALTERNATIVES[slug])
+    .filter(
+      (relatedPage): relatedPage is AlternativePageData =>
+        relatedPage !== undefined,
+    );
+
   return (
     <div className="min-h-dvh overflow-x-hidden bg-stone-100 font-sans text-gray-950">
       <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 md:px-6 md:py-6">
@@ -2091,6 +2099,34 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
               Start with Dunlo
               <ArrowRight size={15} />
             </Link>
+          </div>
+        </section>
+
+        <section className="rounded-3xl border border-gray-200 bg-white px-6 py-6 md:px-8">
+          <h2 className="text-base font-semibold text-gray-950">
+            Related comparisons
+          </h2>
+          <div className="mt-4 grid gap-3 md:grid-cols-3">
+            {relatedPages.map((relatedPage) => (
+              <Link
+                key={relatedPage.slug}
+                href={relatedPage.path}
+                className="group rounded-2xl border border-gray-200 px-4 py-4 transition-colors hover:border-dunlo/30 hover:bg-dunlo/[0.05]"
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <p className="font-semibold text-gray-950">
+                    Dunlo vs {relatedPage.competitorName}
+                  </p>
+                  <ArrowRight
+                    size={15}
+                    className="shrink-0 text-gray-400 transition-transform group-hover:translate-x-0.5 group-hover:text-dunlo-deep"
+                  />
+                </div>
+                <p className="mt-2 text-sm leading-6 text-gray-600">
+                  Compare recovery focus, setup, and fit.
+                </p>
+              </Link>
+            ))}
           </div>
         </section>
 
