@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { SIGNUP_URL } from "@/lib/app-url";
 import {
   motion,
   useMotionValue,
@@ -9,10 +8,14 @@ import {
   useSpring,
   useTransform,
 } from "framer-motion";
-import { ArrowRight, Calculator, Gauge, TrendingUp } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { captureMarketingEvent } from "@/lib/posthog";
-import { RECOVERABILITY_RATE, RECOVERABILITY_PERCENT, RECOVERY_MODEL_UPDATED } from "@/lib/recovery-assumptions";
+import { SIGNUP_URL } from "@/lib/app-url";
+import {
+  RECOVERABILITY_RATE,
+  RECOVERABILITY_PERCENT,
+  RECOVERY_MODEL_UPDATED,
+} from "@/lib/recovery-assumptions";
 
 const MIN_MRR = 1000;
 const MAX_MRR = 20_000;
@@ -37,16 +40,13 @@ function AnimatedCurrency({ value }: { value: number }) {
     raw.set(value);
   }, [raw, value]);
 
-  if (shouldReduceMotion) {
-    return <span>{formatCurrency(value)}</span>;
-  }
+  if (shouldReduceMotion) return <span>{formatCurrency(value)}</span>;
 
   return <motion.span>{display}</motion.span>;
 }
 
 export function RoiCalculator() {
   const [mrr, setMrr] = useState(6000);
-
   const monthlyFailed = useMemo(
     () => Math.round(mrr * FAILED_PAYMENT_RATE),
     [mrr],
@@ -68,48 +68,40 @@ export function RoiCalculator() {
   }
 
   return (
-    <section
-      id="roi-calculator"
-      className="overflow-hidden rounded-2xl border border-gray-200 bg-white"
-    >
-      <div className="grid gap-0 lg:grid-cols-[0.92fr_1.08fr]">
-        <div className="border-b border-gray-200 p-6 md:p-9 lg:border-b-0 lg:border-r">
-          <p className="text-sm font-semibold text-dunlo-deep">
-            Recovery estimate
+    <section id="roi-calculator" className="bg-dunlo-ground px-4 py-24 md:px-6 md:py-36">
+      <div className="mx-auto max-w-[1400px]">
+        <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+          <div>
+            <p className="text-sm font-semibold text-dunlo-deep">Recovery estimate</p>
+            <h2 className="mt-5 max-w-2xl text-balance text-4xl font-bold leading-[0.94] tracking-[-0.04em] md:text-6xl">
+              Find the revenue already hiding in Stripe.
+            </h2>
+          </div>
+          <p className="max-w-[58ch] text-pretty text-base leading-7 text-gray-700 md:text-lg md:leading-8 lg:justify-self-end">
+            Move your MRR. Dunlo exposes every assumption behind the estimate,
+            because recovery should feel measurable—not magical.
           </p>
-          <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-none tracking-tight text-gray-950 md:text-6xl">
-            Estimate the revenue hiding in Stripe failures.
-          </h2>
-          <p className="mt-5 max-w-[58ch] text-base leading-7 text-gray-600">
-            Move the slider to model failed MRR and recoverable revenue. The
-            assumptions stay visible so the number feels useful, not magical.
-          </p>
+        </div>
 
-          <div className="mt-9">
-            <div className="flex items-end justify-between gap-4">
+        <div className="mt-16 grid border-y-2 border-dunlo-ink lg:grid-cols-[0.9fr_1.1fr]">
+          <div className="border-b border-dunlo-line py-9 lg:border-b-0 lg:border-r lg:pr-12">
+            <div className="flex items-end justify-between gap-5">
               <div>
-                <label
-                  htmlFor="mrr-slider"
-                  className="text-sm font-semibold text-gray-950"
-                >
+                <label htmlFor="mrr-slider" className="text-sm font-bold text-dunlo-ink">
                   Monthly recurring revenue
                 </label>
-                <p className="mt-1 text-sm text-gray-500">
-                  Adjust from {formatCurrency(MIN_MRR)} to{" "}
-                  {formatCurrency(MAX_MRR)}
+                <p className="mt-2 text-sm text-gray-600">
+                  {formatCurrency(MIN_MRR)}–{formatCurrency(MAX_MRR)}
                 </p>
               </div>
-              <p className="rounded-2xl border border-gray-200 bg-stone-50 px-4 py-2 text-2xl font-semibold tracking-tight">
+              <output htmlFor="mrr-slider" className="text-3xl font-bold tracking-[-0.03em] md:text-4xl">
                 {formatCurrency(mrr)}
-              </p>
+              </output>
             </div>
 
-            <div className="relative mt-7 py-4">
-              <div className="h-2 rounded-full bg-gray-100">
-                <div
-                  className="h-full rounded-full bg-dunlo"
-                  style={{ width: `${progress}%` }}
-                />
+            <div className="relative mt-12 py-5">
+              <div className="h-1 bg-dunlo-line">
+                <div className="h-full bg-dunlo-ink" style={{ width: `${progress}%` }} />
               </div>
               <input
                 id="mrr-slider"
@@ -119,118 +111,68 @@ export function RoiCalculator() {
                 step={STEP}
                 value={mrr}
                 onChange={(event) => setMrr(Number(event.target.value))}
-                onPointerUp={(event) =>
-                  captureMrrChange(Number(event.currentTarget.value))
-                }
-                onKeyUp={(event) =>
-                  captureMrrChange(Number(event.currentTarget.value))
-                }
+                onPointerUp={(event) => captureMrrChange(Number(event.currentTarget.value))}
+                onKeyUp={(event) => captureMrrChange(Number(event.currentTarget.value))}
                 className="peer absolute inset-x-0 top-1/2 h-11 w-full -translate-y-1/2 cursor-pointer opacity-0"
                 aria-describedby="roi-calculator-result"
               />
               <div
-                className="pointer-events-none absolute top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white bg-dunlo peer-focus-visible:ring-4 peer-focus-visible:ring-dunlo-deep peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-white"
+                className="pointer-events-none absolute top-1/2 size-7 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-dunlo-ground bg-dunlo peer-focus-visible:ring-4 peer-focus-visible:ring-dunlo-deep peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-white"
                 style={{ left: `${progress}%` }}
               />
             </div>
-          </div>
-        </div>
 
-        <div className="bg-stone-50 p-4 md:p-7">
-          <div className="rounded-xl border border-gray-200 bg-white p-4 md:p-5">
-            <div className="rounded-xl bg-gray-950 p-5 text-white">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-xs font-semibold text-dunlo">
-                    30-day estimate
-                  </p>
-                  <p
-                    id="roi-calculator-result"
-                    className="mt-4 text-4xl font-semibold leading-none tracking-tight md:text-5xl"
-                    aria-live="polite"
-                  >
-                    <AnimatedCurrency value={recovered} />
-                    <span className="block pt-2 text-base font-medium leading-6 text-white/75">
-                      Estimated recoverable this month
-                    </span>
-                  </p>
-                </div>
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-dunlo/12 text-dunlo">
-                  <Calculator size={20} strokeWidth={2} aria-hidden />
-                </span>
+            <div className="mt-8 grid grid-cols-2 gap-6 border-t border-dunlo-line pt-7">
+              <div>
+                <p className="text-xs text-gray-500">Failed MRR at risk</p>
+                <p className="mt-2 text-xl font-bold">{formatCurrency(monthlyFailed)}</p>
+              </div>
+              <div>
+                <p className="text-xs text-gray-500">Annualized estimate</p>
+                <p className="mt-2 text-xl font-bold">{formatCurrency(annualRecoverable)}</p>
               </div>
             </div>
+          </div>
 
-            <div className="mt-3 grid gap-3 sm:grid-cols-3">
-              {[
-                {
-                  label: "Failed MRR at risk",
-                  value: formatCurrency(monthlyFailed),
-                  icon: Gauge,
-                },
-                {
-                  label: "Annualized estimate",
-                  value: formatCurrency(annualRecoverable),
-                  icon: TrendingUp,
-                },
-                {
-                  label: "Recoverability assumption",
-                  value: RECOVERABILITY_PERCENT,
-                  icon: Calculator,
-                },
-              ].map((item) => {
-                const Icon = item.icon;
-                return (
-                  <div
-                    key={item.label}
-                    className="rounded-xl border border-gray-100 bg-stone-50 p-4"
-                  >
-                    <Icon
-                      className="text-dunlo-deep"
-                      size={18}
-                      strokeWidth={2}
-                      aria-hidden
-                    />
-                    <p className="mt-4 text-xl font-semibold tracking-tight text-gray-950">
-                      {item.value}
-                    </p>
-                    <p className="mt-1 text-xs font-medium leading-4 text-gray-500">
-                      {item.label}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-
-            <div className="mt-4 border-t border-dunlo-line pt-4">
-              <p className="text-sm leading-6 text-gray-700">
-                Illustrative estimate using an assumed 5% failed-payment rate and
-                {" "}{RECOVERABILITY_PERCENT} recoverability. It is not
-                a benchmark result or a guarantee. Actual recovery depends on
-                failure reasons, customer mix, retry timing, and message quality.
-                Model assumptions updated {RECOVERY_MODEL_UPDATED}.
-              </p>
-              <Link
-                href="/benchmark"
-                className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-dunlo-deep underline decoration-dunlo/40 underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-white"
+          <div className="flex flex-col justify-between bg-dunlo-ink px-6 py-9 text-white md:px-10 lg:px-12">
+            <div>
+              <p className="text-sm font-semibold text-dunlo">Estimated recoverable this month</p>
+              <p
+                id="roi-calculator-result"
+                className="mt-6 text-[clamp(4rem,9vw,7rem)] font-bold leading-none tracking-[-0.04em]"
+                aria-live="polite"
               >
-                Explore the public benchmark
-              </Link>
+                <AnimatedCurrency value={recovered} />
+              </p>
             </div>
-            <Link
-              href={SIGNUP_URL}
-              onClick={() =>
-                captureMarketingEvent("cta_clicked", {
-                  button_text: "Start measuring failed payments",
-                  destination: SIGNUP_URL,
-                  location: "homepage_roi_calculator",
-                })
-              }
-              className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-white"
-            >
-              Start measuring failed payments
-              <ArrowRight size={16} aria-hidden />
-            </Link>
+            <div className="mt-12 border-t border-white/14 pt-6">
+              <p className="max-w-[62ch] text-sm leading-6 text-white/62">
+                Illustrative estimate using an assumed 5% failed-payment rate
+                and {RECOVERABILITY_PERCENT} recoverability. It is not a
+                benchmark result or a guarantee. Model updated {RECOVERY_MODEL_UPDATED}.
+              </p>
+              <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                <Link
+                  href={SIGNUP_URL}
+                  onClick={() =>
+                    captureMarketingEvent("cta_clicked", {
+                      button_text: "Start measuring failed payments",
+                      destination: SIGNUP_URL,
+                      location: "homepage_roi_calculator",
+                    })
+                  }
+                  className="inline-flex min-h-12 items-center justify-center rounded-full bg-dunlo px-6 text-sm font-bold text-dunlo-ink transition-transform hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                >
+                  Start measuring failed payments
+                </Link>
+                <Link
+                  href="/benchmark"
+                  className="inline-flex min-h-12 items-center justify-center rounded-full border border-white/20 px-6 text-sm font-semibold text-white transition-colors hover:border-white/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
+                >
+                  Explore the public benchmark
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
       </div>

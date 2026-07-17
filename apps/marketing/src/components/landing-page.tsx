@@ -15,15 +15,15 @@ import { PublicProofLayer } from "@/components/public-proof-layer";
 
 export function LandingPage() {
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-dunlo-ground font-sans text-dunlo-ink">
+    <div className="min-h-dvh overflow-x-hidden bg-dunlo-ground font-sans text-dunlo-ink selection:bg-dunlo selection:text-dunlo-ink">
       <Nav />
       <main>
         <PaymentRecoveryHero />
         <TrustStrip />
         <FailureResponseMap />
-        <div className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><Escalation /></div></div>
-        <div className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><HowItWorks /></div></div>
-        <div className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><RoiCalculator /></div></div>
+        <HowItWorks />
+        <Escalation />
+        <RoiCalculator />
         <PublicProofLayer />
         <div className="px-4 md:px-6"><BuiltByMathieu /></div>
         <Pricing />

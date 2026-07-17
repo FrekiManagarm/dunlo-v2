@@ -40,28 +40,28 @@ export function PublicProofLayer({ compact = false }: PublicProofLayerProps) {
       className={
         compact
           ? "scroll-mt-24 overflow-hidden rounded-2xl border border-dunlo-line bg-white"
-          : "scroll-mt-24 border-y border-dunlo-line bg-white"
+          : "scroll-mt-24 bg-white px-4 py-24 md:px-6 md:py-32"
       }
     >
       <div
         className={
           compact
             ? "grid lg:grid-cols-[0.72fr_1.28fr]"
-            : "mx-auto grid max-w-7xl lg:grid-cols-[0.72fr_1.28fr]"
+            : "mx-auto grid max-w-[1400px] border-y-2 border-dunlo-ink lg:grid-cols-[0.72fr_1.28fr]"
         }
       >
-        <div className="border-b border-dunlo-line p-6 md:p-10 lg:border-b-0 lg:border-r lg:border-dunlo-line">
+        <div className="border-b border-dunlo-line py-10 md:py-14 lg:border-b-0 lg:border-r lg:border-dunlo-line lg:pr-14">
           <p className="text-sm font-semibold text-dunlo-deep">
             Beta transparency
           </p>
-          <h2 className="mt-4 max-w-xl text-balance text-4xl font-semibold leading-none tracking-[-0.03em] text-dunlo-ink md:text-6xl">
+          <h2 className="mt-5 max-w-xl text-balance text-4xl font-bold leading-[0.94] tracking-[-0.04em] text-dunlo-ink md:text-6xl">
             What can be verified today.
           </h2>
           <p className="mt-6 max-w-[62ch] text-pretty text-base leading-7 text-gray-700">
             Dunlo publishes assumptions, recovery mechanics, and its proof
             policy before it publishes customer outcomes.
           </p>
-          <p className="mt-5 border-l border-dunlo-ink pl-4 text-sm font-semibold leading-6 text-dunlo-ink">
+          <p className="mt-7 max-w-[52ch] text-sm font-semibold leading-6 text-dunlo-ink">
             During beta, customer outcomes are published only with approval and
             enough context to be useful.
           </p>
@@ -73,11 +73,11 @@ export function PublicProofLayer({ compact = false }: PublicProofLayerProps) {
             return (
               <article
                 key={item.title}
-                className="grid gap-4 p-6 md:grid-cols-[auto_1fr_auto] md:items-center md:p-8"
+                className="group grid gap-4 py-7 md:grid-cols-[auto_1fr_auto] md:items-center md:px-8 md:py-9"
               >
                 <Icon className="text-dunlo-deep" size={20} aria-hidden />
                 <div>
-                  <h3 className="text-lg font-semibold text-dunlo-ink">
+                  <h3 className="text-xl font-bold text-dunlo-ink">
                     {item.title}
                   </h3>
                   <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-700">

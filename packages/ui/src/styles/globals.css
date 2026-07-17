@@ -17,6 +17,8 @@
   --dunlo-ink: oklch(0.16 0.015 155);
   --dunlo-ground: oklch(0.985 0.004 155);
   --dunlo-line: oklch(0.86 0.008 155);
+  --dunlo-night: oklch(0.145 0.019 160);
+  --dunlo-mist: oklch(0.965 0.008 155);
 
   /* shadcn / Tailwind semantic aliases */
   --background: var(--dunlo-ground);
@@ -91,6 +93,8 @@
   --color-dunlo-ink: var(--dunlo-ink);
   --color-dunlo-ground: var(--dunlo-ground);
   --color-dunlo-line: var(--dunlo-line);
+  --color-dunlo-night: var(--dunlo-night);
+  --color-dunlo-mist: var(--dunlo-mist);
 
   /* shadcn semantic colors */
   --color-background: var(--background);
@@ -177,6 +181,36 @@
 .anim-6 {
   animation: fade-up 0.56s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
+.anim-2 { animation-delay: 90ms; }
+.anim-3 { animation-delay: 180ms; }
+.anim-4 { animation-delay: 270ms; }
+.anim-5 { animation-delay: 360ms; }
+.anim-6 { animation-delay: 450ms; }
+
+.landing-orbit {
+  position: absolute;
+  inset: auto -18rem -28rem auto;
+  width: 56rem;
+  height: 56rem;
+  border: 12rem solid color-mix(in oklab, var(--dunlo-accent) 11%, transparent);
+  border-radius: 9999px;
+  pointer-events: none;
+}
+
+.landing-product-frame {
+  box-shadow: 0 8px 0 color-mix(in oklab, var(--dunlo-accent) 52%, transparent);
+  transform: perspective(1400px) rotateY(-4deg) rotateX(1deg);
+  transform-origin: center left;
+}
+
+@keyframes product-float {
+  0%, 100% { transform: translate3d(0, 0, 0); }
+  50% { transform: translate3d(0, -8px, 0); }
+}
+
+.landing-product-float {
+  animation: product-float 8s cubic-bezier(0.16, 1, 0.3, 1) infinite;
+}
 
 @keyframes landing-rise {
   from {
@@ -201,5 +235,17 @@
   .anim-6,
   .landing-rise {
     animation: none;
+  }
+  .landing-product-float {
+    animation: none;
+  }
+}
+
+@media (max-width: 1023px) {
+  .landing-product-frame {
+    transform: none;
+  }
+  .landing-orbit {
+    right: -32rem;
   }
 }

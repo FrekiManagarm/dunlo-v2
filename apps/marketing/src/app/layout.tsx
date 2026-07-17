@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
-import { Geist, JetBrains_Mono } from "next/font/google";
+import { JetBrains_Mono } from "next/font/google";
+import localFont from "next/font/local";
 import "./globals.css";
 import { PostHogProvider } from "@/components/analytics/posthog-provider";
 import {
@@ -16,8 +17,14 @@ import {
   absoluteUrl,
 } from "@/lib/seo";
 
-const geist = Geist({
-  subsets: ["latin"],
+const outfit = localFont({
+  src: [
+    { path: "../assets/fonts/outfit-400.woff", weight: "400" },
+    { path: "../assets/fonts/outfit-500.woff", weight: "500" },
+    { path: "../assets/fonts/outfit-700.woff", weight: "700" },
+    { path: "../assets/fonts/outfit-800.woff", weight: "800" },
+    { path: "../assets/fonts/outfit-900.woff", weight: "900" },
+  ],
   variable: "--font-app-sans",
   display: "swap",
 });
@@ -86,7 +93,7 @@ export default function RootLayout({
 }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${geist.variable} ${jetbrainsMono.variable}`}>
+      <body className={`${outfit.variable} ${jetbrainsMono.variable}`}>
         <PostHogProvider>{children}</PostHogProvider>
         <script
           type="application/ld+json"

@@ -4,44 +4,33 @@ export function FailureResponseMap() {
   return (
     <section
       id="failure-responses"
-      className="scroll-mt-24 px-4 py-10 md:px-6 md:py-16"
+      className="scroll-mt-24 bg-dunlo-ground px-4 py-24 md:px-6 md:py-36"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-5 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
+        <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
           <div>
-            <p className="text-sm font-semibold text-dunlo-deep">
-              Example response logic
-            </p>
-            <h2 className="mt-3 max-w-xl text-balance text-3xl font-semibold leading-none tracking-[-0.03em] text-dunlo-ink md:text-5xl">
-              Four paths after Stripe reports a failure.
+            <p className="text-sm font-semibold text-dunlo-deep">Failure-aware recovery</p>
+            <h2 className="mt-5 max-w-xl text-balance text-4xl font-bold leading-[0.94] tracking-[-0.04em] text-dunlo-ink md:text-6xl">
+              The decline decides the next move.
             </h2>
           </div>
-          <p className="max-w-[65ch] text-pretty text-sm leading-6 text-gray-700 md:text-base md:leading-7">
-            Dunlo turns the signal into a response path: what the customer
-            needs to hear, what should happen next, and when automation should
-            pause for a person.
+          <p className="max-w-[58ch] text-pretty text-base leading-7 text-gray-700 md:text-lg md:leading-8">
+            A failed payment is not one problem. Dunlo translates Stripe's
+            signal into the right timing, message, or human handoff.
           </p>
         </div>
 
-        <div className="mt-8 grid border-y-2 border-dunlo-ink md:grid-cols-2">
-          {FAILURE_RESPONSE_CATEGORIES.map((item, index) => (
+        <div className="mt-16 border-t-2 border-dunlo-ink">
+          {FAILURE_RESPONSE_CATEGORIES.map((item) => (
             <article
               key={item.stripeCode}
-              className="grid gap-4 border-b border-dunlo-line p-5 last:border-b-0 md:p-6 md:[&:nth-child(odd)]:border-r md:[&:nth-last-child(-n+2)]:border-b-0"
+              className="group grid gap-5 border-b border-dunlo-line py-7 transition-colors hover:bg-white md:grid-cols-[0.52fr_0.95fr_0.8fr] md:items-start md:gap-8 md:px-5 md:py-9"
             >
-              <div className="flex items-start justify-between gap-4">
-                <p className="text-xs font-semibold text-dunlo-deep">
-                  Response category
-                </p>
-                <span className="text-xs font-semibold text-gray-600">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-              </div>
               <div>
-                <h3 className="text-lg font-semibold text-dunlo-ink">
+                <h3 className="text-xl font-bold tracking-tight text-dunlo-ink">
                   {item.situation}
                 </h3>
-                <code className="mt-1 block font-mono text-xs text-gray-600">
+                <code className="mt-2 block font-mono text-xs text-dunlo-deep">
                   {item.stripeCode}
                 </code>
                 {"context" in item ? (
@@ -50,20 +39,14 @@ export function FailureResponseMap() {
                   </p>
                 ) : null}
               </div>
-              <dl className="grid gap-3 text-sm leading-6">
+              <dl className="contents text-sm leading-6">
                 <div>
-                  <dt className="text-xs font-semibold text-gray-600">
-                    Response
-                  </dt>
-                  <dd className="mt-1 text-gray-700">{item.response}</dd>
+                  <dt className="text-xs font-semibold text-gray-500">What Dunlo says</dt>
+                  <dd className="mt-2 max-w-[42ch] text-base leading-7 text-gray-700">{item.response}</dd>
                 </div>
-                <div className="border-l-2 border-dunlo pl-3">
-                  <dt className="text-xs font-semibold text-gray-600">
-                    Next step
-                  </dt>
-                  <dd className="mt-1 font-semibold text-dunlo-ink">
-                    {item.action}
-                  </dd>
+                <div className="md:text-right">
+                  <dt className="text-xs font-semibold text-gray-500">Next action</dt>
+                  <dd className="mt-2 text-lg font-bold text-dunlo-ink">{item.action} <span className="ml-2 text-dunlo transition-transform group-hover:translate-x-1" aria-hidden="true">→</span></dd>
                 </div>
               </dl>
             </article>

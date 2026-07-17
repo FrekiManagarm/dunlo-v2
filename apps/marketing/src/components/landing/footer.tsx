@@ -3,16 +3,16 @@ import { FOOTER_SECTIONS } from "@/lib/site-navigation";
 
 export function Footer() {
   return (
-    <footer className="border-t border-gray-300/50 bg-stone-100 px-4 py-9">
-      <div className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[1fr_1.45fr]">
+    <footer className="bg-dunlo-ink px-4 py-14 text-white md:px-6 md:py-20">
+      <div className="mx-auto grid max-w-[1400px] gap-12 lg:grid-cols-[1fr_1.45fr]">
         <div className="max-w-sm">
           <div className="flex items-center gap-3">
-            <Logo size={22} />
-            <span className="text-xs text-gray-600">
+            <Logo size={22} dark />
+            <span className="text-xs text-white/48">
               Stop losing revenue to failed payments.
             </span>
           </div>
-          <p className="mt-5 max-w-sm text-xs leading-6 text-gray-600">
+          <p className="mt-5 max-w-sm text-xs leading-6 text-white/52">
             Stripe-first recovery for teams that want precise dunning without a
             recovered-revenue cut.
           </p>
@@ -21,7 +21,7 @@ export function Footer() {
               href="https://x.com/mathchambaud"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex size-11 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors hover:border-gray-300 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
+              className="inline-flex size-11 items-center justify-center rounded-full border border-white/16 text-white/58 transition-colors hover:border-white/42 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo-ink"
               aria-label="Follow on X"
             >
               <svg
@@ -38,7 +38,7 @@ export function Footer() {
               href="https://www.linkedin.com/company/dunlo"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex size-11 items-center justify-center rounded-full border border-gray-200 text-gray-600 transition-colors hover:border-gray-300 hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
+              className="inline-flex size-11 items-center justify-center rounded-full border border-white/16 text-white/58 transition-colors hover:border-white/42 hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo-ink"
               aria-label="Follow Dunlo on LinkedIn"
             >
               <svg
@@ -58,7 +58,7 @@ export function Footer() {
           <div className="grid grid-cols-2 gap-x-6 gap-y-7 lg:grid-cols-4">
             {FOOTER_SECTIONS.map((section) => (
               <nav key={section.title} aria-label={section.title}>
-                <h2 className="text-xs font-semibold text-gray-900">
+                <h2 className="text-xs font-semibold text-white">
                   {section.title}
                 </h2>
                 <ul className="mt-3 space-y-2.5">
@@ -66,7 +66,7 @@ export function Footer() {
                     <li key={link.href}>
                       <a
                         href={link.href}
-                        className="inline-flex text-xs leading-5 text-gray-600 transition-colors hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
+                        className="inline-flex text-xs leading-5 text-white/52 transition-colors hover:text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo-ink"
                       >
                         {link.label}
                       </a>
@@ -77,7 +77,7 @@ export function Footer() {
             ))}
           </div>
 
-          <div className="mt-7 flex flex-col gap-2 border-t border-gray-300/50 pt-5 text-xs text-gray-600 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-10 flex flex-col gap-2 border-t border-white/12 pt-5 text-xs text-white/42 sm:flex-row sm:items-center sm:justify-between">
             <span>© {new Date().getFullYear()} Dunlo</span>
             <span>Built for Stripe-first SaaS founders.</span>
           </div>
