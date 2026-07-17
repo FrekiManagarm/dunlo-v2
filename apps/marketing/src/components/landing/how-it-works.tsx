@@ -1,8 +1,8 @@
 "use client";
 
-import Link from "next/link";
+import { TrackedLink } from "@/components/tracked-link";
 import { SIGNUP_URL } from "@/lib/app-url";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import {
   ArrowRight,
   Check,
@@ -40,12 +40,13 @@ const steps = [
 const rows = [
   ["invoice.payment_failed", "caught", "now"],
   ["authentication_required", "mapped", "SCA path"],
-  ["founder_threshold", "paused", "$500+"],
-  ["payment_method_updated", "recovered", "$956"],
+  ["founder_threshold", "paused", "founder rule"],
+  ["payment_method_updated", "recovered", "update confirmed"],
 ] as const;
 
 export function HowItWorks() {
   const [active, setActive] = useState(0);
+  const shouldReduceMotion = useReducedMotion();
 
   const activeStep = steps[active]!;
   const ActiveIcon = activeStep.icon;
@@ -67,13 +68,18 @@ export function HowItWorks() {
             Dunlo keeps the setup short, then makes every failed payment visible
             as it moves from signal to message to recovered revenue.
           </p>
-          <Link
+          <TrackedLink
             href={SIGNUP_URL}
+            eventProperties={{
+              button_text: "Start free in beta",
+              destination: SIGNUP_URL,
+              location: "homepage_how_it_works",
+            }}
             className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink transition-colors hover:bg-dunlo-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           >
             Start free in beta
             <ArrowRight size={16} aria-hidden />
-          </Link>
+          </TrackedLink>
         </div>
 
         <div className="bg-stone-50 p-4 md:p-7">
@@ -104,7 +110,7 @@ export function HowItWorks() {
                               : "border border-gray-200 bg-gray-50 text-gray-500"
                           }`}
                         >
-                          <Icon size={17} strokeWidth={2} />
+                          <Icon size={17} strokeWidth={2} aria-hidden />
                         </span>
                         <span className="font-mono text-xs font-semibold text-gray-500">
                           {step.n}
@@ -129,15 +135,17 @@ export function HowItWorks() {
               <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                 <div>
                   <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
-                    Recovery loop
+                    Example product preview
                   </p>
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.h3
                       key={activeStep.title}
-                      initial={{ opacity: 0, y: 8 }}
+                      initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}
                       animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      transition={{ duration: 0.28 }}
+                      exit={shouldReduceMotion ? undefined : { opacity: 0, y: -8 }}
+                      transition={{
+                        duration: shouldReduceMotion ? 0 : 0.28,
+                      }}
                       className="mt-2 max-w-lg text-2xl font-semibold tracking-tight text-gray-950"
                     >
                       {activeStep.title}
@@ -145,20 +153,20 @@ export function HowItWorks() {
                   </AnimatePresence>
                 </div>
                 <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-dunlo/12 text-dunlo-deep">
-                  <ActiveIcon size={19} strokeWidth={2} />
+                  <ActiveIcon size={19} strokeWidth={2} aria-hidden />
                 </span>
               </div>
 
               <div className="mt-5 rounded-xl bg-gray-950 p-4 text-white">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <Radar size={17} strokeWidth={2} className="text-dunlo" />
+                    <Radar size={17} strokeWidth={2} className="text-dunlo" aria-hidden />
                     <span className="font-mono text-xs font-semibold text-white/75">
                       stripe_event_stream
                     </span>
                   </div>
                   <span className="rounded-full bg-dunlo/12 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-dunlo">
-                    live
+                    Example
                   </span>
                 </div>
 
@@ -194,7 +202,7 @@ export function HowItWorks() {
                               : "bg-white/10"
                           }`}
                         >
-                          {isDone && <Check size={13} strokeWidth={2} />}
+                          {isDone && <Check size={13} strokeWidth={2} aria-hidden />}
                         </span>
                       </div>
                     );

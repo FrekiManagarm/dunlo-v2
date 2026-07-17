@@ -9,7 +9,7 @@ export function TrustStrip() {
           <Link
             key={item.title}
             href={item.href}
-            className="group min-h-28 border-b border-dunlo-line p-5 last:border-b-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-dunlo-deep sm:border-r sm:last:border-r-0 sm:[&:nth-child(2)]:border-r-0 lg:border-b-0 lg:[&:nth-child(2)]:border-r lg:last:border-r-0"
+            className="group min-h-28 border-b border-dunlo-line p-5 last:border-b-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-dunlo-deep sm:border-r sm:last:border-r-0 sm:[&:nth-child(2)]:border-r-0 sm:[&:nth-last-child(-n+2)]:border-b-0 lg:border-b-0 lg:[&:nth-child(2)]:border-r lg:last:border-r-0"
           >
             <h2 className="text-sm font-semibold text-dunlo-ink group-hover:text-dunlo-deep">
               {item.title}

@@ -446,4 +446,141 @@ describe("landing style contract", () => {
       /<TrackedLink[\s\S]*?className="[^"]*focus-visible:outline-none[^"]*focus-visible:ring-2[^"]*"/,
     );
   });
+
+  test("labels the setup workflow as synthetic without invented revenue", () => {
+    const howItWorks = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/how-it-works.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(howItWorks).toContain("Example product preview");
+    expect(howItWorks).toMatch(/>\s*Example\s*</);
+    expect(howItWorks).not.toMatch(/>\s*live\s*</i);
+    expect(howItWorks).not.toContain("$500+");
+    expect(howItWorks).not.toContain("$956");
+  });
+
+  test("tracks the setup workflow signup CTA", () => {
+    const howItWorks = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/how-it-works.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(howItWorks).toContain(
+      'import { TrackedLink } from "@/components/tracked-link";',
+    );
+    expect(howItWorks).toContain("<TrackedLink");
+    expect(howItWorks).toContain("href={SIGNUP_URL}");
+    expect(howItWorks).toContain('button_text: "Start free in beta"');
+    expect(howItWorks).toContain("destination: SIGNUP_URL");
+    expect(howItWorks).toContain('location: "homepage_how_it_works"');
+  });
+
+  test("respects reduced motion in the setup workflow heading", () => {
+    const howItWorks = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/how-it-works.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(howItWorks).toContain("useReducedMotion");
+    expect(howItWorks).toContain(
+      "const shouldReduceMotion = useReducedMotion();",
+    );
+    expect(howItWorks).toContain(
+      "initial={shouldReduceMotion ? false : { opacity: 0, y: 8 }}",
+    );
+    expect(howItWorks).toContain(
+      "exit={shouldReduceMotion ? undefined : { opacity: 0, y: -8 }}",
+    );
+    expect(howItWorks).toContain(
+      "duration: shouldReduceMotion ? 0 : 0.28",
+    );
+  });
+
+  test("closes trust-strip borders at tablet and desktop breakpoints", () => {
+    const trustStrip = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/trust-strip.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(trustStrip).toContain(
+      "sm:[&:nth-last-child(-n+2)]:border-b-0",
+    );
+    expect(trustStrip).toContain("sm:last:border-r-0");
+  });
+
+  test("uses div layout wrappers around section components", () => {
+    const landingPage = readFileSync(
+      resolve(repoRoot, "apps/marketing/src/components/landing-page.tsx"),
+      "utf8",
+    );
+
+    for (const component of ["Escalation", "HowItWorks", "RoiCalculator"]) {
+      expect(landingPage).toMatch(
+        new RegExp(
+          `<div className="px-4 py-8 md:px-6 md:py-14">\\s*<div className="mx-auto max-w-7xl">\\s*<${component} />`,
+        ),
+      );
+    }
+    expect(landingPage).toMatch(
+      /<div className="px-4 md:px-6">\s*<BuiltByMathieu \/>\s*<\/div>/,
+    );
+    expect(landingPage).not.toMatch(
+      /<section className="px-4 (?:py-8 md:px-6 md:py-14|md:px-6)">/,
+    );
+  });
+
+  test("gives conversion CTAs explicit transition and hover feedback", () => {
+    const pricing = readFileSync(
+      resolve(repoRoot, "apps/marketing/src/components/landing/pricing.tsx"),
+      "utf8",
+    );
+    const finalCta = readFileSync(
+      resolve(repoRoot, "apps/marketing/src/components/landing/final-cta.tsx"),
+      "utf8",
+    );
+
+    expect(pricing).toContain("transition-colors hover:bg-dunlo-hover");
+    expect(finalCta).toContain("transition-colors hover:bg-gray-800");
+  });
+
+  test("tracks every composed signup surface with a stable location", () => {
+    const signupSurfaces = [
+      ["payment-recovery-hero.tsx", "homepage_hero"],
+      ["escalation.tsx", "homepage_founder_review"],
+      ["how-it-works.tsx", "homepage_how_it_works"],
+      ["roi-calculator.tsx", "homepage_roi_calculator"],
+      ["pricing.tsx", "homepage_pricing"],
+      ["final-cta.tsx", "homepage_final_cta"],
+    ] as const;
+
+    for (const [file, location] of signupSurfaces) {
+      const source = readFileSync(
+        resolve(repoRoot, `apps/marketing/src/components/landing/${file}`),
+        "utf8",
+      );
+      const signupElement = source.match(
+        /<(TrackedLink|Link)\b[\s\S]*?href=\{SIGNUP_URL\}[\s\S]*?>/,
+      );
+      const usesTrackedLink = signupElement?.[1] === "TrackedLink";
+      const capturesClick = source.includes("captureMarketingEvent(");
+
+      expect(signupElement).not.toBeNull();
+      expect(usesTrackedLink || capturesClick).toBe(true);
+      expect(source).toContain("destination: SIGNUP_URL");
+      expect(source).toContain(`location: "${location}"`);
+    }
+  });
 });

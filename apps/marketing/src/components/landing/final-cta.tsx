@@ -13,7 +13,7 @@ export function FinalCta() {
         <TrackedLink
           href={SIGNUP_URL}
           eventProperties={{ button_text: "Start free in beta", destination: SIGNUP_URL, location: "homepage_final_cta" }}
-          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-dunlo-ink px-5 text-sm font-semibold text-white focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-ink focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo"
+          className="inline-flex min-h-11 items-center justify-center gap-2 rounded-full bg-dunlo-ink px-5 text-sm font-semibold text-white transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-ink focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo"
         >
           Start free in beta <ArrowRight size={16} aria-hidden />
         </TrackedLink>

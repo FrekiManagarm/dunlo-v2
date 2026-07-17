@@ -20,7 +20,7 @@ export function Pricing() {
             <TrackedLink
               href={SIGNUP_URL}
               eventProperties={{ button_text: "Start free in beta", destination: SIGNUP_URL, location: "homepage_pricing" }}
-              className="mt-8 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo-ink"
+              className="mt-8 inline-flex min-h-11 w-full items-center justify-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink transition-colors hover:bg-dunlo-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo-ink"
             >
               Start free in beta <ArrowRight size={16} aria-hidden />
             </TrackedLink>

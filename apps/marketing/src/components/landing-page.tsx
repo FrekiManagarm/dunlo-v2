@@ -21,11 +21,11 @@ export function LandingPage() {
         <PaymentRecoveryHero />
         <TrustStrip />
         <FailureResponseMap />
-        <section className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><Escalation /></div></section>
-        <section className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><HowItWorks /></div></section>
-        <section className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><RoiCalculator /></div></section>
+        <div className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><Escalation /></div></div>
+        <div className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><HowItWorks /></div></div>
+        <div className="px-4 py-8 md:px-6 md:py-14"><div className="mx-auto max-w-7xl"><RoiCalculator /></div></div>
         <PublicProofLayer />
-        <section className="px-4 md:px-6"><BuiltByMathieu /></section>
+        <div className="px-4 md:px-6"><BuiltByMathieu /></div>
         <Pricing />
         <Faq />
         <FinalCta />
