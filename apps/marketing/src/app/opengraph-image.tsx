@@ -10,7 +10,7 @@ export default function Image() {
     title: "Recover failed payments before they quietly churn",
     description: DEFAULT_DESCRIPTION,
     badge: "Free in beta",
-    metricLabel: "at risk today",
-    metricValue: "$2.8k",
+    metricLabel: "Stripe event",
+    metricValue: "invoice.payment_failed",
   });
 }
