@@ -460,12 +460,38 @@ describe("landing style contract", () => {
       "utf8",
     );
 
-    expect(roi).toContain(
-      'className="peer absolute inset-x-0 top-1/2 h-11 w-full -translate-y-1/2 cursor-pointer opacity-0"',
+    const rangeInput = roi
+      .match(/<input\b[\s\S]*?\/>/g)
+      ?.find((element) => element.includes('id="mrr-slider"'));
+    const rangeThumb = roi.match(
+      /<div\b(?=[^>]*className="[^"]*\bpointer-events-none\b)[\s\S]*?\/>/,
+    )?.[0];
+    const footerLinks = footer.match(/<a\b[\s\S]*?>/g) ?? [];
+    const socialLinks = footerLinks.filter((element) =>
+      element.includes("aria-label="),
     );
-    expect(footer.match(/\bsize-11\b/g)).toHaveLength(2);
-    expect(footer.match(/focus-visible:ring-2/g)).toHaveLength(3);
-    expect(footer.match(/focus-visible:ring-dunlo-deep/g)).toHaveLength(3);
+    const navigationLink = footerLinks.find((element) =>
+      element.includes("href={link.href}"),
+    );
+
+    expect(rangeInput).toBeDefined();
+    expect(rangeInput).toMatch(
+      /className="(?=[^"]*\bh-11\b)[^"]*"/,
+    );
+    expect(rangeThumb).toBeDefined();
+    expect(rangeThumb).toMatch(
+      /className="(?=[^"]*\bpeer-focus-visible:ring-4\b)(?=[^"]*\bpeer-focus-visible:ring-dunlo-deep\b)(?=[^"]*\bpeer-focus-visible:ring-offset-2\b)(?=[^"]*\bpeer-focus-visible:ring-offset-white\b)[^"]*"/,
+    );
+    expect(socialLinks).toHaveLength(2);
+    for (const socialLink of socialLinks) {
+      expect(socialLink).toMatch(
+        /className="(?=[^"]*\bsize-11\b)(?=[^"]*\bfocus-visible:outline-none\b)(?=[^"]*\bfocus-visible:ring-2\b)(?=[^"]*\bfocus-visible:ring-dunlo-deep\b)(?=[^"]*\bfocus-visible:ring-offset-2\b)(?=[^"]*\bfocus-visible:ring-offset-stone-100\b)[^"]*"/,
+      );
+    }
+    expect(navigationLink).toBeDefined();
+    expect(navigationLink).toMatch(
+      /className="(?=[^"]*\bfocus-visible:outline-none\b)(?=[^"]*\bfocus-visible:ring-2\b)(?=[^"]*\bfocus-visible:ring-dunlo-deep\b)(?=[^"]*\bfocus-visible:ring-offset-2\b)(?=[^"]*\bfocus-visible:ring-offset-stone-100\b)[^"]*"/,
+    );
   });
 
   test("labels the setup workflow as synthetic without invented revenue", () => {
@@ -484,7 +510,7 @@ describe("landing style contract", () => {
     expect(howItWorks).not.toContain("$956");
   });
 
-  test("reserves tracked uppercase typography for real codes and statuses", () => {
+  test("removes tracked uppercase styling from four named marketing labels", () => {
     const howItWorks = readFileSync(
       resolve(
         repoRoot,
@@ -500,18 +526,21 @@ describe("landing style contract", () => {
       "utf8",
     );
 
-    expect(howItWorks).toMatch(
-      /<p className="text-sm font-semibold text-dunlo-deep">\s*How it works\s*<\/p>/,
-    );
-    expect(howItWorks).toMatch(
-      /<p className="text-xs font-semibold text-gray-500">\s*Example product preview\s*<\/p>/,
-    );
-    expect(roi).toMatch(
-      /<p className="text-sm font-semibold text-dunlo-deep">\s*Recovery estimate\s*<\/p>/,
-    );
-    expect(roi).toMatch(
-      /<p className="text-xs font-semibold text-dunlo">\s*30-day estimate\s*<\/p>/,
-    );
+    const labels = [
+      [howItWorks, "How it works"],
+      [howItWorks, "Example product preview"],
+      [roi, "Recovery estimate"],
+      [roi, "30-day estimate"],
+    ] as const;
+
+    for (const [source, label] of labels) {
+      const paragraph = source.match(
+        new RegExp(`<p\\b[^>]*>\\s*${label}\\s*<\\/p>`),
+      )?.[0];
+
+      expect(paragraph).toBeDefined();
+      expect(paragraph).not.toMatch(/\buppercase\b|\btracking-/);
+    }
   });
 
   test("tracks the setup workflow signup CTA", () => {
