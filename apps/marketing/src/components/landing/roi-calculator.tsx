@@ -12,7 +12,7 @@ import {
 import { ArrowRight, Calculator, Gauge, TrendingUp } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { captureMarketingEvent } from "@/lib/posthog";
-import { HOMEPAGE_RECOVERABILITY_RATE, HOMEPAGE_RECOVERABILITY_PERCENT, RECOVERY_MODEL_UPDATED } from "@/lib/recovery-assumptions";
+import { RECOVERABILITY_RATE, RECOVERABILITY_PERCENT, RECOVERY_MODEL_UPDATED } from "@/lib/recovery-assumptions";
 
 const MIN_MRR = 1000;
 const MAX_MRR = 20_000;
@@ -52,7 +52,7 @@ export function RoiCalculator() {
     [mrr],
   );
   const recovered = useMemo(
-    () => Math.round(monthlyFailed * HOMEPAGE_RECOVERABILITY_RATE),
+    () => Math.round(monthlyFailed * RECOVERABILITY_RATE),
     [monthlyFailed],
   );
   const annualRecoverable = recovered * 12;
@@ -175,7 +175,7 @@ export function RoiCalculator() {
                 },
                 {
                   label: "Recoverability assumption",
-                  value: HOMEPAGE_RECOVERABILITY_PERCENT,
+                  value: RECOVERABILITY_PERCENT,
                   icon: Calculator,
                 },
               ].map((item) => {
@@ -205,7 +205,7 @@ export function RoiCalculator() {
             <div className="mt-4 border-t border-dunlo-line pt-4">
               <p className="text-sm leading-6 text-gray-700">
                 Illustrative estimate using an assumed 5% failed-payment rate and
-                {" "}{HOMEPAGE_RECOVERABILITY_PERCENT} recoverability. It is not
+                {" "}{RECOVERABILITY_PERCENT} recoverability. It is not
                 a benchmark result or a guarantee. Actual recovery depends on
                 failure reasons, customer mix, retry timing, and message quality.
                 Model assumptions updated {RECOVERY_MODEL_UPDATED}.

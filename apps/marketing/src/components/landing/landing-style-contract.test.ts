@@ -151,9 +151,17 @@ describe("landing style contract", () => {
       "utf8",
     );
 
-    expect(failureResponseMap).toMatch(
-      /<dl[^>]*>.*<dt[^>]*>\s*Next action\s*<\/dt>.*<dd[^>]*>\s*\{item\.action\}\s*<\/dd>.*<\/dl>/s,
+    expect(failureResponseMap).toContain(
+      'import { FAILURE_RESPONSE_CATEGORIES } from "./landing-content";',
     );
+    expect(failureResponseMap).toContain("FAILURE_RESPONSE_CATEGORIES.map");
+    expect(failureResponseMap).toContain("Example response logic");
+    expect(failureResponseMap).toContain("md:grid-cols-2");
+    expect(failureResponseMap).toMatch(
+      /<dl[^>]*>.*<dt[^>]*>\s*Response\s*<\/dt>.*<dd[^>]*>\s*\{item\.response\}\s*<\/dd>.*<dt[^>]*>\s*Next step\s*<\/dt>.*<dd[^>]*>\s*\{item\.action\}\s*<\/dd>.*<\/dl>/s,
+    );
+    expect(failureResponseMap).not.toContain("RECOVERY_EXAMPLES");
+    expect(failureResponseMap).not.toContain("item.status");
     expect(failureResponseMap).not.toContain("rounded-full bg-dunlo");
   });
 
@@ -186,18 +194,18 @@ describe("landing style contract", () => {
     expect(roi).not.toMatch(/>\s*ROI calculator\s*<\/p>/);
     expect(roi).toContain("const FAILED_PAYMENT_RATE = 0.05");
     expect(roi).toContain(
-      'import { HOMEPAGE_RECOVERABILITY_RATE, HOMEPAGE_RECOVERABILITY_PERCENT, RECOVERY_MODEL_UPDATED } from "@/lib/recovery-assumptions";',
+      'import { RECOVERABILITY_RATE, RECOVERABILITY_PERCENT, RECOVERY_MODEL_UPDATED } from "@/lib/recovery-assumptions";',
     );
     expect(roi).toContain(
-      "Math.round(monthlyFailed * HOMEPAGE_RECOVERABILITY_RATE)",
+      "Math.round(monthlyFailed * RECOVERABILITY_RATE)",
     );
     expect(roi).toContain("Estimated recoverable this month");
     expect(roi).toMatch(
-      /label: "Recoverability assumption",\s*value: HOMEPAGE_RECOVERABILITY_PERCENT,/,
+      /label: "Recoverability assumption",\s*value: RECOVERABILITY_PERCENT,/,
     );
     expect(roi).toContain("Illustrative estimate");
     expect(roi).toContain("5%");
-    expect(roi).toContain("HOMEPAGE_RECOVERABILITY_PERCENT");
+    expect(roi).toContain("RECOVERABILITY_PERCENT");
     expect(roi).toContain("RECOVERY_MODEL_UPDATED");
     expect(roi).not.toContain("63%");
     expect(roi).toMatch(/not\s*\n?\s*a benchmark result/);
@@ -242,16 +250,16 @@ describe("landing style contract", () => {
     );
 
     expect(assumptions).toContain(
-      "export const HOMEPAGE_RECOVERABILITY_RATE = 0.62",
+      "export const RECOVERABILITY_RATE = 0.62",
     );
     expect(assumptions).toContain(
-      'export const HOMEPAGE_RECOVERABILITY_PERCENT = "62%"',
+      "export const RECOVERABILITY_PERCENT = `${Math.round(RECOVERABILITY_RATE * 100)}%`",
     );
     expect(assumptions).toContain(
       'export const RECOVERY_MODEL_UPDATED = "July 2026"',
     );
-    expect(roi).toContain("HOMEPAGE_RECOVERABILITY_RATE");
-    expect(proof).toContain("HOMEPAGE_RECOVERABILITY_PERCENT");
+    expect(roi).toContain("RECOVERABILITY_RATE");
+    expect(proof).toContain("RECOVERABILITY_PERCENT");
     expect(`${roi}\n${proof}`).not.toContain("63%");
   });
 
@@ -271,7 +279,7 @@ describe("landing style contract", () => {
     expect(proof).toMatch(
       /During beta, customer outcomes are published only with approval and\s+enough context to be useful\./,
     );
-    expect(proof).toContain("HOMEPAGE_RECOVERABILITY_PERCENT");
+    expect(proof).toContain("RECOVERABILITY_PERCENT");
     expect(proof).toContain("RECOVERY_MODEL_UPDATED");
     expect(proof).toContain('cta: "Inspect the public model"');
     expect(proof).toContain(
@@ -322,7 +330,12 @@ describe("landing style contract", () => {
       "Modelled failed-payment rates by MRR band are 4.2%, 5.1%, 5.8%, and 6.4%; they are illustrative product assumptions, not measured averages.",
     );
     expect(benchmark).toContain(
-      "Recovery potential applies a 62% recoverability assumption",
+      'import { RECOVERABILITY_RATE, RECOVERABILITY_PERCENT } from "@/lib/recovery-assumptions";',
+    );
+    expect(benchmark).not.toContain("BASE_RECOVERY_RATE");
+    expect(benchmark).toContain("failedMrr * RECOVERABILITY_RATE");
+    expect(benchmark).toContain(
+      "Recovery potential applies a ${RECOVERABILITY_PERCENT} recoverability assumption",
     );
     expect(benchmark).toContain("product modelling assumptions");
   });
@@ -387,6 +400,7 @@ describe("landing style contract", () => {
     const sections = [
       "<PaymentRecoveryHero />",
       "<TrustStrip />",
+      "<FailureResponseMap />",
       "<Escalation />",
       "<HowItWorks />",
       "<RoiCalculator />",
@@ -410,7 +424,9 @@ describe("landing style contract", () => {
       /function (?:HeroSection|RestoredSection|RecoveryDesk|ResourceLinksSection|FeaturesSection|PricingSection|FaqSection|FinalCta|GridBackdrop)\b/,
     );
     expect(landingPage).not.toContain("BetaTestimonialsSection");
-    expect(landingPage).not.toContain("FailureResponseMap");
+    expect(landingPage).toContain(
+      'import { FailureResponseMap } from "@/components/landing/failure-response-map";',
+    );
   });
 
   test("uses shared pricing, FAQ, and resource content in extracted sections", () => {
@@ -546,11 +562,11 @@ describe("landing style contract", () => {
     );
 
     expect(nav).toContain("ChevronRight, Menu, X");
-    expect(nav).toMatch(/<details[\s\S]*?className="[^"]*\bgroup\b[^"]*md:hidden"/);
+    expect(nav).toMatch(/<details[\s\S]*?className="[^"]*\bgroup\b[^"]*"/);
     expect(nav).toContain('className="group-open:hidden"');
     expect(nav).toContain(">Open navigation</span>");
     expect(nav).toContain('className="hidden group-open:inline"');
-    expect(nav).toContain(">Close navigation</span>");
+    expect(nav).toMatch(/>\s*Close navigation\s*<\/span>/);
     expect(nav).toContain(
       '<Menu className="group-open:hidden" size={20} aria-hidden />',
     );
@@ -559,6 +575,33 @@ describe("landing style contract", () => {
     );
     expect(nav).toContain('event.key !== "Escape"');
     expect(nav).toContain("onClick={closeMobileMenu}");
+    expect(nav).toMatch(
+      /<div className="flex items-center gap-2 md:hidden">[\s\S]*?<Link[\s\S]*?href=\{SIGNUP_URL\}[\s\S]*?className="[^"]*\bmin-h-11\b[^"]*\bfocus-visible:ring-2\b[^"]*"[\s\S]*?>\s*Start free\s*<\/Link>[\s\S]*?<details/,
+    );
+    const mobileMenu = nav.slice(nav.indexOf('aria-label="Mobile primary"'));
+    expect(mobileMenu).not.toContain("href={SIGNUP_URL}");
+  });
+
+  test("documents resources as the prelude to the actual final CTA", () => {
+    const spec = readFileSync(
+      resolve(
+        repoRoot,
+        "docs/superpowers/specs/2026-07-17-customer-trust-landing-redesign-design.md",
+      ),
+      "utf8",
+    );
+    const plan = readFileSync(
+      resolve(
+        repoRoot,
+        "docs/superpowers/plans/2026-07-17-customer-trust-landing-redesign.md",
+      ),
+      "utf8",
+    );
+    const decision =
+      "Resources appear immediately before the final CTA so signup is the homepage's actual ending before the footer.";
+
+    expect(spec).toContain(decision);
+    expect(plan).toContain(decision);
   });
 
   test("keeps footer navigation live and small text contrast-safe", () => {

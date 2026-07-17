@@ -7,11 +7,11 @@ import { ArrowRight, Check, Gauge, Mail, TrendingUp } from "lucide-react";
 import { SIGNUP_URL } from "@/lib/app-url";
 import { captureMarketingEvent } from "@/lib/posthog";
 import { TrackedLink } from "@/components/tracked-link";
+import { RECOVERABILITY_RATE, RECOVERABILITY_PERCENT } from "@/lib/recovery-assumptions";
 
 const MIN_MRR = 1_000;
 const MAX_MRR = 100_000;
 const STEP = 1_000;
-const BASE_RECOVERY_RATE = 0.62;
 
 const BENCHMARK_RANGES = [
   {
@@ -48,7 +48,7 @@ const DEFAULT_RANGE = BENCHMARK_RANGES[BENCHMARK_RANGES.length - 1]!;
 const METHODOLOGY_ASSUMPTIONS = [
   "The public calculator uses product modelling assumptions for an illustrative estimate, not a measured dataset or guarantee of recovery.",
   "Modelled failed-payment rates by MRR band are 4.2%, 5.1%, 5.8%, and 6.4%; they are illustrative product assumptions, not measured averages.",
-  "Recovery potential applies a 62% recoverability assumption to failed MRR; real results vary with decline-code mix, card age, geography, billing interval, retry settings, and email quality.",
+  `Recovery potential applies a ${RECOVERABILITY_PERCENT} recoverability assumption to failed MRR; real results vary with decline-code mix, card age, geography, billing interval, retry settings, and email quality.`,
   "The connected-product benchmark should replace this estimate once Stripe data is available.",
 ] as const;
 
@@ -241,7 +241,7 @@ export function PublicBenchmark({
   const result = useMemo(() => {
     const range = getRange(mrr);
     const failedMrr = Math.round(mrr * (range.failedRate / 100));
-    const recoverableMrr = Math.round(failedMrr * BASE_RECOVERY_RATE);
+    const recoverableMrr = Math.round(failedMrr * RECOVERABILITY_RATE);
     const annualRecoverable = recoverableMrr * 12;
 
     return {
@@ -259,7 +259,7 @@ export function PublicBenchmark({
   function captureBenchmarkResult(value: number) {
     const range = getRange(value);
     const failedMrr = Math.round(value * (range.failedRate / 100));
-    const recoverableMrr = Math.round(failedMrr * BASE_RECOVERY_RATE);
+    const recoverableMrr = Math.round(failedMrr * RECOVERABILITY_RATE);
 
     captureMarketingEvent("tool_result_viewed", {
       tool_name: "stripe_failed_payment_benchmark",

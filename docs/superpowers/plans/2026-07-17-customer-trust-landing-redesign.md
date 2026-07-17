@@ -6,6 +6,8 @@
 
 **Architecture:** Keep `LandingPage` as a server-rendered composition root, move each major section into one focused component, and centralize all homepage copy/data in a tested content module shared by visible FAQ and JSON-LD. Keep client components limited to navigation, tracked links, the ROI calculator, and intentional stateful product demonstrations.
 
+Resources appear immediately before the final CTA so signup is the homepage's actual ending before the footer.
+
 **Tech Stack:** Next.js 16 App Router, React 19, TypeScript, Tailwind CSS v4, Framer Motion, Vitest, Lucide React, PostHog, shared tokens from `@dunlo-v2/ui`.
 
 **Source specification:** `docs/superpowers/specs/2026-07-17-customer-trust-landing-redesign-design.md`
@@ -988,7 +990,7 @@ Change the assumptions block to:
 ```tsx
 <div className="mt-4 border-t border-dunlo-line pt-4">
   <p className="text-sm leading-6 text-gray-700">
-    Estimate based on a 5% failed-payment rate and 63% recoverability.
+    Estimate based on a 5% failed-payment rate and 62% recoverability.
     Actual recovery depends on failure reasons, customer mix, retry timing,
     and message quality.
   </p>
@@ -1416,8 +1418,8 @@ export function LandingPage() {
         <section className="px-4 md:px-6"><BuiltByMathieu /></section>
         <Pricing />
         <Faq />
-        <FinalCta />
         <ResourceLibrary />
+        <FinalCta />
       </main>
       <Footer />
     </div>

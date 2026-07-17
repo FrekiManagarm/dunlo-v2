@@ -1,3 +1,5 @@
+import { readFileSync } from "node:fs";
+import { resolve } from "node:path";
 import { describe, expect, test } from "vitest";
 import {
   FAQ_ITEMS,
@@ -7,7 +9,42 @@ import {
   TRUST_ITEMS,
 } from "./landing-content";
 
+const landingContent = readFileSync(
+  resolve(import.meta.dirname, "landing-content.ts"),
+  "utf8",
+);
+
 describe("landing content", () => {
+  test("maps exactly four distinct failure situations to recovery responses", () => {
+    const categories = landingContent.match(
+      /export const FAILURE_RESPONSE_CATEGORIES[\s\S]*?\] as const;/,
+    )?.[0];
+
+    expect(categories).toBeDefined();
+    expect(categories?.match(/\bsituation:/g)).toHaveLength(4);
+    for (const expected of [
+      'situation: "The card expired"',
+      'stripeCode: "expired_card"',
+      'response: "Send a secure Stripe-hosted payment update link."',
+      'action: "Request a card update"',
+      'situation: "The customer may need time"',
+      'stripeCode: "insufficient_funds"',
+      'response: "Use a calm message and retry at a more useful moment."',
+      'action: "Delay and retry"',
+      'situation: "The bank needs customer approval"',
+      'stripeCode: "authentication_required"',
+      `response: "Guide the customer through Stripe's SCA confirmation path."`,
+      'action: "Request authentication"',
+      'situation: "No useful reason, or a sensitive account"',
+      'stripeCode: "generic_decline"',
+      'context: "No useful reason · sensitive/high-value account"',
+      'response: "Pause automation and surface the Stripe context to a person."',
+      'action: "Manual founder review"',
+    ]) {
+      expect(categories).toContain(expected);
+    }
+  });
+
   test("labels every simulated recovery record as example data", () => {
     expect(RECOVERY_EXAMPLES).toStrictEqual([
       {

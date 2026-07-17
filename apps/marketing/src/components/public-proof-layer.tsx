@@ -1,14 +1,14 @@
 import Link from "next/link";
 import { ArrowRight, FileText, ShieldCheck, SquareActivity } from "lucide-react";
 import {
-  HOMEPAGE_RECOVERABILITY_PERCENT,
+  RECOVERABILITY_PERCENT,
   RECOVERY_MODEL_UPDATED,
 } from "@/lib/recovery-assumptions";
 
 const proofItems = [
   {
     title: "Visible assumptions",
-    body: `The public benchmark exposes the illustrative failed-payment bands and ${HOMEPAGE_RECOVERABILITY_PERCENT} recoverability assumption used in its model. Updated ${RECOVERY_MODEL_UPDATED}.`,
+    body: `The public benchmark exposes the illustrative failed-payment bands and ${RECOVERABILITY_PERCENT} recoverability assumption used in its model. Updated ${RECOVERY_MODEL_UPDATED}.`,
     href: "/benchmark",
     cta: "Inspect the public model",
     icon: SquareActivity,

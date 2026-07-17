@@ -142,7 +142,7 @@ Keep the calculator because it provides useful self-qualification. Compress its 
 Required changes:
 
 - Label the result as an estimate.
-- Keep the 5% failed-payment and 63% recoverability assumptions visible.
+- Keep the 5% failed-payment and 62% recoverability assumptions visible.
 - Link to the public benchmark or methodology for the assumptions.
 - Use a CTA that describes the signup destination, such as **Start measuring failed payments** rather than **See my benchmark** if it opens signup.
 - Preserve keyboard operation and `aria-live` updates.
@@ -169,11 +169,11 @@ Keep a single beta plan. Use dark text on the bright green CTA. Explicitly state
 
 The FAQ should cover Stripe Smart Retries, message quality, OAuth/data access, card storage, beta pricing, and whether sensitive accounts can require founder review.
 
-### 10. Final CTA and Resources
+### 10. Resources and Final CTA
 
 The final CTA repeats the approved customer-trust promise in a shorter form and links to signup.
 
-Move homepage resource links below the final CTA or into a compact pre-footer library. They support SEO and advanced visitors without interrupting the primary conversion narrative.
+Resources appear immediately before the final CTA so signup is the homepage's actual ending before the footer. The compact library supports SEO and advanced visitors without interrupting the primary conversion narrative.
 
 ## Visual System
 

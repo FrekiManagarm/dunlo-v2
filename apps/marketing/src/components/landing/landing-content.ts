@@ -37,6 +37,34 @@ export const RECOVERY_EXAMPLES: readonly RecoveryExample[] = [
   },
 ] as const;
 
+export const FAILURE_RESPONSE_CATEGORIES = [
+  {
+    situation: "The card expired",
+    stripeCode: "expired_card",
+    response: "Send a secure Stripe-hosted payment update link.",
+    action: "Request a card update",
+  },
+  {
+    situation: "The customer may need time",
+    stripeCode: "insufficient_funds",
+    response: "Use a calm message and retry at a more useful moment.",
+    action: "Delay and retry",
+  },
+  {
+    situation: "The bank needs customer approval",
+    stripeCode: "authentication_required",
+    response: "Guide the customer through Stripe's SCA confirmation path.",
+    action: "Request authentication",
+  },
+  {
+    situation: "No useful reason, or a sensitive account",
+    stripeCode: "generic_decline",
+    context: "No useful reason · sensitive/high-value account",
+    response: "Pause automation and surface the Stripe context to a person.",
+    action: "Manual founder review",
+  },
+] as const;
+
 export const TRUST_ITEMS = [
   {
     title: "Stripe OAuth",

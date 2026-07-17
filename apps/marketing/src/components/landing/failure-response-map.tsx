@@ -1,55 +1,70 @@
-import { RECOVERY_EXAMPLES } from "./landing-content";
+import { FAILURE_RESPONSE_CATEGORIES } from "./landing-content";
 
 export function FailureResponseMap() {
   return (
     <section
       id="failure-responses"
-      className="scroll-mt-24 px-4 py-16 md:px-6 md:py-24"
+      className="scroll-mt-24 px-4 py-10 md:px-6 md:py-16"
     >
       <div className="mx-auto max-w-7xl">
-        <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-end">
+        <div className="grid gap-5 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
           <div>
             <p className="text-sm font-semibold text-dunlo-deep">
-              One failed payment is not the same as another
+              Example response logic
             </p>
-            <h2 className="mt-4 max-w-xl text-balance text-4xl font-semibold leading-none tracking-[-0.03em] text-dunlo-ink md:text-6xl">
-              The right message starts with what actually failed.
+            <h2 className="mt-3 max-w-xl text-balance text-3xl font-semibold leading-none tracking-[-0.03em] text-dunlo-ink md:text-5xl">
+              Four paths after Stripe reports a failure.
             </h2>
           </div>
-          <p className="max-w-[65ch] text-pretty text-base leading-7 text-gray-700 md:text-lg">
-            An expired card needs an update link. Insufficient funds needs
-            better timing. An important customer may need a person, not another
-            automated reminder.
+          <p className="max-w-[65ch] text-pretty text-sm leading-6 text-gray-700 md:text-base md:leading-7">
+            Dunlo turns the signal into a response path: what the customer
+            needs to hear, what should happen next, and when automation should
+            pause for a person.
           </p>
         </div>
 
-        <div className="mt-12 border-y-2 border-dunlo-ink">
-          {RECOVERY_EXAMPLES.map((item, index) => (
+        <div className="mt-8 grid border-y-2 border-dunlo-ink md:grid-cols-2">
+          {FAILURE_RESPONSE_CATEGORIES.map((item, index) => (
             <article
               key={item.stripeCode}
-              className="grid gap-4 border-b border-dunlo-line py-6 last:border-b-0 md:grid-cols-[3rem_0.8fr_1.4fr_auto] md:items-center"
+              className="grid gap-4 border-b border-dunlo-line p-5 last:border-b-0 md:p-6 md:[&:nth-child(odd)]:border-r md:[&:nth-last-child(-n+2)]:border-b-0"
             >
-              <span className="font-mono text-xs font-semibold text-gray-600">
-                {String(index + 1).padStart(2, "0")}
-              </span>
+              <div className="flex items-start justify-between gap-4">
+                <p className="text-xs font-semibold text-dunlo-deep">
+                  Response category
+                </p>
+                <span className="text-xs font-semibold text-gray-600">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+              </div>
               <div>
                 <h3 className="text-lg font-semibold text-dunlo-ink">
-                  {item.reason}
+                  {item.situation}
                 </h3>
                 <code className="mt-1 block font-mono text-xs text-gray-600">
                   {item.stripeCode}
                 </code>
+                {"context" in item ? (
+                  <p className="mt-2 text-xs leading-5 text-gray-600">
+                    {item.context}
+                  </p>
+                ) : null}
               </div>
-              <p className="max-w-2xl text-sm leading-6 text-gray-700">
-                {item.customerMeaning}
-              </p>
-              <dl className="w-fit border-l-2 border-dunlo pl-3">
-                <dt className="text-xs font-semibold text-gray-600">
-                  Next action
-                </dt>
-                <dd className="mt-1 text-sm font-bold text-dunlo-ink">
-                  {item.action}
-                </dd>
+              <dl className="grid gap-3 text-sm leading-6">
+                <div>
+                  <dt className="text-xs font-semibold text-gray-600">
+                    Response
+                  </dt>
+                  <dd className="mt-1 text-gray-700">{item.response}</dd>
+                </div>
+                <div className="border-l-2 border-dunlo pl-3">
+                  <dt className="text-xs font-semibold text-gray-600">
+                    Next step
+                  </dt>
+                  <dd className="mt-1 font-semibold text-dunlo-ink">
+                    {item.action}
+                  </dd>
+                </div>
               </dl>
             </article>
           ))}
