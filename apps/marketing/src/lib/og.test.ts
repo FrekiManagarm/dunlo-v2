@@ -7,15 +7,9 @@ const ogSource = readFileSync(
   resolve(repoRoot, "apps/marketing/src/lib/og.tsx"),
   "utf8",
 );
-const homepageOg = readFileSync(
-  resolve(repoRoot, "apps/marketing/src/app/opengraph-image.tsx"),
-  "utf8",
-);
-
 describe("Open Graph design contract", () => {
-  test("uses the Dunlo recovery system instead of a simulated dashboard", () => {
-    expect(ogSource).toContain("Recovery logic");
-    expect(ogSource).toContain("matched path");
+  test("uses a singular Dunlo recovery path instead of a simulated dashboard", () => {
+    expect(ogSource).toContain("RecoveryPath");
     expect(ogSource).toContain('accent: "#00E87B"');
     expect(ogSource).toContain('ink: "#07110C"');
     expect(ogSource).not.toContain("ProductPreview");
@@ -38,13 +32,13 @@ describe("Open Graph design contract", () => {
     expect(ogSource).toContain("return 66");
     expect(ogSource).toContain("lineHeight: 0.94");
     expect(ogSource).toContain("letterSpacing: -2.1");
-    expect(ogSource).toContain("breakTechnicalSignal");
-    expect(ogSource).toContain('/([._-])/g, "$1\\u200B"');
   });
 
-  test("uses a real Stripe event on the homepage artwork", () => {
-    expect(homepageOg).toContain('metricLabel: "Stripe event"');
-    expect(homepageOg).toContain('metricValue: "invoice.payment_failed"');
-    expect(homepageOg).not.toContain("$2.8k");
+  test("keeps the green panel purely visual and the logo singular", () => {
+    expect(ogSource.match(/<LogoMark \/>/g)).toHaveLength(1);
+    expect(ogSource).not.toContain("metricLabel");
+    expect(ogSource).not.toContain("metricValue");
+    expect(ogSource).not.toContain("Recovery logic");
+    expect(ogSource).not.toContain("matched path");
   });
 });

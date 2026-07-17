@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Free audit",
-    metricLabel: "checks",
-    metricValue: "6",
   });
 }

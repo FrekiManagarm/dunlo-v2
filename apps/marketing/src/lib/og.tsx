@@ -11,8 +11,6 @@ type DunloOgImageProps = {
   title: string;
   description: string;
   badge?: string;
-  metricLabel?: string;
-  metricValue?: string;
 };
 
 const palette = {
@@ -60,25 +58,14 @@ function titleFontSize(title: string) {
   return 66;
 }
 
-function signalFontSize(value: string) {
-  if (value.length > 22) return 27;
-  if (value.length > 15) return 30;
-  if (value.length > 9) return 42;
-  return 58;
-}
-
-function breakTechnicalSignal(value: string) {
-  return value.replace(/([._-])/g, "$1\u200B");
-}
-
-function LogoMark({ inverted = false }: { inverted?: boolean }) {
+function LogoMark() {
   return (
     <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
       <rect
         width="50"
         height="50"
         rx="14"
-        fill={inverted ? palette.ink : palette.accent}
+        fill={palette.accent}
       />
       <path
         d="M25 38A13 13 0 1 0 12 25"
@@ -97,15 +84,7 @@ function LogoMark({ inverted = false }: { inverted?: boolean }) {
   );
 }
 
-function RecoveryLogic({
-  label,
-  value,
-}: {
-  label: string;
-  value: string;
-}) {
-  const displayValue = breakTechnicalSignal(value);
-
+function RecoveryPath() {
   return (
     <div
       style={{
@@ -117,128 +96,67 @@ function RecoveryLogic({
         background: palette.accent,
         color: palette.ink,
         display: "flex",
-        flexDirection: "column",
-        padding: "54px 48px 44px",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <div
         style={{
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-        }}
-      >
-        <div style={{ display: "flex", fontSize: 18, fontWeight: 800 }}>
-          Recovery logic
-        </div>
-        <LogoMark inverted />
-      </div>
-
-      <div
-        style={{
           position: "absolute",
-          right: -92,
-          top: 130,
-          width: 292,
-          height: 292,
-          border: `2px solid ${palette.ink}`,
-          borderRadius: 999,
-          opacity: 0.18,
-          display: "flex",
-        }}
-      />
-      <div
-        style={{
-          position: "absolute",
-          right: -42,
-          top: 180,
-          width: 192,
-          height: 192,
+          right: -134,
+          top: -94,
+          width: 420,
+          height: 420,
           border: `2px solid ${palette.ink}`,
           borderRadius: 999,
           opacity: 0.12,
           display: "flex",
         }}
       />
-
       <div
         style={{
-          marginTop: 66,
+          position: "absolute",
+          left: -110,
+          bottom: -168,
+          width: 360,
+          height: 360,
+          border: `2px solid ${palette.ink}`,
+          borderRadius: 999,
+          opacity: 0.1,
           display: "flex",
-          flexDirection: "column",
         }}
+      />
+      <svg
+        width="382"
+        height="630"
+        viewBox="0 0 382 630"
+        fill="none"
+        style={{ position: "absolute", inset: 0 }}
       >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            fontSize: 16,
-            fontWeight: 700,
-            opacity: 0.62,
-          }}
-        >
-          <span
-            style={{
-              width: 9,
-              height: 9,
-              marginRight: 10,
-              borderRadius: 999,
-              background: palette.ink,
-            }}
-          />
-          {label}
-        </div>
-        <div
-          style={{
-            marginTop: 14,
-            maxWidth: 282,
-            display: "flex",
-            fontSize: signalFontSize(value),
-            lineHeight: 1.04,
-            fontWeight: 900,
-            letterSpacing: -1.5,
-            overflowWrap: "anywhere",
-          }}
-        >
-          {displayValue}
-        </div>
-      </div>
-
-      <div
-        style={{
-          marginTop: "auto",
-          display: "flex",
-          flexDirection: "column",
-          borderTop: `2px solid ${palette.ink}`,
-          paddingTop: 22,
-        }}
-      >
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            fontSize: 16,
-            fontWeight: 700,
-            opacity: 0.62,
-          }}
-        >
-          Dunlo decision
-        </div>
-        <div
-          style={{
-            marginTop: 8,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            fontSize: 28,
-            lineHeight: 1,
-            fontWeight: 900,
-          }}
-        >
-          <span>matched path</span>
-          <span style={{ fontSize: 34 }}>→</span>
-        </div>
-      </div>
+        <path
+          d="M76 90C76 183 296 154 296 264C296 371 88 349 88 461C88 510 126 540 183 540"
+          stroke={palette.ink}
+          strokeWidth="12"
+          strokeLinecap="round"
+        />
+        <circle cx="76" cy="90" r="20" fill={palette.ink} />
+        <circle
+          cx="296"
+          cy="264"
+          r="20"
+          fill={palette.accent}
+          stroke={palette.ink}
+          strokeWidth="10"
+        />
+        <circle cx="88" cy="461" r="20" fill={palette.ink} />
+        <path
+          d="M166 514L192 540L166 566"
+          stroke={palette.ink}
+          strokeWidth="12"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
     </div>
   );
 }
@@ -247,8 +165,6 @@ export async function createDunloOgImage({
   title,
   description,
   badge = "Stripe payment recovery",
-  metricLabel = "Stripe signal",
-  metricValue = "payment_failed",
 }: DunloOgImageProps) {
   const displayTitle = clampText(title.replace(/ - Dunlo( Blog)?$/, ""), 92);
   const displayDescription = clampText(description, 118);
@@ -374,7 +290,7 @@ export async function createDunloOgImage({
           <span>Free during beta · no recovery cut</span>
         </div>
 
-        <RecoveryLogic label={metricLabel} value={metricValue} />
+        <RecoveryPath />
       </div>
     ),
     {

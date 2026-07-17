@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Comparison guide",
-    metricLabel: "tools",
-    metricValue: "18",
   });
 }
