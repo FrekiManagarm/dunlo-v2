@@ -2119,7 +2119,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
                   </p>
                   <ArrowRight
                     size={15}
-                    className="shrink-0 text-gray-400 transition-transform group-hover:translate-x-0.5 group-hover:text-dunlo-deep"
+                    className="shrink-0 text-gray-400 transition-transform group-hover:translate-x-0.5 group-hover:text-dunlo-deep motion-reduce:transform-none motion-reduce:transition-none"
                   />
                 </div>
                 <p className="mt-2 text-sm leading-6 text-gray-600">
