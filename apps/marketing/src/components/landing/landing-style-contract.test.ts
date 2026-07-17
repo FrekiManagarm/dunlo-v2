@@ -300,6 +300,9 @@ describe("landing style contract", () => {
     expect(founder).toContain("Beta feedback goes directly to me.");
     expect(founder).toContain('alt="Mathieu Chambaud, founder of Dunlo"');
     expect(founder).toContain('id="founder"');
+    expect(founder).toMatch(
+      /<section\s+id="founder"\s+className="[^"]*\bscroll-mt-24\b[^"]*"/s,
+    );
     expect(founder).toContain("href={X_PROFILE_URL}");
     expect(founder).toContain("Follow @mathchambaud");
     expect(founder).toContain(

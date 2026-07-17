@@ -9,7 +9,7 @@ export function BuiltByMathieu() {
   return (
     <section
       id="founder"
-      className="mx-auto grid max-w-7xl gap-6 border-t border-dunlo-line py-10 md:grid-cols-[auto_1fr_auto] md:items-center"
+      className="mx-auto grid max-w-7xl scroll-mt-24 gap-6 border-t border-dunlo-line py-10 md:grid-cols-[auto_1fr_auto] md:items-center"
     >
       <Image
         src={FOUNDER_IMAGE_URL}
