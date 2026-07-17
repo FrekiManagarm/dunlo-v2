@@ -96,4 +96,17 @@ describe("landing style contract", () => {
     expect(trustStrip).toContain("focus-visible:ring-dunlo-deep");
     expect(trustStrip).toContain("sm:last:border-r-0");
   });
+
+  test("does not render inert escalation buttons", () => {
+    const escalation = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/escalation.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(escalation).not.toMatch(/<button[^>]*>\s*(Review|Regenerate|Send)/);
+    expect(escalation).toContain("Example product preview");
+  });
 });
