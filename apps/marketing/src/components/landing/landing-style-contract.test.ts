@@ -175,6 +175,8 @@ describe("landing style contract", () => {
     expect(roi).not.toContain("30-day ROI");
     expect(roi).not.toMatch(/\bconst roi\s*=/);
     expect(roi).not.toContain("payback window");
+    expect(roi).toMatch(/>\s*Recovery estimate\s*<\/p>/);
+    expect(roi).not.toMatch(/>\s*ROI calculator\s*<\/p>/);
     expect(roi).toContain("const FAILED_PAYMENT_RATE = 0.05");
     expect(roi).toContain("const RECOVERABLE_RATE = 0.63");
     expect(roi).toContain("Estimated recoverable this month");

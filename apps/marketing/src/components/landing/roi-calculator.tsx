@@ -64,7 +64,7 @@ export function RoiCalculator() {
       <div className="grid gap-0 lg:grid-cols-[0.92fr_1.08fr]">
         <div className="border-b border-gray-200 p-6 md:p-9 lg:border-b-0 lg:border-r">
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-            ROI calculator
+            Recovery estimate
           </p>
           <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-none tracking-tight text-gray-950 md:text-6xl">
             Estimate the revenue hiding in Stripe failures.
