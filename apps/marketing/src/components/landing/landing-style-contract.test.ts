@@ -74,5 +74,26 @@ describe("landing style contract", () => {
     expect(hero).toContain("Recover failed payments without losing customer trust.");
     expect(hero).toContain("Example data");
     expect(hero).not.toContain("<button");
+    expect(hero).not.toContain("<Button");
+    expect(hero).not.toContain("<input");
+    expect(hero).not.toContain("<select");
+    expect(hero).not.toContain("<textarea");
+    expect(hero).not.toMatch(/role\s*=\s*(["'])button\1/);
+  });
+
+  test("keeps trust links visibly focused and closes responsive borders", () => {
+    const trustStrip = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/trust-strip.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(trustStrip).toContain("focus-visible:outline-none");
+    expect(trustStrip).toContain("focus-visible:ring-2");
+    expect(trustStrip).toContain("focus-visible:ring-inset");
+    expect(trustStrip).toContain("focus-visible:ring-dunlo-deep");
+    expect(trustStrip).toContain("sm:last:border-r-0");
   });
 });
