@@ -80,8 +80,8 @@
 /* ─── Tailwind v4 theme mapping ──────────────────────────────────────────── */
 @theme inline {
   /* Fonts */
-  --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-sans: var(--font-app-sans, "Outfit"), ui-sans-serif, system-ui, sans-serif;
+  --font-mono: var(--font-app-mono, "JetBrains Mono"), ui-monospace, monospace;
 
   /* Brand colors — utilisables comme bg-dunlo, text-dunlo, border-dunlo, bg-dunlo/20... */
   --color-dunlo: var(--dunlo-accent);

@@ -11,6 +11,10 @@ const layout = readFileSync(
   resolve(repoRoot, "apps/marketing/src/app/layout.tsx"),
   "utf8",
 );
+const webRoot = readFileSync(
+  resolve(repoRoot, "apps/web/src/routes/__root.tsx"),
+  "utf8",
+);
 
 describe("landing style contract", () => {
   test("uses an accessible foreground on bright Dunlo green", () => {
@@ -24,26 +28,31 @@ describe("landing style contract", () => {
     expect(css).toContain("--dunlo-accent-dim: #006f3d");
   });
 
-  test("loads distinct Next font variables for marketing", () => {
-    expect(layout).toContain('variable: "--font-geist-sans"');
-    expect(layout).toContain('variable: "--font-jetbrains-mono"');
+  test("loads app-neutral Next font variables for marketing", () => {
+    expect(layout).toContain('variable: "--font-app-sans"');
+    expect(layout).toContain('variable: "--font-app-mono"');
     expect(layout).toContain(
       'className={`${geist.variable} ${jetbrainsMono.variable}`}',
     );
   });
 
-  test("maps Tailwind typography to the generated Next font variables", () => {
+  test("maps Tailwind typography to app fonts with shared fallbacks", () => {
     expect(css).toMatch(
-      /--font-sans:\s*var\(--font-geist-sans\),\s*ui-sans-serif,\s*system-ui,\s*sans-serif;/,
+      /--font-sans:\s*var\(--font-app-sans,\s*"Outfit"\),\s*ui-sans-serif,\s*system-ui,\s*sans-serif;/,
     );
     expect(css).toMatch(
-      /--font-mono:\s*var\(--font-jetbrains-mono\),\s*ui-monospace,\s*monospace;/,
+      /--font-mono:\s*var\(--font-app-mono,\s*"JetBrains Mono"\),\s*ui-monospace,\s*monospace;/,
     );
   });
 
-  test("uses Geist instead of Outfit throughout the marketing font stack", () => {
+  test("uses Geist instead of Outfit in the marketing layout", () => {
     expect(layout).toContain("Geist");
-    expect(`${layout}\n${css}`).not.toContain("Outfit");
+    expect(layout).not.toContain("Outfit");
+  });
+
+  test("keeps the web app fonts available to shared CSS fallbacks", () => {
+    expect(webRoot).toContain("family=Outfit");
+    expect(webRoot).toContain("family=JetBrains+Mono");
   });
 
   test("removes floating motion and disables landing reveals on request", () => {
