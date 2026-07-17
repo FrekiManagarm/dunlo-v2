@@ -69,7 +69,7 @@ export function HowItWorks() {
           </p>
           <Link
             href={SIGNUP_URL}
-            className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink transition-colors hover:bg-dunlo-hover"
+            className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink transition-colors hover:bg-dunlo-hover focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-white"
           >
             Start free in beta
             <ArrowRight size={16} aria-hidden />

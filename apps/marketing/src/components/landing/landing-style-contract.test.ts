@@ -167,9 +167,40 @@ describe("landing style contract", () => {
     );
 
     expect(howItWorks).not.toContain("setInterval");
+    expect(howItWorks).toContain("aria-pressed={isActive}");
+    expect(howItWorks).toContain(
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-white",
+    );
+    expect(roi).not.toContain("STARTER_PRICE");
+    expect(roi).not.toContain("30-day ROI");
+    expect(roi).not.toMatch(/\bconst roi\s*=/);
+    expect(roi).not.toContain("payback window");
+    expect(roi).toContain("const FAILED_PAYMENT_RATE = 0.05");
+    expect(roi).toContain("const RECOVERABLE_RATE = 0.63");
     expect(roi).toContain("Estimated recoverable this month");
+    expect(roi).toMatch(
+      /label: "Recoverability assumption",\s*value: "63%",/,
+    );
+    expect(roi).toContain("Illustrative estimate");
+    expect(roi).toContain("5%");
+    expect(roi).toContain("63%");
+    expect(roi).toContain("not a benchmark result");
     expect(roi).toContain("Start measuring failed payments");
     expect(roi).toContain('href="/benchmark"');
+    expect(roi).toContain("Explore the public benchmark");
+    expect(roi).not.toContain("Review the benchmark methodology");
+    expect(roi).toContain("peer-focus-visible:ring-dunlo-deep");
+    expect(roi).toContain("peer-focus-visible:ring-offset-2");
+    expect(roi).toContain("peer-focus-visible:ring-offset-white");
+    expect(roi).not.toContain("peer-focus-visible:ring-dunlo/20");
+    expect(
+      roi.match(
+        /focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-white/g,
+      ),
+    ).toHaveLength(2);
+    expect(roi).toContain("href={SIGNUP_URL}");
+    expect(roi).toContain("destination: SIGNUP_URL");
+    expect(roi).toContain('location: "homepage_roi_calculator"');
     expect(roi).toMatch(
       /<div className="bg-stone-50 p-4 md:p-7">\s*<div className="rounded-xl border border-gray-200 bg-white p-4 md:p-5">/,
     );

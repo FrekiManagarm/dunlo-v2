@@ -12,7 +12,6 @@ const MAX_MRR = 20_000;
 const STEP = 500;
 const FAILED_PAYMENT_RATE = 0.05;
 const RECOVERABLE_RATE = 0.63;
-const STARTER_PRICE = 49;
 
 function formatCurrency(value: number) {
   return new Intl.NumberFormat("en-US", {
@@ -46,7 +45,6 @@ export function RoiCalculator() {
     [monthlyFailed],
   );
   const annualRecoverable = recovered * 12;
-  const roi = recovered / STARTER_PRICE;
   const progress = ((mrr - MIN_MRR) / (MAX_MRR - MIN_MRR)) * 100;
 
   function captureMrrChange(value: number) {
@@ -72,9 +70,8 @@ export function RoiCalculator() {
             Estimate the revenue hiding in Stripe failures.
           </h2>
           <p className="mt-5 max-w-[58ch] text-base leading-7 text-gray-600">
-            Move the slider to model failed MRR, recoverable revenue, and the
-            payback window. The assumptions stay visible so the number feels
-            useful, not magical.
+            Move the slider to model failed MRR and recoverable revenue. The
+            assumptions stay visible so the number feels useful, not magical.
           </p>
 
           <div className="mt-9">
@@ -121,7 +118,7 @@ export function RoiCalculator() {
                 aria-describedby="roi-calculator-result"
               />
               <div
-                className="pointer-events-none absolute top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white bg-dunlo peer-focus-visible:ring-4 peer-focus-visible:ring-dunlo/20"
+                className="pointer-events-none absolute top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white bg-dunlo peer-focus-visible:ring-4 peer-focus-visible:ring-dunlo-deep peer-focus-visible:ring-offset-2 peer-focus-visible:ring-offset-white"
                 style={{ left: `${progress}%` }}
               />
             </div>
@@ -148,7 +145,7 @@ export function RoiCalculator() {
                   </p>
                 </div>
                 <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-dunlo/12 text-dunlo">
-                  <Calculator size={20} strokeWidth={2} />
+                  <Calculator size={20} strokeWidth={2} aria-hidden />
                 </span>
               </div>
             </div>
@@ -161,14 +158,14 @@ export function RoiCalculator() {
                   icon: Gauge,
                 },
                 {
-                  label: "Yearly upside",
+                  label: "Annualized estimate",
                   value: formatCurrency(annualRecoverable),
                   icon: TrendingUp,
                 },
                 {
-                  label: "30-day ROI",
-                  value: `${roi.toFixed(1)}x`,
-                  icon: ArrowRight,
+                  label: "Recoverability assumption",
+                  value: "63%",
+                  icon: Calculator,
                 },
               ].map((item) => {
                 const Icon = item.icon;
@@ -181,6 +178,7 @@ export function RoiCalculator() {
                       className="text-dunlo-deep"
                       size={18}
                       strokeWidth={2}
+                      aria-hidden
                     />
                     <p className="mt-4 font-mono text-xl font-semibold tracking-tight text-gray-950">
                       {item.value}
@@ -195,15 +193,16 @@ export function RoiCalculator() {
 
             <div className="mt-4 border-t border-dunlo-line pt-4">
               <p className="text-sm leading-6 text-gray-700">
-                Estimate based on a 5% failed-payment rate and 63% recoverability.
+                Illustrative estimate using an assumed 5% failed-payment rate and
+                63% recoverability. It is not a benchmark result or a guarantee.
                 Actual recovery depends on failure reasons, customer mix, retry
                 timing, and message quality.
               </p>
               <Link
                 href="/benchmark"
-                className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-dunlo-deep underline decoration-dunlo/40 underline-offset-4"
+                className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-dunlo-deep underline decoration-dunlo/40 underline-offset-4 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-white"
               >
-                Review the benchmark methodology
+                Explore the public benchmark
               </Link>
             </div>
             <Link
@@ -215,7 +214,7 @@ export function RoiCalculator() {
                   location: "homepage_roi_calculator",
                 })
               }
-              className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink"
+              className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-white"
             >
               Start measuring failed payments
               <ArrowRight size={16} aria-hidden />
