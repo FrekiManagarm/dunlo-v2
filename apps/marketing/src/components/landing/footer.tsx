@@ -21,7 +21,7 @@ export function Footer() {
               href="https://x.com/mathchambaud"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex size-8 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-700"
+              className="inline-flex size-11 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
               aria-label="Follow on X"
             >
               <svg
@@ -38,7 +38,7 @@ export function Footer() {
               href="https://www.linkedin.com/company/dunlo"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex size-8 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-700"
+              className="inline-flex size-11 items-center justify-center rounded-full border border-gray-200 text-gray-400 transition-colors hover:border-gray-300 hover:text-gray-700 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
               aria-label="Follow Dunlo on LinkedIn"
             >
               <svg
@@ -66,7 +66,7 @@ export function Footer() {
                     <li key={link.href}>
                       <a
                         href={link.href}
-                        className="text-xs leading-5 text-gray-500 transition-colors hover:text-gray-900"
+                        className="inline-flex text-xs leading-5 text-gray-500 transition-colors hover:text-gray-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2 focus-visible:ring-offset-stone-100"
                       >
                         {link.label}
                       </a>

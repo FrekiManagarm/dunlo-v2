@@ -447,6 +447,27 @@ describe("landing style contract", () => {
     );
   });
 
+  test("keeps the range and footer controls touchable with strong focus treatment", () => {
+    const roi = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/roi-calculator.tsx",
+      ),
+      "utf8",
+    );
+    const footer = readFileSync(
+      resolve(repoRoot, "apps/marketing/src/components/landing/footer.tsx"),
+      "utf8",
+    );
+
+    expect(roi).toContain(
+      'className="peer absolute inset-x-0 top-1/2 h-11 w-full -translate-y-1/2 cursor-pointer opacity-0"',
+    );
+    expect(footer.match(/\bsize-11\b/g)).toHaveLength(2);
+    expect(footer.match(/focus-visible:ring-2/g)).toHaveLength(3);
+    expect(footer.match(/focus-visible:ring-dunlo-deep/g)).toHaveLength(3);
+  });
+
   test("labels the setup workflow as synthetic without invented revenue", () => {
     const howItWorks = readFileSync(
       resolve(
@@ -461,6 +482,36 @@ describe("landing style contract", () => {
     expect(howItWorks).not.toMatch(/>\s*live\s*</i);
     expect(howItWorks).not.toContain("$500+");
     expect(howItWorks).not.toContain("$956");
+  });
+
+  test("reserves tracked uppercase typography for real codes and statuses", () => {
+    const howItWorks = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/how-it-works.tsx",
+      ),
+      "utf8",
+    );
+    const roi = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/roi-calculator.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(howItWorks).toMatch(
+      /<p className="text-sm font-semibold text-dunlo-deep">\s*How it works\s*<\/p>/,
+    );
+    expect(howItWorks).toMatch(
+      /<p className="text-xs font-semibold text-gray-500">\s*Example product preview\s*<\/p>/,
+    );
+    expect(roi).toMatch(
+      /<p className="text-sm font-semibold text-dunlo-deep">\s*Recovery estimate\s*<\/p>/,
+    );
+    expect(roi).toMatch(
+      /<p className="text-xs font-semibold text-dunlo">\s*30-day estimate\s*<\/p>/,
+    );
   });
 
   test("tracks the setup workflow signup CTA", () => {

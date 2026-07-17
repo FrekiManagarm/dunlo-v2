@@ -58,7 +58,7 @@ export function HowItWorks() {
     >
       <div className="grid gap-0 lg:grid-cols-[0.72fr_1.28fr]">
         <div className="border-b border-gray-200 p-6 md:p-9 lg:border-b-0 lg:border-r">
-          <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+          <p className="text-sm font-semibold text-dunlo-deep">
             How it works
           </p>
           <h2 className="mt-4 max-w-md text-4xl font-semibold leading-none tracking-tight text-gray-950 md:text-6xl">
@@ -134,7 +134,7 @@ export function HowItWorks() {
             <div className="rounded-xl border border-gray-200 bg-white p-4 md:p-5">
               <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                 <div>
-                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
+                  <p className="text-xs font-semibold text-gray-500">
                     Example product preview
                   </p>
                   <AnimatePresence mode="wait" initial={false}>

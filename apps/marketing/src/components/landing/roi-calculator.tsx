@@ -63,7 +63,7 @@ export function RoiCalculator() {
     >
       <div className="grid gap-0 lg:grid-cols-[0.92fr_1.08fr]">
         <div className="border-b border-gray-200 p-6 md:p-9 lg:border-b-0 lg:border-r">
-          <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+          <p className="text-sm font-semibold text-dunlo-deep">
             Recovery estimate
           </p>
           <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-none tracking-tight text-gray-950 md:text-6xl">
@@ -114,7 +114,7 @@ export function RoiCalculator() {
                 onKeyUp={(event) =>
                   captureMrrChange(Number(event.currentTarget.value))
                 }
-                className="peer absolute inset-x-0 top-1/2 h-8 w-full -translate-y-1/2 cursor-pointer opacity-0"
+                className="peer absolute inset-x-0 top-1/2 h-11 w-full -translate-y-1/2 cursor-pointer opacity-0"
                 aria-describedby="roi-calculator-result"
               />
               <div
@@ -130,7 +130,7 @@ export function RoiCalculator() {
             <div className="rounded-xl bg-gray-950 p-5 text-white">
               <div className="flex items-center justify-between">
                 <div>
-                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-dunlo">
+                  <p className="text-xs font-semibold text-dunlo">
                     30-day estimate
                   </p>
                   <p
