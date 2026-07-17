@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { SIGNUP_URL } from "@/lib/app-url";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
+import { AnimatePresence, motion } from "framer-motion";
 import {
   ArrowRight,
   Check,
@@ -11,7 +11,7 @@ import {
   Radar,
   Route,
 } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const steps = [
   {
@@ -45,18 +45,7 @@ const rows = [
 ] as const;
 
 export function HowItWorks() {
-  const reduceMotion = useReducedMotion();
   const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    if (reduceMotion) return;
-
-    const timer = window.setInterval(() => {
-      setActive((current) => (current + 1) % steps.length);
-    }, 2400);
-
-    return () => window.clearInterval(timer);
-  }, [reduceMotion]);
 
   const activeStep = steps[active]!;
   const ActiveIcon = activeStep.icon;
@@ -64,7 +53,7 @@ export function HowItWorks() {
   return (
     <section
       id="how-it-works"
-      className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white"
+      className="scroll-mt-24 overflow-hidden rounded-2xl border border-dunlo-line bg-white"
     >
       <div className="grid gap-0 lg:grid-cols-[0.72fr_1.28fr]">
         <div className="border-b border-gray-200 p-6 md:p-9 lg:border-b-0 lg:border-r">
@@ -80,10 +69,10 @@ export function HowItWorks() {
           </p>
           <Link
             href={SIGNUP_URL}
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+            className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink transition-colors hover:bg-dunlo-hover"
           >
-            Connect Stripe
-            <ArrowRight size={16} strokeWidth={2} />
+            Start free in beta
+            <ArrowRight size={16} aria-hidden />
           </Link>
         </div>
 
@@ -98,11 +87,12 @@ export function HowItWorks() {
                   <button
                     key={step.n}
                     type="button"
+                    aria-pressed={isActive}
                     onClick={() => setActive(index)}
-                    className={`w-full rounded-[1.35rem] border p-4 text-left transition-all active:scale-[0.99] ${
+                    className={`min-h-11 w-full rounded-xl border p-4 text-left transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep ${
                       isActive
-                        ? "border-dunlo/40 bg-white shadow-[0_18px_50px_-42px_rgba(15,23,42,0.5)]"
-                        : "border-gray-200 bg-white/65 hover:bg-white"
+                        ? "border-dunlo-deep bg-dunlo/10"
+                        : "border-dunlo-line bg-white hover:bg-gray-50"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-4">
@@ -110,7 +100,7 @@ export function HowItWorks() {
                         <span
                           className={`flex size-9 items-center justify-center rounded-full ${
                             isActive
-                              ? "bg-dunlo text-white"
+                              ? "bg-dunlo text-dunlo-ink"
                               : "border border-gray-200 bg-gray-50 text-gray-500"
                           }`}
                         >
@@ -135,7 +125,7 @@ export function HowItWorks() {
               })}
             </div>
 
-            <div className="rounded-[1.7rem] border border-gray-200 bg-white p-4 shadow-[0_26px_80px_-62px_rgba(15,23,42,0.48)] md:p-5">
+            <div className="rounded-xl border border-gray-200 bg-white p-4 md:p-5">
               <div className="flex items-center justify-between border-b border-gray-100 pb-4">
                 <div>
                   <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
@@ -159,11 +149,11 @@ export function HowItWorks() {
                 </span>
               </div>
 
-              <div className="mt-5 rounded-[1.35rem] bg-gray-950 p-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+              <div className="mt-5 rounded-xl bg-gray-950 p-4 text-white">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <Radar size={17} strokeWidth={2} className="text-dunlo" />
-                    <span className="font-mono text-xs font-semibold text-white/60">
+                    <span className="font-mono text-xs font-semibold text-white/75">
                       stripe_event_stream
                     </span>
                   </div>
@@ -184,7 +174,7 @@ export function HowItWorks() {
                           <p className="truncate font-mono text-xs font-semibold text-white/80">
                             {event}
                           </p>
-                          <p className="mt-1 text-xs text-white/35">
+                          <p className="mt-1 text-xs text-white/75">
                             {detail}
                           </p>
                         </div>
@@ -192,14 +182,16 @@ export function HowItWorks() {
                           className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
                             isDone
                               ? "bg-dunlo/12 text-dunlo"
-                              : "bg-white/10 text-white/35"
+                              : "bg-white/10 text-white/75"
                           }`}
                         >
                           {status}
                         </span>
                         <span
                           className={`flex size-6 items-center justify-center rounded-full ${
-                            isDone ? "bg-dunlo text-white" : "bg-white/10"
+                            isDone
+                              ? "bg-dunlo text-dunlo-ink"
+                              : "bg-white/10"
                           }`}
                         >
                           {isDone && <Check size={13} strokeWidth={2} />}

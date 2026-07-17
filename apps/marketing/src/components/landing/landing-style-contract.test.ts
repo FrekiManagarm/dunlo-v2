@@ -149,4 +149,26 @@ describe("landing style contract", () => {
     );
     expect(failureResponseMap).not.toContain("rounded-full bg-dunlo");
   });
+
+  test("keeps setup user-controlled and ROI CTA accurate", () => {
+    const howItWorks = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/how-it-works.tsx",
+      ),
+      "utf8",
+    );
+    const roi = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/roi-calculator.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(howItWorks).not.toContain("setInterval");
+    expect(roi).toContain("Estimated recoverable this month");
+    expect(roi).toContain("Start measuring failed payments");
+    expect(roi).toContain('href="/benchmark"');
+  });
 });

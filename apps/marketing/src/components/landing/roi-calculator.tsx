@@ -61,7 +61,7 @@ export function RoiCalculator() {
   return (
     <section
       id="roi-calculator"
-      className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white"
+      className="overflow-hidden rounded-2xl border border-gray-200 bg-white"
     >
       <div className="grid gap-0 lg:grid-cols-[0.92fr_1.08fr]">
         <div className="border-b border-gray-200 p-6 md:p-9 lg:border-b-0 lg:border-r">
@@ -121,17 +121,16 @@ export function RoiCalculator() {
                 aria-describedby="roi-calculator-result"
               />
               <div
-                className="pointer-events-none absolute top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white bg-dunlo shadow-[0_14px_30px_-16px_rgba(15,23,42,0.45)] peer-focus-visible:ring-4 peer-focus-visible:ring-dunlo/20"
+                className="pointer-events-none absolute top-1/2 size-6 -translate-x-1/2 -translate-y-1/2 rounded-full border-4 border-white bg-dunlo peer-focus-visible:ring-4 peer-focus-visible:ring-dunlo/20"
                 style={{ left: `${progress}%` }}
               />
             </div>
           </div>
         </div>
 
-        <div className="relative bg-stone-50 p-4 md:p-7">
-          <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_right,rgba(15,23,42,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(15,23,42,0.04)_1px,transparent_1px)] bg-size-[52px_52px]" />
-          <div className="relative rounded-[1.7rem] border border-gray-200 bg-white p-4 shadow-[0_24px_80px_-62px_rgba(15,23,42,0.48)] md:p-5">
-            <div className="rounded-[1.35rem] bg-gray-950 p-5 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
+        <div className="bg-stone-50 p-4 md:p-7">
+          <div className="rounded-2xl border border-gray-200 bg-white p-4 md:p-5">
+            <div className="rounded-xl bg-gray-950 p-5 text-white">
               <div className="flex items-center justify-between">
                 <div>
                   <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-dunlo">
@@ -143,8 +142,8 @@ export function RoiCalculator() {
                     aria-live="polite"
                   >
                     <AnimatedCurrency value={recovered} />
-                    <span className="block pt-2 text-base font-medium leading-6 text-white/48">
-                      likely recoverable this month
+                    <span className="block pt-2 text-base font-medium leading-6 text-white/75">
+                      Estimated recoverable this month
                     </span>
                   </p>
                 </div>
@@ -176,7 +175,7 @@ export function RoiCalculator() {
                 return (
                   <div
                     key={item.label}
-                    className="rounded-[1.2rem] border border-gray-100 bg-stone-50 p-4"
+                    className="rounded-xl border border-gray-100 bg-stone-50 p-4"
                   >
                     <Icon
                       className="text-dunlo-deep"
@@ -194,27 +193,33 @@ export function RoiCalculator() {
               })}
             </div>
 
-            <div className="mt-3 rounded-[1.2rem] border border-gray-100 bg-white p-4">
-              <p className="text-sm leading-6 text-gray-600">
-                Based on a 5% failed-payment rate and 63% recoverability. Actual
-                recovery depends on decline reason mix, customer segment, retry
+            <div className="mt-4 border-t border-dunlo-line pt-4">
+              <p className="text-sm leading-6 text-gray-700">
+                Estimate based on a 5% failed-payment rate and 63% recoverability.
+                Actual recovery depends on failure reasons, customer mix, retry
                 timing, and message quality.
               </p>
               <Link
-                href={SIGNUP_URL}
-                onClick={() =>
-                  captureMarketingEvent("cta_clicked", {
-                    button_text: "See my benchmark",
-                    destination: SIGNUP_URL,
-                    location: "homepage_roi_calculator",
-                  })
-                }
-                className="mt-4 inline-flex items-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+                href="/benchmark"
+                className="mt-3 inline-flex min-h-11 items-center text-sm font-semibold text-dunlo-deep underline decoration-dunlo/40 underline-offset-4"
               >
-                See my benchmark
-                <ArrowRight size={16} strokeWidth={2} />
+                Review the benchmark methodology
               </Link>
             </div>
+            <Link
+              href={SIGNUP_URL}
+              onClick={() =>
+                captureMarketingEvent("cta_clicked", {
+                  button_text: "Start measuring failed payments",
+                  destination: SIGNUP_URL,
+                  location: "homepage_roi_calculator",
+                })
+              }
+              className="mt-4 inline-flex min-h-11 items-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink"
+            >
+              Start measuring failed payments
+              <ArrowRight size={16} aria-hidden />
+            </Link>
           </div>
         </div>
       </div>
