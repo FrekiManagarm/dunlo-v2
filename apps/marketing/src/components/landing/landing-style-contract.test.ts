@@ -61,4 +61,18 @@ describe("landing style contract", () => {
       /@media\s*\(prefers-reduced-motion:\s*reduce\)\s*\{\s*\.anim-1,\s*\.anim-2,\s*\.anim-3,\s*\.anim-4,\s*\.anim-5,\s*\.anim-6,\s*\.landing-rise\s*\{\s*animation:\s*none;\s*\}\s*\}/s,
     );
   });
+
+  test("keeps the hero static preview honest and non-interactive", () => {
+    const hero = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/payment-recovery-hero.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(hero).toContain("Recover failed payments without losing customer trust.");
+    expect(hero).toContain("Example data");
+    expect(hero).not.toContain("<button");
+  });
 });
