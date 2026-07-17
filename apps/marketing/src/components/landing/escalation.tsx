@@ -27,7 +27,7 @@ export function Escalation() {
               destination: SIGNUP_URL,
               location: "homepage_founder_review",
             }}
-            className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink"
+            className="mt-8 inline-flex min-h-11 items-center gap-2 rounded-full bg-dunlo px-5 text-sm font-semibold text-dunlo-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo-ink"
           >
             Start with founder control
             <ArrowRight size={16} aria-hidden />
@@ -54,7 +54,7 @@ export function Escalation() {
               </div>
               <div>
                 <dt className="text-xs text-gray-600">Failure</dt>
-                <dd className="mt-1 font-mono text-sm font-semibold">
+                <dd className="mt-1 min-w-0 break-all font-mono text-sm font-semibold">
                   authentication_required
                 </dd>
               </div>

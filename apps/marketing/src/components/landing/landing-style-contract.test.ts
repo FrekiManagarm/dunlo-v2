@@ -108,5 +108,45 @@ describe("landing style contract", () => {
 
     expect(escalation).not.toMatch(/<button[^>]*>\s*(Review|Regenerate|Send)/);
     expect(escalation).toContain("Example product preview");
+    expect(escalation).not.toContain('"use client"');
+    expect(escalation).not.toContain("<button");
+    expect(escalation).not.toContain("<Button");
+    expect(escalation).not.toMatch(/role\s*=\s*(["'])button\1/);
+    expect(escalation).not.toContain("setInterval");
+    expect(escalation).toContain('location: "homepage_founder_review"');
+    expect(escalation).toContain("href={SIGNUP_URL}");
+    expect(escalation).toContain("destination: SIGNUP_URL");
+  });
+
+  test("keeps the founder review preview readable and its CTA focused", () => {
+    const escalation = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/escalation.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(escalation).toMatch(
+      /<dd className="(?=[^"]*\bmin-w-0\b)(?=[^"]*(?:\bbreak-all\b|\[overflow-wrap:anywhere\]))[^"]*">\s*authentication_required\s*<\/dd>/s,
+    );
+    expect(escalation).toContain(
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo-ink",
+    );
+  });
+
+  test("presents recovery actions as semantic static content", () => {
+    const failureResponseMap = readFileSync(
+      resolve(
+        repoRoot,
+        "apps/marketing/src/components/landing/failure-response-map.tsx",
+      ),
+      "utf8",
+    );
+
+    expect(failureResponseMap).toMatch(
+      /<dl[^>]*>.*<dt[^>]*>\s*Next action\s*<\/dt>.*<dd[^>]*>\s*\{item\.action\}\s*<\/dd>.*<\/dl>/s,
+    );
+    expect(failureResponseMap).not.toContain("rounded-full bg-dunlo");
   });
 });

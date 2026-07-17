@@ -43,9 +43,14 @@ export function FailureResponseMap() {
               <p className="max-w-2xl text-sm leading-6 text-gray-700">
                 {item.customerMeaning}
               </p>
-              <span className="w-fit rounded-full bg-dunlo px-3 py-2 text-xs font-bold text-dunlo-ink">
-                {item.action}
-              </span>
+              <dl className="w-fit border-l-2 border-dunlo pl-3">
+                <dt className="text-xs font-semibold text-gray-600">
+                  Next action
+                </dt>
+                <dd className="mt-1 text-sm font-bold text-dunlo-ink">
+                  {item.action}
+                </dd>
+              </dl>
             </article>
           ))}
         </div>
