@@ -100,7 +100,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Performance-based pricing with no fixed public tiers; Slicker says customers pay only when it outperforms their current solution.",
         dunlo:
-          "Free during beta. Planned tiers are flat by MRR, starting at $19/mo, with no percentage of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Retry engine",
@@ -193,7 +193,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Pricing model",
         competitor: "Starts from $149/mo, with public pricing based on MRR.",
         dunlo:
-          "Free during beta. Planned tiers are flat by MRR, with no percentage of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Recovery focus",
@@ -281,7 +281,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Part of Stripe Billing and Revenue Recovery tooling, not a separate standalone dunning app.",
         dunlo:
-          "Free during beta. Planned tiers are flat by MRR, with no percentage of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Recovery focus",
@@ -360,7 +360,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Paddle's product page presents Retain as built into Paddle Billing at no extra cost; older Retain help pages reference performance-based and flat-fee plans.",
         dunlo:
-          "Free during beta. Planned tiers are flat by MRR, with no percentage of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Recovery focus",
@@ -502,7 +502,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Pricing",
         competitor: "Starts at $12/mo, with tiers based on monthly events.",
         dunlo:
-          "Starts at $19/mo after beta, with flat MRR-based tiers and no cut of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Stripe-native",
@@ -596,7 +596,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Metrics starts at $129/mo up to $10k MRR; Recover starts at $69/mo up to $10k MRR.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo with no percentage of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Best fit",
@@ -681,7 +681,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Flat monthly pricing: Rise at $59/mo up to $75k MRR, Surge at $159/mo up to $250k MRR.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo, with no recovered-revenue cut.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Setup motion",
@@ -760,7 +760,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Starter is listed at $250/mo billed yearly, for teams with less than $5k/mo churn volume.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo and avoid recovered-revenue percentages.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Best fit",
@@ -845,7 +845,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Free up to $2,500 in monthly tracked revenue, then 1% of tracked revenue on Pro.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo for Stripe recovery.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
     ],
     competitorUseCases: [
@@ -918,7 +918,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Pricing entry",
         competitor: "ProfitWell Metrics is free.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo because Dunlo executes recovery workflows.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Best fit",
@@ -1003,7 +1003,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Smart Dunning is listed in the Performance plan at $7,188/yr for up to $100k billing/mo.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo for focused recovery.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Best fit",
@@ -1305,7 +1305,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Public site positions pricing as 10% of recovered revenue.",
         dunlo:
-          "Free during beta. Planned tiers are flat by MRR with no recovered-revenue percentage.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Recovery scope",
