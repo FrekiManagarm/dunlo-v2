@@ -28,7 +28,7 @@ Stripe Smart Retries optimizes retry timing inside Stripe Billing. Dunlo adds th
 
 ### What does Dunlo cost?
 
-Dunlo is free during beta until July 31, 2026. Planned post-beta tiers are flat monthly plans by MRR range, starting at $19/month, with no recovered-revenue percentage.
+Dunlo is free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.
 
 ## Key Pages
 

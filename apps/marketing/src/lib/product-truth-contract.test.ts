@@ -5,6 +5,7 @@ import { describe, expect, test } from "vitest";
 import { readMarketingSource } from "./source-test-utils";
 
 const pricing = readMarketingSource("public/pricing.md");
+const llms = readMarketingSource("public/llms.txt");
 const alternativePage = readMarketingSource(
   "src/components/alternatives/alternative-page.tsx",
 );
@@ -13,7 +14,7 @@ const welcomeGuide = readFileSync(
   "utf8",
 );
 const assumptions = readMarketingSource("src/lib/recovery-assumptions.ts");
-const allPublicCopy = [pricing, alternativePage, welcomeGuide].join("\n");
+const allPublicCopy = [pricing, llms, alternativePage, welcomeGuide].join("\n");
 
 describe("public product truth", () => {
   test("removes obsolete pricing and recovery claims", () => {
@@ -22,6 +23,10 @@ describe("public product truth", () => {
     expect(pricing).not.toMatch(/^## (Solo|Starter|Growth|Scale)$/m);
     expect(pricing).toContain("Free during beta");
     expect(pricing).toContain("before billing starts");
+    expect(llms).toContain("Dunlo is free during beta.");
+    expect(llms).toContain(
+      "Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
+    );
   });
 
   test("names calculator values as modeled assumptions", () => {
