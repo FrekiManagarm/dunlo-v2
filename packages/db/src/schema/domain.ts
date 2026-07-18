@@ -1,5 +1,6 @@
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 import {
+  date,
   pgEnum,
   pgTable,
   text,
@@ -8,8 +9,24 @@ import {
   timestamp,
   uniqueIndex,
   index,
+  jsonb,
+  numeric,
 } from "drizzle-orm/pg-core";
 import { user } from "./auth";
+
+export const connectionPhaseEnum = pgEnum("connection_phase", [
+  "diagnosing",
+  "diagnostic_ready",
+  "monitoring",
+  "activation_requested",
+  "write_authorized",
+  "email_configured",
+  "recovery_active",
+  "disconnecting",
+  "disconnect_failed",
+]);
+
+export type ConnectionPhase = (typeof connectionPhaseEnum.enumValues)[number];
 
 export const failedPaymentStatus = pgEnum("failed_payment_status", [
   "in_recovery",
@@ -53,8 +70,13 @@ export const stripeConnection = pgTable(
     accessToken: text("access_token").notNull(),
     publishableKey: text("publishable_key"),
     webhookEndpointId: text("webhook_endpoint_id"),
-    webhookSecret: text("webhook_secret").notNull(),
-    scope: text("scope").default("read_write").notNull(),
+    webhookSecret: text("webhook_secret"),
+    scope: text("scope").default("read_only").notNull(),
+    phase: connectionPhaseEnum("phase").default("diagnosing").notNull(),
+    monitoringEnabled: boolean("monitoring_enabled").default(false).notNull(),
+    lastAnalyzedAt: timestamp("last_analyzed_at"),
+    nextAnalysisAt: timestamp("next_analysis_at"),
+    liveMode: boolean("live_mode"),
     escalationThreshold: integer("escalation_threshold").default(50000),
     escalationCurrency: text("escalation_currency").default("eur").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -66,6 +88,116 @@ export const stripeConnection = pgTable(
   (table) => [
     index("stripe_connection_user_id_idx").on(table.userId),
     index("stripe_connection_stripe_account_id_idx").on(table.stripeAccountId),
+    index("stripe_connection_phase_idx").on(table.phase),
+    index("stripe_connection_next_analysis_at_idx").on(table.nextAnalysisAt),
+  ],
+);
+
+export const diagnosticSnapshot = pgTable(
+  "diagnostic_snapshot",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    connectionId: text("connection_id")
+      .notNull()
+      .references(() => stripeConnection.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    isCurrent: boolean("is_current").default(true).notNull(),
+    status: text("status").notNull(),
+    verdict: text("verdict").notNull(),
+    analysisStartsAt: timestamp("analysis_starts_at").notNull(),
+    analysisEndsAt: timestamp("analysis_ends_at").notNull(),
+    decisionStartsAt: timestamp("decision_starts_at").notNull(),
+    decisionEndsAt: timestamp("decision_ends_at").notNull(),
+    decisionWindowComplete: boolean("decision_window_complete").notNull(),
+    pagesLoaded: integer("pages_loaded").default(0).notNull(),
+    recordsLoaded: integer("records_loaded").default(0).notNull(),
+    coverageComplete: boolean("coverage_complete").notNull(),
+    staleAt: timestamp("stale_at"),
+    fixedMrr: integer("fixed_mrr").default(0).notNull(),
+    variableMrr: integer("variable_mrr").default(0).notNull(),
+    limitedConfidenceMrr: integer("limited_confidence_mrr").default(0).notNull(),
+    excludedMrr: integer("excluded_mrr").default(0).notNull(),
+    dominantCurrency: text("dominant_currency").notNull(),
+    dominantCurrencyShareBps: integer("dominant_currency_share_bps")
+      .default(0)
+      .notNull(),
+    observedFailed: integer("observed_failed").default(0).notNull(),
+    naturallyRecovered: integer("naturally_recovered").default(0).notNull(),
+    openAutomatable: integer("open_automatable").default(0).notNull(),
+    openHuman: integer("open_human").default(0).notNull(),
+    historicallyLostAutomatable: integer("historically_lost_automatable")
+      .default(0)
+      .notNull(),
+    historicallyLostHuman: integer("historically_lost_human").default(0).notNull(),
+    excludedAmount: integer("excluded_amount").default(0).notNull(),
+    monthlyAddressable: integer("monthly_addressable").default(0).notNull(),
+    addressableNow: integer("addressable_now").default(0).notNull(),
+    planCode: text("plan_code").notNull(),
+    planPriceUsd: integer("plan_price_usd").default(0).notNull(),
+    breakEvenUsd: integer("break_even_usd").default(0).notNull(),
+    classifierVersion: text("classifier_version").notNull(),
+    qualificationVersion: text("qualification_version").notNull(),
+    fxSource: text("fx_source").notNull(),
+    fxSeriesKeys: jsonb("fx_series_keys").$type<string[]>().notNull(),
+    fxRateDate: date("fx_rate_date").notNull(),
+    fxFetchedAt: timestamp("fx_fetched_at").notNull(),
+    fxRateToUsd: numeric("fx_rate_to_usd", {
+      precision: 20,
+      scale: 10,
+    }).notNull(),
+    failureCategory: text("failure_category").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("diagnostic_snapshot_current_connection_unique")
+      .on(table.connectionId)
+      .where(sql`${table.isCurrent} = true`),
+    index("diagnostic_snapshot_user_id_idx").on(table.userId),
+    index("diagnostic_snapshot_connection_id_idx").on(table.connectionId),
+    index("diagnostic_snapshot_created_at_idx").on(table.createdAt),
+  ],
+);
+
+export const diagnosticFinding = pgTable(
+  "diagnostic_finding",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    snapshotId: text("snapshot_id")
+      .notNull()
+      .references(() => diagnosticSnapshot.id, { onDelete: "cascade" }),
+    connectionId: text("connection_id")
+      .notNull()
+      .references(() => stripeConnection.id, { onDelete: "cascade" }),
+    stripeInvoiceId: text("stripe_invoice_id").notNull(),
+    stripeCustomerId: text("stripe_customer_id").notNull(),
+    stripeSubscriptionId: text("stripe_subscription_id"),
+    amount: integer("amount").notNull(),
+    currency: text("currency").notNull(),
+    failedAt: timestamp("failed_at").notNull(),
+    resolvedAt: timestamp("resolved_at"),
+    invoiceStatus: text("invoice_status").notNull(),
+    subscriptionStatus: text("subscription_status"),
+    adviceCode: text("advice_code"),
+    declineCode: text("decline_code"),
+    category: text("category").notNull(),
+    reason: text("reason").notNull(),
+    classifierVersion: text("classifier_version").notNull(),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+  },
+  (table) => [
+    index("diagnostic_finding_snapshot_id_idx").on(table.snapshotId),
+    index("diagnostic_finding_connection_id_idx").on(table.connectionId),
+    index("diagnostic_finding_created_at_idx").on(table.createdAt),
   ],
 );
 
@@ -317,10 +449,40 @@ export const benchmarkSnapshot = pgTable(
 
 export const stripeConnectionRelations = relations(
   stripeConnection,
-  ({ one }) => ({
+  ({ one, many }) => ({
     user: one(user, {
       fields: [stripeConnection.userId],
       references: [user.id],
+    }),
+    diagnosticSnapshots: many(diagnosticSnapshot),
+  }),
+);
+
+export const diagnosticSnapshotRelations = relations(
+  diagnosticSnapshot,
+  ({ one, many }) => ({
+    connection: one(stripeConnection, {
+      fields: [diagnosticSnapshot.connectionId],
+      references: [stripeConnection.id],
+    }),
+    user: one(user, {
+      fields: [diagnosticSnapshot.userId],
+      references: [user.id],
+    }),
+    findings: many(diagnosticFinding),
+  }),
+);
+
+export const diagnosticFindingRelations = relations(
+  diagnosticFinding,
+  ({ one }) => ({
+    snapshot: one(diagnosticSnapshot, {
+      fields: [diagnosticFinding.snapshotId],
+      references: [diagnosticSnapshot.id],
+    }),
+    connection: one(stripeConnection, {
+      fields: [diagnosticFinding.connectionId],
+      references: [stripeConnection.id],
     }),
   }),
 );
