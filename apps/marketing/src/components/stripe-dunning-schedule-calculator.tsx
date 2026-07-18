@@ -42,7 +42,8 @@ const reasonAdvice: Record<
     headline: "Ask for a card update immediately.",
     firstAction:
       "Send a calm update-card email with a Stripe-hosted billing link.",
-    retry: "Retry only after the customer updates the card, or after a gentle reminder.",
+    retry:
+      "Retry only after the customer updates the card, or after a gentle reminder.",
     final: "Pause access only after the customer had a clear update path.",
   },
   insufficient_funds: {
@@ -57,8 +58,10 @@ const reasonAdvice: Record<
     headline: "The customer needs to complete authentication.",
     firstAction:
       "Send a direct action email explaining that the bank needs approval.",
-    retry: "Do not rely on blind retries until the customer completes the SCA step.",
-    final: "Final notice should focus on completing bank approval, not replacing the card.",
+    retry:
+      "Do not rely on blind retries until the customer completes the SCA step.",
+    final:
+      "Final notice should focus on completing bank approval, not replacing the card.",
   },
   do_not_honor: {
     headline: "Give context before another retry.",
@@ -66,7 +69,8 @@ const reasonAdvice: Record<
       "Tell the customer their bank did not approve the subscription charge.",
     retry:
       "Retry after they approve the merchant with the bank or add another card.",
-    final: "Escalate high-value accounts manually because the bank reason is vague.",
+    final:
+      "Escalate high-value accounts manually because the bank reason is vague.",
   },
   generic_decline: {
     headline: "Keep the message conservative.",
@@ -168,14 +172,14 @@ export function StripeDunningScheduleCalculator() {
 
   return (
     <section className="mx-auto grid max-w-6xl grid-cols-1 gap-5 lg:grid-cols-[0.82fr_1.18fr]">
-      <div className="rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md md:p-8">
-        <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+      <div className="rounded-2xl border border-dunlo-line bg-white p-6 md:p-8">
+        <p className="text-sm font-semibold text-dunlo-deep">
           Build your schedule
         </p>
         <h2 className="mt-3 text-3xl font-bold tracking-tight">
           Stripe dunning schedule calculator
         </h2>
-        <p className="mt-4 text-sm leading-6 text-gray-600">
+        <p className="mt-4 text-sm leading-6 text-dunlo-ink/68">
           Choose the account type, invoice amount, failure reason, and recovery
           window. The calculator turns that into a practical sequence for
           customer emails, retries, escalation, and final notice.
@@ -183,7 +187,7 @@ export function StripeDunningScheduleCalculator() {
 
         <div className="mt-7 space-y-5">
           <label className="block">
-            <span className="text-sm font-bold text-gray-950">
+            <span className="text-sm font-bold text-dunlo-ink">
               Account type
             </span>
             <select
@@ -192,7 +196,7 @@ export function StripeDunningScheduleCalculator() {
                 setAccountType(event.target.value as AccountType);
                 captureToolChange("account_type", event.target.value);
               }}
-              className="mt-2 h-12 w-full rounded-xl border border-gray-200 bg-white px-3 text-sm font-semibold text-gray-950 outline-none transition-colors focus:border-dunlo"
+              className="mt-2 h-12 w-full rounded-xl border border-dunlo-line bg-white px-3 text-sm font-semibold text-dunlo-ink outline-none transition-colors focus:border-dunlo"
             >
               {accountOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -203,7 +207,7 @@ export function StripeDunningScheduleCalculator() {
           </label>
 
           <label className="block">
-            <span className="text-sm font-bold text-gray-950">
+            <span className="text-sm font-bold text-dunlo-ink">
               Failed invoice amount
             </span>
             <div className="mt-2 flex items-center gap-3">
@@ -213,7 +217,9 @@ export function StripeDunningScheduleCalculator() {
                 max={1200}
                 step={10}
                 value={invoiceAmount}
-                onChange={(event) => setInvoiceAmount(Number(event.target.value))}
+                onChange={(event) =>
+                  setInvoiceAmount(Number(event.target.value))
+                }
                 onPointerUp={(event) => {
                   const value = Number(event.currentTarget.value);
                   captureToolChange(
@@ -242,13 +248,13 @@ export function StripeDunningScheduleCalculator() {
                     value < 100 ? "<$100" : value < 500 ? "$100-$500" : "$500+",
                   );
                 }}
-                className="h-12 w-28 rounded-xl border border-gray-200 bg-white px-3 text-sm font-semibold text-gray-950 outline-none transition-colors focus:border-dunlo"
+                className="h-12 w-28 rounded-xl border border-dunlo-line bg-white px-3 text-sm font-semibold text-dunlo-ink outline-none transition-colors focus:border-dunlo"
               />
             </div>
           </label>
 
           <label className="block">
-            <span className="text-sm font-bold text-gray-950">
+            <span className="text-sm font-bold text-dunlo-ink">
               Stripe failure reason
             </span>
             <select
@@ -257,7 +263,7 @@ export function StripeDunningScheduleCalculator() {
                 setFailureReason(event.target.value as FailureReason);
                 captureToolChange("failure_reason", event.target.value);
               }}
-              className="mt-2 h-12 w-full rounded-xl border border-gray-200 bg-white px-3 font-mono text-sm font-semibold text-gray-950 outline-none transition-colors focus:border-dunlo"
+              className="mt-2 h-12 w-full rounded-xl border border-dunlo-line bg-white px-3 font-mono text-sm font-semibold text-dunlo-ink outline-none transition-colors focus:border-dunlo"
             >
               {failureOptions.map((option) => (
                 <option key={option.value} value={option.value}>
@@ -268,7 +274,7 @@ export function StripeDunningScheduleCalculator() {
           </label>
 
           <label className="block">
-            <span className="text-sm font-bold text-gray-950">
+            <span className="text-sm font-bold text-dunlo-ink">
               Recovery window
             </span>
             <div className="mt-2 grid grid-cols-3 gap-2">
@@ -282,8 +288,8 @@ export function StripeDunningScheduleCalculator() {
                   }}
                   className={`h-11 rounded-full border px-3 text-sm font-bold transition-all ${
                     recoveryWindow === days
-                      ? "border-gray-950 bg-gray-950 text-white"
-                      : "border-gray-200 bg-white text-gray-700 hover:border-dunlo/40"
+                      ? "border-dunlo-ink bg-dunlo-ink text-white"
+                      : "border-dunlo-line bg-white text-dunlo-ink/76 hover:border-dunlo/40"
                   }`}
                 >
                   {days} days
@@ -294,16 +300,16 @@ export function StripeDunningScheduleCalculator() {
         </div>
       </div>
 
-      <div className="rounded-[2rem] border border-gray-200 bg-white/80 p-6 backdrop-blur-md md:p-8">
-        <div className="flex flex-col gap-4 border-b border-gray-200 pb-6 sm:flex-row sm:items-start sm:justify-between">
+      <div className="rounded-2xl border border-dunlo-line bg-white p-6 md:p-8">
+        <div className="flex flex-col gap-4 border-b border-dunlo-line pb-6 sm:flex-row sm:items-start sm:justify-between">
           <div>
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+            <p className="text-sm font-semibold text-dunlo-deep">
               Recommended sequence
             </p>
             <h2 className="mt-3 text-3xl font-bold tracking-tight">
               {plan.advice.headline}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-gray-600">
+            <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
               {money(invoiceAmount)} failed invoice - {plan.recoverableLabel}
             </p>
           </div>
@@ -317,10 +323,10 @@ export function StripeDunningScheduleCalculator() {
           {plan.timeline.map((step) => (
             <article
               key={`${step.day}-${step.title}`}
-              className="grid grid-cols-[84px_1fr] gap-4 rounded-[1.35rem] border border-gray-200 bg-white p-4"
+              className="grid grid-cols-[84px_1fr] gap-4 rounded-2xl border border-dunlo-line bg-white p-4"
             >
               <div>
-                <p className="font-mono text-sm font-bold text-gray-950">
+                <p className="font-mono text-sm font-bold text-dunlo-ink">
                   {dayLabel(step.day)}
                 </p>
                 <p className="mt-2 w-fit rounded-full border border-dunlo/20 bg-dunlo/[0.07] px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-dunlo-deep">
@@ -328,10 +334,10 @@ export function StripeDunningScheduleCalculator() {
                 </p>
               </div>
               <div>
-                <h3 className="font-bold tracking-tight text-gray-950">
+                <h3 className="font-bold tracking-tight text-dunlo-ink">
                   {step.title}
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-gray-600">
+                <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
                   {step.copy}
                 </p>
               </div>
@@ -350,7 +356,7 @@ export function StripeDunningScheduleCalculator() {
               className="rounded-xl border border-dunlo/20 bg-dunlo/[0.07] p-3"
             >
               <Icon size={17} className="text-dunlo-deep" />
-              <p className="mt-2 text-sm font-bold text-gray-950">{label}</p>
+              <p className="mt-2 text-sm font-bold text-dunlo-ink">{label}</p>
             </div>
           ))}
         </div>
@@ -365,14 +371,14 @@ export function StripeDunningScheduleCalculator() {
                 location: "stripe_dunning_schedule_calculator",
               })
             }
-            className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
+            className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo-ink px-6 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-px hover:bg-dunlo-ink/90 active:scale-[0.98]"
           >
             Automate this in Dunlo
             <ArrowRight size={16} strokeWidth={1.8} />
           </a>
           <Link
             href="/stripe-failed-payment-recovery-software"
-            className="inline-flex h-12 items-center justify-center rounded-full border border-gray-300 px-6 text-sm font-semibold text-gray-800 transition-all duration-300 hover:-translate-y-px hover:border-gray-950 active:scale-[0.98]"
+            className="inline-flex h-12 items-center justify-center rounded-full border border-dunlo-line px-6 text-sm font-semibold text-dunlo-ink/88 transition-all duration-300 hover:-translate-y-px hover:border-dunlo-ink active:scale-[0.98]"
           >
             See recovery software
           </Link>

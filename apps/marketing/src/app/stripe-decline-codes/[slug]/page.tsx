@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
+import { SubpageBackdrop } from "@/components/marketing/subpage-backdrop";
 import { SIGNUP_URL } from "@/lib/app-url";
 import {
   SITE_NAME,
@@ -58,34 +59,34 @@ export default async function StripeDeclineCodeDetailPage({
   const path = declineCodePath(guide.slug);
 
   return (
-    <div className="min-h-dvh overflow-hidden bg-stone-100 font-sans text-gray-950">
+    <div className="min-h-dvh overflow-hidden bg-dunlo-ground font-sans text-dunlo-ink">
       <Nav />
       <main className="space-y-4 px-3 pb-4 pt-24 md:space-y-5 md:px-4 md:pb-6 md:pt-28">
-        <section className="relative -mx-3 px-3 md:-mx-4 md:px-4">
-          <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_14%_18%,rgba(0,232,123,0.16),transparent_34%),radial-gradient(circle_at_88%_8%,rgba(17,24,39,0.08),transparent_30%)]" />
+        <section className="relative -mx-3 overflow-hidden bg-dunlo-ink px-3 text-white md:-mx-4 md:px-4">
+          <SubpageBackdrop />
           <div className="relative mx-auto grid min-h-[calc(100dvh-8rem)] max-w-6xl gap-12 py-6 md:grid-cols-[0.96fr_1.04fr] md:items-center md:gap-14 md:py-8">
             <div className="max-w-xl">
               <Link
                 href="/stripe-decline-codes"
-                className="inline-flex items-center gap-2 font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep"
+                className="inline-flex items-center gap-2 text-sm font-semibold text-dunlo"
               >
                 Stripe decline codes
                 <ArrowRight size={13} />
               </Link>
               <div className="mt-5 flex flex-wrap gap-2">
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-dunlo/30 bg-dunlo/15 px-3 py-1.5 text-xs font-bold text-dunlo-deep">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-dunlo/40 bg-dunlo/12 px-3 py-1.5 text-xs font-bold text-dunlo">
                   <MailCheck size={13} strokeWidth={2.2} />
                   Recovery email angle
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white/80 px-3 py-1.5 text-xs font-bold text-gray-700 shadow-sm">
+                <span className="inline-flex items-center gap-1.5 rounded-full border border-white/18 bg-white/6 px-3 py-1.5 text-xs font-bold text-white/72">
                   <Clock3 size={13} strokeWidth={2.2} />
                   Retry guidance
                 </span>
               </div>
-              <h1 className="mt-8 max-w-xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:text-5xl sm:leading-[0.98] md:text-6xl">
+              <h1 className="mt-8 max-w-xl text-4xl font-bold leading-[0.96] tracking-[-0.04em] text-white sm:text-5xl md:text-6xl">
                 {guide.title}
               </h1>
-              <p className="mt-5 max-w-lg border-l-2 border-dunlo pl-4 text-base italic leading-7 text-gray-700">
+              <p className="mt-5 max-w-lg text-base leading-7 text-white/68">
                 {guide.openingAnswer ??
                   `${guide.shortDescription} For SaaS subscriptions, the useful question is not just why it failed, but what customer action will recover the invoice.`}
               </p>
@@ -93,29 +94,29 @@ export default async function StripeDeclineCodeDetailPage({
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
                   href={SIGNUP_URL}
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all duration-300 hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-dunlo-ink transition-transform duration-300 hover:-translate-y-px hover:bg-dunlo-hover active:scale-[0.98]"
                 >
                   Start recovery
                   <ArrowRight size={16} strokeWidth={1.8} />
                 </a>
                 <Link
                   href="/stripe-dunning-schedule-calculator"
-                  className="inline-flex h-12 items-center justify-center rounded-full border border-gray-300 px-6 text-sm font-semibold text-gray-800 transition-all duration-300 hover:-translate-y-px hover:border-gray-950 active:scale-[0.98]"
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-white/24 px-6 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-px hover:border-white/60 hover:bg-white/6 active:scale-[0.98]"
                 >
                   Plan the retry window
                 </Link>
               </div>
             </div>
 
-            <aside className="rounded-[2rem] border border-gray-200 bg-white p-5 shadow-[0_24px_70px_-52px_rgba(17,24,39,0.45)] md:p-6">
-              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-gray-400">
+            <aside className="rounded-2xl border border-dunlo-line bg-white p-5 text-dunlo-ink md:p-6">
+              <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.18em] text-dunlo-ink/46">
                 Stripe code
               </p>
-              <div className="mt-3 rounded-2xl border border-gray-200 bg-gray-50 p-5">
-                <p className="break-all font-mono text-2xl font-bold text-gray-950">
+              <div className="mt-3 rounded-2xl border border-dunlo-line bg-dunlo-mist p-5">
+                <p className="break-all font-mono text-2xl font-bold text-dunlo-ink">
                   {guide.code}
                 </p>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
+                <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
                   {guide.searchIntent}
                 </p>
               </div>
@@ -128,8 +129,8 @@ export default async function StripeDeclineCodeDetailPage({
                     Customer action
                   </p>
                 </div>
-                <div className="rounded-xl border border-gray-200 bg-gray-50 p-4">
-                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
+                <div className="rounded-xl border border-dunlo-line bg-dunlo-mist p-4">
+                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-dunlo-ink/46">
                     Dunlo
                   </p>
                   <p className="mt-2 text-sm font-semibold leading-6">
@@ -142,8 +143,8 @@ export default async function StripeDeclineCodeDetailPage({
         </section>
 
         <section className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[1.12fr_0.88fr]">
-          <article className="rounded-[2rem] border border-gray-200 bg-white/85 p-6 md:p-8">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+          <article className="rounded-2xl border border-dunlo-line bg-white p-6 md:p-8">
+            <p className="text-sm font-semibold text-dunlo-deep">
               Recovery guidance
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight md:text-4xl">
@@ -160,12 +161,12 @@ export default async function StripeDeclineCodeDetailPage({
               ].map(([title, copy]) => (
                 <section
                   key={title}
-                  className="rounded-2xl border border-gray-200 bg-white p-5"
+                  className="rounded-2xl border border-dunlo-line bg-white p-5"
                 >
                   <h3 className="text-base font-bold tracking-tight">
                     {title}
                   </h3>
-                  <p className="mt-2 text-sm leading-6 text-gray-600">
+                  <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
                     {copy}
                   </p>
                 </section>
@@ -174,7 +175,7 @@ export default async function StripeDeclineCodeDetailPage({
           </article>
 
           <aside className="space-y-4">
-            <div className="rounded-[2rem] border border-gray-200 bg-gray-950 p-6 text-white md:p-7">
+            <div className="rounded-2xl border border-dunlo-line bg-dunlo-ink p-6 text-white md:p-7">
               <BadgeCheck size={22} className="text-dunlo" />
               <h2 className="mt-5 text-2xl font-semibold tracking-tight">
                 Dunlo workflow
@@ -185,7 +186,7 @@ export default async function StripeDeclineCodeDetailPage({
                     key={step}
                     className="grid grid-cols-[28px_1fr] gap-3 text-sm leading-6 text-gray-200"
                   >
-                    <span className="flex size-7 items-center justify-center rounded-full bg-dunlo text-xs font-bold text-gray-950">
+                    <span className="flex size-7 items-center justify-center rounded-full bg-dunlo text-xs font-bold text-dunlo-ink">
                       {index + 1}
                     </span>
                     <span>{step}</span>
@@ -194,12 +195,12 @@ export default async function StripeDeclineCodeDetailPage({
               </ol>
             </div>
 
-            <div className="rounded-[2rem] border border-gray-200 bg-white/85 p-6 md:p-7">
+            <div className="rounded-2xl border border-dunlo-line bg-white p-6 md:p-7">
               <ShieldAlert size={22} className="text-dunlo-deep" />
               <h2 className="mt-5 text-2xl font-semibold tracking-tight">
                 Why the code matters
               </h2>
-              <p className="mt-3 text-sm leading-6 text-gray-600">
+              <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
                 Stripe decline codes are more specific than a generic failed
                 payment event. They help you separate timing problems from
                 customer-action problems, which is where SaaS dunning workflows
@@ -218,9 +219,9 @@ export default async function StripeDeclineCodeDetailPage({
           </aside>
         </section>
 
-        <section className="mx-auto max-w-6xl rounded-[2rem] border border-gray-200 bg-white/85 p-6 md:p-8">
+        <section className="mx-auto max-w-6xl rounded-2xl border border-dunlo-line bg-white p-6 md:p-8">
           <div className="max-w-2xl">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+            <p className="text-sm font-semibold text-dunlo-deep">
               Related decline codes
             </p>
             <h2 className="mt-3 text-3xl font-semibold tracking-tight">
@@ -232,7 +233,7 @@ export default async function StripeDeclineCodeDetailPage({
               <Link
                 key={related.slug}
                 href={declineCodePath(related.slug)}
-                className="group rounded-2xl border border-gray-200 bg-white p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-dunlo/40"
+                className="group rounded-2xl border border-dunlo-line bg-white p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-dunlo/40"
               >
                 <p className="font-mono text-xs font-bold text-dunlo-deep">
                   {related.code}
@@ -240,10 +241,10 @@ export default async function StripeDeclineCodeDetailPage({
                 <h3 className="mt-2 text-base font-bold tracking-tight">
                   {related.title}
                 </h3>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
+                <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
                   {related.shortDescription}
                 </p>
-                <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-gray-950">
+                <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-dunlo-ink">
                   Read guide
                   <ArrowRight
                     size={15}
@@ -276,12 +277,10 @@ export default async function StripeDeclineCodeDetailPage({
             <Link
               key={item.href}
               href={item.href}
-              className="rounded-[1.5rem] border border-gray-200 bg-white/80 p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-dunlo/40"
+              className="rounded-2xl border border-dunlo-line bg-white p-5 transition-all duration-300 hover:-translate-y-0.5 hover:border-dunlo/40"
             >
-              <h2 className="text-lg font-bold tracking-tight">
-                {item.title}
-              </h2>
-              <p className="mt-2 text-sm leading-6 text-gray-600">
+              <h2 className="text-lg font-bold tracking-tight">{item.title}</h2>
+              <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
                 {item.copy}
               </p>
             </Link>

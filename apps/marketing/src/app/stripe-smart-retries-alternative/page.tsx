@@ -179,19 +179,19 @@ export default function StripeSmartRetriesAlternativePage() {
   };
 
   return (
-    <div className="min-h-dvh overflow-hidden bg-stone-100 font-sans text-gray-950">
+    <div className="min-h-dvh overflow-hidden bg-dunlo-ground font-sans text-dunlo-ink">
       <Nav />
       <main className="mx-auto w-full max-w-6xl space-y-4 px-3 pb-6 pt-24 md:px-4 md:pt-28">
-        <section className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white">
+        <section className="overflow-hidden rounded-2xl bg-dunlo-ink text-white">
           <div className="grid gap-0 lg:grid-cols-[1.08fr_0.92fr]">
             <div className="px-6 py-10 md:px-10 md:py-14 lg:px-14">
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              <p className="text-sm font-semibold text-dunlo">
                 Stripe Smart Retries alternative
               </p>
-              <h1 className="mt-5 max-w-3xl text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 md:text-6xl">
+              <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[0.96] tracking-[-0.04em] md:text-6xl">
                 Stripe Smart Retries: what it covers and when SaaS needs more
               </h1>
-              <p className="mt-6 max-w-2xl text-base leading-8 text-gray-600 md:text-lg">
+              <p className="mt-6 max-w-2xl text-base leading-8 text-white/68 md:text-lg">
                 Stripe Smart Retries chooses when to retry eligible failed
                 payments. SaaS teams still need a plan for failures that require
                 customer action, clear communication, account escalation, and
@@ -200,23 +200,23 @@ export default function StripeSmartRetriesAlternativePage() {
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="#comparison"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-semibold text-white transition-all hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-dunlo-ink transition-transform hover:-translate-y-px hover:bg-dunlo-hover active:scale-[0.98]"
                 >
                   See what Smart Retries covers
                   <ArrowRight size={16} strokeWidth={2} />
                 </Link>
                 <Link
                   href="/benchmark"
-                  className="inline-flex h-12 items-center justify-center rounded-full border border-gray-200 px-6 text-sm font-semibold text-gray-900 transition-all hover:-translate-y-px hover:border-gray-300 hover:bg-gray-50 active:scale-[0.98]"
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-white/24 px-6 text-sm font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/6 active:scale-[0.98]"
                 >
                   Estimate failed MRR
                 </Link>
               </div>
             </div>
 
-            <aside className="border-t border-gray-200 bg-gray-50 px-6 py-8 md:px-10 lg:border-l lg:border-t-0 lg:px-12 lg:py-14">
-              <div className="rounded-[1.5rem] border border-gray-200 bg-white p-5 shadow-[0_22px_60px_-48px_rgba(15,23,42,0.5)]">
-                <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
+            <aside className="border-t border-dunlo-ink/16 bg-dunlo px-6 py-8 text-dunlo-ink md:px-10 lg:border-l lg:border-t-0 lg:px-12 lg:py-14">
+              <div className="rounded-2xl border border-dunlo-line bg-white p-5">
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo-ink/46">
                   The handoff
                 </p>
                 <div className="mt-5 space-y-3">
@@ -228,16 +228,16 @@ export default function StripeSmartRetriesAlternativePage() {
                   ].map(([label, meta], index) => (
                     <div
                       key={label}
-                      className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl border border-gray-100 bg-stone-50 p-3"
+                      className="grid grid-cols-[auto_1fr] gap-3 rounded-2xl border border-dunlo-line/60 bg-dunlo-ground p-3"
                     >
                       <span className="flex size-8 items-center justify-center rounded-full bg-dunlo/12 font-mono text-[11px] font-semibold text-dunlo-deep">
                         {String(index + 1).padStart(2, "0")}
                       </span>
                       <div className="min-w-0">
-                        <p className="truncate font-mono text-xs font-semibold text-gray-950">
+                        <p className="truncate font-mono text-xs font-semibold text-dunlo-ink">
                           {label}
                         </p>
-                        <p className="mt-1 text-xs font-semibold text-gray-500">
+                        <p className="mt-1 text-xs font-semibold text-dunlo-ink/56">
                           {meta}
                         </p>
                       </div>
@@ -250,30 +250,30 @@ export default function StripeSmartRetriesAlternativePage() {
         </section>
 
         <section className="grid gap-3 md:grid-cols-3">
-          <article className="border-t border-gray-200 bg-white px-1 py-5">
-            <h2 className="text-base font-bold tracking-tight text-gray-950">
+          <article className="border-t border-dunlo-line bg-white px-1 py-5">
+            <h2 className="text-base font-bold tracking-tight text-dunlo-ink">
               Use Smart Retries for timing
             </h2>
-            <p className="mt-3 text-sm leading-6 text-gray-600">
+            <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
               Stripe is still the right place to retry a payment method and keep
               invoice state inside Billing.
             </p>
           </article>
-          <article className="border-t border-gray-200 bg-white px-1 py-5">
-            <h2 className="text-base font-bold tracking-tight text-gray-950">
+          <article className="border-t border-dunlo-line bg-white px-1 py-5">
+            <h2 className="text-base font-bold tracking-tight text-dunlo-ink">
               Add Dunlo for hands-on recovery
             </h2>
-            <p className="mt-3 text-sm leading-6 text-gray-600">
+            <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
               Stripe Billing can provide native customer emails and hosted
               update flows. Dunlo adds failure-specific copy, founder review,
               owner visibility, and a focused escalation queue.
             </p>
           </article>
-          <article className="border-t border-gray-200 bg-white px-1 py-5">
-            <h2 className="text-base font-bold tracking-tight text-gray-950">
+          <article className="border-t border-dunlo-line bg-white px-1 py-5">
+            <h2 className="text-base font-bold tracking-tight text-dunlo-ink">
               Keep Stripe as source of truth
             </h2>
-            <p className="mt-3 text-sm leading-6 text-gray-600">
+            <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
               No billing migration. Dunlo layers on top of Stripe events rather
               than replacing your payment processor.
             </p>
@@ -282,25 +282,25 @@ export default function StripeSmartRetriesAlternativePage() {
 
         <section
           id="comparison"
-          className="rounded-[2rem] border border-gray-200 bg-white px-5 py-7 md:px-8 md:py-9"
+          className="rounded-2xl border border-dunlo-line bg-white px-5 py-7 md:px-8 md:py-9"
         >
           <div className="grid gap-8 lg:grid-cols-[0.7fr_1.3fr]">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              <p className="text-sm font-semibold text-dunlo-deep">
                 Short version
               </p>
               <h2 className="mt-3 max-w-sm text-3xl font-semibold leading-none tracking-tight md:text-5xl">
                 Smart Retries optimizes timing. Dunlo adds the human layer.
               </h2>
-              <p className="mt-5 max-w-md text-sm leading-6 text-gray-600">
+              <p className="mt-5 max-w-md text-sm leading-6 text-dunlo-ink/68">
                 The practical question is not whether Stripe Smart Retries is
                 good. It is. The question is what happens when the customer must
                 understand, update, approve, or respond before the invoice can
                 be paid.
               </p>
             </div>
-            <div className="overflow-hidden rounded-[1.5rem] border border-gray-200">
-              <div className="grid grid-cols-[0.74fr_1fr_1fr] border-b border-gray-200 bg-gray-50 text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+            <div className="overflow-hidden rounded-2xl border border-dunlo-line">
+              <div className="grid grid-cols-[0.74fr_1fr_1fr] border-b border-dunlo-line bg-dunlo-mist text-xs font-semibold uppercase tracking-[0.14em] text-dunlo-ink/56">
                 <div className="p-4">Criteria</div>
                 <div className="p-4">Stripe Smart Retries</div>
                 <div className="p-4">Dunlo</div>
@@ -308,15 +308,15 @@ export default function StripeSmartRetriesAlternativePage() {
               {QUICK_COMPARISON.map((row) => (
                 <div
                   key={row.label}
-                  className="grid grid-cols-1 border-b border-gray-100 last:border-b-0 md:grid-cols-[0.74fr_1fr_1fr]"
+                  className="grid grid-cols-1 border-b border-dunlo-line/60 last:border-b-0 md:grid-cols-[0.74fr_1fr_1fr]"
                 >
-                  <div className="bg-gray-50/60 p-4 text-sm font-semibold text-gray-950">
+                  <div className="bg-dunlo-mist/60 p-4 text-sm font-semibold text-dunlo-ink">
                     {row.label}
                   </div>
-                  <div className="p-4 text-sm leading-6 text-gray-600">
+                  <div className="p-4 text-sm leading-6 text-dunlo-ink/68">
                     {row.stripe}
                   </div>
-                  <div className="p-4 text-sm leading-6 text-gray-800">
+                  <div className="p-4 text-sm leading-6 text-dunlo-ink/88">
                     {row.dunlo}
                   </div>
                 </div>
@@ -325,17 +325,17 @@ export default function StripeSmartRetriesAlternativePage() {
           </div>
         </section>
 
-        <section className="rounded-[2rem] border border-gray-200 bg-white px-5 py-7 md:px-8 md:py-9">
+        <section className="rounded-2xl border border-dunlo-line bg-white px-5 py-7 md:px-8 md:py-9">
           <div className="grid gap-7 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              <p className="text-sm font-semibold text-dunlo-deep">
                 Where Smart Retries stops
               </p>
               <h2 className="mt-3 max-w-md text-3xl font-semibold leading-none tracking-tight md:text-5xl">
                 Retry timing is only one part of dunning.
               </h2>
             </div>
-            <div className="space-y-5 text-sm leading-7 text-gray-600">
+            <div className="space-y-5 text-sm leading-7 text-dunlo-ink/68">
               <p>
                 Stripe Smart Retries predicts better retry times for failed
                 subscription invoices. That helps when the failure is temporary,
@@ -344,11 +344,11 @@ export default function StripeSmartRetriesAlternativePage() {
                 authentication, or understand why their bank blocked the charge.
               </p>
               <p>
-                Stripe Billing's broader Revenue Recovery suite already
-                provides native emails, hosted update pages, analytics, customer
-                recovery views, and automations. Dunlo adds failure-specific
-                customer copy, founder-reviewed outreach, and a focused queue
-                for teams that want a more hands-on recovery layer.
+                Stripe Billing's broader Revenue Recovery suite already provides
+                native emails, hosted update pages, analytics, customer recovery
+                views, and automations. Dunlo adds failure-specific customer
+                copy, founder-reviewed outreach, and a focused queue for teams
+                that want a more hands-on recovery layer.
               </p>
               <div className="grid gap-3 sm:grid-cols-2">
                 {[
@@ -359,7 +359,7 @@ export default function StripeSmartRetriesAlternativePage() {
                 ].map((item) => (
                   <div
                     key={item}
-                    className="rounded-2xl border border-gray-200 bg-stone-50 p-4 text-sm font-semibold text-gray-800"
+                    className="rounded-2xl border border-dunlo-line bg-dunlo-ground p-4 text-sm font-semibold text-dunlo-ink/88"
                   >
                     {item}
                   </div>
@@ -369,20 +369,20 @@ export default function StripeSmartRetriesAlternativePage() {
           </div>
         </section>
 
-        <section className="rounded-[2rem] border border-gray-200 bg-white px-5 py-7 md:px-8 md:py-9">
+        <section className="rounded-2xl border border-dunlo-line bg-white px-5 py-7 md:px-8 md:py-9">
           <div className="grid gap-7 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              <p className="text-sm font-semibold text-dunlo-deep">
                 How to compare
               </p>
               <h2 className="mt-3 max-w-md text-3xl font-semibold leading-none tracking-tight md:text-5xl">
                 Judge alternatives by the revenue moment.
               </h2>
             </div>
-            <div className="space-y-5 text-sm leading-7 text-gray-600">
+            <div className="space-y-5 text-sm leading-7 text-dunlo-ink/68">
               <p>
-                If retry timing is the only need, Smart Retries may be enough. If
-                you also want native emails, hosted update flows, analytics,
+                If retry timing is the only need, Smart Retries may be enough.
+                If you also want native emails, hosted update flows, analytics,
                 customer recovery views, and automations, Stripe Billing's
                 Revenue Recovery suite covers those controls. Evaluate an added
                 recovery layer when you need failure-specific customer copy,
@@ -411,12 +411,12 @@ export default function StripeSmartRetriesAlternativePage() {
                 ].map(([label, copy]) => (
                   <div
                     key={label}
-                    className="rounded-2xl border border-gray-200 bg-stone-50 p-4"
+                    className="rounded-2xl border border-dunlo-line bg-dunlo-ground p-4"
                   >
-                    <h3 className="text-sm font-semibold text-gray-950">
+                    <h3 className="text-sm font-semibold text-dunlo-ink">
                       {label}
                     </h3>
-                    <p className="mt-2 text-sm leading-6 text-gray-600">
+                    <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
                       {copy}
                     </p>
                   </div>
@@ -426,17 +426,17 @@ export default function StripeSmartRetriesAlternativePage() {
           </div>
         </section>
 
-        <section className="rounded-[2rem] border border-gray-200 bg-white px-5 py-7 md:px-8 md:py-9">
+        <section className="rounded-2xl border border-dunlo-line bg-white px-5 py-7 md:px-8 md:py-9">
           <div className="grid gap-7 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              <p className="text-sm font-semibold text-dunlo-deep">
                 Minimum workflow
               </p>
               <h2 className="mt-3 max-w-md text-3xl font-semibold leading-none tracking-tight md:text-5xl">
                 What a complete Stripe recovery flow includes.
               </h2>
             </div>
-            <div className="divide-y divide-gray-100 border-y border-gray-100">
+            <div className="divide-y divide-dunlo-line/60 border-y border-dunlo-line/60">
               {[
                 {
                   title: "1. Detect invoice.payment_failed",
@@ -456,10 +456,10 @@ export default function StripeSmartRetriesAlternativePage() {
                 },
               ].map((step) => (
                 <article key={step.title} className="py-5">
-                  <h3 className="text-base font-semibold tracking-tight text-gray-950">
+                  <h3 className="text-base font-semibold tracking-tight text-dunlo-ink">
                     {step.title}
                   </h3>
-                  <p className="mt-2 text-sm leading-6 text-gray-600">
+                  <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
                     {step.copy}
                   </p>
                 </article>
@@ -468,10 +468,10 @@ export default function StripeSmartRetriesAlternativePage() {
           </div>
         </section>
 
-        <section className="rounded-[2rem] border border-gray-200 bg-white px-5 py-7 md:px-8 md:py-9">
+        <section className="rounded-2xl border border-dunlo-line bg-white px-5 py-7 md:px-8 md:py-9">
           <div className="mb-7 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              <p className="text-sm font-semibold text-dunlo-deep">
                 What Dunlo adds
               </p>
               <h2 className="mt-3 max-w-xl text-3xl font-semibold leading-none tracking-tight md:text-5xl">
@@ -493,15 +493,15 @@ export default function StripeSmartRetriesAlternativePage() {
               return (
                 <article
                   key={feature.title}
-                  className="rounded-[1.5rem] border border-gray-200 bg-stone-50 p-5"
+                  className="rounded-2xl border border-dunlo-line bg-dunlo-ground p-5"
                 >
                   <span className="flex size-10 items-center justify-center rounded-full bg-dunlo/12 text-dunlo-deep">
                     <Icon size={19} strokeWidth={2} />
                   </span>
-                  <h3 className="mt-5 text-xl font-semibold tracking-tight text-gray-950">
+                  <h3 className="mt-5 text-xl font-semibold tracking-tight text-dunlo-ink">
                     {feature.title}
                   </h3>
-                  <p className="mt-3 text-sm leading-6 text-gray-600">
+                  <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
                     {feature.copy}
                   </p>
                 </article>
@@ -510,17 +510,17 @@ export default function StripeSmartRetriesAlternativePage() {
           </div>
         </section>
 
-        <section className="rounded-[2rem] border border-gray-200 bg-white px-5 py-7 md:px-8 md:py-9">
+        <section className="rounded-2xl border border-dunlo-line bg-white px-5 py-7 md:px-8 md:py-9">
           <div className="grid gap-7 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              <p className="text-sm font-semibold text-dunlo-deep">
                 Dunlo vs Stripe Smart Retries
               </p>
               <h2 className="mt-3 max-w-md text-3xl font-semibold leading-none tracking-tight md:text-5xl">
                 The cleanest setup is usually both.
               </h2>
             </div>
-            <div className="space-y-5 text-sm leading-7 text-gray-600">
+            <div className="space-y-5 text-sm leading-7 text-dunlo-ink/68">
               <p>
                 Dunlo is not positioned as a payment processor or a replacement
                 for Stripe Billing. Stripe should keep owning invoices,
@@ -555,12 +555,12 @@ export default function StripeSmartRetriesAlternativePage() {
                 ].map(([label, copy]) => (
                   <div
                     key={label}
-                    className="rounded-2xl border border-gray-200 bg-stone-50 p-4"
+                    className="rounded-2xl border border-dunlo-line bg-dunlo-ground p-4"
                   >
-                    <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-gray-400">
+                    <h3 className="font-mono text-xs font-semibold uppercase tracking-[0.14em] text-dunlo-ink/46">
                       {label}
                     </h3>
-                    <p className="mt-3 text-sm font-semibold leading-6 text-gray-800">
+                    <p className="mt-3 text-sm font-semibold leading-6 text-dunlo-ink/88">
                       {copy}
                     </p>
                   </div>
@@ -571,8 +571,8 @@ export default function StripeSmartRetriesAlternativePage() {
         </section>
 
         <section className="grid gap-4 md:grid-cols-2">
-          <article className="rounded-[2rem] border border-gray-200 bg-white px-6 py-7 md:px-8">
-            <h2 className="text-2xl font-semibold tracking-tight text-gray-950">
+          <article className="rounded-2xl border border-dunlo-line bg-white px-6 py-7 md:px-8">
+            <h2 className="text-2xl font-semibold tracking-tight text-dunlo-ink">
               Choose Stripe's native recovery stack when
             </h2>
             <ul className="mt-6 space-y-4">
@@ -583,7 +583,7 @@ export default function StripeSmartRetriesAlternativePage() {
               ].map((item) => (
                 <li
                   key={item}
-                  className="flex gap-3 text-sm leading-6 text-gray-600"
+                  className="flex gap-3 text-sm leading-6 text-dunlo-ink/68"
                 >
                   <span className="mt-2 size-1.5 shrink-0 rounded-full bg-dunlo" />
                   <span>{item}</span>
@@ -591,7 +591,7 @@ export default function StripeSmartRetriesAlternativePage() {
               ))}
             </ul>
           </article>
-          <article className="rounded-[2rem] border border-gray-200 bg-gray-950 px-6 py-7 text-white md:px-8">
+          <article className="rounded-2xl border border-dunlo-line bg-dunlo-ink px-6 py-7 text-white md:px-8">
             <h2 className="text-2xl font-semibold tracking-tight">
               Choose Dunlo when
             </h2>
@@ -617,23 +617,21 @@ export default function StripeSmartRetriesAlternativePage() {
           </article>
         </section>
 
-        <section className="rounded-[2rem] border border-gray-200 bg-white px-5 py-7 md:px-8 md:py-9">
+        <section className="rounded-2xl border border-dunlo-line bg-white px-5 py-7 md:px-8 md:py-9">
           <div className="grid gap-7 lg:grid-cols-[0.82fr_1.18fr]">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-                FAQ
-              </p>
+              <p className="text-sm font-semibold text-dunlo-deep">FAQ</p>
               <h2 className="mt-3 max-w-md text-3xl font-semibold leading-none tracking-tight md:text-5xl">
                 Stripe Smart Retries alternative FAQ.
               </h2>
             </div>
-            <div className="divide-y divide-gray-100 border-y border-gray-100">
+            <div className="divide-y divide-dunlo-line/60 border-y border-dunlo-line/60">
               {FAQS.map((item) => (
                 <div key={item.question} className="py-5">
-                  <h3 className="text-base font-semibold tracking-tight text-gray-950">
+                  <h3 className="text-base font-semibold tracking-tight text-dunlo-ink">
                     {item.question}
                   </h3>
-                  <p className="mt-2 text-sm leading-6 text-gray-600">
+                  <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
                     {item.answer}
                   </p>
                 </div>
@@ -642,8 +640,8 @@ export default function StripeSmartRetriesAlternativePage() {
           </div>
         </section>
 
-        <section className="rounded-[2rem] border border-gray-200 bg-white px-5 py-7 md:px-8">
-          <h2 className="text-xl font-semibold tracking-tight text-gray-950">
+        <section className="rounded-2xl border border-dunlo-line bg-white px-5 py-7 md:px-8">
+          <h2 className="text-xl font-semibold tracking-tight text-dunlo-ink">
             Related Stripe recovery guides
           </h2>
           <div className="mt-5 grid gap-3 md:grid-cols-3">
@@ -651,12 +649,12 @@ export default function StripeSmartRetriesAlternativePage() {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-2xl border border-gray-200 bg-stone-50 p-4 transition-all hover:-translate-y-0.5 hover:border-dunlo/40 active:scale-[0.99]"
+                className="rounded-2xl border border-dunlo-line bg-dunlo-ground p-4 transition-all hover:-translate-y-0.5 hover:border-dunlo/40 active:scale-[0.99]"
               >
-                <h3 className="text-sm font-semibold text-gray-950">
+                <h3 className="text-sm font-semibold text-dunlo-ink">
                   {item.title}
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-gray-600">
+                <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
                   {item.copy}
                 </p>
               </Link>
@@ -664,7 +662,7 @@ export default function StripeSmartRetriesAlternativePage() {
           </div>
         </section>
 
-        <section className="rounded-[2rem] border border-gray-200 bg-gray-950 px-6 py-8 text-white md:px-10">
+        <section className="rounded-2xl border border-dunlo-line bg-dunlo-ink px-6 py-8 text-white md:px-10">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo">
@@ -681,7 +679,7 @@ export default function StripeSmartRetriesAlternativePage() {
             </div>
             <a
               href={SIGNUP_URL}
-              className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-semibold text-gray-950 transition-transform active:scale-[0.98]"
+              className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-semibold text-dunlo-ink transition-transform active:scale-[0.98]"
             >
               Start with Dunlo
               <ArrowRight size={16} strokeWidth={2} />
@@ -689,13 +687,13 @@ export default function StripeSmartRetriesAlternativePage() {
           </div>
         </section>
 
-        <section className="rounded-[2rem] border border-gray-200 bg-white px-6 py-6 md:px-8">
+        <section className="rounded-2xl border border-dunlo-line bg-white px-6 py-6 md:px-8">
           <div className="grid gap-5 lg:grid-cols-[0.78fr_1.22fr] lg:items-start">
             <div>
-              <h2 className="text-base font-semibold text-gray-950">
+              <h2 className="text-base font-semibold text-dunlo-ink">
                 Sources and comparison notes
               </h2>
-              <p className="mt-3 text-sm leading-6 text-gray-600">
+              <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
                 This guide separates Stripe's native retry engine from the
                 customer recovery workflow around it. Public Stripe docs explain
                 the retry and revenue recovery controls; Dunlo's comparison is
@@ -738,7 +736,7 @@ export default function StripeSmartRetriesAlternativePage() {
                   href={source.href}
                   target="_blank"
                   rel="noreferrer"
-                  className="rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50"
+                  className="rounded-full border border-dunlo-line px-4 py-2 text-sm font-medium text-dunlo-ink/76 transition-colors hover:border-dunlo-line hover:bg-dunlo-mist"
                 >
                   {source.label}
                 </a>

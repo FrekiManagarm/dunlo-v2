@@ -7,7 +7,10 @@ import { ArrowRight, Check, Gauge, Mail, TrendingUp } from "lucide-react";
 import { SIGNUP_URL } from "@/lib/app-url";
 import { captureMarketingEvent } from "@/lib/posthog";
 import { TrackedLink } from "@/components/tracked-link";
-import { RECOVERABILITY_RATE, RECOVERABILITY_PERCENT } from "@/lib/recovery-assumptions";
+import {
+  RECOVERABILITY_RATE,
+  RECOVERABILITY_PERCENT,
+} from "@/lib/recovery-assumptions";
 
 const MIN_MRR = 1_000;
 const MAX_MRR = 100_000;
@@ -323,59 +326,59 @@ export function PublicBenchmark({
   }
 
   return (
-    <div className="min-h-dvh bg-stone-100 font-sans text-zinc-950">
+    <div className="min-h-dvh bg-dunlo-ground font-sans text-dunlo-ink">
       <main className="mx-auto max-w-6xl px-4 pb-16 pt-32 md:px-6 md:pt-36">
-        <section className="grid grid-cols-1 gap-7 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
+        <section className="grid grid-cols-1 gap-8 overflow-hidden rounded-2xl bg-dunlo-ink p-6 text-white lg:grid-cols-[1.05fr_0.95fr] lg:items-end md:p-10">
           <div>
-            <div className="mb-6 inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white px-4 py-1.5 text-sm font-semibold text-zinc-600 shadow-sm">
-              <Gauge size={15} className="text-dunlo-deep" />
+            <div className="mb-6 inline-flex items-center gap-2 text-sm font-semibold text-dunlo">
+              <Gauge size={15} />
               {copy.badge}
             </div>
-            <h1 className="max-w-3xl text-4xl font-bold leading-none tracking-tight text-zinc-950 md:text-6xl">
+            <h1 className="max-w-3xl text-4xl font-bold leading-[0.96] tracking-[-0.04em] md:text-6xl">
               {copy.headline}
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-relaxed text-zinc-600 md:text-lg">
+            <p className="mt-5 max-w-2xl text-base leading-8 text-white/68 md:text-lg">
               {copy.intro}
             </p>
           </div>
 
-          <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-[0_24px_60px_-34px_rgba(24,24,27,0.3)] md:p-6">
-            <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
+          <div className="rounded-2xl bg-dunlo p-5 text-dunlo-ink md:p-6">
+            <p className="text-sm font-semibold text-dunlo-ink/62">
               {copy.resultLabel}
             </p>
-            <p className="mt-4 font-mono text-5xl font-bold leading-none tracking-tight text-zinc-950 md:text-6xl">
+            <p className="mt-4 font-mono text-5xl font-bold leading-none tracking-tight text-dunlo-ink md:text-6xl">
               {result.range.failedRate.toFixed(1)}%
             </p>
-            <p className="mt-4 text-sm leading-relaxed text-zinc-500">
-              Illustrative modelled failed-payment rate for {result.range.label}.{" "}
-              {result.range.note}
+            <p className="mt-4 text-sm leading-relaxed text-dunlo-ink/56">
+              Illustrative modelled failed-payment rate for {result.range.label}
+              . {result.range.note}
             </p>
           </div>
         </section>
 
         <section className="mt-8 grid grid-cols-1 gap-5 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
-          <div className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-[0_22px_56px_-34px_rgba(24,24,27,0.26)] md:p-6">
+          <div className="rounded-2xl border border-dunlo-line bg-white p-5 md:p-6">
             <div className="flex items-start justify-between gap-4">
               <div>
-                <h2 className="text-lg font-bold tracking-tight text-zinc-950">
+                <h2 className="text-lg font-bold tracking-tight text-dunlo-ink">
                   {copy.inputTitle}
                 </h2>
-                <p className="mt-1 text-sm text-zinc-500">
+                <p className="mt-1 text-sm text-dunlo-ink/56">
                   No email required to see the result.
                 </p>
               </div>
-              <TrendingUp size={20} className="text-zinc-400" />
+              <TrendingUp size={20} className="text-dunlo-ink/46" />
             </div>
 
             <div className="mt-7">
               <div className="flex items-end justify-between gap-4">
                 <label
                   htmlFor="mrr"
-                  className="text-sm font-semibold text-zinc-700"
+                  className="text-sm font-semibold text-dunlo-ink/76"
                 >
                   Monthly recurring revenue
                 </label>
-                <span className="font-mono text-2xl font-bold text-zinc-950">
+                <span className="font-mono text-2xl font-bold text-dunlo-ink">
                   {formatCurrency(mrr)}
                 </span>
               </div>
@@ -395,17 +398,17 @@ export function PublicBenchmark({
                 }
                 className="mt-5 w-full accent-dunlo"
               />
-              <div className="mt-2 flex justify-between font-mono text-xs text-zinc-400">
+              <div className="mt-2 flex justify-between font-mono text-xs text-dunlo-ink/46">
                 <span>{formatCompact(MIN_MRR)}</span>
                 <span>{formatCompact(MAX_MRR)}</span>
               </div>
             </div>
 
-            <div className="mt-7 rounded-3xl border border-dunlo/20 bg-dunlo/[0.07] p-5">
-              <p className="text-sm font-bold text-zinc-950">
+            <div className="mt-7 rounded-2xl border border-dunlo/20 bg-dunlo/[0.07] p-5">
+              <p className="text-sm font-bold text-dunlo-ink">
                 {copy.resultTitle}
               </p>
-              <p className="mt-2 text-sm leading-relaxed text-zinc-600">
+              <p className="mt-2 text-sm leading-relaxed text-dunlo-ink/68">
                 At {result.range.label}, the benchmark estimates{" "}
                 <span className="font-mono font-bold text-dunlo-deep">
                   {formatCurrency(result.failedMrr)}
@@ -416,8 +419,8 @@ export function PublicBenchmark({
           </div>
 
           <div className="grid gap-5">
-            <div className="overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-[0_22px_56px_-34px_rgba(24,24,27,0.24)]">
-              <div className="grid grid-cols-1 divide-y divide-zinc-100 md:grid-cols-3 md:divide-x md:divide-y-0">
+            <div className="overflow-hidden rounded-2xl border border-dunlo-line bg-white">
+              <div className="grid grid-cols-1 divide-y divide-dunlo-line md:grid-cols-3 md:divide-x md:divide-y-0">
                 {[
                   {
                     label: "Estimated failed MRR",
@@ -436,13 +439,13 @@ export function PublicBenchmark({
                   },
                 ].map((item) => (
                   <div key={item.label} className="p-5">
-                    <p className="text-xs font-semibold uppercase tracking-widest text-zinc-400">
+                    <p className="text-xs font-semibold uppercase tracking-widest text-dunlo-ink/46">
                       {item.label}
                     </p>
-                    <p className="mt-3 font-mono text-3xl font-bold tracking-tight text-zinc-950">
+                    <p className="mt-3 font-mono text-3xl font-bold tracking-tight text-dunlo-ink">
                       {item.value}
                     </p>
-                    <p className="mt-3 text-sm leading-relaxed text-zinc-500">
+                    <p className="mt-3 text-sm leading-relaxed text-dunlo-ink/56">
                       {item.detail}
                     </p>
                   </div>
@@ -452,24 +455,24 @@ export function PublicBenchmark({
 
             <form
               onSubmit={submitEmail}
-              className="rounded-[2rem] border border-zinc-200 bg-white p-5 shadow-[0_20px_52px_-34px_rgba(24,24,27,0.24)] md:p-6"
+              className="rounded-2xl border border-dunlo-line bg-white p-5 md:p-6"
             >
               <div className="flex items-start gap-3">
                 <span className="flex size-10 shrink-0 items-center justify-center rounded-full bg-dunlo/10 text-dunlo-deep">
                   <Mail size={17} />
                 </span>
                 <div>
-                  <h2 className="text-base font-bold tracking-tight text-zinc-950">
+                  <h2 className="text-base font-bold tracking-tight text-dunlo-ink">
                     {copy.formTitle}
                   </h2>
-                  <p className="mt-1 text-sm leading-relaxed text-zinc-500">
+                  <p className="mt-1 text-sm leading-relaxed text-dunlo-ink/56">
                     {copy.formBody}
                   </p>
                 </div>
               </div>
 
               <label className="mt-5 block">
-                <span className="text-sm font-semibold text-zinc-700">
+                <span className="text-sm font-semibold text-dunlo-ink/76">
                   Work email
                 </span>
                 <input
@@ -478,7 +481,7 @@ export function PublicBenchmark({
                   value={email}
                   onChange={(event) => setEmail(event.target.value)}
                   placeholder="founder@company.com"
-                  className="mt-2 h-12 w-full rounded-xl border border-zinc-200 bg-white px-3 text-sm text-zinc-950 outline-none transition-colors placeholder:text-zinc-400 focus:border-dunlo focus:ring-2 focus:ring-dunlo/20"
+                  className="mt-2 h-12 w-full rounded-xl border border-dunlo-line bg-white px-3 text-sm text-dunlo-ink outline-none transition-colors placeholder:text-dunlo-ink/46 focus:border-dunlo focus:ring-2 focus:ring-dunlo/20"
                 />
               </label>
 
@@ -487,7 +490,7 @@ export function PublicBenchmark({
                 disabled={
                   captureState === "submitting" || captureState === "success"
                 }
-                className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-zinc-950 px-5 text-sm font-bold text-white transition-all hover:bg-zinc-800 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-zinc-300"
+                className="mt-4 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-dunlo-ink px-5 text-sm font-bold text-white transition-all hover:bg-dunlo-ink/90 active:scale-[0.98] disabled:cursor-not-allowed disabled:bg-zinc-300"
               >
                 {captureState === "success" ? (
                   <>
@@ -514,7 +517,7 @@ export function PublicBenchmark({
                 destination: SIGNUP_URL,
                 location: `${variant}_tool_cta`,
               }}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-bold text-zinc-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-bold text-dunlo-ink transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
               {copy.cta}
               <ArrowRight size={15} />
@@ -522,27 +525,31 @@ export function PublicBenchmark({
           </div>
         </section>
 
-        <section className="mt-8 overflow-hidden rounded-[2rem] border border-zinc-200 bg-white shadow-[0_18px_48px_-34px_rgba(24,24,27,0.22)]">
-          <div className="grid grid-cols-1 divide-y divide-zinc-100 md:grid-cols-[0.9fr_1.1fr] md:divide-x md:divide-y-0">
+        <section className="mt-8 overflow-hidden rounded-2xl border border-dunlo-line bg-white">
+          <div className="grid grid-cols-1 divide-y divide-dunlo-line md:grid-cols-[0.9fr_1.1fr] md:divide-x md:divide-y-0">
             <div className="p-6 md:p-8">
               <p className="text-xs font-semibold uppercase tracking-widest text-dunlo-dim">
                 Benchmarks by MRR range
               </p>
-              <h2 className="mt-4 max-w-md text-3xl font-bold tracking-tight text-zinc-950">
+              <h2 className="mt-4 max-w-md text-3xl font-bold tracking-tight text-dunlo-ink">
                 The model increases assumed failed-payment rates as MRR grows.
               </h2>
             </div>
-            <div className="divide-y divide-zinc-100">
+            <div className="divide-y divide-dunlo-line">
               {BENCHMARK_RANGES.map((range) => (
                 <div
                   key={range.label}
                   className="grid grid-cols-[1fr_auto] items-center gap-4 px-5 py-4"
                 >
                   <div>
-                    <p className="font-semibold text-zinc-950">{range.label}</p>
-                    <p className="mt-1 text-sm text-zinc-500">{range.note}</p>
+                    <p className="font-semibold text-dunlo-ink">
+                      {range.label}
+                    </p>
+                    <p className="mt-1 text-sm text-dunlo-ink/56">
+                      {range.note}
+                    </p>
                   </div>
-                  <p className="font-mono text-2xl font-bold text-zinc-950">
+                  <p className="font-mono text-2xl font-bold text-dunlo-ink">
                     {range.failedRate.toFixed(1)}%
                   </p>
                 </div>
@@ -552,21 +559,21 @@ export function PublicBenchmark({
         </section>
 
         <section className="mt-8 grid gap-5 lg:grid-cols-[1.05fr_0.95fr]">
-          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-[0_18px_48px_-34px_rgba(24,24,27,0.2)] md:p-8">
+          <div className="rounded-2xl border border-dunlo-line bg-white p-6 md:p-8">
             <p className="text-xs font-semibold uppercase tracking-widest text-dunlo-dim">
               {copy.methodologyEyebrow}
             </p>
-            <h2 className="mt-4 max-w-2xl text-3xl font-bold tracking-tight text-zinc-950">
+            <h2 className="mt-4 max-w-2xl text-3xl font-bold tracking-tight text-dunlo-ink">
               {copy.methodologyTitle}
             </h2>
-            <p className="mt-4 max-w-2xl text-sm leading-7 text-zinc-600 md:text-base">
+            <p className="mt-4 max-w-2xl text-sm leading-7 text-dunlo-ink/68 md:text-base">
               {copy.methodologyBody}
             </p>
-            <ul className="mt-5 space-y-3 border-t border-zinc-100 pt-5">
+            <ul className="mt-5 space-y-3 border-t border-dunlo-line/60 pt-5">
               {METHODOLOGY_ASSUMPTIONS.map((assumption) => (
                 <li
                   key={assumption}
-                  className="flex gap-3 text-sm leading-6 text-zinc-600"
+                  className="flex gap-3 text-sm leading-6 text-dunlo-ink/68"
                 >
                   <span className="mt-2 size-1.5 shrink-0 rounded-full bg-dunlo" />
                   <span>{assumption}</span>
@@ -575,15 +582,15 @@ export function PublicBenchmark({
             </ul>
           </div>
 
-          <div className="rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-[0_18px_48px_-34px_rgba(24,24,27,0.2)] md:p-8">
-            <h2 className="text-xl font-bold tracking-tight text-zinc-950">
+          <div className="rounded-2xl border border-dunlo-line bg-white p-6 md:p-8">
+            <h2 className="text-xl font-bold tracking-tight text-dunlo-ink">
               {copy.checklistTitle}
             </h2>
             <ul className="mt-5 space-y-4">
               {copy.checklist.map((item) => (
                 <li
                   key={item}
-                  className="flex gap-3 text-sm leading-6 text-zinc-600"
+                  className="flex gap-3 text-sm leading-6 text-dunlo-ink/68"
                 >
                   <span className="mt-1 flex size-5 shrink-0 items-center justify-center rounded-full bg-dunlo/15 text-dunlo-deep">
                     <Check size={13} />
@@ -595,8 +602,8 @@ export function PublicBenchmark({
           </div>
         </section>
 
-        <section className="mt-8 rounded-[2rem] border border-zinc-200 bg-white p-6 shadow-[0_18px_48px_-34px_rgba(24,24,27,0.2)] md:p-8">
-          <h2 className="text-2xl font-bold tracking-tight text-zinc-950">
+        <section className="mt-8 rounded-2xl border border-dunlo-line bg-white p-6 md:p-8">
+          <h2 className="text-2xl font-bold tracking-tight text-dunlo-ink">
             Keep building your Stripe recovery workflow.
           </h2>
           <div className="mt-5 grid gap-4 md:grid-cols-3">
@@ -604,10 +611,10 @@ export function PublicBenchmark({
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-3xl border border-zinc-200 p-5 transition-colors hover:border-dunlo/40"
+                className="rounded-2xl border border-dunlo-line p-5 transition-colors hover:border-dunlo/40"
               >
-                <p className="font-semibold text-zinc-950">{item.label}</p>
-                <p className="mt-2 text-sm leading-6 text-zinc-500">
+                <p className="font-semibold text-dunlo-ink">{item.label}</p>
+                <p className="mt-2 text-sm leading-6 text-dunlo-ink/56">
                   {item.body}
                 </p>
               </Link>

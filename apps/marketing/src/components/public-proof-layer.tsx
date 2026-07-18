@@ -1,5 +1,10 @@
 import Link from "next/link";
-import { ArrowRight, FileText, ShieldCheck, SquareActivity } from "lucide-react";
+import {
+  ArrowRight,
+  FileText,
+  ShieldCheck,
+  SquareActivity,
+} from "lucide-react";
 import {
   RECOVERABILITY_PERCENT,
   RECOVERY_MODEL_UPDATED,
@@ -57,7 +62,7 @@ export function PublicProofLayer({ compact = false }: PublicProofLayerProps) {
           <h2 className="mt-5 max-w-xl text-balance text-4xl font-bold leading-[0.94] tracking-[-0.04em] text-dunlo-ink md:text-6xl">
             What can be verified today.
           </h2>
-          <p className="mt-6 max-w-[62ch] text-pretty text-base leading-7 text-gray-700">
+          <p className="mt-6 max-w-[62ch] text-pretty text-base leading-7 text-dunlo-ink/76">
             Dunlo publishes assumptions, recovery mechanics, and its proof
             policy before it publishes customer outcomes.
           </p>
@@ -80,7 +85,7 @@ export function PublicProofLayer({ compact = false }: PublicProofLayerProps) {
                   <h3 className="text-xl font-bold text-dunlo-ink">
                     {item.title}
                   </h3>
-                  <p className="mt-2 max-w-2xl text-sm leading-6 text-gray-700">
+                  <p className="mt-2 max-w-2xl text-sm leading-6 text-dunlo-ink/76">
                     {item.body}
                   </p>
                 </div>

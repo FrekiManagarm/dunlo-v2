@@ -166,18 +166,18 @@ export const metadata: Metadata = pageSeoMetadata({
 
 export default function StripeFailedPaymentEmailTemplatesPage() {
   return (
-    <div className="min-h-dvh overflow-hidden bg-stone-100 font-sans text-gray-950">
+    <div className="min-h-dvh overflow-hidden bg-dunlo-ground font-sans text-dunlo-ink">
       <Nav />
       <main className="space-y-5 px-3 pb-5 pt-24 md:px-4 md:pb-6 md:pt-28">
-        <section className="mx-auto grid max-w-6xl gap-8 rounded-[2rem] border border-gray-200 bg-white px-5 py-8 shadow-sm md:px-8 md:py-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-10 lg:py-12">
+        <section className="mx-auto grid max-w-6xl gap-8 overflow-hidden rounded-2xl bg-dunlo-ink px-5 py-8 text-white md:px-8 md:py-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center lg:px-10 lg:py-12">
           <div>
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+            <p className="text-sm font-semibold text-dunlo">
               Stripe dunning email templates
             </p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[1.02] tracking-tight md:text-6xl">
+            <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[0.96] tracking-[-0.04em] md:text-6xl">
               Copy-ready failed payment emails for each Stripe failure reason.
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-gray-600 md:text-lg">
+            <p className="mt-5 max-w-2xl text-base leading-8 text-white/68 md:text-lg">
               Most failed payment emails say the same thing. These templates
               keep the message tied to the actual Stripe decline context, so
               customers know whether to update a card, approve a charge, or wait
@@ -186,25 +186,25 @@ export default function StripeFailedPaymentEmailTemplatesPage() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a
                 href={SIGNUP_URL}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-dunlo-ink transition-transform hover:-translate-y-px hover:bg-dunlo-hover active:scale-[0.98]"
               >
                 Automate these emails
                 <ArrowRight size={16} strokeWidth={1.8} />
               </a>
               <Link
                 href="/stripe-dunning-schedule-calculator"
-                className="inline-flex h-12 items-center justify-center rounded-full border border-gray-300 px-6 text-sm font-semibold text-gray-800 transition-all hover:-translate-y-px hover:border-gray-950 active:scale-[0.98]"
+                className="inline-flex h-12 items-center justify-center rounded-full border border-white/24 px-6 text-sm font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/6 active:scale-[0.98]"
               >
                 Plan the schedule
               </Link>
             </div>
           </div>
 
-          <aside className="rounded-[1.5rem] border border-gray-200 bg-gray-50 p-5 md:p-6">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+          <aside className="rounded-2xl bg-white p-5 text-dunlo-ink md:p-6">
+            <p className="text-sm font-semibold text-dunlo-deep">
               Template logic
             </p>
-            <div className="mt-5 divide-y divide-gray-200 border-y border-gray-200">
+            <div className="mt-5 divide-y divide-dunlo-line border-y border-dunlo-line">
               {[
                 ["card_expired", "send update-card link"],
                 ["insufficient_funds", "retry with calm context"],
@@ -215,10 +215,10 @@ export default function StripeFailedPaymentEmailTemplatesPage() {
                   key={code}
                   className="grid grid-cols-1 gap-2 py-4 sm:grid-cols-[1fr_auto] sm:gap-4"
                 >
-                  <span className="font-mono text-sm font-bold text-gray-950">
+                  <span className="font-mono text-sm font-bold text-dunlo-ink">
                     {code}
                   </span>
-                  <span className="text-sm font-semibold text-gray-600 sm:text-right">
+                  <span className="text-sm font-semibold text-dunlo-ink/68 sm:text-right">
                     {action}
                   </span>
                 </div>
@@ -227,17 +227,15 @@ export default function StripeFailedPaymentEmailTemplatesPage() {
           </aside>
         </section>
 
-        <section className="mx-auto max-w-6xl rounded-[2rem] border border-gray-200 bg-white p-5 shadow-sm md:p-8">
+        <section className="mx-auto max-w-6xl rounded-2xl border border-dunlo-line bg-white p-5 md:p-8">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-                Templates
-              </p>
+              <p className="text-sm font-semibold text-dunlo-deep">Templates</p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight md:text-4xl">
                 Failed payment email examples by Stripe code
               </h2>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-gray-500">
+            <p className="max-w-xl text-sm leading-6 text-dunlo-ink/56">
               Replace the variables with your product name, Stripe-hosted update
               link, and sender name. Keep the message short enough that the
               action is obvious.
@@ -248,15 +246,15 @@ export default function StripeFailedPaymentEmailTemplatesPage() {
             {EMAIL_TEMPLATES.map((template) => (
               <article
                 key={template.code}
-                className="overflow-hidden rounded-[1.5rem] border border-gray-200 bg-gray-50"
+                className="overflow-hidden rounded-2xl border border-dunlo-line bg-dunlo-mist"
               >
                 <div className="grid gap-0 lg:grid-cols-[0.42fr_0.58fr]">
-                  <div className="border-b border-gray-200 bg-white p-5 md:p-6 lg:border-b-0 lg:border-r">
+                  <div className="border-b border-dunlo-line bg-white p-5 md:p-6 lg:border-b-0 lg:border-r">
                     <div className="flex flex-wrap items-center gap-2">
                       <span className="rounded-full border border-dunlo/25 bg-dunlo/10 px-3 py-1 font-mono text-xs font-bold text-dunlo-deep">
                         {template.code}
                       </span>
-                      <span className="inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-gray-50 px-3 py-1 text-xs font-semibold text-gray-600">
+                      <span className="inline-flex items-center gap-1.5 rounded-full border border-dunlo-line bg-dunlo-mist px-3 py-1 text-xs font-semibold text-dunlo-ink/68">
                         <Clock3 size={13} />
                         {template.timing}
                       </span>
@@ -264,31 +262,31 @@ export default function StripeFailedPaymentEmailTemplatesPage() {
                     <h3 className="mt-5 text-2xl font-bold tracking-tight">
                       {template.title}
                     </h3>
-                    <p className="mt-3 text-sm leading-6 text-gray-600">
+                    <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
                       {template.intent}
                     </p>
                     <div className="mt-5 rounded-2xl border border-dunlo/20 bg-dunlo/[0.07] p-4">
-                      <p className="text-sm font-semibold text-gray-950">
+                      <p className="text-sm font-semibold text-dunlo-ink">
                         Why this works
                       </p>
-                      <p className="mt-2 text-sm leading-6 text-gray-600">
+                      <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
                         {template.note}
                       </p>
                     </div>
                   </div>
 
                   <div className="p-5 md:p-6">
-                    <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+                    <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-ink/56">
                       Subject
                     </p>
-                    <p className="mt-2 rounded-xl border border-gray-200 bg-white px-4 py-3 text-sm font-semibold text-gray-950">
+                    <p className="mt-2 rounded-xl border border-dunlo-line bg-white px-4 py-3 text-sm font-semibold text-dunlo-ink">
                       {template.subject}
                     </p>
-                    <div className="mt-4 rounded-xl border border-gray-200 bg-white p-4">
-                      <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-gray-500">
+                    <div className="mt-4 rounded-xl border border-dunlo-line bg-white p-4">
+                      <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-ink/56">
                         Email body
                       </p>
-                      <div className="mt-4 space-y-3 text-sm leading-6 text-gray-700">
+                      <div className="mt-4 space-y-3 text-sm leading-6 text-dunlo-ink/76">
                         {template.body.map((line) => (
                           <p key={line}>{line}</p>
                         ))}
@@ -302,12 +300,12 @@ export default function StripeFailedPaymentEmailTemplatesPage() {
         </section>
 
         <section className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[0.72fr_1.28fr]">
-          <div className="rounded-[2rem] border border-gray-200 bg-white p-6 shadow-sm md:p-8">
+          <div className="rounded-2xl border border-dunlo-line bg-white p-6 md:p-8">
             <MailCheck size={22} className="text-dunlo-deep" />
             <h2 className="mt-5 text-3xl font-bold tracking-tight">
               How to adapt a failed payment email
             </h2>
-            <p className="mt-4 text-sm leading-6 text-gray-600">
+            <p className="mt-4 text-sm leading-6 text-dunlo-ink/68">
               The best dunning email is not the most persuasive one. It is the
               clearest email for the exact payment failure in front of the
               customer.
@@ -318,15 +316,15 @@ export default function StripeFailedPaymentEmailTemplatesPage() {
             {PLAYBOOK_STEPS.map((step, index) => (
               <article
                 key={step.title}
-                className="rounded-[1.5rem] border border-gray-200 bg-white p-5 shadow-sm"
+                className="rounded-2xl border border-dunlo-line bg-white p-5"
               >
-                <span className="flex size-9 items-center justify-center rounded-full bg-gray-950 font-mono text-sm font-bold text-white">
+                <span className="flex size-9 items-center justify-center rounded-full bg-dunlo-ink font-mono text-sm font-bold text-white">
                   {index + 1}
                 </span>
                 <h3 className="mt-5 text-lg font-bold tracking-tight">
                   {step.title}
                 </h3>
-                <p className="mt-2 text-sm leading-6 text-gray-600">
+                <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
                   {step.copy}
                 </p>
               </article>
@@ -335,7 +333,7 @@ export default function StripeFailedPaymentEmailTemplatesPage() {
         </section>
 
         <section className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="rounded-[2rem] border border-gray-900 bg-gray-950 p-7 text-white shadow-sm md:p-9">
+          <div className="rounded-2xl border border-dunlo-ink bg-dunlo-ink p-7 text-white md:p-9">
             <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo">
               Free during beta
             </p>
@@ -350,7 +348,7 @@ export default function StripeFailedPaymentEmailTemplatesPage() {
             <div className="mt-7 flex flex-col gap-3 sm:flex-row">
               <a
                 href={SIGNUP_URL}
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-gray-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-dunlo-ink transition-all hover:bg-dunlo-hover active:scale-[0.98]"
               >
                 Start free
                 <ArrowRight size={15} />
@@ -377,20 +375,22 @@ export default function StripeFailedPaymentEmailTemplatesPage() {
 
 function FaqSection() {
   return (
-    <section className="rounded-[2rem] border border-gray-200 bg-white p-6 shadow-sm md:p-8">
+    <section className="rounded-2xl border border-dunlo-line bg-white p-6 md:p-8">
       <div className="flex items-center gap-3">
         <ShieldCheck size={20} className="text-dunlo-deep" />
         <h2 className="text-2xl font-bold tracking-tight">
           Failed payment email FAQ
         </h2>
       </div>
-      <div className="mt-6 divide-y divide-gray-200 border-y border-gray-200">
+      <div className="mt-6 divide-y divide-dunlo-line border-y border-dunlo-line">
         {FAQS.map((faq) => (
           <div key={faq.question} className="py-5">
             <h3 className="text-base font-bold tracking-tight">
               {faq.question}
             </h3>
-            <p className="mt-2 text-sm leading-6 text-gray-600">{faq.answer}</p>
+            <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
+              {faq.answer}
+            </p>
           </div>
         ))}
       </div>
@@ -406,14 +406,16 @@ function RelatedGuidesSection() {
           <Link
             key={guide.href}
             href={guide.href}
-            className="group rounded-[2rem] border border-gray-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-px hover:border-dunlo/40"
+            className="group rounded-2xl border border-dunlo-line bg-white p-6 transition-all hover:-translate-y-px hover:border-dunlo/40"
           >
             <BadgeCheck size={19} className="text-dunlo-deep" />
-            <h2 className="mt-4 text-xl font-bold tracking-tight text-gray-950">
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-dunlo-ink">
               {guide.title}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-gray-600">{guide.copy}</p>
-            <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-gray-950 transition-colors group-hover:text-dunlo-deep">
+            <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
+              {guide.copy}
+            </p>
+            <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-dunlo-ink transition-colors group-hover:text-dunlo-deep">
               Read guide
               <ArrowRight size={15} strokeWidth={1.8} />
             </span>
