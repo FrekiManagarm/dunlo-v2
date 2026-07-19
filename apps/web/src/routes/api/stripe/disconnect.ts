@@ -21,10 +21,10 @@ function isAlreadyRemoved(error: unknown): boolean {
 }
 
 async function runAtomicConnectionCleanup(
-  execute: typeof db.execute,
+  database: Pick<typeof db, "execute">,
   input: { connectionId: string; stripeAccountId: string; userId: string },
 ): Promise<boolean> {
-  const result = await execute(sql`
+  const result = await database.execute(sql`
     WITH deleted_payments AS (
       DELETE FROM failed_payment
       WHERE stripe_account_id = ${input.stripeAccountId}
@@ -140,7 +140,7 @@ export const Route = createFileRoute("/api/stripe/disconnect")({
 
         try {
           if (
-            !(await runAtomicConnectionCleanup(db.execute, {
+            !(await runAtomicConnectionCleanup(db, {
               connectionId: connection.id,
               stripeAccountId: connection.stripeAccountId,
               userId,

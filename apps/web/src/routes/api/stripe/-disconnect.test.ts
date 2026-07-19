@@ -112,7 +112,12 @@ describe("POST /api/stripe/disconnect", () => {
     mocks.updateSet.mockReset().mockImplementation(() => ({
       where: mocks.updateWhere,
     }));
-    mocks.execute.mockReset().mockResolvedValue({ rows: [{ id: "conn_123" }] });
+    mocks.execute.mockReset().mockImplementation(function (this: unknown) {
+      if (this !== mocks.db) {
+        throw new Error("execute lost its database receiver");
+      }
+      return Promise.resolve({ rows: [{ id: "conn_123" }] });
+    });
     mocks.deleteWebhooks.mockReset().mockResolvedValue(undefined);
     mocks.deauthorize
       .mockReset()
@@ -137,7 +142,7 @@ describe("POST /api/stripe/disconnect", () => {
     expect(mocks.execute).not.toHaveBeenCalled();
   });
 
-  it("deletes all local connection data with one atomic Neon HTTP statement", async () => {
+  it("deletes all local connection data with one atomic Neon HTTP statement bound to the database", async () => {
     mocks.selectLimit.mockResolvedValue([connection]);
     const { Route } = (await import("./disconnect")) as {
       Route: RouteWithPostHandler;
@@ -164,6 +169,7 @@ describe("POST /api/stripe/disconnect", () => {
     expect(mocks.db).not.toHaveProperty("transaction");
     expect(mocks.db).not.toHaveProperty("delete");
     expect(mocks.execute).toHaveBeenCalledTimes(1);
+    expect(mocks.execute.mock.contexts[0]).toBe(mocks.db);
     const [statement] = mocks.execute.mock.calls[0] ?? [];
     expect(statement.strings.join("?")).toContain("WITH deleted_payments AS");
     expect(statement.strings.join("?")).toContain("DELETE FROM failed_payment");
