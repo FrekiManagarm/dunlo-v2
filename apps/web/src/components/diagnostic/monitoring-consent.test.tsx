@@ -21,4 +21,10 @@ describe("MonitoringConsent", () => {
       /nothing was enabled/i,
     );
   });
+
+  it("confirms when read-only monitoring is enabled", () => {
+    render(<MonitoringConsent onConfirm={vi.fn()} status="enabled" />);
+
+    expect(screen.getByText(/read-only monitoring is enabled/i)).toBeTruthy();
+  });
 });

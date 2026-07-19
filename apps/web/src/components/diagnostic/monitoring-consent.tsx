@@ -3,7 +3,7 @@ export function MonitoringConsent({
   status = "idle",
 }: {
   onConfirm: () => void;
-  status?: "idle" | "unavailable" | "error";
+  status?: "idle" | "unavailable" | "enabled" | "error";
 }) {
   return (
     <section
@@ -20,13 +20,21 @@ export function MonitoringConsent({
       <button
         type="button"
         onClick={onConfirm}
+        disabled={status === "enabled"}
         className="mt-4 h-10 rounded-full border border-zinc-200 px-4 text-sm font-semibold text-zinc-800"
       >
-        {status === "unavailable"
-          ? "Try read-only monitoring again"
-          : "Enable read-only monitoring"}
+        {status === "enabled"
+          ? "Read-only monitoring enabled"
+          : status === "unavailable"
+            ? "Try read-only monitoring again"
+            : "Enable read-only monitoring"}
       </button>
-      {status === "unavailable" ? (
+      {status === "enabled" ? (
+        <p role="status" className="mt-3 text-sm text-zinc-600">
+          Read-only monitoring is enabled. We will only email you when the
+          diagnostic meaningfully changes.
+        </p>
+      ) : status === "unavailable" ? (
         <p role="status" className="mt-3 text-sm text-zinc-500">
           Monitoring is not available yet. Nothing was enabled; you can retry
           later.

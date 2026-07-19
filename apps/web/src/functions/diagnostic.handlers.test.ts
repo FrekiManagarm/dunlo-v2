@@ -7,6 +7,7 @@ type Condition =
 const mocks = vi.hoisted(() => {
   const rows: unknown[][] = [];
   const where = vi.fn();
+  const set = vi.fn();
   const select = vi.fn(() => {
     const query = {
       from: vi.fn(),
@@ -22,7 +23,21 @@ const mocks = vi.hoisted(() => {
     query.limit.mockImplementation(async () => rows.shift() ?? []);
     return query;
   });
-  return { rows, select, where };
+  const update = vi.fn(() => {
+    const query = {
+      set: (values: unknown) => {
+        set(values);
+        return query;
+      },
+      where: (condition: unknown) => {
+        where(condition);
+        return query;
+      },
+      returning: vi.fn(async () => [{ id: "conn_owned" }]),
+    };
+    return query;
+  });
+  return { rows, select, update, where, set };
 });
 
 vi.mock("@tanstack/react-start", () => ({
@@ -37,7 +52,7 @@ vi.mock("@tanstack/react-start", () => ({
 }));
 
 vi.mock("@dunlo-v2/db", () => ({
-  db: { select: mocks.select },
+  db: { select: mocks.select, update: mocks.update },
 }));
 
 vi.mock("@dunlo-v2/db/schema/domain", () => ({
@@ -52,11 +67,16 @@ vi.mock("@dunlo-v2/db/schema/domain", () => ({
     connectionId: "snapshot_connection_id",
     userId: "snapshot_user_id",
     isCurrent: "snapshot_is_current",
+    status: "snapshot_status",
   },
   stripeConnection: {
     id: "connection_id",
     userId: "connection_user_id",
     updatedAt: "connection_updated_at",
+    scope: "connection_scope",
+    monitoringEnabled: "monitoring_enabled",
+    phase: "connection_phase",
+    nextAnalysisAt: "next_analysis_at",
   },
 }));
 
@@ -68,7 +88,11 @@ vi.mock("drizzle-orm", () => ({
 
 vi.mock("../middleware/auth", () => ({ authMiddleware: {} }));
 
-function containsEq(condition: Condition, column: string, value: unknown) {
+function containsEq(
+  condition: Condition,
+  column: string,
+  value: unknown,
+): boolean {
   if (condition.op === "eq") {
     return condition.column === column && condition.value === value;
   }
@@ -91,7 +115,9 @@ describe("diagnostic server-function handlers", () => {
     vi.resetModules();
     mocks.rows.length = 0;
     mocks.select.mockClear();
+    mocks.update.mockClear();
     mocks.where.mockClear();
+    mocks.set.mockClear();
   });
 
   it("returns only a safe state DTO for the authenticated owner and requested connection", async () => {
@@ -125,8 +151,16 @@ describe("diagnostic server-function handlers", () => {
       },
     });
     expect(JSON.stringify(view)).not.toMatch(/access_token|webhook_secret/);
-    expect(containsEq(mocks.where.mock.calls[0][0], "connection_id", "conn_owned")).toBe(true);
-    expect(containsEq(mocks.where.mock.calls[0][0], "connection_user_id", "user_owned")).toBe(true);
+    expect(
+      containsEq(mocks.where.mock.calls[0][0], "connection_id", "conn_owned"),
+    ).toBe(true);
+    expect(
+      containsEq(
+        mocks.where.mock.calls[0][0],
+        "connection_user_id",
+        "user_owned",
+      ),
+    ).toBe(true);
   });
 
   it("rejects a connection id that is not owned by the authenticated user", async () => {
@@ -141,10 +175,18 @@ describe("diagnostic server-function handlers", () => {
     ).rejects.toThrow(/not found/i);
 
     expect(
-      containsEq(mocks.where.mock.calls[0][0], "connection_id", "conn_other_user"),
+      containsEq(
+        mocks.where.mock.calls[0][0],
+        "connection_id",
+        "conn_other_user",
+      ),
     ).toBe(true);
     expect(
-      containsEq(mocks.where.mock.calls[0][0], "connection_user_id", "user_owned"),
+      containsEq(
+        mocks.where.mock.calls[0][0],
+        "connection_user_id",
+        "user_owned",
+      ),
     ).toBe(true);
   });
 
@@ -179,8 +221,16 @@ describe("diagnostic server-function handlers", () => {
     expect(JSON.stringify(view)).not.toMatch(
       /access_token|webhook_secret|cus_private|in_private/,
     );
-    expect(containsEq(mocks.where.mock.calls[0][0], "connection_id", "conn_owned")).toBe(true);
-    expect(containsEq(mocks.where.mock.calls[0][0], "connection_user_id", "user_owned")).toBe(true);
+    expect(
+      containsEq(mocks.where.mock.calls[0][0], "connection_id", "conn_owned"),
+    ).toBe(true);
+    expect(
+      containsEq(
+        mocks.where.mock.calls[0][0],
+        "connection_user_id",
+        "user_owned",
+      ),
+    ).toBe(true);
   });
 
   it("rejects a report request for a connection the authenticated user does not own", async () => {
@@ -195,15 +245,25 @@ describe("diagnostic server-function handlers", () => {
     ).rejects.toThrow(/not found/i);
 
     expect(
-      containsEq(mocks.where.mock.calls[0][0], "connection_id", "conn_other_user"),
+      containsEq(
+        mocks.where.mock.calls[0][0],
+        "connection_id",
+        "conn_other_user",
+      ),
     ).toBe(true);
     expect(
-      containsEq(mocks.where.mock.calls[0][0], "connection_user_id", "user_owned"),
+      containsEq(
+        mocks.where.mock.calls[0][0],
+        "connection_user_id",
+        "user_owned",
+      ),
     ).toBe(true);
   });
 
-  it("keeps monitoring unavailable after authorizing the authenticated owner and requested connection", async () => {
-    mocks.rows.push([ownedConnection]);
+  it("enables monthly monitoring only after a ready read-only snapshot", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(new Date("2026-07-19T12:00:00.000Z"));
+    mocks.rows.push([ownedConnection], [{ id: "snapshot_ready" }]);
     const { enableMonitoring } = await import("./diagnostic");
 
     await expect(
@@ -211,10 +271,40 @@ describe("diagnostic server-function handlers", () => {
         context: { session: { user: { id: "user_owned" } } },
         data: { connectionId: "conn_owned" },
       }),
-    ).resolves.toEqual({ ok: false, code: "monitoring_not_available" });
+    ).resolves.toEqual({ ok: true });
 
-    expect(containsEq(mocks.where.mock.calls[0][0], "connection_id", "conn_owned")).toBe(true);
-    expect(containsEq(mocks.where.mock.calls[0][0], "connection_user_id", "user_owned")).toBe(true);
+    expect(mocks.set).toHaveBeenCalledWith({
+      scope: "read_only",
+      monitoringEnabled: true,
+      phase: "monitoring",
+      nextAnalysisAt: new Date("2026-08-19T12:00:00.000Z"),
+    });
+    expect(JSON.stringify(mocks.set.mock.calls)).not.toMatch(/webhook/i);
+    expect(
+      containsEq(mocks.where.mock.calls[0][0], "connection_id", "conn_owned"),
+    ).toBe(true);
+    expect(
+      containsEq(
+        mocks.where.mock.calls[0][0],
+        "connection_user_id",
+        "user_owned",
+      ),
+    ).toBe(true);
+    vi.useRealTimers();
+  });
+
+  it("rejects monitoring when the connection has no ready snapshot", async () => {
+    mocks.rows.push([ownedConnection], []);
+    const { enableMonitoring } = await import("./diagnostic");
+
+    await expect(
+      enableMonitoring({
+        context: { session: { user: { id: "user_owned" } } },
+        data: { connectionId: "conn_owned" },
+      }),
+    ).rejects.toThrow(/ready diagnostic/i);
+
+    expect(mocks.update).not.toHaveBeenCalled();
   });
 
   it("rejects monitoring for a connection the authenticated user does not own", async () => {
@@ -229,9 +319,18 @@ describe("diagnostic server-function handlers", () => {
     ).rejects.toThrow(/not found/i);
 
     expect(
-      containsEq(mocks.where.mock.calls[0][0], "connection_id", "conn_other_user"),
+      containsEq(
+        mocks.where.mock.calls[0][0],
+        "connection_id",
+        "conn_other_user",
+      ),
     ).toBe(true);
     expect(
-      containsEq(mocks.where.mock.calls[0][0], "connection_user_id", "user_owned")).toBe(true);
+      containsEq(
+        mocks.where.mock.calls[0][0],
+        "connection_user_id",
+        "user_owned",
+      ),
+    ).toBe(true);
   });
 });

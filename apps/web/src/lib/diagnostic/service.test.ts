@@ -140,6 +140,7 @@ function partialSource(): StripeDiagnosticSource {
 
 function createRepository(options?: {
   current?: DiagnosticSnapshotView | null;
+  connectionPhase?: DiagnosticConnection["phase"];
   source?: StripeDiagnosticSource;
   run?: {
     status: Exclude<DiagnosticProgress["status"], "idle">;
@@ -215,7 +216,7 @@ function createRepository(options?: {
   const transaction = vi.fn(async (work) => work({ persist }));
 
   const repository: DiagnosticRepository = {
-    getConnection: vi.fn(async () => connection()),
+    getConnection: vi.fn(async () => connection(options?.connectionPhase)),
     findSnapshotForWindow: vi.fn(
       async (_connectionId, window) =>
         snapshots.find(
@@ -324,6 +325,21 @@ function createService(
 }
 
 describe("DiagnosticService", () => {
+  it("retains the monitoring lifecycle phase after a successful refresh", async () => {
+    const fixture = createRepository({ connectionPhase: "monitoring" });
+    const service = createService(fixture.repository, completeSource());
+
+    await expect(
+      service.run({
+        connectionId: "conn_1",
+        reason: "monitoring",
+        now: NOW,
+      }),
+    ).resolves.toMatchObject({ phase: "monitoring" });
+
+    expect(fixture.phases).toEqual(["monitoring"]);
+  });
+
   it("creates one job per connection and analysis window", async () => {
     const fixture = createRepository();
     const service = createService(fixture.repository, completeSource());

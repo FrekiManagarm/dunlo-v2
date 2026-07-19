@@ -1,11 +1,12 @@
 import { logger, schemaTask } from "@trigger.dev/sdk";
 import { z } from "zod";
 
+import { completeMonitoringRefresh } from "../lib/diagnostic/notifications";
 import { createDiagnosticService } from "../lib/diagnostic/service";
 
 export const diagnosticTaskPayloadSchema = z.object({
   connectionId: z.string().trim().min(1),
-  reason: z.enum(["initial", "refresh", "scheduled"]),
+  reason: z.enum(["initial", "refresh", "scheduled", "monitoring"]),
 });
 
 export const runDiagnosticTask = schemaTask({
@@ -13,10 +14,17 @@ export const runDiagnosticTask = schemaTask({
   schema: diagnosticTaskPayloadSchema,
   run: async (payload) => {
     try {
+      const now = new Date();
       const result = await createDiagnosticService().run({
         ...payload,
-        now: new Date(),
+        now,
       });
+      if (payload.reason === "monitoring" && !result.reused) {
+        await completeMonitoringRefresh({
+          connectionId: payload.connectionId,
+          now,
+        });
+      }
       logger.info("Stripe diagnostic completed", {
         pagesLoaded: result.snapshot.pagesLoaded,
         recordsLoaded: result.snapshot.recordsLoaded,

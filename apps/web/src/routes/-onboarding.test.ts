@@ -30,8 +30,10 @@ describe("onboarding flow", () => {
     expect(onboardingSource).not.toContain(".max(4)");
     expect(onboardingSource).not.toContain("Your Stripe benchmark is ready");
     expect(onboardingSource).toContain("/api/stripe/connect?intent=activation");
-    expect(onboardingSource).toContain("connectionId=${encodeURIComponent(connectionId)}");
-    expect(onboardingSource).toContain("monitoring_not_available");
+    expect(onboardingSource).toContain(
+      "connectionId=${encodeURIComponent(connectionId)}",
+    );
+    expect(onboardingSource).toContain('setMonitoringStatus("enabled")');
     expect(onboardingSource).not.toContain('"current"');
   });
 

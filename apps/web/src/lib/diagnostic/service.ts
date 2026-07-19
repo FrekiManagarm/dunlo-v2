@@ -341,7 +341,7 @@ export class DiagnosticService {
         fxFailure: fx.status === "available" ? null : fx.reason,
         classified,
       });
-      const phase = phaseFor(snapshot.verdict);
+      const phase = phaseFor(snapshot.verdict, connection.phase);
 
       const persisted = await this.options.repository.transaction(
         async (persistence) =>
@@ -884,8 +884,11 @@ function createSnapshot(input: {
   };
 }
 
-function phaseFor(_verdict: DiagnosticVerdict): ConnectionPhase {
-  return "diagnostic_ready";
+function phaseFor(
+  _verdict: DiagnosticVerdict,
+  currentPhase: ConnectionPhase,
+): ConnectionPhase {
+  return currentPhase === "monitoring" ? "monitoring" : "diagnostic_ready";
 }
 
 function createDatabaseRepository(): DiagnosticRepository {

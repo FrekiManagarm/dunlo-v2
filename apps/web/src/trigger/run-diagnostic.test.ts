@@ -4,6 +4,7 @@ const schemaTaskMock = vi.fn((definition) => definition);
 const loggerInfoMock = vi.fn();
 const runMock = vi.fn();
 const createDiagnosticServiceMock = vi.fn(() => ({ run: runMock }));
+const completeMonitoringRefreshMock = vi.fn();
 
 vi.mock("@trigger.dev/sdk", () => ({
   logger: { info: loggerInfoMock },
@@ -12,6 +13,10 @@ vi.mock("@trigger.dev/sdk", () => ({
 
 vi.mock("../lib/diagnostic/service", () => ({
   createDiagnosticService: createDiagnosticServiceMock,
+}));
+
+vi.mock("../lib/diagnostic/notifications", () => ({
+  completeMonitoringRefresh: completeMonitoringRefreshMock,
 }));
 
 describe("runDiagnosticTask", () => {
@@ -30,6 +35,12 @@ describe("runDiagnosticTask", () => {
     ).toEqual({
       connectionId: "conn_1",
       reason: "initial",
+    });
+    expect(
+      task.schema.parse({ connectionId: "conn_1", reason: "monitoring" }),
+    ).toEqual({
+      connectionId: "conn_1",
+      reason: "monitoring",
     });
     expect(() => task.schema.parse({ connectionId: "conn_1" })).toThrow();
   });
@@ -67,5 +78,25 @@ describe("runDiagnosticTask", () => {
       }),
     );
     expect(JSON.stringify(loggerInfoMock.mock.calls)).not.toContain("conn_1");
+  });
+
+  it("processes a completed monitoring refresh through the quiet notification path", async () => {
+    runMock.mockResolvedValueOnce({
+      snapshot: { pagesLoaded: 3, recordsLoaded: 15, findingsCount: 2 },
+      phase: "monitoring",
+      reused: false,
+    });
+    completeMonitoringRefreshMock.mockResolvedValueOnce({ notified: true });
+    const { runDiagnosticTask } = await import("./run-diagnostic");
+    const task = runDiagnosticTask as unknown as {
+      run(payload: { connectionId: string; reason: string }): Promise<unknown>;
+    };
+
+    await task.run({ connectionId: "conn_1", reason: "monitoring" });
+
+    expect(completeMonitoringRefreshMock).toHaveBeenCalledWith({
+      connectionId: "conn_1",
+      now: expect.any(Date),
+    });
   });
 });

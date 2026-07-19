@@ -93,8 +93,16 @@ export function createDiagnosticView(input: {
   } satisfies DiagnosticReportView;
 }
 
-export function monitoringUnavailable() {
-  return { ok: false as const, code: "monitoring_not_available" as const };
+export function nextMonitoringAnalysisAt(now: Date): Date {
+  const next = new Date(now);
+  const day = next.getUTCDate();
+  next.setUTCDate(1);
+  next.setUTCMonth(next.getUTCMonth() + 1);
+  const lastDay = new Date(
+    Date.UTC(next.getUTCFullYear(), next.getUTCMonth() + 1, 0),
+  ).getUTCDate();
+  next.setUTCDate(Math.min(day, lastDay));
+  return next;
 }
 
 const connectionInput = z.object({
@@ -224,6 +232,43 @@ export const enableMonitoring = createServerFn({ method: "POST" })
   .inputValidator(z.object({ connectionId: z.string().min(1) }))
   .handler(async ({ context, data }) => {
     if (!context.session?.user) throw new Error("Unauthorized");
-    await ownedConnection(context.session.user.id, data.connectionId);
-    return monitoringUnavailable();
+    const connection = await ownedConnection(
+      context.session.user.id,
+      data.connectionId,
+    );
+    if (
+      connection.phase !== "diagnostic_ready" ||
+      connection.scope !== "read_only"
+    ) {
+      throw new Error("Monitoring requires a ready read-only diagnostic.");
+    }
+    const [snapshot] = await db
+      .select({ id: diagnosticSnapshot.id })
+      .from(diagnosticSnapshot)
+      .where(
+        and(
+          eq(diagnosticSnapshot.connectionId, connection.id),
+          eq(diagnosticSnapshot.userId, context.session.user.id),
+          eq(diagnosticSnapshot.isCurrent, true),
+        ),
+      )
+      .limit(1);
+    if (!snapshot) {
+      throw new Error("Monitoring requires a ready diagnostic.");
+    }
+    await db
+      .update(stripeConnection)
+      .set({
+        scope: "read_only",
+        monitoringEnabled: true,
+        phase: "monitoring",
+        nextAnalysisAt: nextMonitoringAnalysisAt(new Date()),
+      })
+      .where(
+        and(
+          eq(stripeConnection.id, connection.id),
+          eq(stripeConnection.userId, context.session.user.id),
+        ),
+      );
+    return { ok: true as const };
   });

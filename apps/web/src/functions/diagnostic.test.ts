@@ -6,7 +6,7 @@ vi.mock("../middleware/auth", () => ({ authMiddleware: {} }));
 import {
   createDiagnosticView,
   getDiagnosticStateForUser,
-  monitoringUnavailable,
+  nextMonitoringAnalysisAt,
 } from "./diagnostic";
 
 describe("diagnostic server boundary", () => {
@@ -51,10 +51,9 @@ describe("diagnostic server boundary", () => {
     expect(JSON.stringify(view)).not.toMatch(/cus_123|in_123|secret/);
   });
 
-  it("keeps monitoring explicitly unsupported until task 11", () => {
-    expect(monitoringUnavailable()).toEqual({
-      ok: false,
-      code: "monitoring_not_available",
-    });
+  it("schedules monitoring one calendar month ahead", () => {
+    expect(
+      nextMonitoringAnalysisAt(new Date("2026-01-31T12:00:00.000Z")),
+    ).toEqual(new Date("2026-02-28T12:00:00.000Z"));
   });
 });

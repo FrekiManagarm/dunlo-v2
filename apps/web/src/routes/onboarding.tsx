@@ -89,7 +89,7 @@ function ConnectedOnboarding({
     enabled: REPORT_PHASES.has(state.phase ?? ""),
   });
   const [monitoringStatus, setMonitoringStatus] = useState<
-    "idle" | "unavailable" | "error"
+    "idle" | "unavailable" | "enabled" | "error"
   >("idle");
   const [readOnlyConfirmed, setReadOnlyConfirmed] = useState(false);
 
@@ -143,13 +143,7 @@ function ConnectedOnboarding({
     });
     try {
       const response = await enableMonitoring({ data: { connectionId } });
-      setMonitoringStatus(
-        response.ok
-          ? "idle"
-          : response.code === "monitoring_not_available"
-            ? "unavailable"
-            : "error",
-      );
+      if (response.ok) setMonitoringStatus("enabled");
     } catch {
       setMonitoringStatus("error");
     }
