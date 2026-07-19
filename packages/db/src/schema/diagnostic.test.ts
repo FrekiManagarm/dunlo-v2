@@ -1,3 +1,4 @@
+import { readFileSync } from "node:fs";
 import { getTableName } from "drizzle-orm";
 import { getTableConfig } from "drizzle-orm/pg-core";
 import { describe, expect, expectTypeOf, it } from "vitest";
@@ -29,6 +30,11 @@ function cascadeTargets(table: Parameters<typeof getTableConfig>[0]) {
     .filter((foreignKey) => foreignKey.onDelete === "cascade")
     .map((foreignKey) => getTableName(foreignKey.reference().foreignTable));
 }
+
+const diagnosticMigration = readFileSync(
+  new URL("../migrations/0000_optimal_shocker.sql", import.meta.url),
+  "utf8",
+);
 
 describe("diagnostic lifecycle schema", () => {
   it("exposes the exact connection lifecycle", () => {
@@ -96,5 +102,52 @@ describe("diagnostic lifecycle schema", () => {
     expect(cascadeTargets(domain.diagnosticFinding)).toEqual(
       expect.arrayContaining(["diagnostic_snapshot", "stripe_connection"]),
     );
+  });
+
+  it("migrates provisioned databases additively", () => {
+    expect(diagnosticMigration).toContain(
+      'CREATE TYPE "public"."connection_phase"',
+    );
+    expect(diagnosticMigration).toContain('CREATE TABLE "diagnostic_snapshot"');
+    expect(diagnosticMigration).toContain('CREATE TABLE "diagnostic_finding"');
+    expect(diagnosticMigration).toContain(
+      'ALTER TABLE "stripe_connection" ALTER COLUMN "webhook_secret" DROP NOT NULL',
+    );
+    expect(diagnosticMigration).toContain(
+      'ALTER TABLE "stripe_connection" ALTER COLUMN "scope" SET DEFAULT \'read_only\'',
+    );
+    expect(diagnosticMigration).toContain(
+      'ALTER TABLE "stripe_connection" ADD COLUMN "phase" "connection_phase" DEFAULT \'diagnosing\' NOT NULL',
+    );
+    expect(diagnosticMigration).toContain(
+      'ALTER TABLE "stripe_connection" ADD COLUMN "monitoring_enabled" boolean DEFAULT false NOT NULL',
+    );
+    expect(diagnosticMigration).toContain(
+      'ALTER TABLE "stripe_connection" ADD COLUMN "last_analyzed_at" timestamp',
+    );
+    expect(diagnosticMigration).toContain(
+      'ALTER TABLE "stripe_connection" ADD COLUMN "next_analysis_at" timestamp',
+    );
+    expect(diagnosticMigration).toContain(
+      'ALTER TABLE "stripe_connection" ADD COLUMN "live_mode" boolean',
+    );
+
+    for (const tableName of [
+      "account",
+      "session",
+      "user",
+      "verification",
+      "benchmark_snapshot",
+      "email_provider",
+      "escalation",
+      "failed_payment",
+      "notification_settings",
+      "recovery_attempt",
+      "recovery_sequence",
+      "sequence_step",
+      "stripe_connection",
+    ]) {
+      expect(diagnosticMigration).not.toContain(`CREATE TABLE "${tableName}"`);
+    }
   });
 });
