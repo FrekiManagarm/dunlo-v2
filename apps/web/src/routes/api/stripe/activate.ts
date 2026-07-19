@@ -12,7 +12,6 @@ import {
   getStripeConnectionById,
   seedDefaultSequences,
 } from "@/functions/stripe";
-import { reconcileWebhook } from "@/lib/stripe-webhooks";
 
 const inputSchema = z.object({ connectionId: z.string().min(1) });
 
@@ -55,17 +54,6 @@ export const Route = createFileRoute("/api/stripe/activate")({
         if (!connection || connection.userId !== session.user.id) {
           return new Response("Activation is not available", { status: 409 });
         }
-        const webhook = await reconcileWebhook(
-          connection.stripeAccountId,
-          connection.accessToken,
-        );
-        if (!webhook) {
-          return new Response(
-            "Webhook verification is temporarily unavailable. Please retry.",
-            { status: 503 },
-          );
-        }
-
         const currentRecommendation = db
           .select({ id: diagnosticSnapshot.id })
           .from(diagnosticSnapshot)

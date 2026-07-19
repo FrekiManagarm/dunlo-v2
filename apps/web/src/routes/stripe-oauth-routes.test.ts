@@ -355,44 +355,7 @@ describe("Stripe OAuth route contracts", () => {
     expect(mocks.seedDefaultSequences).not.toHaveBeenCalled();
   });
 
-  it("returns a retryable activation state when webhook reconciliation fails", async () => {
-    mocks.selectLimit.mockResolvedValueOnce([{ id: "conn_123" }]);
-    mocks.fetch.mockResolvedValueOnce(token("read_write"));
-    mocks.reconcileWebhook.mockResolvedValueOnce(null);
-    const state = createStripeOAuthState(
-      {
-        nonce: "activation_nonce",
-        userId: "user_123",
-        intent: "activation",
-        targetStripeAccountId: "acct_123",
-        issuedAt: new Date(),
-        returnPath: "/onboarding?step=3",
-      },
-      oauthSecret,
-    );
-    const { Route } = (await import("./api/stripe/callback")) as {
-      Route: RouteWithGetHandler;
-    };
-
-    const response = await Route.options.server.handlers.GET(
-      callbackRequest(state),
-    );
-
-    expect(response.headers.get("location")).toBe(
-      "/onboarding?error=activation_retryable",
-    );
-    expect(response.headers.get("set-cookie")).toContain("Max-Age=0");
-    expect(mocks.seedDefaultSequences).not.toHaveBeenCalled();
-    expect(mocks.updateSet).toHaveBeenNthCalledWith(
-      1,
-      expect.objectContaining({ phase: "write_authorized" }),
-    );
-    expect(mocks.updateSet).toHaveBeenNthCalledWith(2, {
-      phase: "activation_requested",
-    });
-  });
-
-  it("activates only after webhook reconciliation and then seeds disabled sequences", async () => {
+  it("does not reconcile a webhook during activation OAuth", async () => {
     mocks.selectLimit.mockResolvedValueOnce([{ id: "conn_123" }]);
     mocks.fetch.mockResolvedValueOnce(token("read_write"));
     const state = createStripeOAuthState(
@@ -416,10 +379,40 @@ describe("Stripe OAuth route contracts", () => {
 
     expect(response.headers.get("location")).toBe("/onboarding?step=3");
     expect(response.headers.get("set-cookie")).toContain("Max-Age=0");
-    expect(mocks.reconcileWebhook).toHaveBeenCalledWith(
-      "acct_123",
-      "access_123",
+    expect(mocks.reconcileWebhook).not.toHaveBeenCalled();
+    expect(mocks.seedDefaultSequences).toHaveBeenCalledWith("user_123", {
+      isActive: false,
+    });
+    expect(mocks.updateSet).toHaveBeenCalledWith(
+      expect.objectContaining({ phase: "write_authorized" }),
     );
+  });
+
+  it("writes authorization and seeds disabled sequences without a remote webhook", async () => {
+    mocks.selectLimit.mockResolvedValueOnce([{ id: "conn_123" }]);
+    mocks.fetch.mockResolvedValueOnce(token("read_write"));
+    const state = createStripeOAuthState(
+      {
+        nonce: "activation_nonce",
+        userId: "user_123",
+        intent: "activation",
+        targetStripeAccountId: "acct_123",
+        issuedAt: new Date(),
+        returnPath: "/onboarding?step=3",
+      },
+      oauthSecret,
+    );
+    const { Route } = (await import("./api/stripe/callback")) as {
+      Route: RouteWithGetHandler;
+    };
+
+    const response = await Route.options.server.handlers.GET(
+      callbackRequest(state),
+    );
+
+    expect(response.headers.get("location")).toBe("/onboarding?step=3");
+    expect(response.headers.get("set-cookie")).toContain("Max-Age=0");
+    expect(mocks.reconcileWebhook).not.toHaveBeenCalled();
     expect(mocks.seedDefaultSequences).toHaveBeenCalledWith("user_123", {
       isActive: false,
     });

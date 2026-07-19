@@ -14,7 +14,6 @@ import {
   clearStripeOAuthStateCookie,
   verifyStripeOAuthState,
 } from "@/lib/stripe-oauth-state";
-import { reconcileWebhook } from "@/lib/stripe-webhooks";
 import { triggerDiagnostic } from "@/trigger/run-diagnostic";
 
 const STATE_COOKIE = "stripe_oauth_state";
@@ -228,17 +227,6 @@ export const Route = createFileRoute("/api/stripe/callback")({
             )
             .returning({ id: stripeConnection.id });
           if (!authorized) return redirectWithError("activation_not_available");
-          const webhook = await reconcileWebhook(
-            token.stripe_user_id,
-            token.access_token,
-          );
-          if (!webhook) {
-            await db
-              .update(stripeConnection)
-              .set({ phase: "activation_requested" })
-              .where(eq(stripeConnection.id, connection.id));
-            return redirectWithError("activation_retryable");
-          }
           await seedDefaultSequences(session.user.id, { isActive: false });
           return redirect(oauthState.returnPath);
         } catch {

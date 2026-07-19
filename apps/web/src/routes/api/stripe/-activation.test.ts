@@ -6,13 +6,18 @@ const source = (path: string) =>
   readFileSync(join(process.cwd(), path), "utf8");
 
 describe("recovery activation boundary", () => {
-  it("keeps write authorization bound to an eligible account and reconciles one webhook", () => {
+  it("keeps write authorization bound to an eligible account and defers webhook writes", () => {
     const activation = source("src/routes/api/stripe/activate.ts");
+    const callback = source("src/routes/api/stripe/callback.ts");
+    const confirmation = source("src/routes/api/stripe/recovery/confirm.ts");
     const webhooks = source("src/lib/stripe-webhooks.ts");
 
     expect(activation).toContain('"activation_recommended"');
-    expect(activation).toContain("stripeAccountId");
     expect(activation).toContain("session.user.id");
+    expect(activation).not.toContain("reconcileWebhook");
+    expect(callback).not.toContain("reconcileWebhook");
+    expect(confirmation).toContain("reconcileWebhook");
+    expect(confirmation).toContain("getStripeConnectionById");
     expect(webhooks).toContain("reconcileWebhook");
     expect(webhooks).not.toContain("setupWebhooks");
   });
@@ -59,7 +64,9 @@ describe("recovery activation boundary", () => {
     expect(webhookRoute).toContain("recoveryActivatedAt");
     expect(webhookRoute).toContain("event.created * 1000");
     expect(sequences).toContain("Confirm recovery before activating sequences");
-    expect(sequences).toContain("seedDefaultSequences(userId, { isActive: false })");
+    expect(sequences).toContain(
+      "seedDefaultSequences(userId, { isActive: false })",
+    );
     expect(summary).toContain("useForm");
     expect(summary).toContain("z.literal(true)");
     expect(source("src/routes/onboarding.tsx")).toContain("ActivationRetry");

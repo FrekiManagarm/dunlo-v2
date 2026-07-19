@@ -4,6 +4,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { sql } from "drizzle-orm";
 import { z } from "zod";
 
+import { getStripeConnectionById } from "@/functions/stripe";
+import { reconcileWebhook } from "@/lib/stripe-webhooks";
+
 const WORKFLOW_VERSION = "recovery-v1";
 const inputSchema = z.object({
   connectionId: z.string().min(1),
@@ -57,6 +60,26 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
           return new Response("Invalid recovery confirmation", { status: 400 });
 
         try {
+          const connection = await getStripeConnectionById(
+            parsed.data.connectionId,
+          );
+          if (
+            !connection ||
+            connection.userId !== session.user.id ||
+            connection.scope !== "read_write" ||
+            connection.phase !== "email_configured"
+          )
+            throw new Error("Recovery prerequisites are incomplete");
+          if (
+            !(await reconcileWebhook(
+              connection.stripeAccountId,
+              connection.accessToken,
+            ))
+          )
+            return new Response(
+              "Webhook verification is temporarily unavailable. Please retry.",
+              { status: 503 },
+            );
           if (
             !(await runAtomicRecoveryConfirmation(db.execute, {
               connectionId: parsed.data.connectionId,

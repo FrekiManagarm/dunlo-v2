@@ -494,6 +494,18 @@ This guardrail does not perform the full Project 4 marketing rewrite.
 
 ## Verification Strategy
 
+### Latest Verification Record
+
+Status remains **Approved design**. Automated evidence is recorded in the Task 14 report from these commands:
+
+- `bun run --filter @dunlo-v2/db test`
+- `bun run --filter web test -- src/lib/diagnostic src/trigger src/routes/-onboarding.test.ts src/routes/api/stripe`
+- `bunx vitest run apps/marketing/src/lib/product-truth-contract.test.ts apps/marketing/src/lib/involuntary-churn-seo.test.ts apps/marketing/src/components/landing/landing-style-contract.test.ts`
+- `bun run check-types`
+- `bun run build`
+
+Browser verification is unexecuted because no browser is available in this environment. The pending checks are at 390, 768, 1024, 1280, and 1440 px, including OAuth/permission progression, resume behavior, verdict and coverage discoverability, read-only monitoring, activation and final confirmation, keyboard/focus/live-region behavior, reduced motion, and export/disconnect confirmation.
+
 ### Pure Policy Tests
 
 - Monthly, annual, multi-interval, discounted, and variable recurring MRR normalization.
