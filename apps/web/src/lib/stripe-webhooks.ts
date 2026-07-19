@@ -15,6 +15,8 @@ const WEBHOOK_EVENTS: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
   "customer.updated",
 ];
 
+type StoredWebhookStatus = "valid" | "missing" | "retryable";
+
 export async function verifyStoredWebhook(
   retrieve: (
     id: string,
@@ -22,12 +24,20 @@ export async function verifyStoredWebhook(
   ) => Promise<unknown>,
   webhookEndpointId: string,
   stripeAccountId: string,
-): Promise<boolean> {
+): Promise<StoredWebhookStatus> {
   try {
     await retrieve(webhookEndpointId, { stripeAccount: stripeAccountId });
-    return true;
-  } catch {
-    return false;
+    return "valid";
+  } catch (error) {
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "statusCode" in error &&
+      error.statusCode === 404
+    ) {
+      return "missing";
+    }
+    return "retryable";
   }
 }
 
@@ -50,27 +60,37 @@ export async function reconcileWebhook(
         webhookSecret: decrypt(existing.webhookSecret),
       };
     }
+    const stripe = new Stripe(accessToken, {
+      apiVersion: STRIPE_API_VERSION,
+    });
+    const status = await verifyStoredWebhook(
+      stripe.webhookEndpoints.retrieve.bind(stripe.webhookEndpoints),
+      existing.webhookEndpointId,
+      stripeAccountId,
+    );
+    if (status === "valid") {
+      return {
+        webhookEndpointId: existing.webhookEndpointId,
+        webhookSecret: decrypt(existing.webhookSecret),
+      };
+    }
+    if (status === "retryable") {
+      console.warn(
+        "[stripe/reconcileWebhook] stored endpoint verification is retryable",
+      );
+      return null;
+    }
     try {
-      const stripe = new Stripe(accessToken, {
-        apiVersion: STRIPE_API_VERSION,
-      });
-      if (
-        await verifyStoredWebhook(
-          stripe.webhookEndpoints.retrieve.bind(stripe.webhookEndpoints),
-          existing.webhookEndpointId,
-          stripeAccountId,
-        )
-      )
-        return {
-          webhookEndpointId: existing.webhookEndpointId,
-          webhookSecret: decrypt(existing.webhookSecret),
-        };
-      throw new Error("stale_webhook_endpoint");
-    } catch {
       await db
         .update(stripeConnection)
         .set({ webhookEndpointId: null, webhookSecret: null })
         .where(eq(stripeConnection.stripeAccountId, stripeAccountId));
+    } catch (error) {
+      console.error(
+        "[stripe/reconcileWebhook] failed to clear endpoint:",
+        error,
+      );
+      return null;
     }
   }
 

@@ -59,8 +59,12 @@ export const Route = createFileRoute("/api/stripe/activate")({
           connection.stripeAccountId,
           connection.accessToken,
         );
-        if (!webhook)
-          return new Response("Webhook reconciliation failed", { status: 502 });
+        if (!webhook) {
+          return new Response(
+            "Webhook verification is temporarily unavailable. Please retry.",
+            { status: 503 },
+          );
+        }
 
         const currentRecommendation = db
           .select({ id: diagnosticSnapshot.id })
