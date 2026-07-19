@@ -246,6 +246,15 @@ export const resetSequencesToDefault = createServerFn({ method: "POST" })
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 
+    const [connection] = await db
+      .select({ phase: stripeConnection.phase })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .limit(1);
+    if (connection?.phase === "recovery_active") {
+      throw new Error("Resetting active recovery sequences requires a new confirmation");
+    }
+
     await db
       .delete(recoverySequence)
       .where(eq(recoverySequence.userId, userId));
