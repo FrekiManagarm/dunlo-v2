@@ -129,6 +129,20 @@ export const toggleSequence = createServerFn({ method: "POST" })
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 
+    const [confirmationInProgress] = await db
+      .select({ id: stripeConnection.id })
+      .from(stripeConnection)
+      .where(
+        and(
+          eq(stripeConnection.userId, userId),
+          eq(stripeConnection.phase, "recovery_confirming"),
+        ),
+      )
+      .limit(1);
+    if (confirmationInProgress) {
+      throw new Error("Recovery confirmation is in progress. Please retry.");
+    }
+
     const [owned] = await db
       .select({ id: recoverySequence.id })
       .from(recoverySequence)
@@ -245,6 +259,20 @@ export const resetSequencesToDefault = createServerFn({ method: "POST" })
   .handler(async ({ context }) => {
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
+
+    const [confirmationInProgress] = await db
+      .select({ id: stripeConnection.id })
+      .from(stripeConnection)
+      .where(
+        and(
+          eq(stripeConnection.userId, userId),
+          eq(stripeConnection.phase, "recovery_confirming"),
+        ),
+      )
+      .limit(1);
+    if (confirmationInProgress) {
+      throw new Error("Recovery confirmation is in progress. Please retry.");
+    }
 
     const [connection] = await db
       .select({ phase: stripeConnection.phase })

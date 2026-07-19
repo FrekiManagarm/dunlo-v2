@@ -45,6 +45,7 @@ export type SubscriptionEvidence = {
   id: string;
   status: string;
   mode: StripeMode;
+  createdAt?: number | null;
   items: StripeInvoiceLine[];
 };
 
@@ -262,6 +263,7 @@ export function createStripeDiagnosticSource(
           id: subscription.id,
           status: subscription.status,
           mode: modeOf(subscription),
+          createdAt: numberOrNull(subscription.created),
           items: items.items,
         });
       }

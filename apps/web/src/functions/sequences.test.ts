@@ -110,4 +110,40 @@ describe("resetSequencesToDefault", () => {
     expect(mocks.deleteWhere).not.toHaveBeenCalled();
     expect(mocks.seedDefaultSequences).not.toHaveBeenCalled();
   });
+
+  it("rejects a reset while final recovery confirmation owns the lifecycle", async () => {
+    mocks.connections.push({
+      userId: "user_123",
+      phase: "recovery_confirming",
+    });
+    const { resetSequencesToDefault } = await import("./sequences");
+    const reset = resetSequencesToDefault as unknown as (input: {
+      context: { session: { user: { id: string } } };
+    }) => Promise<unknown>;
+
+    await expect(
+      reset({ context: { session: { user: { id: "user_123" } } } }),
+    ).rejects.toThrow("Recovery confirmation is in progress. Please retry.");
+    expect(mocks.deleteWhere).not.toHaveBeenCalled();
+    expect(mocks.seedDefaultSequences).not.toHaveBeenCalled();
+  });
+
+  it("rejects a sequence toggle while final recovery confirmation owns the lifecycle", async () => {
+    mocks.connections.push({
+      userId: "user_123",
+      phase: "recovery_confirming",
+    });
+    const { toggleSequence } = await import("./sequences");
+    const toggle = toggleSequence as unknown as (input: {
+      context: { session: { user: { id: string } } };
+      data: { sequenceId: string; isActive: boolean };
+    }) => Promise<unknown>;
+
+    await expect(
+      toggle({
+        context: { session: { user: { id: "user_123" } } },
+        data: { sequenceId: "sequence_123", isActive: false },
+      }),
+    ).rejects.toThrow("Recovery confirmation is in progress. Please retry.");
+  });
 });

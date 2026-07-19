@@ -105,7 +105,12 @@ describe("createStripeDiagnosticSource", () => {
     const client = createFakeStripeClient();
     client.subscriptions.list.mockResolvedValue({
       data: [
-        { id: "sub_active", status: "active", livemode: false },
+        {
+          id: "sub_active",
+          status: "active",
+          livemode: false,
+          created: 1_700_000_000,
+        },
         { id: "sub_past_due", status: "past_due", livemode: false },
       ],
       has_more: false,
@@ -124,6 +129,7 @@ describe("createStripeDiagnosticSource", () => {
       "active",
       "past_due",
     ]);
+    expect(page.data[0]?.createdAt).toBe(1_700_000_000);
     expect(page.coverage).toMatchObject({ pageCount: 1, recordCount: 2 });
   });
 

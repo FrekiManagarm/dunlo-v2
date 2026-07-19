@@ -16,6 +16,31 @@ const inputSchema = z.object({
   selectedSequenceIds: z.array(z.string().min(1)).min(1),
 });
 
+class RecoveryConfirmationError extends Error {
+  constructor(
+    message: string,
+    readonly status: number = 409,
+  ) {
+    super(message);
+  }
+}
+
+async function rollbackRecoveryConfirmation(input: {
+  connectionId: string;
+  userId: string;
+}): Promise<void> {
+  await db
+    .update(stripeConnection)
+    .set({ phase: "email_configured" })
+    .where(
+      and(
+        eq(stripeConnection.id, input.connectionId),
+        eq(stripeConnection.userId, input.userId),
+        eq(stripeConnection.phase, "recovery_confirming"),
+      ),
+    );
+}
+
 export async function runAtomicRecoveryConfirmation(
   execute: typeof db.execute,
   input: {
@@ -60,6 +85,7 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
         if (!parsed.success)
           return new Response("Invalid recovery confirmation", { status: 400 });
 
+        let claimed = false;
         try {
           const connection = await getStripeConnectionById(
             parsed.data.connectionId,
@@ -71,7 +97,7 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
             connection.phase !== "email_configured"
           )
             throw new Error("Recovery prerequisites are incomplete");
-          const [claimed] = await db
+          const [claimedConnection] = await db
             .update(stripeConnection)
             .set({ phase: "recovery_confirming" })
             .where(
@@ -82,11 +108,12 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
               ),
             )
             .returning({ id: stripeConnection.id });
-          if (!claimed)
+          if (!claimedConnection)
             return new Response(
               "Recovery confirmation is already in progress. Please retry.",
               { status: 409 },
             );
+          claimed = true;
           if (
             !(await reconcileWebhook(
               connection.stripeAccountId,
@@ -94,18 +121,9 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
               { connectionId: connection.id, phase: "recovery_confirming" },
             ))
           ) {
-            await db
-              .update(stripeConnection)
-              .set({ phase: "email_configured" })
-              .where(
-                and(
-                  eq(stripeConnection.id, connection.id),
-                  eq(stripeConnection.phase, "recovery_confirming"),
-                ),
-              );
-            return new Response(
+            throw new RecoveryConfirmationError(
               "Webhook verification is temporarily unavailable. Please retry.",
-              { status: 503 },
+              503,
             );
           }
           if (
@@ -117,11 +135,27 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
           )
             throw new Error("Recovery prerequisites are incomplete");
         } catch (error) {
+          if (claimed) {
+            try {
+              await rollbackRecoveryConfirmation({
+                connectionId: parsed.data.connectionId,
+                userId: session.user.id,
+              });
+            } catch (rollbackError) {
+              console.error(
+                "[recovery] confirmation rollback failed",
+                rollbackError,
+              );
+            }
+          }
           return new Response(
             error instanceof Error
               ? error.message
               : "Recovery confirmation failed",
-            { status: 409 },
+            {
+              status:
+                error instanceof RecoveryConfirmationError ? error.status : 409,
+            },
           );
         }
 

@@ -25,6 +25,7 @@ import {
   type RecurringRevenueLine,
 } from "./recurring-revenue";
 import {
+  type AccountEvidence,
   createStripeDiagnosticSource,
   type Coverage,
   type InvoiceEvidence,
@@ -337,6 +338,12 @@ export class DiagnosticService {
         connection,
         window,
         coverage,
+        decisionWindowComplete: decisionWindowHasCompleteHistory(
+          account,
+          subscriptions.items,
+          window,
+          coverage,
+        ),
         revenue,
         dominant,
         fx: fx.status === "available" ? fx.metadata : null,
@@ -817,6 +824,7 @@ function createSnapshot(input: {
   connection: DiagnosticConnection;
   window: DiagnosticWindow;
   coverage: Coverage;
+  decisionWindowComplete: boolean;
   revenue: ReturnType<typeof normalizeRevenue>;
   dominant: ReturnType<typeof selectDominantCurrency>;
   fx: FxRateMetadata | null;
@@ -836,10 +844,12 @@ function createSnapshot(input: {
       input.window.decisionStartsAt.getTime()) /
       (30 * DAY_MS),
   );
-  const monthlyAddressable = Math.floor(
-    (input.classified.monthlyAddressableByCurrency[currency] ?? 0) /
-      decisionMonths,
-  );
+  const monthlyAddressable = input.decisionWindowComplete
+    ? Math.floor(
+        (input.classified.monthlyAddressableByCurrency[currency] ?? 0) /
+          decisionMonths,
+      )
+    : 0;
   const monthlyAddressableUsd = toUsd(monthlyAddressable, rate);
   const addressableNow = toUsd(
     input.classified.addressableNowByCurrency[currency] ?? 0,
@@ -847,7 +857,7 @@ function createSnapshot(input: {
   );
   const qualification = qualifyDiagnostic({
     coverageComplete: input.coverage.status === "complete",
-    decisionWindowComplete: input.coverage.status === "complete",
+    decisionWindowComplete: input.decisionWindowComplete,
     dominantCurrency: input.dominant?.currency ?? null,
     normalizedMrrUsd: input.fx ? toUsd(fixedMrr + variableMrr, rate) : null,
     monthlyAddressableUsd,
@@ -865,7 +875,7 @@ function createSnapshot(input: {
     status: input.coverage.status === "complete" ? "complete" : "partial",
     verdict: qualification.verdict,
     ...input.window,
-    decisionWindowComplete: input.coverage.status === "complete",
+    decisionWindowComplete: input.decisionWindowComplete,
     coverageComplete: input.coverage.status === "complete",
     staleAt: new Date(input.window.analysisEndsAt.getTime() + DAY_MS),
     pagesLoaded: input.coverage.pageCount,
@@ -921,6 +931,28 @@ function createSnapshot(input: {
         ? input.coverage.failure.code
         : "none"),
   };
+}
+
+function decisionWindowHasCompleteHistory(
+  account: AccountEvidence,
+  subscriptions: SubscriptionEvidence[],
+  window: DiagnosticWindow,
+  coverage: Coverage,
+): boolean {
+  if (coverage.status !== "complete" || account.createdAt === null) {
+    return false;
+  }
+
+  const decisionStartSeconds = Math.floor(
+    window.decisionStartsAt.getTime() / 1000,
+  );
+  if (account.createdAt > decisionStartSeconds) return false;
+
+  return subscriptions.every(
+    (subscription) =>
+      typeof subscription.createdAt !== "number" ||
+      subscription.createdAt <= decisionStartSeconds,
+  );
 }
 
 export function phaseFor(

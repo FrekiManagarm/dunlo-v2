@@ -813,6 +813,72 @@ describe("DiagnosticService", () => {
     expect(fixture.phases).toEqual(["diagnostic_ready"]);
   });
 
+  it("does not qualify historical failures for an account newer than the decision window", async () => {
+    const fixture = createRepository();
+    const source = completeSource();
+    source.loadAccount = vi.fn(async () => ({
+      id: "acct_new",
+      mode: "test" as const,
+      country: "FR",
+      defaultCurrency: "usd",
+      createdAt: Math.floor((NOW.getTime() - 30 * 86_400_000) / 1000),
+      coverage: completeCoverage(),
+    }));
+    const invoicePage = await source.loadInvoices({ start: 0, end: 0 });
+    source.loadInvoices = vi.fn(async () => ({
+      ...invoicePage,
+      data: invoicePage.data.map((invoice) => ({
+        ...invoice,
+        amountDue: 50_000,
+        status: "uncollectible",
+      })),
+    }));
+
+    const result = await createService(fixture.repository, source).run({
+      connectionId: "conn_1",
+      reason: "initial",
+      now: NOW,
+    });
+
+    expect(result.snapshot).toMatchObject({
+      decisionWindowComplete: false,
+      verdict: "insufficient_data",
+    });
+  });
+
+  it("does not qualify historical failures for a subscription newer than the decision window", async () => {
+    const fixture = createRepository();
+    const source = completeSource();
+    const subscriptionPage = await source.loadSubscriptions();
+    source.loadSubscriptions = vi.fn(async () => ({
+      ...subscriptionPage,
+      data: subscriptionPage.data.map((subscription) => ({
+        ...subscription,
+        createdAt: Math.floor((NOW.getTime() - 30 * 86_400_000) / 1000),
+      })),
+    }));
+    const invoicePage = await source.loadInvoices({ start: 0, end: 0 });
+    source.loadInvoices = vi.fn(async () => ({
+      ...invoicePage,
+      data: invoicePage.data.map((invoice) => ({
+        ...invoice,
+        amountDue: 50_000,
+        status: "uncollectible",
+      })),
+    }));
+
+    const result = await createService(fixture.repository, source).run({
+      connectionId: "conn_1",
+      reason: "initial",
+      now: NOW,
+    });
+
+    expect(result.snapshot).toMatchObject({
+      decisionWindowComplete: false,
+      verdict: "insufficient_data",
+    });
+  });
+
   it("atomically replaces the current snapshot and scopes findings to the new snapshot", async () => {
     const previous = snapshot(
       "snapshot_previous",
