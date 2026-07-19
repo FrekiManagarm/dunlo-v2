@@ -249,10 +249,17 @@ export const resetSequencesToDefault = createServerFn({ method: "POST" })
     const [connection] = await db
       .select({ phase: stripeConnection.phase })
       .from(stripeConnection)
-      .where(eq(stripeConnection.userId, userId))
+      .where(
+        and(
+          eq(stripeConnection.userId, userId),
+          eq(stripeConnection.phase, "recovery_active"),
+        ),
+      )
       .limit(1);
-    if (connection?.phase === "recovery_active") {
-      throw new Error("Resetting active recovery sequences requires a new confirmation");
+    if (connection) {
+      throw new Error(
+        "Resetting active recovery sequences requires a new confirmation",
+      );
     }
 
     await db

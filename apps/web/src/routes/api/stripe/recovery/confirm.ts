@@ -44,13 +44,10 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
                 AND EXISTS (SELECT 1 FROM email_provider WHERE user_id = ${session.user.id})
                 AND (SELECT count(*) FROM selected) = ${sequenceIds.length}
               RETURNING user_id
-            ), disabled AS (
-              UPDATE recovery_sequence SET is_active = false
+            ), sequences AS (
+              UPDATE recovery_sequence
+              SET is_active = id IN (${selectedIds})
               WHERE user_id IN (SELECT user_id FROM eligible)
-            ), enabled AS (
-              UPDATE recovery_sequence SET is_active = true
-              WHERE user_id IN (SELECT user_id FROM eligible)
-                AND id IN (${selectedIds})
             )
             SELECT user_id FROM eligible
           `);

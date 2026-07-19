@@ -28,10 +28,29 @@ export async function reconcileWebhook(
     .where(eq(stripeConnection.stripeAccountId, stripeAccountId))
     .limit(1);
   if (existing?.webhookEndpointId && existing.webhookSecret) {
-    return {
-      webhookEndpointId: existing.webhookEndpointId,
-      webhookSecret: decrypt(existing.webhookSecret),
-    };
+    if (existing.webhookEndpointId === "local_dev_webhook") {
+      return {
+        webhookEndpointId: existing.webhookEndpointId,
+        webhookSecret: decrypt(existing.webhookSecret),
+      };
+    }
+    try {
+      const stripe = new Stripe(accessToken, {
+        apiVersion: STRIPE_API_VERSION,
+      });
+      await stripe.webhookEndpoints.retrieve(existing.webhookEndpointId, {
+        stripeAccount: stripeAccountId,
+      });
+      return {
+        webhookEndpointId: existing.webhookEndpointId,
+        webhookSecret: decrypt(existing.webhookSecret),
+      };
+    } catch {
+      await db
+        .update(stripeConnection)
+        .set({ webhookEndpointId: null, webhookSecret: null })
+        .where(eq(stripeConnection.stripeAccountId, stripeAccountId));
+    }
   }
 
   const baseUrl = env.APP_URL;
