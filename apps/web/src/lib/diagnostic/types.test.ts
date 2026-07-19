@@ -21,23 +21,28 @@ describe("diagnostic domain invariants", () => {
       "excluded",
     ]);
 
-    expect(
-      diagnosticFindingInputSchema.parse({
-        stripeInvoiceId: "in_123",
-        stripeCustomerId: "cus_123",
-        stripeSubscriptionId: "sub_123",
-        amount: 1200,
-        currency: "EUR",
-        failedAt: "2026-07-18T10:00:00.000Z",
-        resolvedAt: null,
-        invoiceStatus: "open",
-        subscriptionStatus: "active",
-        adviceCode: null,
-        declineCode: "generic_decline",
-        category: "open_automatable",
-        reason: "Retry is supported by the current decline signal.",
-      }),
-    ).toMatchObject({ category: "open_automatable", currency: "eur" });
+    const finding = diagnosticFindingInputSchema.parse({
+      stripeInvoiceId: "in_123",
+      stripeCustomerId: "cus_123",
+      stripeSubscriptionId: "sub_123",
+      amount: 1200,
+      currency: "EUR",
+      failedAt: "2026-07-18T10:00:00.000Z",
+      resolvedAt: null,
+      invoiceStatus: "open",
+      subscriptionStatus: "active",
+      adviceCode: null,
+      declineCode: "generic_decline",
+      category: "open_automatable",
+      classifierVersion: "2026-07-18",
+      reason: "Retry is supported by the current decline signal.",
+    });
+
+    expect(finding).toMatchObject({
+      category: "open_automatable",
+      classifierVersion: "2026-07-18",
+      currency: "eur",
+    });
 
     expect(() =>
       diagnosticFindingInputSchema.parse({
@@ -53,6 +58,7 @@ describe("diagnostic domain invariants", () => {
         adviceCode: null,
         declineCode: null,
         category: ["open_automatable", "open_human"],
+        classifierVersion: "2026-07-18",
         reason: "A finding cannot have more than one category.",
       }),
     ).toThrow();
@@ -90,9 +96,12 @@ describe("diagnostic domain invariants", () => {
       ]),
     ).toEqual({ eur: 1500, usd: 500 });
     expect(normalizeCurrency(" EUR ")).toBe("eur");
-    expect(() => groupMoneyByCurrency([{ amount: -1, currency: "eur" }])).toThrow(
-      /non-negative/i,
+    expect(() => normalizeCurrency("ZZZ")).toThrow(
+      /supported Stripe currency/i,
     );
+    expect(() =>
+      groupMoneyByCurrency([{ amount: -1, currency: "eur" }]),
+    ).toThrow(/non-negative/i);
   });
 
   it("adds money only when both amounts use the same currency", () => {
