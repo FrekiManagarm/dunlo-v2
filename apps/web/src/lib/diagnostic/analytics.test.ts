@@ -1,6 +1,7 @@
-import { describe, expect, it } from "vitest";
+import { describe, expect, it, vi } from "vitest";
 
 import {
+  captureDiagnosticReportViewed,
   DIAGNOSTIC_EVENT_NAMES,
   diagnosticAnalyticsPayload,
 } from "./analytics";
@@ -28,5 +29,20 @@ describe("diagnostic analytics", () => {
         amount: 4_900,
       }),
     ).toThrow(/not allowed/i);
+  });
+
+  it("centralizes the report-view capture with the safe payload", () => {
+    const capture = vi.fn();
+    captureDiagnosticReportViewed(
+      { capture },
+      {
+        verdict: "activation_recommended",
+        planCode: "growth",
+      },
+    );
+    expect(capture).toHaveBeenCalledWith("diagnostic_report_viewed", {
+      verdict: "activation_recommended",
+      plan_band: "growth",
+    });
   });
 });

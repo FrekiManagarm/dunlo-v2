@@ -92,12 +92,21 @@ export const onboardingStateQueryOptions = () =>
     queryFn: () => getOnboardingState(),
   });
 
-export const diagnosticStateQueryOptions = (connectionId?: string) =>
+export const diagnosticConnectionQueryOptions = () =>
   queryOptions({
-    queryKey: ["diagnostic", "state", connectionId ?? "current"] as const,
+    queryKey: ["diagnostic", "connection"] as const,
+    queryFn: () => getDiagnosticState({ data: {} }),
+  });
+
+export const diagnosticStateQueryOptions = (connectionId: string) =>
+  queryOptions({
+    queryKey: ["diagnostic", "state", connectionId] as const,
     queryFn: () => getDiagnosticState({ data: { connectionId } }),
     refetchInterval: (query) =>
-      query.state.data?.phase === "diagnosing" ? 2_500 : false,
+      query.state.data?.phase === "diagnosing" &&
+      query.state.data.progress.status === "running"
+        ? 2_500
+        : false,
   });
 
 export const diagnosticReportQueryOptions = (connectionId: string) =>

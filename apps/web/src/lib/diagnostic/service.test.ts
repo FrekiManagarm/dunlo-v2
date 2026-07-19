@@ -756,7 +756,7 @@ describe("DiagnosticService", () => {
     expect(result.snapshot.verdict).toBe("insufficient_data");
     expect(result.snapshot.coverageComplete).toBe(false);
     expect(fixture.snapshots).toHaveLength(1);
-    expect(fixture.phases).toEqual(["diagnosing"]);
+    expect(fixture.phases).toEqual(["diagnostic_ready"]);
   });
 
   it("atomically replaces the current snapshot and scopes findings to the new snapshot", async () => {

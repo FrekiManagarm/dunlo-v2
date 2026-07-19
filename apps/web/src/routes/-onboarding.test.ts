@@ -12,6 +12,16 @@ const dashboardBenchmarkSource = readFileSync(
   "utf8",
 );
 
+const dashboardDiagnosticSource = readFileSync(
+  join(process.cwd(), "src/routes/_dashboard/diagnostic.tsx"),
+  "utf8",
+);
+
+const diagnosticQueriesSource = readFileSync(
+  join(process.cwd(), "src/lib/queries.ts"),
+  "utf8",
+);
+
 describe("onboarding flow", () => {
   it("derives the guided screen from the persisted diagnostic phase", () => {
     expect(onboardingSource).toContain("diagnosticStateQueryOptions");
@@ -19,10 +29,30 @@ describe("onboarding flow", () => {
     expect(onboardingSource).toContain("diagnostic_ready");
     expect(onboardingSource).not.toContain(".max(4)");
     expect(onboardingSource).not.toContain("Your Stripe benchmark is ready");
+    expect(onboardingSource).toContain("/api/stripe/connect?intent=activation");
+    expect(onboardingSource).toContain("monitoring_not_available");
+    expect(onboardingSource).not.toContain('"current"');
   });
 
   it("redirects the old authenticated benchmark path to diagnostic", () => {
     expect(dashboardBenchmarkSource).toContain('to: "/diagnostic"');
     expect(dashboardBenchmarkSource).not.toContain("userBenchmarkQueryOptions");
+  });
+
+  it("gives the dashboard report usable activation and monitoring callbacks", () => {
+    expect(dashboardDiagnosticSource).toContain(
+      "/api/stripe/connect?intent=activation",
+    );
+    expect(dashboardDiagnosticSource).toContain("enableMonitoring");
+    expect(dashboardDiagnosticSource).toContain("onKeepReadOnly");
+  });
+
+  it("polls only an actively running diagnostic using its connection id", () => {
+    expect(diagnosticQueriesSource).toContain(
+      '["diagnostic", "state", connectionId]',
+    );
+    expect(diagnosticQueriesSource).toContain('phase === "diagnosing"');
+    expect(diagnosticQueriesSource).toContain('progress.status === "running"');
+    expect(diagnosticQueriesSource).not.toContain('"current"');
   });
 });

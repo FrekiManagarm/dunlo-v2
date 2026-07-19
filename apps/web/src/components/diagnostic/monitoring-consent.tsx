@@ -1,9 +1,9 @@
 export function MonitoringConsent({
   onConfirm,
-  unavailable = false,
+  status = "idle",
 }: {
   onConfirm: () => void;
-  unavailable?: boolean;
+  status?: "idle" | "unavailable" | "error";
 }) {
   return (
     <section
@@ -19,15 +19,21 @@ export function MonitoringConsent({
       </p>
       <button
         type="button"
-        disabled={unavailable}
         onClick={onConfirm}
-        className="mt-4 h-10 rounded-full border border-zinc-200 px-4 text-sm font-semibold text-zinc-800 disabled:cursor-not-allowed disabled:opacity-50"
+        className="mt-4 h-10 rounded-full border border-zinc-200 px-4 text-sm font-semibold text-zinc-800"
       >
-        Enable read-only monitoring
+        {status === "unavailable"
+          ? "Try read-only monitoring again"
+          : "Enable read-only monitoring"}
       </button>
-      {unavailable ? (
+      {status === "unavailable" ? (
         <p role="status" className="mt-3 text-sm text-zinc-500">
-          Monitoring will be available soon.
+          Monitoring is not available yet. Nothing was enabled; you can retry
+          later.
+        </p>
+      ) : status === "error" ? (
+        <p role="status" className="mt-3 text-sm text-red-600">
+          We could not request monitoring. Please try again.
         </p>
       ) : null}
     </section>

@@ -9,14 +9,14 @@ import { createServerFn } from "@tanstack/react-start";
 import { and, desc, eq } from "drizzle-orm";
 import { z } from "zod";
 
-import type { DiagnosticReportView } from "../components/diagnostic/diagnostic-report";
+import type { DiagnosticReportView } from "../lib/diagnostic/report";
 import {
   diagnosticVerdictSchema,
   type DiagnosticCheckpoint,
 } from "../lib/diagnostic/types";
 import { authMiddleware } from "../middleware/auth";
 
-type SafeConnection = {
+type DiagnosticConnectionRecord = {
   id: string;
   userId: string;
   phase: ConnectionPhase;
@@ -27,14 +27,27 @@ type SafeConnection = {
   webhookSecret?: string | null;
 };
 
-type SafeSnapshot = Partial<DiagnosticReportView> & {
+type DiagnosticSnapshotRecord = Partial<DiagnosticReportView> & {
   verdict: DiagnosticReportView["verdict"];
   stripeCustomerId?: string;
   stripeInvoiceId?: string;
 };
 
+export type DiagnosticStateView = {
+  connectionId: string | null;
+  phase: ConnectionPhase | null;
+  scope: string | null;
+  monitoringEnabled: boolean;
+  liveMode: boolean | null;
+  progress: {
+    status: "idle" | "running" | "completed" | "failed";
+    checkpoints: DiagnosticCheckpoint[];
+    errorCategory: "source" | "persistence" | null;
+  };
+};
+
 export function getDiagnosticStateForUser(
-  connection: SafeConnection,
+  connection: DiagnosticConnectionRecord,
   userId: string,
 ) {
   if (connection.userId !== userId)
@@ -49,8 +62,8 @@ export function getDiagnosticStateForUser(
 }
 
 export function createDiagnosticView(input: {
-  connection: SafeConnection;
-  snapshot: SafeSnapshot;
+  connection: DiagnosticConnectionRecord;
+  snapshot: DiagnosticSnapshotRecord;
 }) {
   const snapshot = input.snapshot;
   return {
@@ -77,7 +90,7 @@ export function createDiagnosticView(input: {
     fxSource: snapshot.fxSource ?? "Unavailable",
     fxRateDate: snapshot.fxRateDate ?? "Unavailable",
     liveMode: input.connection.liveMode,
-  } satisfies DiagnosticReportView & { connectionId: string };
+  } satisfies DiagnosticReportView;
 }
 
 export function monitoringUnavailable() {
@@ -143,7 +156,7 @@ export const getDiagnosticState = createServerFn({ method: "GET" })
           checkpoints: [] as DiagnosticCheckpoint[],
           errorCategory: null,
         },
-      };
+      } satisfies DiagnosticStateView;
     }
     const [run] = await db
       .select({
@@ -171,7 +184,7 @@ export const getDiagnosticState = createServerFn({ method: "GET" })
             ? run.errorCategory
             : null,
       },
-    };
+    } satisfies DiagnosticStateView;
   });
 
 export const getDiagnosticReport = createServerFn({ method: "GET" })

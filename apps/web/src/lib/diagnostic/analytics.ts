@@ -14,6 +14,13 @@ type DiagnosticAnalyticsInput = {
   planCode?: string | null;
 } & Record<string, unknown>;
 
+type DiagnosticAnalyticsClient = {
+  capture: (
+    event: (typeof DIAGNOSTIC_EVENT_NAMES)[number],
+    properties: Record<string, string>,
+  ) => void;
+};
+
 export function diagnosticAnalyticsPayload(input: DiagnosticAnalyticsInput) {
   for (const key of Object.keys(input)) {
     if (FORBIDDEN_PROPERTY.test(key)) {
@@ -27,4 +34,11 @@ export function diagnosticAnalyticsPayload(input: DiagnosticAnalyticsInput) {
     verdict: input.verdict,
     ...(input.planCode ? { plan_band: input.planCode } : {}),
   };
+}
+
+export function captureDiagnosticReportViewed(
+  client: DiagnosticAnalyticsClient,
+  input: DiagnosticAnalyticsInput,
+) {
+  client.capture("diagnostic_report_viewed", diagnosticAnalyticsPayload(input));
 }

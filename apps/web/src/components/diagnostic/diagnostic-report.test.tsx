@@ -1,10 +1,11 @@
 // @vitest-environment jsdom
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it } from "vitest";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { DiagnosticReport } from "./diagnostic-report";
 
 const report = {
+  connectionId: "conn_1",
   verdict: "activation_recommended" as const,
   planCode: "growth",
   planPriceUsd: 9_900,
@@ -41,26 +42,52 @@ describe("DiagnosticReport", () => {
   });
 
   it("uses a distinct primary action for every verdict", () => {
-    const { rerender } = render(<DiagnosticReport report={report} />);
+    const onRequestActivation = vi.fn();
+    const onEnableMonitoring = vi.fn();
+    const onKeepReadOnly = vi.fn();
+    const { rerender } = render(
+      <DiagnosticReport
+        report={report}
+        onRequestActivation={onRequestActivation}
+        onEnableMonitoring={onEnableMonitoring}
+        onKeepReadOnly={onKeepReadOnly}
+      />,
+    );
     expect(
       screen.getByRole("button", { name: /authorize recovery/i }),
     ).toBeTruthy();
+    fireEvent.click(
+      screen.getByRole("button", { name: /authorize recovery/i }),
+    );
+    expect(onRequestActivation).toHaveBeenCalledOnce();
 
     rerender(
       <DiagnosticReport
         report={{ ...report, verdict: "monitoring_recommended" }}
+        onEnableMonitoring={onEnableMonitoring}
       />,
     );
     expect(
       screen.getByRole("button", { name: /enable read-only monitoring/i }),
     ).toBeTruthy();
+    fireEvent.click(
+      screen.getByRole("button", { name: /enable read-only monitoring/i }),
+    );
+    expect(onEnableMonitoring).toHaveBeenCalledOnce();
 
     rerender(
-      <DiagnosticReport report={{ ...report, verdict: "insufficient_data" }} />,
+      <DiagnosticReport
+        report={{ ...report, verdict: "insufficient_data" }}
+        onKeepReadOnly={onKeepReadOnly}
+      />,
     );
     expect(
       screen.getByRole("button", { name: /keep read-only access/i }),
     ).toBeTruthy();
+    fireEvent.click(
+      screen.getByRole("button", { name: /keep read-only access/i }),
+    );
+    expect(onKeepReadOnly).toHaveBeenCalledOnce();
   });
 
   it("describes addressable opportunity without recovered or guaranteed claims", () => {

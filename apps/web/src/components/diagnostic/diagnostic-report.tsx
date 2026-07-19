@@ -1,34 +1,13 @@
+import type { DiagnosticReportView } from "../../lib/diagnostic/report";
 import type { DiagnosticVerdict } from "../../lib/diagnostic/types";
 
-export type DiagnosticReportView = {
-  verdict: DiagnosticVerdict;
-  planCode: string;
-  planPriceUsd: number;
-  breakEvenUsd: number;
-  dominantCurrency: string;
-  monthlyAddressable: number;
-  observedFailed: number;
-  naturallyRecovered: number;
-  openAutomatable: number;
-  openHuman: number;
-  historicallyLostAutomatable: number;
-  historicallyLostHuman: number;
-  excludedAmount: number;
-  analysisStartsAt: string;
-  analysisEndsAt: string;
-  decisionWindowComplete: boolean;
-  coverageComplete: boolean;
-  pagesLoaded: number;
-  recordsLoaded: number;
-  fxSource: string;
-  fxRateDate: string;
-  liveMode: boolean | null;
-};
+export type { DiagnosticReportView } from "../../lib/diagnostic/report";
 
 type Props = {
   report: DiagnosticReportView;
   onRequestActivation?: () => void;
   onEnableMonitoring?: () => void;
+  onKeepReadOnly?: () => void;
 };
 
 const verdictCopy: Record<
@@ -74,12 +53,14 @@ export function DiagnosticReport({
   report,
   onRequestActivation,
   onEnableMonitoring,
+  onKeepReadOnly,
 }: Props) {
   const copy = verdictCopy[report.verdict];
-  const action =
-    report.verdict === "activation_recommended"
-      ? onRequestActivation
-      : onEnableMonitoring;
+  const action = {
+    activation_recommended: onRequestActivation,
+    monitoring_recommended: onEnableMonitoring,
+    insufficient_data: onKeepReadOnly,
+  }[report.verdict];
 
   return (
     <section aria-labelledby="diagnostic-verdict" className="space-y-6">

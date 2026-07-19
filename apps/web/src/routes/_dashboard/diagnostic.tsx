@@ -1,43 +1,45 @@
 import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { usePostHog } from "posthog-js/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 import { DiagnosticReport } from "@/components/diagnostic/diagnostic-report";
+import { MonitoringConsent } from "@/components/diagnostic/monitoring-consent";
 import { ProgressStep } from "@/components/diagnostic/progress-step";
-import { diagnosticAnalyticsPayload } from "@/lib/diagnostic/analytics";
 import {
+  enableMonitoring,
+  type DiagnosticStateView,
+} from "@/functions/diagnostic";
+import { captureDiagnosticReportViewed } from "@/lib/diagnostic/analytics";
+import {
+  diagnosticConnectionQueryOptions,
   diagnosticReportQueryOptions,
   diagnosticStateQueryOptions,
 } from "@/lib/queries";
 
+const REPORT_PHASES = new Set([
+  "diagnostic_ready",
+  "monitoring",
+  "activation_requested",
+  "write_authorized",
+  "email_configured",
+  "recovery_active",
+]);
+
 export const Route = createFileRoute("/_dashboard/diagnostic")({
   head: () => ({ meta: [{ title: "Diagnostic — Dunlo" }] }),
   loader: ({ context }) =>
-    context.queryClient.ensureQueryData(diagnosticStateQueryOptions()),
+    context.queryClient.ensureQueryData(diagnosticConnectionQueryOptions()),
   component: DiagnosticPage,
 });
 
 function DiagnosticPage() {
-  const posthog = usePostHog();
-  const { data: state } = useSuspenseQuery(diagnosticStateQueryOptions());
-  const report = useQuery({
-    ...diagnosticReportQueryOptions(state.connectionId ?? "missing"),
-    enabled: Boolean(state.connectionId && state.phase !== "diagnosing"),
-  });
+  const { data: discoveredState } = useSuspenseQuery(
+    diagnosticConnectionQueryOptions(),
+  );
+  const connectionId = discoveredState.connectionId;
 
-  useEffect(() => {
-    if (!report.data) return;
-    posthog.capture(
-      "diagnostic_report_viewed",
-      diagnosticAnalyticsPayload({
-        verdict: report.data.verdict,
-        planCode: report.data.planCode,
-      }),
-    );
-  }, [posthog, report.data]);
-
-  if (!state.connectionId) {
+  if (!connectionId)
     return (
       <Page>
         <h1 className="text-2xl font-bold text-zinc-950">
@@ -55,7 +57,44 @@ function DiagnosticPage() {
         </Link>
       </Page>
     );
-  }
+
+  return (
+    <ConnectedDiagnostic
+      connectionId={connectionId}
+      discoveredState={discoveredState}
+    />
+  );
+}
+
+function ConnectedDiagnostic({
+  connectionId,
+  discoveredState,
+}: {
+  connectionId: string;
+  discoveredState: DiagnosticStateView;
+}) {
+  const posthog = usePostHog();
+  const stateQuery = useQuery({
+    ...diagnosticStateQueryOptions(connectionId),
+  });
+  const state = stateQuery.data ?? discoveredState;
+  const report = useQuery({
+    ...diagnosticReportQueryOptions(connectionId),
+    enabled: REPORT_PHASES.has(state.phase ?? ""),
+  });
+  const [monitoringStatus, setMonitoringStatus] = useState<
+    "idle" | "unavailable" | "error"
+  >("idle");
+  const [readOnlyConfirmed, setReadOnlyConfirmed] = useState(false);
+
+  useEffect(() => {
+    if (!report.data) return;
+    captureDiagnosticReportViewed(posthog, {
+      verdict: report.data.verdict,
+      planCode: report.data.planCode,
+    });
+  }, [posthog, report.data]);
+
   if (state.phase === "diagnosing")
     return (
       <Page>
@@ -73,9 +112,55 @@ function DiagnosticPage() {
         </p>
       </Page>
     );
+
+  const requestActivation = () => {
+    posthog.capture("diagnostic_activation_requested", {
+      verdict: report.data.verdict,
+      plan_band: report.data.planCode,
+    });
+    window.location.assign("/api/stripe/connect?intent=activation");
+  };
+  const requestMonitoring = async () => {
+    try {
+      const response = await enableMonitoring({ data: { connectionId } });
+      setMonitoringStatus(
+        response.ok
+          ? "idle"
+          : response.code === "monitoring_not_available"
+            ? "unavailable"
+            : "error",
+      );
+      if (response.ok)
+        posthog.capture("diagnostic_monitoring_requested", {
+          verdict: report.data.verdict,
+          plan_band: report.data.planCode,
+        });
+    } catch {
+      setMonitoringStatus("error");
+    }
+  };
   return (
     <Page>
-      <DiagnosticReport report={report.data} />
+      <DiagnosticReport
+        report={report.data}
+        onRequestActivation={requestActivation}
+        onEnableMonitoring={requestMonitoring}
+        onKeepReadOnly={() => setReadOnlyConfirmed(true)}
+      />
+      {report.data.verdict !== "activation_recommended" ? (
+        <div className="mt-6">
+          <MonitoringConsent
+            onConfirm={requestMonitoring}
+            status={monitoringStatus}
+          />
+        </div>
+      ) : null}
+      {readOnlyConfirmed ? (
+        <p role="status" className="mt-4 text-sm text-zinc-600">
+          Your Stripe connection remains read-only. Recovery and monitoring are
+          not enabled.
+        </p>
+      ) : null}
     </Page>
   );
 }
