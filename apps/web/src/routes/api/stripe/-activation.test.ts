@@ -31,10 +31,11 @@ describe("recovery activation boundary", () => {
     const onboarding = source("src/routes/onboarding.tsx");
 
     expect(confirmation).toContain("accepted: z.literal(true)");
-    expect(confirmation).toContain('eq(stripeConnection.scope, "read_write")');
-    expect(confirmation).toContain("webhookEndpointId");
-    expect(confirmation).toContain("emailProvider");
-    expect(confirmation).toContain('phase: "recovery_active"');
+    expect(confirmation).toContain("scope = 'read_write'");
+    expect(confirmation).toContain("webhook_endpoint_id IS NOT NULL");
+    expect(confirmation).toContain("FROM email_provider");
+    expect(confirmation).toContain("WITH selected AS");
+    expect(confirmation).toContain("recovery_activated_at = NOW()");
     expect(confirmation).toContain("recovery_activated");
     expect(confirmation).toContain("selectedSequenceIds");
     expect(onboarding).toContain("ActivationSummary");

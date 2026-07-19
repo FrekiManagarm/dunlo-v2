@@ -1,12 +1,7 @@
 import { auth } from "@dunlo-v2/auth";
 import { db } from "@dunlo-v2/db";
-import {
-  emailProvider,
-  recoverySequence,
-  stripeConnection,
-} from "@dunlo-v2/db/schema/domain";
 import { createFileRoute } from "@tanstack/react-router";
-import { and, eq, inArray, isNotNull } from "drizzle-orm";
+import { sql } from "drizzle-orm";
 import { z } from "zod";
 
 const WORKFLOW_VERSION = "recovery-v1";
@@ -29,72 +24,38 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
           return new Response("Invalid recovery confirmation", { status: 400 });
 
         try {
-          const [connection] = await db
-            .select({ id: stripeConnection.id })
-            .from(stripeConnection)
-            .where(
-              and(
-                eq(stripeConnection.id, parsed.data.connectionId),
-                eq(stripeConnection.userId, session.user.id),
-                eq(stripeConnection.scope, "read_write"),
-                eq(stripeConnection.phase, "email_configured"),
-                isNotNull(stripeConnection.webhookEndpointId),
-              ),
+          const sequenceIds = [...new Set(parsed.data.selectedSequenceIds)];
+          const selectedIds = sql.join(
+            sequenceIds.map((id) => sql`${id}`),
+            sql`, `,
+          );
+          const result = await db.execute(sql`
+            WITH selected AS (
+              SELECT id FROM recovery_sequence
+              WHERE user_id = ${session.user.id} AND id IN (${selectedIds})
+            ), eligible AS (
+              UPDATE stripe_connection
+              SET phase = 'recovery_active', recovery_activated_at = NOW()
+              WHERE id = ${parsed.data.connectionId}
+                AND user_id = ${session.user.id}
+                AND scope = 'read_write'
+                AND phase = 'email_configured'
+                AND webhook_endpoint_id IS NOT NULL
+                AND EXISTS (SELECT 1 FROM email_provider WHERE user_id = ${session.user.id})
+                AND (SELECT count(*) FROM selected) = ${sequenceIds.length}
+              RETURNING user_id
+            ), disabled AS (
+              UPDATE recovery_sequence SET is_active = false
+              WHERE user_id IN (SELECT user_id FROM eligible)
+            ), enabled AS (
+              UPDATE recovery_sequence SET is_active = true
+              WHERE user_id IN (SELECT user_id FROM eligible)
+                AND id IN (${selectedIds})
             )
-            .limit(1);
-          if (!connection)
+            SELECT user_id FROM eligible
+          `);
+          if (!result.rows.length)
             throw new Error("Recovery prerequisites are incomplete");
-
-          const [provider] = await db
-            .select({ id: emailProvider.id })
-            .from(emailProvider)
-            .where(eq(emailProvider.userId, session.user.id))
-            .limit(1);
-          if (!provider)
-            throw new Error("Recovery prerequisites are incomplete");
-
-          const sequences = await db
-            .select({ id: recoverySequence.id })
-            .from(recoverySequence)
-            .where(
-              and(
-                eq(recoverySequence.userId, session.user.id),
-                inArray(recoverySequence.id, parsed.data.selectedSequenceIds),
-              ),
-            );
-          if (
-            sequences.length !== new Set(parsed.data.selectedSequenceIds).size
-          ) {
-            throw new Error("Invalid recovery sequences");
-          }
-
-          const [activated] = await db
-            .update(stripeConnection)
-            .set({ phase: "recovery_active", recoveryActivatedAt: new Date() })
-            .where(
-              and(
-                eq(stripeConnection.id, connection.id),
-                eq(stripeConnection.userId, session.user.id),
-                eq(stripeConnection.phase, "email_configured"),
-              ),
-            )
-            .returning({ id: stripeConnection.id });
-          if (!activated)
-            throw new Error("Recovery activation changed; review again");
-
-          await db
-            .update(recoverySequence)
-            .set({ isActive: false })
-            .where(eq(recoverySequence.userId, session.user.id));
-          await db
-            .update(recoverySequence)
-            .set({ isActive: true })
-            .where(
-              and(
-                eq(recoverySequence.userId, session.user.id),
-                inArray(recoverySequence.id, parsed.data.selectedSequenceIds),
-              ),
-            );
         } catch (error) {
           return new Response(
             error instanceof Error
