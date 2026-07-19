@@ -2,7 +2,8 @@ import { notFound } from "next/navigation";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import { BlogNav } from "@/components/blog-nav";
+import { Footer } from "@/components/landing/footer";
+import { Nav } from "@/components/landing/nav";
 import { mdxComponents } from "@/components/mdx-components";
 import {
   type BlogPostMeta,
@@ -54,7 +55,7 @@ function formatDate(date: string) {
 
 function TagPill({ tag }: { tag: string }) {
   return (
-    <span className="rounded-full border border-dunlo/20 bg-dunlo/10 px-2.5 py-0.5 text-xs font-medium text-dunlo-deep">
+    <span className="rounded-full border border-dunlo/36 bg-dunlo/12 px-3 py-1 text-xs font-semibold text-dunlo">
       {tag}
     </span>
   );
@@ -130,45 +131,46 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
   const MdxContent = post.data.body;
 
   return (
-    <>
-      <BlogNav />
-      <main className="mx-auto max-w-4xl px-6 pb-24 pt-28">
-        <Link
-          href="/blog"
-          className="mb-10 inline-flex items-center gap-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-dunlo-dim"
-        >
-          <ArrowLeft size={14} />
-          Back to blog
-        </Link>
-
+    <div className="min-h-dvh bg-dunlo-ground font-sans text-dunlo-ink selection:bg-dunlo selection:text-dunlo-ink">
+      <Nav />
+      <main>
         <article>
-          <header className="mb-10 border-b border-border pb-8">
-            <div className="mb-5 flex flex-wrap gap-1.5">
-              {post.data.tags.map((tag) => (
-                <TagPill key={tag} tag={tag} />
-              ))}
-            </div>
-            <h1 className="max-w-3xl text-4xl font-bold leading-tight tracking-tight text-foreground md:text-6xl">
-              {post.data.title}
-            </h1>
-            <p className="mt-5 max-w-2xl text-lg leading-relaxed text-muted-foreground">
-              {post.data.description}
-            </p>
-            <div className="mt-6 flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
-              <time dateTime={post.data.date}>
-                {formatDate(post.data.date)}
-              </time>
-              {post.data.readingTime && <span>{post.data.readingTime}</span>}
-              {post.data.author && <span>{post.data.author}</span>}
+          <header className="bg-dunlo-ink px-4 pb-20 pt-36 text-white md:px-6 md:pb-24 md:pt-44">
+            <div className="mx-auto max-w-4xl">
+              <Link
+                href="/blog"
+                className="mb-10 inline-flex min-h-11 items-center gap-2 rounded-full border border-white/18 px-4 text-sm font-semibold text-white/68 transition-colors hover:border-white/44 hover:text-white"
+              >
+                <ArrowLeft size={14} />
+                Back to blog
+              </Link>
+              <div className="mb-5 flex flex-wrap gap-1.5">
+                {post.data.tags.map((tag) => (
+                  <TagPill key={tag} tag={tag} />
+                ))}
+              </div>
+              <h1 className="max-w-4xl text-balance text-4xl font-bold leading-[0.96] tracking-[-0.04em] md:text-6xl">
+                {post.data.title}
+              </h1>
+              <p className="mt-6 max-w-2xl text-lg leading-8 text-white/68">
+                {post.data.description}
+              </p>
+              <div className="mt-7 flex flex-wrap items-center gap-4 border-t border-white/14 pt-5 text-sm text-white/52">
+                <time dateTime={post.data.date}>
+                  {formatDate(post.data.date)}
+                </time>
+                {post.data.readingTime && <span>{post.data.readingTime}</span>}
+                {post.data.author && <span>{post.data.author}</span>}
+              </div>
             </div>
           </header>
 
-          <div className="prose prose-zinc max-w-none">
+          <div className="prose prose-zinc mx-auto max-w-4xl px-6 py-16 md:py-20">
             <MdxContent components={mdxComponents} />
           </div>
         </article>
 
-        <section className="mt-14 rounded-2xl border border-dunlo/20 bg-dunlo/[0.06] p-6">
+        <section className="mx-auto max-w-4xl border-t border-dunlo-line px-6 py-12">
           <h2 className="text-xl font-semibold tracking-tight">
             Turn this into a recovery workflow
           </h2>
@@ -177,7 +179,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
               <Link
                 key={item.href}
                 href={item.href}
-                className="rounded-2xl border border-dunlo/20 bg-white/80 p-4 transition-colors hover:border-dunlo/40"
+                className="rounded-2xl border border-dunlo/20 bg-white p-4 transition-colors hover:border-dunlo/40"
               >
                 <p className="text-sm font-semibold leading-snug">
                   {item.title}
@@ -191,7 +193,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
         </section>
 
         {related.length > 0 && (
-          <section className="mt-16 border-t border-border pt-10">
+          <section className="mx-auto max-w-4xl border-t border-dunlo-line px-6 py-12">
             <h2 className="mb-5 text-xl font-semibold tracking-tight">
               Keep reading
             </h2>
@@ -214,6 +216,7 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           </section>
         )}
       </main>
+      <Footer />
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -253,6 +256,6 @@ export default async function BlogPostPage({ params }: BlogPostPageProps) {
           ),
         }}
       />
-    </>
+    </div>
   );
 }

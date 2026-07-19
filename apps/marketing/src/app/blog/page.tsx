@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { BlogIndex } from "@/components/blog-index";
+import { Footer } from "@/components/landing/footer";
+import { Nav } from "@/components/landing/nav";
 import { getAllPosts } from "@/lib/blog";
 import {
   SITE_NAME,
@@ -32,8 +34,10 @@ export default function BlogPage() {
   const posts = getAllPosts();
 
   return (
-    <>
+    <div className="min-h-dvh bg-dunlo-ground font-sans text-dunlo-ink selection:bg-dunlo selection:text-dunlo-ink">
+      <Nav />
       <BlogIndex posts={posts} />
+      <Footer />
       <script
         type="application/ld+json"
         suppressHydrationWarning
@@ -63,6 +67,6 @@ export default function BlogPage() {
           ),
         }}
       />
-    </>
+    </div>
   );
 }

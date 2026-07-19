@@ -18,6 +18,7 @@ import {
 import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials";
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
+import { SubpageBackdrop } from "@/components/marketing/subpage-backdrop";
 import { ALTERNATIVE_LINKS } from "@/lib/site-navigation";
 
 const orderedAlternatives = ALTERNATIVE_LINKS.map((link) =>
@@ -28,25 +29,18 @@ const spring = { type: "spring" as const, stiffness: 110, damping: 22 };
 
 export function AlternativesIndex() {
   return (
-    <div className="min-h-dvh overflow-hidden bg-stone-100 font-sans text-gray-950">
+    <div className="min-h-dvh overflow-hidden bg-dunlo-ground font-sans text-dunlo-ink">
       <Nav />
       <main className="mx-auto max-w-6xl px-4 pb-14 pt-28 md:px-6 md:pt-36">
-        <section className="relative overflow-hidden rounded-[2rem] border border-gray-200 bg-gray-950 text-white shadow-[0_34px_100px_-68px_rgba(15,23,42,0.8)]">
-          <div
-            aria-hidden
-            className="absolute inset-0 bg-[linear-gradient(rgba(255,255,255,0.055)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.045)_1px,transparent_1px)] bg-size-[38px_38px]"
-          />
-          <div
-            aria-hidden
-            className="absolute -right-28 top-12 h-64 w-64 rounded-full bg-dunlo/20 blur-3xl"
-          />
+        <section className="relative overflow-hidden rounded-2xl border border-dunlo-line bg-dunlo-ink text-white">
+          <SubpageBackdrop />
           <div className="relative grid gap-8 px-5 py-8 md:px-8 md:py-10 lg:grid-cols-[1.04fr_0.96fr] lg:items-end lg:px-10 lg:py-12">
             <motion.div
               initial={{ opacity: 0, y: 14 }}
               animate={{ opacity: 1, y: 0 }}
               transition={spring}
             >
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-1.5 text-sm font-semibold text-white/75 shadow-sm">
+              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-1.5 text-sm font-semibold text-white/75">
                 <RouteIcon size={15} className="text-dunlo" />
                 Stripe recovery alternatives
               </div>
@@ -62,7 +56,7 @@ export function AlternativesIndex() {
               <div className="mt-7 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href="/benchmark"
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-gray-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-dunlo-ink transition-all hover:bg-dunlo-hover active:scale-[0.98]"
                 >
                   Estimate my payment leak
                   <ArrowRight size={15} />
@@ -80,7 +74,7 @@ export function AlternativesIndex() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ ...spring, delay: 0.08 }}
-              className="rounded-[1.5rem] border border-white/10 bg-white/6 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)] backdrop-blur"
+              className="rounded-2xl border border-white/12 bg-white/6 p-5"
             >
               <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo">
                 Decision shortcut
@@ -140,7 +134,7 @@ export function AlternativesIndex() {
           ].map(({ icon: Icon, label, body }) => (
             <div
               key={label}
-              className="group rounded-[1.5rem] border border-gray-200 bg-white p-5 shadow-sm transition-all hover:-translate-y-0.5 hover:border-dunlo/35 hover:shadow-[0_24px_70px_-54px_rgba(15,23,42,0.55)]"
+              className="group rounded-2xl border border-dunlo-line bg-white p-5 transition-all hover:-translate-y-0.5 hover:border-dunlo/35"
             >
               <div className="flex items-start justify-between gap-4">
                 <Icon size={20} className="text-dunlo-deep" />
@@ -149,8 +143,8 @@ export function AlternativesIndex() {
                   className="text-gray-300 transition-colors group-hover:text-dunlo-deep"
                 />
               </div>
-              <h2 className="mt-4 text-sm font-bold text-gray-950">{label}</h2>
-              <p className="mt-2 text-sm leading-6 text-gray-500">{body}</p>
+              <h2 className="mt-4 text-sm font-bold text-dunlo-ink">{label}</h2>
+              <p className="mt-2 text-sm leading-6 text-dunlo-ink/56">{body}</p>
             </div>
           ))}
         </section>
@@ -158,14 +152,14 @@ export function AlternativesIndex() {
         <section className="mt-6">
           <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo-deep">
+              <p className="text-sm font-semibold text-dunlo-deep">
                 Compare paths
               </p>
               <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">
                 Start with the tool category, then pick the vendor.
               </h2>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-gray-500">
+            <p className="max-w-xl text-sm leading-6 text-dunlo-ink/56">
               Each guide keeps the comparison practical: fit, setup, pricing,
               recovery workflow, and where Dunlo is intentionally narrower.
             </p>
@@ -178,15 +172,15 @@ export function AlternativesIndex() {
                 initial={{ opacity: 0, y: 18 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ ...spring, delay: 0.08 + index * 0.04 }}
-                className="group overflow-hidden rounded-[1.5rem] border border-gray-200 bg-white shadow-sm transition-all hover:-translate-y-0.5 hover:border-dunlo/35 hover:shadow-[0_26px_80px_-58px_rgba(15,23,42,0.6)]"
+                className="group overflow-hidden rounded-2xl border border-dunlo-line bg-white transition-all hover:-translate-y-0.5 hover:border-dunlo/35"
               >
-                <div className="border-b border-gray-100 p-5 md:p-6">
+                <div className="border-b border-dunlo-line/60 p-5 md:p-6">
                   <div className="flex items-start justify-between gap-4">
                     <div>
-                      <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
+                      <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo-ink/46">
                         {page.eyebrow}
                       </p>
-                      <h3 className="mt-3 text-2xl font-bold tracking-tight text-gray-950">
+                      <h3 className="mt-3 text-2xl font-bold tracking-tight text-dunlo-ink">
                         {page.headline}
                       </h3>
                     </div>
@@ -194,17 +188,17 @@ export function AlternativesIndex() {
                       Compare
                     </span>
                   </div>
-                  <p className="mt-4 line-clamp-3 text-sm leading-6 text-gray-600">
+                  <p className="mt-4 line-clamp-3 text-sm leading-6 text-dunlo-ink/68">
                     {page.intro}
                   </p>
                 </div>
 
                 <div className="grid gap-0 sm:grid-cols-2">
-                  <div className="border-b border-gray-100 bg-gray-50 p-5 sm:border-b-0 sm:border-r">
-                    <p className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-gray-400">
+                  <div className="border-b border-dunlo-line/60 bg-dunlo-mist p-5 sm:border-b-0 sm:border-r">
+                    <p className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-dunlo-ink/46">
                       {page.competitorName}
                     </p>
-                    <p className="mt-3 line-clamp-4 text-sm leading-6 text-gray-600">
+                    <p className="mt-3 line-clamp-4 text-sm leading-6 text-dunlo-ink/68">
                       {page.competitorSummary}
                     </p>
                   </div>
@@ -212,14 +206,14 @@ export function AlternativesIndex() {
                     <p className="font-mono text-[11px] font-bold uppercase tracking-[0.14em] text-dunlo-deep">
                       Dunlo
                     </p>
-                    <p className="mt-3 line-clamp-4 text-sm font-medium leading-6 text-gray-700">
+                    <p className="mt-3 line-clamp-4 text-sm font-medium leading-6 text-dunlo-ink/76">
                       {page.dunloSummary}
                     </p>
                   </div>
                 </div>
                 <Link
                   href={page.path}
-                  className="flex items-center justify-between px-5 py-4 text-sm font-bold text-gray-950 transition-colors hover:text-dunlo-deep md:px-6"
+                  className="flex items-center justify-between px-5 py-4 text-sm font-bold text-dunlo-ink transition-colors hover:text-dunlo-deep md:px-6"
                 >
                   <span>Read comparison</span>
                   <ArrowRight
