@@ -9,17 +9,20 @@ export const DIAGNOSTIC_EVENT_NAMES = [
 const FORBIDDEN_PROPERTY =
   /amount|revenue|customer|invoice|email|decline|currency/i;
 
-type DiagnosticAnalyticsInput = {
+export type DiagnosticAnalyticsInput = {
   verdict: DiagnosticVerdict;
   planCode?: string | null;
 } & Record<string, unknown>;
 
-type DiagnosticAnalyticsClient = {
+export type DiagnosticAnalyticsClient = {
   capture: (
     event: (typeof DIAGNOSTIC_EVENT_NAMES)[number],
     properties: Record<string, string>,
   ) => void;
 };
+
+export type DiagnosticAnalyticsEvent =
+  (typeof DIAGNOSTIC_EVENT_NAMES)[number];
 
 export function diagnosticAnalyticsPayload(input: DiagnosticAnalyticsInput) {
   for (const key of Object.keys(input)) {
@@ -40,5 +43,13 @@ export function captureDiagnosticReportViewed(
   client: DiagnosticAnalyticsClient,
   input: DiagnosticAnalyticsInput,
 ) {
-  client.capture("diagnostic_report_viewed", diagnosticAnalyticsPayload(input));
+  captureDiagnosticEvent(client, "diagnostic_report_viewed", input);
+}
+
+export function captureDiagnosticEvent(
+  client: DiagnosticAnalyticsClient,
+  event: DiagnosticAnalyticsEvent,
+  input: DiagnosticAnalyticsInput,
+) {
+  client.capture(event, diagnosticAnalyticsPayload(input));
 }

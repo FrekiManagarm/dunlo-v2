@@ -13,7 +13,7 @@ import {
   type DiagnosticStateView,
 } from "@/functions/diagnostic";
 import { getUser } from "@/functions/get-user";
-import { captureDiagnosticReportViewed } from "@/lib/diagnostic/analytics";
+import { captureDiagnosticEvent } from "@/lib/diagnostic/analytics";
 import {
   diagnosticConnectionQueryOptions,
   diagnosticReportQueryOptions,
@@ -95,7 +95,7 @@ function ConnectedOnboarding({
 
   useEffect(() => {
     if (!report.data) return;
-    captureDiagnosticReportViewed(posthog, {
+    captureDiagnosticEvent(posthog, "diagnostic_report_viewed", {
       verdict: report.data.verdict,
       planCode: report.data.planCode,
     });
@@ -128,13 +128,19 @@ function ConnectedOnboarding({
     );
 
   const requestActivation = () => {
-    posthog.capture("diagnostic_activation_requested", {
+    captureDiagnosticEvent(posthog, "diagnostic_activation_requested", {
       verdict: report.data.verdict,
-      plan_band: report.data.planCode,
+      planCode: report.data.planCode,
     });
-    window.location.assign("/api/stripe/connect?intent=activation");
+    window.location.assign(
+      `/api/stripe/connect?intent=activation&connectionId=${encodeURIComponent(connectionId)}`,
+    );
   };
   const requestMonitoring = async () => {
+    captureDiagnosticEvent(posthog, "diagnostic_monitoring_requested", {
+      verdict: report.data.verdict,
+      planCode: report.data.planCode,
+    });
     try {
       const response = await enableMonitoring({ data: { connectionId } });
       setMonitoringStatus(
@@ -144,11 +150,6 @@ function ConnectedOnboarding({
             ? "unavailable"
             : "error",
       );
-      if (response.ok)
-        posthog.capture("diagnostic_monitoring_requested", {
-          verdict: report.data.verdict,
-          plan_band: report.data.planCode,
-        });
     } catch {
       setMonitoringStatus("error");
     }
@@ -210,14 +211,14 @@ function EmailProviderStep() {
         Configure your sending domain
       </h1>
       <p className="mt-2 text-sm leading-6 text-zinc-600">
-        Write access is authorized. Configure a provider before you can review
-        the final activation summary.
+        Email-provider setup and activation progression are not available yet.
+        Recovery remains off until Task 12 is complete.
       </p>
       <Link
         to="/settings"
         className="mt-6 inline-flex h-11 items-center rounded-full bg-dunlo px-5 text-sm font-semibold text-white"
       >
-        Configure email provider
+        View email settings
       </Link>
     </section>
   );

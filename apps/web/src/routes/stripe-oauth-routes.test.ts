@@ -24,6 +24,7 @@ const mocks = vi.hoisted(() => {
   return {
     authSession: vi.fn(),
     selectLimit,
+    selectWhere: builder.where,
     updateWhere,
     updateSet,
     insertValues,
@@ -147,6 +148,7 @@ describe("Stripe OAuth route contracts", () => {
     vi.resetModules();
     mocks.authSession.mockResolvedValue({ user: { id: "user_123" } });
     mocks.selectLimit.mockReset();
+    mocks.selectWhere.mockClear();
     mocks.updateWhere.mockReset().mockResolvedValue(undefined);
     mocks.updateSet.mockReset().mockImplementation(() => ({
       where: mocks.updateWhere,
@@ -210,7 +212,7 @@ describe("Stripe OAuth route contracts", () => {
 
     const response = await Route.options.server.handlers.GET({
       request: new Request(
-        "https://app.dunlo.test/api/stripe/connect?intent=activation",
+        "https://app.dunlo.test/api/stripe/connect?intent=activation&connectionId=conn_123",
       ),
     });
     const location = new URL(response.headers.get("location")!);
@@ -221,6 +223,31 @@ describe("Stripe OAuth route contracts", () => {
       targetStripeAccountId: "acct_123",
       returnPath: "/onboarding?step=3",
     });
+    expect(mocks.selectWhere).toHaveBeenCalledWith(
+      expect.arrayContaining([
+        ["id", "conn_123"],
+        ["userId", "user_123"],
+      ]),
+    );
+  });
+
+  it("rejects activation OAuth without the displayed eligible connection id", async () => {
+    mocks.selectLimit.mockResolvedValueOnce([
+      { stripeAccountId: "acct_123", planCode: "mrr_25k_to_50k" },
+    ]);
+    const { Route } = (await import("./api/stripe/connect")) as {
+      Route: RouteWithGetHandler;
+    };
+
+    const response = await Route.options.server.handlers.GET({
+      request: new Request(
+        "https://app.dunlo.test/api/stripe/connect?intent=activation",
+      ),
+    });
+
+    expect(response.headers.get("location")).toBe(
+      "/onboarding?error=activation_not_available",
+    );
   });
 
   it("runs the diagnostic callback without write side effects and clears the state cookie", async () => {

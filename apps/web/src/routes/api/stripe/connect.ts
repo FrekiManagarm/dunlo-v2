@@ -6,7 +6,7 @@ import {
 } from "@dunlo-v2/db/schema/domain";
 import { env } from "@dunlo-v2/env/server";
 import { createFileRoute } from "@tanstack/react-router";
-import { and, desc, eq, inArray } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 
 import {
   buildStripeOAuthStateCookie,
@@ -66,6 +66,7 @@ function emitOAuthEvent(
 
 async function findActivationConnection(
   userId: string,
+  connectionId: string,
 ): Promise<ActivationConnection | null> {
   const [connection] = await db
     .select({
@@ -82,6 +83,7 @@ async function findActivationConnection(
     )
     .where(
       and(
+        eq(stripeConnection.id, connectionId),
         eq(stripeConnection.userId, userId),
         inArray(stripeConnection.phase, [
           "diagnostic_ready",
@@ -90,7 +92,6 @@ async function findActivationConnection(
         eq(diagnosticSnapshot.verdict, "activation_recommended"),
       ),
     )
-    .orderBy(desc(diagnosticSnapshot.createdAt))
     .limit(1);
   return connection ?? null;
 }
@@ -122,9 +123,13 @@ export const Route = createFileRoute("/api/stripe/connect")({
         ) {
           return redirectToOnboarding("diagnostic_downgrade_not_allowed");
         }
+        const activationConnectionId = url.searchParams.get("connectionId");
         const activation =
-          intent === "activation"
-            ? await findActivationConnection(session.user.id)
+          intent === "activation" && activationConnectionId
+            ? await findActivationConnection(
+                session.user.id,
+                activationConnectionId,
+              )
             : null;
         if (intent === "activation" && !activation) {
           return redirectToOnboarding("activation_not_available");

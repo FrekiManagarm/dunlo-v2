@@ -10,7 +10,7 @@ import {
   enableMonitoring,
   type DiagnosticStateView,
 } from "@/functions/diagnostic";
-import { captureDiagnosticReportViewed } from "@/lib/diagnostic/analytics";
+import { captureDiagnosticEvent } from "@/lib/diagnostic/analytics";
 import {
   diagnosticConnectionQueryOptions,
   diagnosticReportQueryOptions,
@@ -89,7 +89,7 @@ function ConnectedDiagnostic({
 
   useEffect(() => {
     if (!report.data) return;
-    captureDiagnosticReportViewed(posthog, {
+    captureDiagnosticEvent(posthog, "diagnostic_report_viewed", {
       verdict: report.data.verdict,
       planCode: report.data.planCode,
     });
@@ -114,13 +114,19 @@ function ConnectedDiagnostic({
     );
 
   const requestActivation = () => {
-    posthog.capture("diagnostic_activation_requested", {
+    captureDiagnosticEvent(posthog, "diagnostic_activation_requested", {
       verdict: report.data.verdict,
-      plan_band: report.data.planCode,
+      planCode: report.data.planCode,
     });
-    window.location.assign("/api/stripe/connect?intent=activation");
+    window.location.assign(
+      `/api/stripe/connect?intent=activation&connectionId=${encodeURIComponent(connectionId)}`,
+    );
   };
   const requestMonitoring = async () => {
+    captureDiagnosticEvent(posthog, "diagnostic_monitoring_requested", {
+      verdict: report.data.verdict,
+      planCode: report.data.planCode,
+    });
     try {
       const response = await enableMonitoring({ data: { connectionId } });
       setMonitoringStatus(
@@ -130,11 +136,6 @@ function ConnectedDiagnostic({
             ? "unavailable"
             : "error",
       );
-      if (response.ok)
-        posthog.capture("diagnostic_monitoring_requested", {
-          verdict: report.data.verdict,
-          plan_band: report.data.planCode,
-        });
     } catch {
       setMonitoringStatus("error");
     }

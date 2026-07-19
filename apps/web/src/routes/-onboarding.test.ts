@@ -30,6 +30,7 @@ describe("onboarding flow", () => {
     expect(onboardingSource).not.toContain(".max(4)");
     expect(onboardingSource).not.toContain("Your Stripe benchmark is ready");
     expect(onboardingSource).toContain("/api/stripe/connect?intent=activation");
+    expect(onboardingSource).toContain("connectionId=${encodeURIComponent(connectionId)}");
     expect(onboardingSource).toContain("monitoring_not_available");
     expect(onboardingSource).not.toContain('"current"');
   });
@@ -47,12 +48,11 @@ describe("onboarding flow", () => {
     expect(dashboardDiagnosticSource).toContain("onKeepReadOnly");
   });
 
-  it("polls only an actively running diagnostic using its connection id", () => {
+  it("polls an idle or running diagnostic using its connection id", () => {
     expect(diagnosticQueriesSource).toContain(
       '["diagnostic", "state", connectionId]',
     );
-    expect(diagnosticQueriesSource).toContain('phase === "diagnosing"');
-    expect(diagnosticQueriesSource).toContain('progress.status === "running"');
+    expect(diagnosticQueriesSource).toContain("shouldPollDiagnosticProgress");
     expect(diagnosticQueriesSource).not.toContain('"current"');
   });
 });

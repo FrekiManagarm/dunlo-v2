@@ -1,6 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 
 import {
+  captureDiagnosticEvent,
   captureDiagnosticReportViewed,
   DIAGNOSTIC_EVENT_NAMES,
   diagnosticAnalyticsPayload,
@@ -44,5 +45,36 @@ describe("diagnostic analytics", () => {
       verdict: "activation_recommended",
       plan_band: "growth",
     });
+  });
+
+  it("uses the same guarded helper for activation and monitoring attempts", () => {
+    const capture = vi.fn();
+    const client = { capture };
+    const input = {
+      verdict: "monitoring_recommended" as const,
+      planCode: "starter",
+    };
+
+    captureDiagnosticEvent(
+      client,
+      "diagnostic_activation_requested",
+      input,
+    );
+    captureDiagnosticEvent(
+      client,
+      "diagnostic_monitoring_requested",
+      input,
+    );
+
+    expect(capture).toHaveBeenNthCalledWith(
+      1,
+      "diagnostic_activation_requested",
+      { verdict: "monitoring_recommended", plan_band: "starter" },
+    );
+    expect(capture).toHaveBeenNthCalledWith(
+      2,
+      "diagnostic_monitoring_requested",
+      { verdict: "monitoring_recommended", plan_band: "starter" },
+    );
   });
 });

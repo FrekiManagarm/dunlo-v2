@@ -18,6 +18,7 @@ import {
 } from "@/functions/payments";
 import { getSequences } from "@/functions/sequences";
 import { getOnboardingState } from "@/functions/stripe";
+import { shouldPollDiagnosticProgress } from "@/lib/diagnostic/polling";
 
 const PAYMENT_STATUSES = [
   "in_recovery",
@@ -103,8 +104,11 @@ export const diagnosticStateQueryOptions = (connectionId: string) =>
     queryKey: ["diagnostic", "state", connectionId] as const,
     queryFn: () => getDiagnosticState({ data: { connectionId } }),
     refetchInterval: (query) =>
-      query.state.data?.phase === "diagnosing" &&
-      query.state.data.progress.status === "running"
+      query.state.data &&
+      shouldPollDiagnosticProgress({
+        phase: query.state.data.phase,
+        progressStatus: query.state.data.progress.status,
+      })
         ? 2_500
         : false,
   });
