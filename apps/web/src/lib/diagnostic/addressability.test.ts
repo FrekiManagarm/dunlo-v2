@@ -165,6 +165,22 @@ describe("classifyFailure", () => {
     });
   });
 
+  it("excludes an ended subscription without involuntary-failure evidence before open classification", () => {
+    expect(
+      classifyFailure(
+        evidence({
+          invoiceStatus: "open",
+          subscriptionStatus: "canceled",
+          adviceCode: "try_again_later",
+        }),
+      ),
+    ).toMatchObject({
+      category: "excluded",
+      reasonCode: "historical_outcome_without_involuntary_failure_evidence",
+      sourceSignal: "lifecycle",
+    });
+  });
+
   it("excludes unknown evidence rather than automating it", () => {
     expect(
       classifyFailure(evidence({ declineCode: "future_stripe_code" })),

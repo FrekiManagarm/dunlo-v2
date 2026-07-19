@@ -121,15 +121,17 @@ export function classifyFailure(evidence: FailureEvidence): ClassificationResult
   const category = categoryFor(signal.path, evidence);
 
   if (!category) {
+    const hasHistoricalLifecycle = historicalLifecycle(evidence);
+
     return result(
       "excluded",
-      historicalOutcome(evidence.invoiceStatus)
+      hasHistoricalLifecycle
         ? "historical_outcome_without_involuntary_failure_evidence"
         : "excluded_unknown",
-      historicalOutcome(evidence.invoiceStatus)
+      hasHistoricalLifecycle
         ? "The historical invoice outcome lacks evidence of an involuntary payment failure."
         : "The available payment evidence does not support a safe recovery action.",
-      historicalOutcome(evidence.invoiceStatus) ? "lifecycle" : "unknown",
+      hasHistoricalLifecycle ? "lifecycle" : "unknown",
     );
   }
 
@@ -217,11 +219,11 @@ function categoryFor(
   path: RecoveryPath,
   evidence: FailureEvidence,
 ): DiagnosticCategory | null {
-  if (
-    (historicalOutcome(evidence.invoiceStatus) ||
-      subscriptionEnded(evidence.subscriptionStatus)) &&
-    evidence.hasInvoluntaryFailureEvidence
-  ) {
+  if (historicalLifecycle(evidence)) {
+    if (!evidence.hasInvoluntaryFailureEvidence) {
+      return null;
+    }
+
     return path === "automatable"
       ? "historically_lost_automatable"
       : "historically_lost_human";
@@ -240,6 +242,13 @@ function historicalOutcome(invoiceStatus: string): boolean {
 
 function subscriptionEnded(subscriptionStatus: string | null): boolean {
   return subscriptionStatus !== null && endedSubscriptionStatuses.has(subscriptionStatus);
+}
+
+function historicalLifecycle(evidence: FailureEvidence): boolean {
+  return (
+    historicalOutcome(evidence.invoiceStatus) ||
+    subscriptionEnded(evidence.subscriptionStatus)
+  );
 }
 
 function normalizeCode(value: string | null): string | null {
