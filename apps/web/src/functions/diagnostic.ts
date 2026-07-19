@@ -6,7 +6,7 @@ import {
   type ConnectionPhase,
 } from "@dunlo-v2/db/schema/domain";
 import { createServerFn } from "@tanstack/react-start";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, exists } from "drizzle-orm";
 import { z } from "zod";
 
 import type { DiagnosticReportView } from "../lib/diagnostic/report";
@@ -236,13 +236,7 @@ export const enableMonitoring = createServerFn({ method: "POST" })
       context.session.user.id,
       data.connectionId,
     );
-    if (
-      connection.phase !== "diagnostic_ready" ||
-      connection.scope !== "read_only"
-    ) {
-      throw new Error("Monitoring requires a ready read-only diagnostic.");
-    }
-    const [snapshot] = await db
+    const readySnapshot = db
       .select({ id: diagnosticSnapshot.id })
       .from(diagnosticSnapshot)
       .where(
@@ -251,12 +245,8 @@ export const enableMonitoring = createServerFn({ method: "POST" })
           eq(diagnosticSnapshot.userId, context.session.user.id),
           eq(diagnosticSnapshot.isCurrent, true),
         ),
-      )
-      .limit(1);
-    if (!snapshot) {
-      throw new Error("Monitoring requires a ready diagnostic.");
-    }
-    await db
+      );
+    const [updated] = await db
       .update(stripeConnection)
       .set({
         scope: "read_only",
@@ -268,7 +258,14 @@ export const enableMonitoring = createServerFn({ method: "POST" })
         and(
           eq(stripeConnection.id, connection.id),
           eq(stripeConnection.userId, context.session.user.id),
+          eq(stripeConnection.scope, "read_only"),
+          eq(stripeConnection.phase, "diagnostic_ready"),
+          exists(readySnapshot),
         ),
-      );
+      )
+      .returning({ id: stripeConnection.id });
+    if (!updated) {
+      throw new Error("Monitoring requires a ready read-only diagnostic.");
+    }
     return { ok: true as const };
   });

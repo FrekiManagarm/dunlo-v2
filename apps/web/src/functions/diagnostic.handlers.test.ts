@@ -2,12 +2,14 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 type Condition =
   | { op: "and"; conditions: Condition[] }
-  | { op: "eq"; column: string; value: unknown };
+  | { op: "eq"; column: string; value: unknown }
+  | { op: "exists"; query: unknown };
 
 const mocks = vi.hoisted(() => {
   const rows: unknown[][] = [];
   const where = vi.fn();
   const set = vi.fn();
+  const updateRows: Array<Array<{ id: string }>> = [];
   const select = vi.fn(() => {
     const query = {
       from: vi.fn(),
@@ -33,11 +35,13 @@ const mocks = vi.hoisted(() => {
         where(condition);
         return query;
       },
-      returning: vi.fn(async () => [{ id: "conn_owned" }]),
+      returning: vi.fn(
+        async () => updateRows.shift() ?? [{ id: "conn_owned" }],
+      ),
     };
     return query;
   });
-  return { rows, select, update, where, set };
+  return { rows, updateRows, select, update, where, set };
 });
 
 vi.mock("@tanstack/react-start", () => ({
@@ -84,6 +88,7 @@ vi.mock("drizzle-orm", () => ({
   and: (...conditions: Condition[]) => ({ op: "and", conditions }),
   desc: (column: string) => column,
   eq: (column: string, value: unknown) => ({ op: "eq", column, value }),
+  exists: (query: unknown) => ({ op: "exists", query }),
 }));
 
 vi.mock("../middleware/auth", () => ({ authMiddleware: {} }));
@@ -96,7 +101,14 @@ function containsEq(
   if (condition.op === "eq") {
     return condition.column === column && condition.value === value;
   }
+  if (condition.op === "exists") return false;
   return condition.conditions.some((child) => containsEq(child, column, value));
+}
+
+function containsExists(condition: Condition): boolean {
+  if (condition.op === "exists") return true;
+  if (condition.op === "eq") return false;
+  return condition.conditions.some(containsExists);
 }
 
 const ownedConnection = {
@@ -114,6 +126,7 @@ describe("diagnostic server-function handlers", () => {
   beforeEach(() => {
     vi.resetModules();
     mocks.rows.length = 0;
+    mocks.updateRows.length = 0;
     mocks.select.mockClear();
     mocks.update.mockClear();
     mocks.where.mockClear();
@@ -290,11 +303,48 @@ describe("diagnostic server-function handlers", () => {
         "user_owned",
       ),
     ).toBe(true);
+    expect(
+      containsEq(
+        mocks.where.mock.calls.at(-1)?.[0],
+        "connection_scope",
+        "read_only",
+      ),
+    ).toBe(true);
+    expect(
+      containsEq(
+        mocks.where.mock.calls.at(-1)?.[0],
+        "connection_phase",
+        "diagnostic_ready",
+      ),
+    ).toBe(true);
+    expect(containsExists(mocks.where.mock.calls.at(-1)?.[0])).toBe(true);
+    expect(
+      containsEq(
+        mocks.where.mock.calls.at(-2)?.[0],
+        "snapshot_connection_id",
+        "conn_owned",
+      ),
+    ).toBe(true);
+    expect(
+      containsEq(
+        mocks.where.mock.calls.at(-2)?.[0],
+        "snapshot_user_id",
+        "user_owned",
+      ),
+    ).toBe(true);
+    expect(
+      containsEq(
+        mocks.where.mock.calls.at(-2)?.[0],
+        "snapshot_is_current",
+        true,
+      ),
+    ).toBe(true);
     vi.useRealTimers();
   });
 
-  it("rejects monitoring when the connection has no ready snapshot", async () => {
-    mocks.rows.push([ownedConnection], []);
+  it("rejects monitoring when eligibility disappears before the atomic update", async () => {
+    mocks.rows.push([ownedConnection]);
+    mocks.updateRows.push([]);
     const { enableMonitoring } = await import("./diagnostic");
 
     await expect(
@@ -302,9 +352,9 @@ describe("diagnostic server-function handlers", () => {
         context: { session: { user: { id: "user_owned" } } },
         data: { connectionId: "conn_owned" },
       }),
-    ).rejects.toThrow(/ready diagnostic/i);
+    ).rejects.toThrow(/ready read-only diagnostic/i);
 
-    expect(mocks.update).not.toHaveBeenCalled();
+    expect(mocks.update).toHaveBeenCalledOnce();
   });
 
   it("rejects monitoring for a connection the authenticated user does not own", async () => {

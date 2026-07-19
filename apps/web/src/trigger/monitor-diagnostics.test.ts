@@ -11,9 +11,11 @@ const mocks = vi.hoisted(() => {
         where(condition);
         return query;
       },
+      orderBy: vi.fn(),
       limit,
     };
     query.from.mockReturnValue(query);
+    query.orderBy.mockReturnValue(query);
     return query;
   });
   return {
@@ -46,6 +48,8 @@ vi.mock("drizzle-orm", () => ({
   and: (...conditions: unknown[]) => ({ op: "and", conditions }),
   eq: (column: string, value: unknown) => ({ op: "eq", column, value }),
   lte: (column: string, value: unknown) => ({ op: "lte", column, value }),
+  asc: (column: string) => ({ op: "asc", column }),
+  gt: (column: string, value: unknown) => ({ op: "gt", column, value }),
 }));
 
 vi.mock("./run-diagnostic", () => ({
@@ -94,6 +98,31 @@ describe("monitorDiagnosticsTask", () => {
         { op: "eq", column: "monitoring_enabled", value: true },
         { op: "eq", column: "connection_phase", value: "monitoring" },
         { op: "lte", column: "next_analysis_at", value: expect.any(Date) },
+      ]),
+    });
+  });
+
+  it("deterministically paginates every due connection beyond the first 100", async () => {
+    const due = Array.from({ length: 101 }, (_, index) => ({
+      id: `conn_${String(index).padStart(3, "0")}`,
+    }));
+    mocks.rows.push(due.slice(0, 100), due.slice(100), []);
+    const { queueDueDiagnosticMonitoring } =
+      await import("./monitor-diagnostics");
+
+    await expect(queueDueDiagnosticMonitoring()).resolves.toEqual({
+      queued: 101,
+    });
+    expect(mocks.triggerDiagnostic).toHaveBeenCalledTimes(101);
+    expect(mocks.triggerDiagnostic).toHaveBeenLastCalledWith({
+      connectionId: "conn_100",
+      reason: "monitoring",
+    });
+    expect(mocks.limit).toHaveBeenCalledTimes(2);
+    expect(mocks.where.mock.calls[1][0]).toEqual({
+      op: "and",
+      conditions: expect.arrayContaining([
+        { op: "gt", column: "connection_id", value: "conn_099" },
       ]),
     });
   });
