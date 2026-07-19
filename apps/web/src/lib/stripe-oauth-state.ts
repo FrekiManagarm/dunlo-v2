@@ -35,6 +35,25 @@ function invalidState(): never {
   throw new StripeOAuthStateError("invalid_oauth_state");
 }
 
+export function isInternalStripeOAuthReturnPath(path: string): boolean {
+  if (
+    !path.startsWith("/") ||
+    path.startsWith("//") ||
+    path.includes("\\") ||
+    /%5c/i.test(path)
+  ) {
+    return false;
+  }
+  try {
+    return (
+      new URL(path, "https://router.dunlo.invalid").origin ===
+      "https://router.dunlo.invalid"
+    );
+  } catch {
+    return false;
+  }
+}
+
 function sign(encodedPayload: string, secret: string): string {
   return createHmac("sha256", secret)
     .update(encodedPayload)
@@ -71,8 +90,7 @@ export function createStripeOAuthState(
   if (
     !input.nonce ||
     !input.userId ||
-    !input.returnPath.startsWith("/") ||
-    input.returnPath.startsWith("//")
+    !isInternalStripeOAuthReturnPath(input.returnPath)
   ) {
     invalidState();
   }
@@ -131,6 +149,7 @@ export function verifyStripeOAuthState(
   if (payload.intent === "activation" && !payload.targetStripeAccountId) {
     throw new StripeOAuthStateError("activation_target_required");
   }
+  if (!isInternalStripeOAuthReturnPath(payload.returnPath)) invalidState();
   return {
     ...payload,
     targetStripeAccountId: payload.targetStripeAccountId,

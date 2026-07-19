@@ -6,11 +6,12 @@ import {
 } from "@dunlo-v2/db/schema/domain";
 import { env } from "@dunlo-v2/env/server";
 import { createFileRoute } from "@tanstack/react-router";
-import { and, desc, eq } from "drizzle-orm";
+import { and, desc, eq, inArray } from "drizzle-orm";
 
 import {
   buildStripeOAuthStateCookie,
   createStripeOAuthState,
+  isInternalStripeOAuthReturnPath,
   type StripeOAuthIntent,
 } from "@/lib/stripe-oauth-state";
 
@@ -19,11 +20,33 @@ type ActivationConnection = {
   planCode: string;
 };
 
+const DIAGNOSTIC_DOWNGRADE_PHASES = [
+  "write_authorized",
+  "email_configured",
+  "recovery_active",
+] as const;
+
 function isSafeReturnPath(value: string | null, fallback: string): string {
-  if (!value || !value.startsWith("/") || value.startsWith("//")) {
+  if (!value || !isInternalStripeOAuthReturnPath(value)) {
     return fallback;
   }
   return value;
+}
+
+async function hasDiagnosticDowngradeConnection(
+  userId: string,
+): Promise<boolean> {
+  const [connection] = await db
+    .select({ id: stripeConnection.id })
+    .from(stripeConnection)
+    .where(
+      and(
+        eq(stripeConnection.userId, userId),
+        inArray(stripeConnection.phase, DIAGNOSTIC_DOWNGRADE_PHASES),
+      ),
+    )
+    .limit(1);
+  return Boolean(connection);
 }
 
 function redirectToOnboarding(error: string): Response {
@@ -60,7 +83,10 @@ async function findActivationConnection(
     .where(
       and(
         eq(stripeConnection.userId, userId),
-        eq(stripeConnection.phase, "diagnostic_ready"),
+        inArray(stripeConnection.phase, [
+          "diagnostic_ready",
+          "activation_requested",
+        ]),
         eq(diagnosticSnapshot.verdict, "activation_recommended"),
       ),
     )
@@ -90,6 +116,12 @@ export const Route = createFileRoute("/api/stripe/connect")({
           return redirectToOnboarding("invalid_oauth_intent");
         }
         const intent = requestedIntent as StripeOAuthIntent;
+        if (
+          intent === "diagnostic" &&
+          (await hasDiagnosticDowngradeConnection(session.user.id))
+        ) {
+          return redirectToOnboarding("diagnostic_downgrade_not_allowed");
+        }
         const activation =
           intent === "activation"
             ? await findActivationConnection(session.user.id)

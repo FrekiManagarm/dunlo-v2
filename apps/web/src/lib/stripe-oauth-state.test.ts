@@ -1,3 +1,4 @@
+import { createHmac } from "node:crypto";
 import { describe, expect, it } from "vitest";
 
 import {
@@ -7,6 +8,16 @@ import {
 
 const secret = "a-test-secret-that-is-long-enough-for-hmac-signing";
 const issuedAt = new Date("2026-07-19T10:00:00.000Z");
+
+function sealPayload(payload: Record<string, unknown>): string {
+  const encodedPayload = Buffer.from(JSON.stringify(payload)).toString(
+    "base64url",
+  );
+  const signature = createHmac("sha256", secret)
+    .update(encodedPayload)
+    .digest("base64url");
+  return `${encodedPayload}.${signature}`;
+}
 
 describe("Stripe OAuth state", () => {
   it("seals the diagnostic nonce, user, intent, issue time, and return path", () => {
@@ -118,5 +129,40 @@ describe("Stripe OAuth state", () => {
         secret,
       ),
     ).toThrow("activation_target_required");
+  });
+
+  it("rejects a backslash return path when creating OAuth state", () => {
+    expect(() =>
+      createStripeOAuthState(
+        {
+          nonce: "nonce_123",
+          userId: "user_123",
+          intent: "diagnostic",
+          issuedAt,
+          returnPath: "/\\evil.example",
+        },
+        secret,
+      ),
+    ).toThrow("invalid_oauth_state");
+  });
+
+  it("rejects a signed OAuth state with a non-router return path", () => {
+    expect(() =>
+      verifyStripeOAuthState(
+        sealPayload({
+          nonce: "nonce_123",
+          userId: "user_123",
+          intent: "diagnostic",
+          issuedAt: issuedAt.toISOString(),
+          returnPath: "/\\evil.example",
+        }),
+        {
+          nonce: "nonce_123",
+          userId: "user_123",
+          now: issuedAt,
+          secret,
+        },
+      ),
+    ).toThrow("invalid_oauth_state");
   });
 });

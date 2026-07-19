@@ -15,6 +15,11 @@ import { setupWebhooks } from "@/lib/stripe-webhooks";
 import { triggerDiagnostic } from "@/trigger/run-diagnostic";
 
 const STATE_COOKIE = "stripe_oauth_state";
+const DIAGNOSTIC_DOWNGRADE_PHASES = new Set([
+  "write_authorized",
+  "email_configured",
+  "recovery_active",
+]);
 
 type StripeOAuthTokenResponse = {
   access_token: string;
@@ -113,12 +118,19 @@ export const Route = createFileRoute("/api/stripe/callback")({
               .select({
                 id: stripeConnection.id,
                 userId: stripeConnection.userId,
+                phase: stripeConnection.phase,
               })
               .from(stripeConnection)
               .where(eq(stripeConnection.stripeAccountId, token.stripe_user_id))
               .limit(1);
             if (accountOwner && accountOwner.userId !== session.user.id) {
               return redirectWithError("stripe_account_in_use");
+            }
+            if (
+              accountOwner &&
+              DIAGNOSTIC_DOWNGRADE_PHASES.has(accountOwner.phase)
+            ) {
+              return redirectWithError("diagnostic_downgrade_not_allowed");
             }
 
             const connectionValues = {
@@ -185,7 +197,17 @@ export const Route = createFileRoute("/api/stripe/callback")({
               liveMode: token.livemode ?? null,
             })
             .where(eq(stripeConnection.id, connection.id));
-          await setupWebhooks(token.stripe_user_id, token.access_token);
+          const webhook = await setupWebhooks(
+            token.stripe_user_id,
+            token.access_token,
+          );
+          if (!webhook) {
+            await db
+              .update(stripeConnection)
+              .set({ phase: "activation_requested" })
+              .where(eq(stripeConnection.id, connection.id));
+            return redirectWithError("activation_retryable");
+          }
           await seedDefaultSequences(session.user.id, { isActive: false });
           return redirect(oauthState.returnPath);
         } catch {
