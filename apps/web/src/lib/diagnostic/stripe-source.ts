@@ -30,6 +30,8 @@ export type Page<T> = {
   coverage: Coverage;
 };
 
+type ProgressCallback = () => Promise<void>;
+
 export type AccountEvidence = {
   id: string | null;
   mode: StripeMode | null;
@@ -79,8 +81,12 @@ export interface StripeDiagnosticSource {
   loadInvoices(
     window: TimeWindow,
     cursor?: string,
+    onProgress?: ProgressCallback,
   ): Promise<Page<InvoiceEvidence>>;
-  loadPaymentEvidence(invoiceIds: string[]): Promise<PaymentEvidence[]>;
+  loadPaymentEvidence(
+    invoiceIds: string[],
+    onProgress?: ProgressCallback,
+  ): Promise<PaymentEvidence[]>;
 }
 
 type StripeObject = {
@@ -250,6 +256,7 @@ export function createStripeDiagnosticSource(
     async loadInvoices(
       window: TimeWindow,
       cursor?: string,
+      onProgress?: ProgressCallback,
     ): Promise<Page<InvoiceEvidence>> {
       const outcome = await retryRateLimit(
         () =>
@@ -279,7 +286,14 @@ export function createStripeDiagnosticSource(
           continue;
         }
 
-        const lines = await loadAllInvoiceLines(invoice, client, retry, sleep);
+        const lines = await loadAllInvoiceLines(
+          invoice,
+          client,
+          retry,
+          sleep,
+          onProgress,
+        );
+        await onProgress?.();
         pageCount += lines.pageCount;
         recordCount += lines.lines.length;
 
@@ -321,12 +335,14 @@ export function createStripeDiagnosticSource(
 
     async loadPaymentEvidence(
       invoiceIds: string[],
+      onProgress?: ProgressCallback,
     ): Promise<PaymentEvidence[]> {
       const evidence: PaymentEvidence[] = [];
 
       for (const invoiceId of invoiceIds) {
         const invoice = includedInvoices.get(invoiceId);
         if (!invoice || !invoice.paymentIntentId) {
+          await onProgress?.();
           continue;
         }
 
@@ -339,6 +355,7 @@ export function createStripeDiagnosticSource(
 
         if ("failure" in paymentIntent) {
           evidence.push(partialPaymentEvidence(invoice));
+          await onProgress?.();
           continue;
         }
 
@@ -365,6 +382,7 @@ export function createStripeDiagnosticSource(
             mode: modeOf(paymentIntent.value),
             coverage: completeCoverage(1, 1),
           });
+          await onProgress?.();
           continue;
         }
 
@@ -378,6 +396,7 @@ export function createStripeDiagnosticSource(
           evidence.push(
             partialPaymentEvidence(invoice, paymentIntent.value.id, chargeId),
           );
+          await onProgress?.();
           continue;
         }
 
@@ -402,6 +421,7 @@ export function createStripeDiagnosticSource(
           mode: modeOf(charge.value),
           coverage: completeCoverage(2, 2),
         });
+        await onProgress?.();
       }
 
       return evidence;
@@ -455,6 +475,7 @@ async function loadAllInvoiceLines(
   client: StripeReadClient,
   retry: RetryOptions,
   sleep: (milliseconds: number) => Promise<void>,
+  onProgress?: ProgressCallback,
 ): Promise<{
   lines: InvoiceLineEvidence[];
   pageCount: number;
@@ -482,6 +503,7 @@ async function loadAllInvoiceLines(
 
     pageCount += 1;
     lines.push(...outcome.value.data);
+    await onProgress?.();
     hasMore = outcome.value.has_more;
     cursor = outcome.value.data.at(-1)?.id;
   }

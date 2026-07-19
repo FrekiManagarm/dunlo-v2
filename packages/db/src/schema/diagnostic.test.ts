@@ -135,9 +135,15 @@ describe("diagnostic lifecycle schema", () => {
     const columns = columnsFor(domain.diagnosticRun);
 
     expect(columns.lease_expires_at?.notNull).toBe(true);
+    expect(columns.lease_owner_id?.notNull).toBe(true);
     expect(
       diagnosticMigrations.some((migration) =>
         migration.includes('ADD COLUMN "lease_expires_at" timestamp'),
+      ),
+    ).toBe(true);
+    expect(
+      diagnosticMigrations.some((migration) =>
+        migration.includes('ADD COLUMN "lease_owner_id" text'),
       ),
     ).toBe(true);
   });

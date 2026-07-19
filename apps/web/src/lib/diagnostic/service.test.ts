@@ -5,6 +5,7 @@ import {
   DiagnosticService,
   DiagnosticRunRetryableError,
   type DiagnosticConnection,
+  type DiagnosticWindow,
   type DiagnosticProgress,
   type DiagnosticRepository,
   type DiagnosticServiceOptions,
@@ -18,6 +19,13 @@ import type {
 } from "./stripe-source";
 
 const NOW = new Date("2026-07-19T12:00:00.000Z");
+
+const WINDOW: DiagnosticWindow = {
+  analysisStartsAt: new Date("2026-04-21T00:00:00.000Z"),
+  analysisEndsAt: new Date("2026-07-20T00:00:00.000Z"),
+  decisionStartsAt: new Date("2026-06-20T00:00:00.000Z"),
+  decisionEndsAt: new Date("2026-07-20T00:00:00.000Z"),
+};
 
 function completeCoverage(recordCount = 1): Coverage {
   return { status: "complete", pageCount: 1, recordCount };
@@ -135,6 +143,7 @@ function createRepository(options?: {
   run?: {
     status: Exclude<DiagnosticProgress["status"], "idle">;
     leaseExpiresAt: Date;
+    leaseOwnerId?: string;
   };
 }) {
   const snapshots: DiagnosticSnapshotView[] = options?.current
@@ -155,9 +164,16 @@ function createRepository(options?: {
     {
       status: Exclude<DiagnosticProgress["status"], "idle">;
       leaseExpiresAt: Date;
+      leaseOwnerId: string;
     }
   >();
-  if (options?.run) runs.set("conn_1", options.run);
+  if (options?.run) {
+    runs.set("conn_1", {
+      ...options.run,
+      leaseOwnerId: options.run.leaseOwnerId ?? "existing-owner",
+    });
+  }
+  let ownerNumber = 0;
   const persist = vi.fn(async ({ snapshot, newFindings, phase }) => {
     const existing = snapshots.find(
       (candidate) =>
@@ -196,6 +212,7 @@ function createRepository(options?: {
     }),
     claimRun: vi.fn(async ({ connectionId, now }) => {
       const run = runs.get(connectionId);
+      const leaseOwnerId = `owner-${++ownerNumber}`;
       if (run) {
         if (
           run.status === "failed" ||
@@ -204,13 +221,14 @@ function createRepository(options?: {
           runs.set(connectionId, {
             status: "running",
             leaseExpiresAt: new Date(now.getTime() + 60_000),
+            leaseOwnerId,
           });
           progress.set(connectionId, {
             status: "running",
             checkpoints: [],
             errorCategory: null,
           });
-          return { owner: true as const };
+          return { owner: true as const, leaseOwnerId };
         }
         return {
           owner: false as const,
@@ -220,22 +238,37 @@ function createRepository(options?: {
       runs.set(connectionId, {
         status: "running",
         leaseExpiresAt: new Date(now.getTime() + 60_000),
+        leaseOwnerId,
       });
       progress.set(connectionId, {
         status: "running",
         checkpoints: [],
         errorCategory: null,
       });
-      return { owner: true as const };
+      return { owner: true as const, leaseOwnerId };
     }),
-    saveProgress: vi.fn(async ({ connectionId, progress: nextProgress }) => {
-      progress.set(connectionId, nextProgress);
-    }),
+    saveProgress: vi.fn(
+      async ({ connectionId, leaseOwnerId, progress: nextProgress }) => {
+        const run = runs.get(connectionId);
+        if (!run || run.leaseOwnerId !== leaseOwnerId) return false;
+        run.leaseExpiresAt = new Date(NOW.getTime() + 600_000);
+        progress.set(connectionId, nextProgress);
+        return true;
+      },
+    ),
     transaction,
     persist,
   };
 
-  return { repository, snapshots, findings, phases, progress, transaction };
+  return {
+    repository,
+    snapshots,
+    findings,
+    phases,
+    progress,
+    runs,
+    transaction,
+  };
 }
 
 function createService(
@@ -349,6 +382,81 @@ describe("DiagnosticService", () => {
 
     expect(result.reused).toBe(false);
     expect(source.loadAccount).toHaveBeenCalledTimes(1);
+  });
+
+  it("keeps a heartbeating owner live during a long subscription page", async () => {
+    const fixture = createRepository();
+    const ownerSource = completeSource();
+    const waiterSource = completeSource();
+    let releaseSubscriptions: (() => void) | undefined;
+    const subscriptionsReleased = new Promise<void>((resolve) => {
+      releaseSubscriptions = resolve;
+    });
+    const originalLoadSubscriptions = ownerSource.loadSubscriptions;
+    ownerSource.loadSubscriptions = vi.fn(async (...args) => {
+      await subscriptionsReleased;
+      return originalLoadSubscriptions(...args);
+    });
+    const owner = createService(fixture.repository, ownerSource);
+    const waiter = createService(fixture.repository, waiterSource, {
+      wait: async () => {},
+    });
+
+    const ownerRun = owner.run({
+      connectionId: "conn_1",
+      reason: "scheduled",
+      now: NOW,
+    });
+    await vi.waitFor(() => {
+      expect(ownerSource.loadSubscriptions).toHaveBeenCalledOnce();
+    });
+
+    await expect(
+      waiter.run({
+        connectionId: "conn_1",
+        reason: "scheduled",
+        now: new Date(NOW.getTime() + 300_000),
+      }),
+    ).rejects.toBeInstanceOf(DiagnosticRunRetryableError);
+
+    expect(waiterSource.loadAccount).not.toHaveBeenCalled();
+    releaseSubscriptions?.();
+    await ownerRun;
+  });
+
+  it("refuses progress from an owner after its lease is reclaimed", async () => {
+    const fixture = createRepository();
+    const first = await fixture.repository.claimRun({
+      connectionId: "conn_1",
+      window: WINDOW,
+      now: NOW,
+    });
+    if (!first.owner) throw new Error("Expected initial owner.");
+    const second = await fixture.repository.claimRun({
+      connectionId: "conn_1",
+      window: WINDOW,
+      now: new Date(NOW.getTime() + 300_000),
+    });
+    if (!second.owner) throw new Error("Expected reclaimed owner.");
+
+    await expect(
+      fixture.repository.saveProgress({
+        connectionId: "conn_1",
+        window: WINDOW,
+        leaseOwnerId: first.leaseOwnerId,
+        progress: {
+          status: "completed",
+          checkpoints: ["snapshot_persisted"],
+          errorCategory: null,
+        },
+      }),
+    ).resolves.toBe(false);
+    await expect(
+      fixture.repository.getProgress("conn_1"),
+    ).resolves.toMatchObject({
+      status: "running",
+      checkpoints: [],
+    });
   });
 
   it("returns a retryable error after bounded waiting for a live owner", async () => {

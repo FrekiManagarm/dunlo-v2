@@ -137,7 +137,7 @@ export type DiagnosticPersistenceResult = {
 type StoredDiagnosticProgress = Omit<DiagnosticProgress, "connectionId">;
 
 export type DiagnosticRunClaim =
-  | { owner: true }
+  | { owner: true; leaseOwnerId: string }
   | { owner: false; status: Exclude<DiagnosticProgress["status"], "idle"> };
 
 export class DiagnosticRunRetryableError extends Error {
@@ -145,6 +145,13 @@ export class DiagnosticRunRetryableError extends Error {
 
   constructor() {
     super("Diagnostic run is still in progress. Retry this request.");
+  }
+}
+
+export class DiagnosticRunLeaseLostError extends DiagnosticRunRetryableError {
+  constructor() {
+    super();
+    this.message = "Diagnostic run ownership was lost. Retry this request.";
   }
 }
 
@@ -164,8 +171,9 @@ export type DiagnosticRepository = {
   saveProgress(input: {
     connectionId: string;
     window: DiagnosticWindow;
+    leaseOwnerId: string;
     progress: StoredDiagnosticProgress;
-  }): Promise<void>;
+  }): Promise<boolean>;
   transaction<T>(
     work: (persistence: Pick<DiagnosticRepository, "persist">) => Promise<T>,
   ): Promise<T>;
@@ -230,7 +238,8 @@ export class DiagnosticService {
       };
     }
 
-    await this.saveProgress(input.connectionId, window, {
+    const leaseOwnerId = claim.leaseOwnerId;
+    await this.saveProgress(input.connectionId, window, leaseOwnerId, {
       status: "running",
       checkpoints: [],
       errorCategory: null,
@@ -239,17 +248,34 @@ export class DiagnosticService {
     try {
       const source = this.options.createSource(connection);
       const account = await source.loadAccount();
-      const subscriptions = await loadAllSubscriptions(source);
-      await this.checkpoint(input.connectionId, window, "account_loaded");
-      const invoices = await loadAllInvoices(source, window);
-      await this.checkpoint(input.connectionId, window, "invoices_loaded");
-
-      const paymentEvidence = await source.loadPaymentEvidence(
-        invoices.items.map((invoice) => invoice.id),
+      await this.heartbeat(input.connectionId, window, leaseOwnerId);
+      const subscriptions = await loadAllSubscriptions(source, () =>
+        this.heartbeat(input.connectionId, window, leaseOwnerId),
       );
       await this.checkpoint(
         input.connectionId,
         window,
+        leaseOwnerId,
+        "account_loaded",
+      );
+      const invoices = await loadAllInvoices(source, window, () =>
+        this.heartbeat(input.connectionId, window, leaseOwnerId),
+      );
+      await this.checkpoint(
+        input.connectionId,
+        window,
+        leaseOwnerId,
+        "invoices_loaded",
+      );
+
+      const paymentEvidence = await source.loadPaymentEvidence(
+        invoices.items.map((invoice) => invoice.id),
+        () => this.heartbeat(input.connectionId, window, leaseOwnerId),
+      );
+      await this.checkpoint(
+        input.connectionId,
+        window,
+        leaseOwnerId,
         "payment_evidence_loaded",
       );
 
@@ -270,7 +296,12 @@ export class DiagnosticService {
             reason: "rate_unavailable" as const,
             currency: "usd",
           };
-      await this.checkpoint(input.connectionId, window, "revenue_normalized");
+      await this.checkpoint(
+        input.connectionId,
+        window,
+        leaseOwnerId,
+        "revenue_normalized",
+      );
 
       const classified = classifyInvoices(
         invoices.items,
@@ -278,7 +309,12 @@ export class DiagnosticService {
         paymentEvidence,
         input.now,
       );
-      await this.checkpoint(input.connectionId, window, "findings_classified");
+      await this.checkpoint(
+        input.connectionId,
+        window,
+        leaseOwnerId,
+        "findings_classified",
+      );
 
       const snapshot = createSnapshot({
         connection,
@@ -300,8 +336,13 @@ export class DiagnosticService {
             phase,
           }),
       );
-      await this.checkpoint(input.connectionId, window, "snapshot_persisted");
-      await this.saveProgress(input.connectionId, window, {
+      await this.checkpoint(
+        input.connectionId,
+        window,
+        leaseOwnerId,
+        "snapshot_persisted",
+      );
+      await this.saveProgress(input.connectionId, window, leaseOwnerId, {
         status: "completed",
         checkpoints: this.progress.get(input.connectionId)?.checkpoints ?? [],
         errorCategory: null,
@@ -316,6 +357,7 @@ export class DiagnosticService {
         reused: !persisted.created,
       };
     } catch (error) {
+      if (error instanceof DiagnosticRunLeaseLostError) throw error;
       const current = this.progress.get(input.connectionId);
       const failedProgress: StoredDiagnosticProgress = {
         status: "failed",
@@ -325,7 +367,12 @@ export class DiagnosticService {
           : "source",
       };
       try {
-        await this.saveProgress(input.connectionId, window, failedProgress);
+        await this.saveProgress(
+          input.connectionId,
+          window,
+          leaseOwnerId,
+          failedProgress,
+        );
       } catch {
         this.progress.set(input.connectionId, {
           connectionId: input.connectionId,
@@ -361,6 +408,7 @@ export class DiagnosticService {
   private async saveProgress(
     connectionId: string,
     window: DiagnosticWindow,
+    leaseOwnerId: string,
     progress: StoredDiagnosticProgress,
   ): Promise<void> {
     const next = {
@@ -369,28 +417,45 @@ export class DiagnosticService {
       checkpoints: [...progress.checkpoints],
       errorCategory: progress.errorCategory,
     } satisfies DiagnosticProgress;
-    this.progress.set(connectionId, next);
-    await this.options.repository.saveProgress({
+    const saved = await this.options.repository.saveProgress({
       connectionId,
       window,
+      leaseOwnerId,
       progress: {
         status: next.status,
         checkpoints: next.checkpoints,
         errorCategory: next.errorCategory,
       },
     });
+    if (!saved) throw new DiagnosticRunLeaseLostError();
+    this.progress.set(connectionId, next);
   }
 
   private async checkpoint(
     connectionId: string,
     window: DiagnosticWindow,
+    leaseOwnerId: string,
     checkpoint: DiagnosticCheckpoint,
   ): Promise<void> {
     const current = this.progress.get(connectionId);
     if (!current) return;
-    await this.saveProgress(connectionId, window, {
+    await this.saveProgress(connectionId, window, leaseOwnerId, {
       status: current.status,
       checkpoints: [...current.checkpoints, checkpoint],
+      errorCategory: current.errorCategory,
+    });
+  }
+
+  private async heartbeat(
+    connectionId: string,
+    window: DiagnosticWindow,
+    leaseOwnerId: string,
+  ): Promise<void> {
+    const current = this.progress.get(connectionId);
+    if (!current) return;
+    await this.saveProgress(connectionId, window, leaseOwnerId, {
+      status: current.status,
+      checkpoints: current.checkpoints,
       errorCategory: current.errorCategory,
     });
   }
@@ -451,7 +516,10 @@ function wait(milliseconds: number): Promise<void> {
   return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
-async function loadAllSubscriptions(source: StripeDiagnosticSource): Promise<{
+async function loadAllSubscriptions(
+  source: StripeDiagnosticSource,
+  heartbeat: () => Promise<void>,
+): Promise<{
   items: SubscriptionEvidence[];
   coverages: Coverage[];
 }> {
@@ -463,6 +531,7 @@ async function loadAllSubscriptions(source: StripeDiagnosticSource): Promise<{
     const page = await source.loadSubscriptions(cursor);
     items.push(...page.data);
     coverages.push(page.coverage);
+    await heartbeat();
     if (page.coverage.status === "partial") break;
     cursor = page.nextCursor ?? undefined;
   } while (cursor);
@@ -473,6 +542,7 @@ async function loadAllSubscriptions(source: StripeDiagnosticSource): Promise<{
 async function loadAllInvoices(
   source: StripeDiagnosticSource,
   window: DiagnosticWindow,
+  heartbeat: () => Promise<void>,
 ): Promise<{ items: InvoiceEvidence[]; coverages: Coverage[] }> {
   const items: InvoiceEvidence[] = [];
   const coverages: Coverage[] = [];
@@ -483,9 +553,10 @@ async function loadAllInvoices(
   };
 
   do {
-    const page = await source.loadInvoices(range, cursor);
+    const page = await source.loadInvoices(range, cursor, heartbeat);
     items.push(...page.data);
     coverages.push(page.coverage);
+    await heartbeat();
     if (page.coverage.status === "partial") break;
     cursor = page.nextCursor ?? undefined;
   } while (cursor);
@@ -835,6 +906,7 @@ function createDatabaseRepository(): DiagnosticRepository {
     async claimRun({ connectionId, window, now }) {
       const database = await loadDb();
       const leaseExpiresAt = new Date(now.getTime() + DIAGNOSTIC_LEASE_MS);
+      const leaseOwnerId = crypto.randomUUID();
       const [inserted] = await database
         .insert(diagnosticRun)
         .values({
@@ -845,6 +917,7 @@ function createDatabaseRepository(): DiagnosticRepository {
           checkpoints: [],
           errorCategory: null,
           leaseExpiresAt,
+          leaseOwnerId,
         })
         .onConflictDoNothing({
           target: [
@@ -854,7 +927,7 @@ function createDatabaseRepository(): DiagnosticRepository {
           ],
         })
         .returning({ id: diagnosticRun.id });
-      if (inserted) return { owner: true };
+      if (inserted) return { owner: true, leaseOwnerId };
 
       const [existing] = await database
         .select()
@@ -878,6 +951,7 @@ function createDatabaseRepository(): DiagnosticRepository {
             checkpoints: [],
             errorCategory: null,
             leaseExpiresAt,
+            leaseOwnerId,
             updatedAt: new Date(),
           })
           .where(
@@ -887,7 +961,7 @@ function createDatabaseRepository(): DiagnosticRepository {
             ),
           )
           .returning({ id: diagnosticRun.id });
-        if (reclaimed) return { owner: true };
+        if (reclaimed) return { owner: true, leaseOwnerId };
       }
       if (existing.status === "running" && existing.leaseExpiresAt <= now) {
         const [reclaimed] = await database
@@ -897,6 +971,7 @@ function createDatabaseRepository(): DiagnosticRepository {
             checkpoints: [],
             errorCategory: null,
             leaseExpiresAt,
+            leaseOwnerId,
             updatedAt: new Date(),
           })
           .where(
@@ -907,7 +982,7 @@ function createDatabaseRepository(): DiagnosticRepository {
             ),
           )
           .returning({ id: diagnosticRun.id });
-        if (reclaimed) return { owner: true };
+        if (reclaimed) return { owner: true, leaseOwnerId };
       }
       return {
         owner: false,
@@ -917,33 +992,27 @@ function createDatabaseRepository(): DiagnosticRepository {
         >,
       };
     },
-    async saveProgress({ connectionId, window, progress }) {
+    async saveProgress({ connectionId, window, leaseOwnerId, progress }) {
       const database = await loadDb();
-      await database
-        .insert(diagnosticRun)
-        .values({
-          connectionId,
-          analysisStartsAt: window.analysisStartsAt,
-          analysisEndsAt: window.analysisEndsAt,
+      const [updated] = await database
+        .update(diagnosticRun)
+        .set({
           status: progress.status,
           checkpoints: progress.checkpoints,
           errorCategory: progress.errorCategory,
+          updatedAt: new Date(),
           leaseExpiresAt: new Date(Date.now() + DIAGNOSTIC_LEASE_MS),
         })
-        .onConflictDoUpdate({
-          target: [
-            diagnosticRun.connectionId,
-            diagnosticRun.analysisStartsAt,
-            diagnosticRun.analysisEndsAt,
-          ],
-          set: {
-            status: progress.status,
-            checkpoints: progress.checkpoints,
-            errorCategory: progress.errorCategory,
-            updatedAt: new Date(),
-            leaseExpiresAt: new Date(Date.now() + DIAGNOSTIC_LEASE_MS),
-          },
-        });
+        .where(
+          and(
+            eq(diagnosticRun.connectionId, connectionId),
+            eq(diagnosticRun.analysisStartsAt, window.analysisStartsAt),
+            eq(diagnosticRun.analysisEndsAt, window.analysisEndsAt),
+            eq(diagnosticRun.leaseOwnerId, leaseOwnerId),
+          ),
+        )
+        .returning({ id: diagnosticRun.id });
+      return Boolean(updated);
     },
     async transaction(work) {
       const database = await loadDb();

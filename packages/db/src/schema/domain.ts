@@ -225,6 +225,7 @@ export const diagnosticRun = pgTable(
     checkpoints: jsonb("checkpoints").$type<string[]>().notNull(),
     errorCategory: text("error_category"),
     leaseExpiresAt: timestamp("lease_expires_at").notNull(),
+    leaseOwnerId: text("lease_owner_id").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
