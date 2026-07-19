@@ -12,6 +12,7 @@ const connectionPhases = [
   "activation_requested",
   "write_authorized",
   "email_configured",
+  "recovery_confirming",
   "recovery_active",
   "disconnecting",
   "disconnect_failed",
@@ -207,5 +208,24 @@ describe("diagnostic lifecycle schema", () => {
     ]) {
       expect(diagnosticMigration).not.toContain(`CREATE TABLE "${tableName}"`);
     }
+  });
+
+  it("backfills legacy write-capable connections as active in a new migration", () => {
+    const followUp = readFileSync(
+      new URL(
+        "../migrations/0005_preserve_legacy_recovery_lifecycle.sql",
+        import.meta.url,
+      ),
+      "utf8",
+    );
+
+    expect(followUp).toContain("ADD VALUE IF NOT EXISTS 'recovery_confirming'");
+    expect(followUp).toContain(
+      'ADD COLUMN IF NOT EXISTS "original_currency_totals"',
+    );
+    expect(followUp).toContain("SET \"phase\" = 'recovery_active'");
+    expect(followUp).toContain("\"scope\" = 'read_write'");
+    expect(followUp).toContain('"webhook_endpoint_id" IS NOT NULL');
+    expect(followUp).toContain('"recovery_activated_at" IS NOT NULL');
   });
 });

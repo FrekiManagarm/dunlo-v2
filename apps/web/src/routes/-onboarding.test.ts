@@ -44,6 +44,10 @@ describe("onboarding flow", () => {
     expect(onboardingSource).toContain(
       'active={state.phase === "recovery_active"}',
     );
+    expect(onboardingSource).toContain(
+      "Configuring a sender does not run recovery sequences",
+    );
+    expect(onboardingSource).toContain("final confirmation");
   });
 
   it("redirects the old authenticated benchmark path to diagnostic", () => {

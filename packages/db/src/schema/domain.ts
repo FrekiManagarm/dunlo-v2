@@ -21,6 +21,7 @@ export const connectionPhaseEnum = pgEnum("connection_phase", [
   "activation_requested",
   "write_authorized",
   "email_configured",
+  "recovery_confirming",
   "recovery_active",
   "disconnecting",
   "disconnect_failed",
@@ -139,6 +140,10 @@ export const diagnosticSnapshot = pgTable(
       .default(0)
       .notNull(),
     excludedAmount: integer("excluded_amount").default(0).notNull(),
+    originalCurrencyTotals: jsonb("original_currency_totals")
+      .$type<Record<string, Record<string, number>>>()
+      .default({})
+      .notNull(),
     monthlyAddressable: integer("monthly_addressable").default(0).notNull(),
     addressableNow: integer("addressable_now").default(0).notNull(),
     planCode: text("plan_code").notNull(),

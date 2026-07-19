@@ -1,5 +1,5 @@
 import Stripe from "stripe";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { db } from "@dunlo-v2/db";
 import { stripeConnection } from "@dunlo-v2/db/schema/domain";
 import { decrypt, encrypt } from "@dunlo-v2/db/encrypt";
@@ -44,6 +44,7 @@ export async function verifyStoredWebhook(
 export async function reconcileWebhook(
   stripeAccountId: string,
   accessToken: string,
+  lifecycle?: { connectionId: string; phase: "recovery_confirming" },
 ): Promise<{ webhookEndpointId: string; webhookSecret: string } | null> {
   const [existing] = await db
     .select({
@@ -51,7 +52,15 @@ export async function reconcileWebhook(
       webhookSecret: stripeConnection.webhookSecret,
     })
     .from(stripeConnection)
-    .where(eq(stripeConnection.stripeAccountId, stripeAccountId))
+    .where(
+      lifecycle
+        ? and(
+            eq(stripeConnection.id, lifecycle.connectionId),
+            eq(stripeConnection.stripeAccountId, stripeAccountId),
+            eq(stripeConnection.phase, lifecycle.phase),
+          )
+        : eq(stripeConnection.stripeAccountId, stripeAccountId),
+    )
     .limit(1);
   if (existing?.webhookEndpointId && existing.webhookSecret) {
     if (existing.webhookEndpointId === "local_dev_webhook") {
@@ -101,13 +110,22 @@ export async function reconcileWebhook(
     baseUrl.includes("localhost") || baseUrl.includes("127.0.0.1");
 
   if (isLocalDev) {
-    await db
+    const persisted = await db
       .update(stripeConnection)
       .set({
         webhookEndpointId: "local_dev_webhook",
         webhookSecret: encrypt("whsec_local_dev_secret"),
       })
-      .where(eq(stripeConnection.stripeAccountId, stripeAccountId));
+      .where(
+        lifecycle
+          ? and(
+              eq(stripeConnection.id, lifecycle.connectionId),
+              eq(stripeConnection.phase, lifecycle.phase),
+            )
+          : eq(stripeConnection.stripeAccountId, stripeAccountId),
+      )
+      .returning({ id: stripeConnection.id });
+    if (!persisted[0]) return null;
 
     return {
       webhookEndpointId: "local_dev_webhook",
@@ -149,13 +167,37 @@ export async function reconcileWebhook(
       },
     );
 
-    await db
+    const persisted = await db
       .update(stripeConnection)
       .set({
         webhookEndpointId: webhook.id,
         webhookSecret: encrypt(webhook.secret!),
       })
-      .where(eq(stripeConnection.stripeAccountId, stripeAccountId));
+      .where(
+        lifecycle
+          ? and(
+              eq(stripeConnection.id, lifecycle.connectionId),
+              eq(stripeConnection.phase, lifecycle.phase),
+            )
+          : eq(stripeConnection.stripeAccountId, stripeAccountId),
+      )
+      .returning({ id: stripeConnection.id });
+
+    if (!persisted[0]) {
+      try {
+        await stripe.webhookEndpoints.del(
+          webhook.id,
+          {},
+          { stripeAccount: stripeAccountId },
+        );
+      } catch (cleanupError) {
+        console.error(
+          "[stripe/reconcileWebhook] orphan cleanup failed:",
+          cleanupError,
+        );
+      }
+      return null;
+    }
 
     return { webhookEndpointId: webhook.id, webhookSecret: webhook.secret! };
   } catch (err) {

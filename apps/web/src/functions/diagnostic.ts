@@ -81,6 +81,7 @@ export function createDiagnosticView(input: {
     historicallyLostAutomatable: snapshot.historicallyLostAutomatable ?? 0,
     historicallyLostHuman: snapshot.historicallyLostHuman ?? 0,
     excludedAmount: snapshot.excludedAmount ?? 0,
+    originalCurrencyTotals: snapshot.originalCurrencyTotals ?? {},
     analysisStartsAt: snapshot.analysisStartsAt ?? new Date(0).toISOString(),
     analysisEndsAt: snapshot.analysisEndsAt ?? new Date(0).toISOString(),
     decisionWindowComplete: snapshot.decisionWindowComplete ?? false,

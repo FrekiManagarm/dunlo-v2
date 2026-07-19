@@ -93,6 +93,7 @@ const connection = {
   stripeAccountId: "acct_123",
   accessToken: "encrypted_access",
   webhookEndpointId: "we_123",
+  phase: "recovery_active",
 };
 
 function requestFor(connectionId = "conn_123") {
@@ -108,7 +109,9 @@ describe("POST /api/stripe/disconnect", () => {
     vi.resetModules();
     mocks.authSession.mockResolvedValue({ user: { id: "user_123" } });
     mocks.selectLimit.mockReset();
-    mocks.updateWhere.mockReset().mockResolvedValue(undefined);
+    mocks.updateWhere.mockReset().mockReturnValue({
+      returning: vi.fn().mockResolvedValue([{ id: "conn_123" }]),
+    });
     mocks.updateSet.mockReset().mockImplementation(() => ({
       where: mocks.updateWhere,
     }));
@@ -139,6 +142,28 @@ describe("POST /api/stripe/disconnect", () => {
       disconnected: true,
       alreadyDisconnected: true,
     });
+    expect(mocks.execute).not.toHaveBeenCalled();
+  });
+
+  it("does not race a claimed final confirmation into an orphaned remote webhook", async () => {
+    mocks.selectLimit.mockResolvedValue([
+      { ...connection, phase: "recovery_confirming" },
+    ]);
+    const { Route } = (await import("./disconnect")) as {
+      Route: RouteWithPostHandler;
+    };
+
+    const response = await Route.options.server.handlers.POST({
+      request: requestFor(),
+    });
+
+    expect(response.status).toBe(409);
+    await expect(response.json()).resolves.toEqual({
+      error: "recovery_confirmation_in_progress",
+      retryable: true,
+    });
+    expect(mocks.deleteWebhooks).not.toHaveBeenCalled();
+    expect(mocks.deauthorize).not.toHaveBeenCalled();
     expect(mocks.execute).not.toHaveBeenCalled();
   });
 

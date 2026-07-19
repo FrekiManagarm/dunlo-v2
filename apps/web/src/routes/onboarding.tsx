@@ -216,7 +216,8 @@ function EmailProviderStep() {
       </h1>
       <p className="mt-2 text-sm leading-6 text-zinc-600">
         Email-provider setup and activation progression are not available yet.
-        Recovery remains off until Task 12 is complete.
+        Configuring a sender does not run recovery sequences. Recovery remains
+        off until you complete final confirmation.
       </p>
       <Link
         to="/settings"

@@ -36,6 +36,13 @@
       "when": 1784451000000,
       "tag": "0004_recovery_activation_watermark",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1784452000000,
+      "tag": "0005_preserve_legacy_recovery_lifecycle",
+      "breakpoints": true
     }
   ]
 }

@@ -5,6 +5,8 @@ import {
   DiagnosticService,
   DiagnosticRunLeaseLostError,
   DiagnosticRunRetryableError,
+  diagnosticWindow,
+  phaseFor,
   type DiagnosticConnection,
   type DiagnosticWindow,
   type DiagnosticProgress,
@@ -325,6 +327,42 @@ function createService(
 }
 
 describe("DiagnosticService", () => {
+  it("uses the required trailing 12-month analysis and 90-day decision windows", () => {
+    expect(diagnosticWindow(new Date("2026-07-19T12:00:00.000Z"))).toEqual({
+      analysisStartsAt: new Date("2025-07-20T00:00:00.000Z"),
+      analysisEndsAt: new Date("2026-07-20T00:00:00.000Z"),
+      decisionStartsAt: new Date("2026-04-21T00:00:00.000Z"),
+      decisionEndsAt: new Date("2026-07-20T00:00:00.000Z"),
+    });
+  });
+
+  it("lets a monitoring refresh expose an upgraded activation recommendation without enabling writes", () => {
+    expect(phaseFor("activation_recommended", "monitoring")).toBe(
+      "diagnostic_ready",
+    );
+    expect(phaseFor("monitoring_recommended", "monitoring")).toBe("monitoring");
+  });
+
+  it("persists the upgraded monitoring phase when its report qualifies", async () => {
+    const fixture = createRepository({ connectionPhase: "monitoring" });
+    const source = completeSource();
+    const invoicePage = await source.loadInvoices({ start: 0, end: 0 });
+    source.loadInvoices = vi.fn(async () => ({
+      ...invoicePage,
+      data: invoicePage.data.map((invoice) => ({
+        ...invoice,
+        amountDue: 100_000,
+      })),
+    }));
+    const result = await createService(fixture.repository, source).run({
+      connectionId: "conn_1",
+      reason: "monitoring",
+      now: NOW,
+    });
+
+    expect(result.snapshot.verdict).toBe("activation_recommended");
+    expect(fixture.phases).toEqual(["diagnostic_ready"]);
+  });
   it("retains the monitoring lifecycle phase after a successful refresh", async () => {
     const fixture = createRepository({ connectionPhase: "monitoring" });
     const service = createService(fixture.repository, completeSource());

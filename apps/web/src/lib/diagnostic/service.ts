@@ -41,8 +41,8 @@ import type {
   MoneyByCurrency,
 } from "./types";
 
-const ANALYSIS_WINDOW_DAYS = 90;
-const DECISION_WINDOW_DAYS = 30;
+const ANALYSIS_WINDOW_DAYS = 365;
+const DECISION_WINDOW_DAYS = 90;
 const DAY_MS = 86_400_000;
 const DIAGNOSTIC_LEASE_MS = 300_000;
 const DIAGNOSTIC_HEARTBEAT_MS = 60_000;
@@ -109,6 +109,7 @@ type PersistedDiagnosticSnapshot = DiagnosticSnapshotView & {
   historicallyLostAutomatable: number;
   historicallyLostHuman: number;
   excludedAmount: number;
+  originalCurrencyTotals: Record<string, Record<string, number>>;
   monthlyAddressable: number;
   addressableNow: number;
   planCode: string;
@@ -323,6 +324,7 @@ export class DiagnosticService {
         subscriptions.items,
         paymentEvidence,
         input.now,
+        window,
       );
       await this.checkpoint(
         input.connectionId,
@@ -368,12 +370,12 @@ export class DiagnosticService {
         errorCategory: null,
       });
 
-      const persistedConnection = persisted.created
-        ? connection
-        : await this.options.repository.getConnection(input.connectionId);
       return {
         snapshot: persisted.snapshot,
-        phase: persistedConnection?.phase ?? connection.phase,
+        phase: persisted.created
+          ? phase
+          : ((await this.options.repository.getConnection(input.connectionId))
+              ?.phase ?? connection.phase),
         reused: !persisted.created,
       };
     } catch (error) {
@@ -555,7 +557,7 @@ export function createDiagnosticService(): DiagnosticService {
   });
 }
 
-function diagnosticWindow(now: Date): DiagnosticWindow {
+export function diagnosticWindow(now: Date): DiagnosticWindow {
   const end = new Date(
     Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate() + 1),
   );
@@ -658,7 +660,7 @@ function normalizeRevenue(
       ).map((invoice) => ({
         id: invoice.id,
         status: invoice.status ?? "unknown",
-        finalizedAt: new Date(
+        finalizedAt: stripeTimestampToDate(
           invoice.finalizedAt ?? invoice.createdAt ?? 0,
         ).toISOString(),
         lines: invoice.lines.map(toRecurringLine),
@@ -701,9 +703,10 @@ function classifyInvoices(
   subscriptions: SubscriptionEvidence[],
   paymentEvidence: PaymentEvidence[],
   now: Date,
+  window: DiagnosticWindow,
 ): {
   findings: DiagnosticFindingInput[];
-  categoryAmounts: Record<DiagnosticCategory, number>;
+  categoryAmounts: Record<DiagnosticCategory, MoneyByCurrency>;
   monthlyAddressableByCurrency: MoneyByCurrency;
   addressableNowByCurrency: MoneyByCurrency;
 } {
@@ -747,7 +750,7 @@ function classifyInvoices(
       ),
       recoveredAfterFailure: invoice.status === "paid" && Boolean(payment),
     });
-    const failedAt = new Date(
+    const failedAt = stripeTimestampToDate(
       invoice.finalizedAt ?? invoice.createdAt ?? now.getTime(),
     ).toISOString();
     const finding: DiagnosticFindingInput = {
@@ -767,23 +770,35 @@ function classifyInvoices(
       reason: classification.reasonCode,
     };
     findings.push(finding);
-    categoryAmounts[classification.category] += invoice.amountDue;
+    addCurrencyAmount(
+      categoryAmounts[classification.category],
+      invoice.currency,
+      invoice.amountDue,
+    );
 
-    if (classification.category === "open_automatable") {
+    const isInDecisionWindow =
+      new Date(failedAt) >= window.decisionStartsAt &&
+      new Date(failedAt) < window.decisionEndsAt;
+
+    if (
+      isInDecisionWindow &&
+      (classification.category === "open_automatable" ||
+        classification.category === "open_human" ||
+        classification.category === "historically_lost_automatable" ||
+        classification.category === "historically_lost_human")
+    ) {
       addCurrencyAmount(
         monthlyAddressableByCurrency,
-        invoice.currency,
-        invoice.amountDue,
-      );
-      addCurrencyAmount(
-        addressableNowByCurrency,
         invoice.currency,
         invoice.amountDue,
       );
     }
-    if (classification.category === "historically_lost_automatable") {
+    if (
+      classification.category === "open_automatable" ||
+      classification.category === "open_human"
+    ) {
       addCurrencyAmount(
-        monthlyAddressableByCurrency,
+        addressableNowByCurrency,
         invoice.currency,
         invoice.amountDue,
       );
@@ -815,10 +830,17 @@ function createSnapshot(input: {
   const limitedConfidenceMrr =
     input.revenue.limitedConfidenceMrr[currency] ?? 0;
   const excludedMrr = input.revenue.excludedMrr[currency] ?? 0;
-  const monthlyAddressable = toUsd(
-    input.classified.monthlyAddressableByCurrency[currency] ?? 0,
-    rate,
+  const decisionMonths = Math.max(
+    1,
+    (input.window.decisionEndsAt.getTime() -
+      input.window.decisionStartsAt.getTime()) /
+      (30 * DAY_MS),
   );
+  const monthlyAddressable = Math.floor(
+    (input.classified.monthlyAddressableByCurrency[currency] ?? 0) /
+      decisionMonths,
+  );
+  const monthlyAddressableUsd = toUsd(monthlyAddressable, rate);
   const addressableNow = toUsd(
     input.classified.addressableNowByCurrency[currency] ?? 0,
     rate,
@@ -828,7 +850,7 @@ function createSnapshot(input: {
     decisionWindowComplete: input.coverage.status === "complete",
     dominantCurrency: input.dominant?.currency ?? null,
     normalizedMrrUsd: input.fx ? toUsd(fixedMrr + variableMrr, rate) : null,
-    monthlyAddressableUsd: monthlyAddressable,
+    monthlyAddressableUsd,
     addressableNowUsd: addressableNow,
     fxRateToUsd: input.fx?.rateToUsd ?? null,
   });
@@ -849,21 +871,38 @@ function createSnapshot(input: {
     pagesLoaded: input.coverage.pageCount,
     recordsLoaded: input.coverage.recordCount,
     findingsCount: input.classified.findings.length,
-    fixedMrr: toUsd(fixedMrr, rate),
-    variableMrr: toUsd(variableMrr, rate),
-    limitedConfidenceMrr: toUsd(limitedConfidenceMrr, rate),
-    excludedMrr: toUsd(excludedMrr, rate),
+    fixedMrr,
+    variableMrr,
+    limitedConfidenceMrr,
+    excludedMrr,
     dominantCurrency: currency,
     dominantCurrencyShareBps: input.dominant?.shareBps ?? 0,
     observedFailed: input.classified.findings.length,
-    naturallyRecovered: input.classified.categoryAmounts.naturally_recovered,
-    openAutomatable: input.classified.categoryAmounts.open_automatable,
-    openHuman: input.classified.categoryAmounts.open_human,
+    naturallyRecovered:
+      input.classified.categoryAmounts.naturally_recovered[currency] ?? 0,
+    openAutomatable:
+      input.classified.categoryAmounts.open_automatable[currency] ?? 0,
+    openHuman: input.classified.categoryAmounts.open_human[currency] ?? 0,
     historicallyLostAutomatable:
-      input.classified.categoryAmounts.historically_lost_automatable,
+      input.classified.categoryAmounts.historically_lost_automatable[
+        currency
+      ] ?? 0,
     historicallyLostHuman:
-      input.classified.categoryAmounts.historically_lost_human,
-    excludedAmount: input.classified.categoryAmounts.excluded,
+      input.classified.categoryAmounts.historically_lost_human[currency] ?? 0,
+    excludedAmount: input.classified.categoryAmounts.excluded[currency] ?? 0,
+    originalCurrencyTotals: {
+      observed_failed: groupFindingAmounts(input.classified.findings),
+      naturally_recovered: input.classified.categoryAmounts.naturally_recovered,
+      open_automatable: input.classified.categoryAmounts.open_automatable,
+      open_human: input.classified.categoryAmounts.open_human,
+      historically_lost_automatable:
+        input.classified.categoryAmounts.historically_lost_automatable,
+      historically_lost_human:
+        input.classified.categoryAmounts.historically_lost_human,
+      excluded: input.classified.categoryAmounts.excluded,
+      monthly_addressable: input.classified.monthlyAddressableByCurrency,
+      addressable_now: input.classified.addressableNowByCurrency,
+    },
     monthlyAddressable,
     addressableNow,
     planCode: qualification.planCode ?? "insufficient_data",
@@ -884,11 +923,14 @@ function createSnapshot(input: {
   };
 }
 
-function phaseFor(
-  _verdict: DiagnosticVerdict,
+export function phaseFor(
+  verdict: DiagnosticVerdict,
   currentPhase: ConnectionPhase,
 ): ConnectionPhase {
-  return currentPhase === "monitoring" ? "monitoring" : "diagnostic_ready";
+  if (currentPhase === "monitoring" && verdict !== "activation_recommended") {
+    return "monitoring";
+  }
+  return "diagnostic_ready";
 }
 
 function createDatabaseRepository(): DiagnosticRepository {
@@ -1226,15 +1268,24 @@ function sumMrr(
   return result;
 }
 
-function emptyCategoryAmounts(): Record<DiagnosticCategory, number> {
+function emptyCategoryAmounts(): Record<DiagnosticCategory, MoneyByCurrency> {
   return {
-    naturally_recovered: 0,
-    open_automatable: 0,
-    open_human: 0,
-    historically_lost_automatable: 0,
-    historically_lost_human: 0,
-    excluded: 0,
+    naturally_recovered: {},
+    open_automatable: {},
+    open_human: {},
+    historically_lost_automatable: {},
+    historically_lost_human: {},
+    excluded: {},
   };
+}
+
+function groupFindingAmounts(
+  findings: DiagnosticFindingInput[],
+): MoneyByCurrency {
+  const amounts: MoneyByCurrency = {};
+  for (const finding of findings)
+    addCurrencyAmount(amounts, finding.currency, finding.amount);
+  return amounts;
 }
 
 function addCurrencyAmount(
@@ -1244,6 +1295,10 @@ function addCurrencyAmount(
 ): void {
   const normalized = currency.trim().toLowerCase();
   amounts[normalized] = (amounts[normalized] ?? 0) + amount;
+}
+
+function stripeTimestampToDate(timestamp: number): Date {
+  return new Date(timestamp < 10_000_000_000 ? timestamp * 1000 : timestamp);
 }
 
 function unavailableFxMetadata(now: Date): FxRateMetadata {

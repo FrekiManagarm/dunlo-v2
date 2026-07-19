@@ -9,6 +9,7 @@ import {
 type FakeStripeClient = StripeReadClient & {
   accounts: { retrieve: Mock };
   subscriptions: { list: Mock };
+  subscriptionItems: { list: Mock };
   invoices: { list: Mock; listLineItems: Mock };
   paymentIntents: { retrieve: Mock };
   charges: { retrieve: Mock };
@@ -26,6 +27,9 @@ function createFakeStripeClient(
       retrieve: vi.fn().mockResolvedValue({ id: "acct_test", livemode: false }),
     },
     subscriptions: {
+      list: vi.fn().mockResolvedValue({ data: [], has_more: false }),
+    },
+    subscriptionItems: {
       list: vi.fn().mockResolvedValue({ data: [], has_more: false }),
     },
     invoices: {
@@ -121,6 +125,60 @@ describe("createStripeDiagnosticSource", () => {
       "past_due",
     ]);
     expect(page.coverage).toMatchObject({ pageCount: 1, recordCount: 2 });
+  });
+
+  it("fully paginates subscription items instead of treating an expanded page as complete", async () => {
+    const client = createFakeStripeClient();
+    client.subscriptions.list.mockResolvedValue({
+      data: [
+        {
+          id: "sub_items",
+          status: "active",
+          livemode: false,
+          items: { data: [{ id: "si_1" }], has_more: true },
+        },
+      ],
+      has_more: false,
+    });
+    client.subscriptionItems.list.mockResolvedValue({
+      data: [{ id: "si_2" }],
+      has_more: false,
+    });
+
+    const page = await createStripeDiagnosticSource(client).loadSubscriptions();
+
+    expect(client.subscriptionItems.list).toHaveBeenCalledWith("sub_items", {
+      limit: 100,
+      expand: ["data.price"],
+      starting_after: "si_1",
+    });
+    expect(page.data[0]?.items.map((item) => item.id)).toEqual([
+      "si_1",
+      "si_2",
+    ]);
+    expect(page.coverage).toMatchObject({ status: "complete", pageCount: 2 });
+  });
+
+  it("marks coverage partial when a subscription item page cannot be loaded", async () => {
+    const client = createFakeStripeClient();
+    client.subscriptions.list.mockResolvedValue({
+      data: [
+        {
+          id: "sub_items",
+          status: "active",
+          livemode: false,
+          items: { data: [{ id: "si_1" }], has_more: true },
+        },
+      ],
+      has_more: false,
+    });
+    client.subscriptionItems.list.mockRejectedValue(rateLimitError());
+
+    const page = await createStripeDiagnosticSource(client, {
+      retry: { maxAttempts: 1 },
+    }).loadSubscriptions();
+
+    expect(page.coverage.status).toBe("partial");
   });
 
   it("loads every unexpanded invoice line page without truncation", async () => {

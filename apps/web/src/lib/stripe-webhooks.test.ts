@@ -96,7 +96,9 @@ describe("reconcileWebhook", () => {
     mocks.updateSet.mockReset().mockImplementation(() => ({
       where: mocks.updateWhere,
     }));
-    mocks.updateWhere.mockReset().mockResolvedValue(undefined);
+    mocks.updateWhere.mockReset().mockReturnValue({
+      returning: vi.fn().mockResolvedValue([{ id: "conn_1" }]),
+    });
     mocks.selectLimit
       .mockReset()
       .mockResolvedValue([

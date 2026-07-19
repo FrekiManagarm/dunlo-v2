@@ -19,6 +19,10 @@ const report = {
   historicallyLostAutomatable: 3_000,
   historicallyLostHuman: 2_000,
   excludedAmount: 5_000,
+  originalCurrencyTotals: {
+    open_automatable: { usd: 25_000, eur: 1_000 },
+    open_human: { usd: 20_000 },
+  },
   analysisStartsAt: "2026-04-20T00:00:00.000Z",
   analysisEndsAt: "2026-07-19T00:00:00.000Z",
   decisionWindowComplete: true,
@@ -106,5 +110,12 @@ describe("DiagnosticReport", () => {
     expect(screen.getByText(/test data/i)).toBeTruthy();
     expect(screen.getByText(/ECB reference rates/i)).toBeTruthy();
     expect(screen.getByText(/excluded from this diagnostic/i)).toBeTruthy();
+  });
+
+  it("keeps original-currency totals separate and never formats a failure count as money", () => {
+    render(<DiagnosticReport report={report} />);
+    expect(screen.getByText("60,000")).toBeTruthy();
+    expect(screen.getByText("€10 + $250")).toBeTruthy();
+    expect(screen.queryByText("$600")).toBeNull();
   });
 });

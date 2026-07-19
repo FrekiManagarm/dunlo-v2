@@ -82,7 +82,14 @@ export const Route = createFileRoute("/api/stripe/disconnect")({
           );
         }
 
-        await db
+        if (connection.phase === "recovery_confirming") {
+          return Response.json(
+            { error: "recovery_confirmation_in_progress", retryable: true },
+            { status: 409 },
+          );
+        }
+
+        const [disconnecting] = await db
           .update(stripeConnection)
           .set({
             phase: "disconnecting",
@@ -93,8 +100,16 @@ export const Route = createFileRoute("/api/stripe/disconnect")({
             and(
               eq(stripeConnection.id, connection.id),
               eq(stripeConnection.userId, userId),
+              eq(stripeConnection.phase, connection.phase),
             ),
+          )
+          .returning({ id: stripeConnection.id });
+        if (!disconnecting) {
+          return Response.json(
+            { error: "connection_lifecycle_changed", retryable: true },
+            { status: 409 },
           );
+        }
 
         try {
           if (

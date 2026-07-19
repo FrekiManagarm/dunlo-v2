@@ -45,6 +45,11 @@ export const Route = createFileRoute("/api/stripe/webhook/$accountId")({
           env.NODE_ENV === "development"
             ? env.STRIPE_WEBHOOK_SECRET
             : connection.webhookSecret;
+        if (!webhookSecret) {
+          return new Response("Webhook is not configured for this connection", {
+            status: 400,
+          });
+        }
 
         const stripe = getConnectedStripe(connection.accessToken);
         let event: Stripe.Event;

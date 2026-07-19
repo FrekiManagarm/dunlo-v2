@@ -606,6 +606,7 @@ describe("diagnostic-to-recovery safety flow", () => {
       id: fixture.connectionId,
       ...fixture.connection,
       accessToken: "access_fixture",
+      webhookSecret: null,
     });
     const { Route: confirmationRoute } =
       (await import("../../routes/api/stripe/recovery/confirm")) as {
@@ -658,7 +659,7 @@ describe("diagnostic-to-recovery safety flow", () => {
         fixture.selectedSequenceIds.every((id) => selectedIds.includes(id));
       if (
         fixture.connection.scope !== "read_write" ||
-        fixture.connection.phase !== "email_configured" ||
+        fixture.connection.phase !== "recovery_confirming" ||
         !hasExactSelection
       )
         return { rows: [] };
@@ -675,6 +676,7 @@ describe("diagnostic-to-recovery safety flow", () => {
     expect(webhookMocks.reconcileWebhook).toHaveBeenCalledWith(
       fixture.stripeAccountId,
       "access_fixture",
+      { connectionId: fixture.connectionId, phase: "recovery_confirming" },
     );
     expect(fixture.connection).toMatchObject({
       scope: "read_write",

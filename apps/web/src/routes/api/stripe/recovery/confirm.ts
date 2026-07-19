@@ -1,7 +1,8 @@
 import { auth } from "@dunlo-v2/auth";
 import { db } from "@dunlo-v2/db";
+import { stripeConnection } from "@dunlo-v2/db/schema/domain";
 import { createFileRoute } from "@tanstack/react-router";
-import { sql } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import { z } from "zod";
 
 import { getStripeConnectionById } from "@/functions/stripe";
@@ -35,7 +36,7 @@ export async function runAtomicRecoveryConfirmation(
     ), eligible AS (
       UPDATE stripe_connection SET phase = 'recovery_active', recovery_activated_at = NOW()
       WHERE id = ${input.connectionId} AND user_id = ${input.userId}
-        AND scope = 'read_write' AND phase = 'email_configured'
+        AND scope = 'read_write' AND phase = 'recovery_confirming'
         AND webhook_endpoint_id IS NOT NULL
         AND EXISTS (SELECT 1 FROM email_provider WHERE user_id = ${input.userId})
         AND (SELECT count(*) FROM selected) = ${sequenceIds.length}
@@ -70,16 +71,43 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
             connection.phase !== "email_configured"
           )
             throw new Error("Recovery prerequisites are incomplete");
+          const [claimed] = await db
+            .update(stripeConnection)
+            .set({ phase: "recovery_confirming" })
+            .where(
+              and(
+                eq(stripeConnection.id, connection.id),
+                eq(stripeConnection.userId, session.user.id),
+                eq(stripeConnection.phase, "email_configured"),
+              ),
+            )
+            .returning({ id: stripeConnection.id });
+          if (!claimed)
+            return new Response(
+              "Recovery confirmation is already in progress. Please retry.",
+              { status: 409 },
+            );
           if (
             !(await reconcileWebhook(
               connection.stripeAccountId,
               connection.accessToken,
+              { connectionId: connection.id, phase: "recovery_confirming" },
             ))
-          )
+          ) {
+            await db
+              .update(stripeConnection)
+              .set({ phase: "email_configured" })
+              .where(
+                and(
+                  eq(stripeConnection.id, connection.id),
+                  eq(stripeConnection.phase, "recovery_confirming"),
+                ),
+              );
             return new Response(
               "Webhook verification is temporarily unavailable. Please retry.",
               { status: 503 },
             );
+          }
           if (
             !(await runAtomicRecoveryConfirmation(db.execute, {
               connectionId: parsed.data.connectionId,

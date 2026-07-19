@@ -113,21 +113,25 @@ export function DiagnosticReport({
             label="Observed failures"
             value={report.observedFailed}
             report={report}
+            kind="count"
           />
           <Metric
             label="Naturally recovered"
             value={report.naturallyRecovered}
             report={report}
+            currencyKey="naturally_recovered"
           />
           <Metric
             label="Automatable opportunity"
             value={report.openAutomatable}
             report={report}
+            currencyKey="open_automatable"
           />
           <Metric
             label="Founder-review opportunity"
             value={report.openHuman}
             report={report}
+            currencyKey="open_human"
           />
           <Metric
             label="Historically lost"
@@ -135,6 +139,7 @@ export function DiagnosticReport({
               report.historicallyLostAutomatable + report.historicallyLostHuman
             }
             report={report}
+            currencyKey="historically_lost"
           />
         </dl>
       </div>
@@ -194,17 +199,52 @@ function Metric({
   label,
   value,
   report,
+  kind = "money",
+  currencyKey,
 }: {
   label: string;
   value: number;
   report: DiagnosticReportView;
+  kind?: "count" | "money";
+  currencyKey?: string;
 }) {
+  const originalCurrencyTotals = report.originalCurrencyTotals ?? {};
+  const amounts = currencyKey
+    ? currencyKey === "historically_lost"
+      ? mergeCurrencyTotals(
+          originalCurrencyTotals.historically_lost_automatable,
+          originalCurrencyTotals.historically_lost_human,
+        )
+      : originalCurrencyTotals[currencyKey]
+    : undefined;
   return (
     <div className="rounded-xl bg-zinc-50 p-4">
       <dt className="text-xs font-semibold text-zinc-500">{label}</dt>
       <dd className="mt-1 font-mono text-lg font-bold text-zinc-950">
-        {formatMoney(value, report.dominantCurrency)}
+        {kind === "count"
+          ? new Intl.NumberFormat("en-US").format(value)
+          : amounts && Object.keys(amounts).length > 0
+            ? formatCurrencyTotals(amounts)
+            : formatMoney(value, report.dominantCurrency)}
       </dd>
     </div>
   );
+}
+
+function mergeCurrencyTotals(
+  left: Record<string, number> | undefined,
+  right: Record<string, number> | undefined,
+): Record<string, number> {
+  const result = { ...(left ?? {}) };
+  for (const [currency, amount] of Object.entries(right ?? {})) {
+    result[currency] = (result[currency] ?? 0) + amount;
+  }
+  return result;
+}
+
+function formatCurrencyTotals(amounts: Record<string, number>): string {
+  return Object.entries(amounts)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([currency, amount]) => formatMoney(amount, currency))
+    .join(" + ");
 }

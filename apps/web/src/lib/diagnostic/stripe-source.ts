@@ -126,6 +126,12 @@ export type StripeReadClient = {
       params: Record<string, unknown>,
     ): Promise<StripeList<StripeSubscription>>;
   };
+  subscriptionItems?: {
+    list(
+      subscriptionId: string,
+      params: Record<string, unknown>,
+    ): Promise<StripeList<StripeInvoiceLine>>;
+  };
   invoices: {
     list(params: Record<string, unknown>): Promise<StripeList<StripeInvoice>>;
     listLineItems(
@@ -239,17 +245,31 @@ export function createStripeDiagnosticSource(
         return partialPage(cursor);
       }
 
-      const subscriptions = outcome.value.data.map((subscription) => ({
-        id: subscription.id,
-        status: subscription.status,
-        mode: modeOf(subscription),
-        items: subscription.items?.data ?? [],
-      }));
+      const subscriptions: SubscriptionEvidence[] = [];
+      let pageCount = 1;
+      let recordCount = outcome.value.data.length;
+      for (const subscription of outcome.value.data) {
+        const items = await loadAllSubscriptionItems(
+          subscription,
+          client,
+          retry,
+          sleep,
+        );
+        pageCount += items.pageCount;
+        recordCount += items.items.length;
+        if (items.failure) return partialPage(cursor);
+        subscriptions.push({
+          id: subscription.id,
+          status: subscription.status,
+          mode: modeOf(subscription),
+          items: items.items,
+        });
+      }
 
       return pageFrom(
         outcome.value,
         subscriptions,
-        completeCoverage(1, subscriptions.length),
+        completeCoverage(pageCount, recordCount),
       );
     },
 
@@ -468,6 +488,45 @@ function pageFrom<T extends { id: string }>(
     nextCursor: sourcePage.has_more ? nextCursor : null,
     coverage,
   };
+}
+
+async function loadAllSubscriptionItems(
+  subscription: StripeSubscription,
+  client: StripeReadClient,
+  retry: RetryOptions,
+  sleep: (milliseconds: number) => Promise<void>,
+): Promise<{
+  items: StripeInvoiceLine[];
+  pageCount: number;
+  failure: boolean;
+}> {
+  const items = [...(subscription.items?.data ?? [])];
+  let pageCount = 0;
+  let hasMore = subscription.items?.has_more ?? false;
+  let cursor = items.at(-1)?.id;
+
+  while (hasMore) {
+    const subscriptionItems = client.subscriptionItems;
+    if (!subscriptionItems) {
+      return { items, pageCount, failure: true };
+    }
+    const outcome = await retryRateLimit(
+      () =>
+        subscriptionItems.list(
+          subscription.id,
+          withCursor(cursor, { limit: 100, expand: ["data.price"] }),
+        ),
+      retry,
+      sleep,
+    );
+    if ("failure" in outcome) return { items, pageCount, failure: true };
+    pageCount += 1;
+    items.push(...outcome.value.data);
+    hasMore = outcome.value.has_more;
+    cursor = outcome.value.data.at(-1)?.id;
+  }
+
+  return { items, pageCount, failure: false };
 }
 
 async function loadAllInvoiceLines(

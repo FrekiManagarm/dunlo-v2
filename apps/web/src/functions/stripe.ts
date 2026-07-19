@@ -15,6 +15,7 @@ import { generateEscalationDraft } from "@/functions/escalations";
 import { storeBenchmarkSnapshotFromPaymentIntents } from "@/functions/benchmark";
 import { authMiddleware } from "@/middleware/auth";
 import { getConnectedStripe } from "@/lib/stripe";
+import { decryptOptionalWebhookSecret } from "@/lib/stripe-connection";
 
 export type DecryptedStripeConnection = {
   id: string;
@@ -23,7 +24,7 @@ export type DecryptedStripeConnection = {
   accessToken: string;
   publishableKey: string | null;
   webhookEndpointId: string | null;
-  webhookSecret: string;
+  webhookSecret: string | null;
   scope: string | null;
   phase: string;
   recoveryActivatedAt: Date | null;
@@ -51,7 +52,7 @@ export async function getStripeConnection(
     accessToken: decrypt(row.accessToken),
     publishableKey: row.publishableKey,
     webhookEndpointId: row.webhookEndpointId,
-    webhookSecret: decrypt(row.webhookSecret),
+    webhookSecret: decryptOptionalWebhookSecret(row.webhookSecret, decrypt),
     scope: row.scope,
     phase: row.phase,
     recoveryActivatedAt: row.recoveryActivatedAt,
@@ -79,7 +80,7 @@ export async function getStripeConnectionById(
     accessToken: decrypt(row.accessToken),
     publishableKey: row.publishableKey,
     webhookEndpointId: row.webhookEndpointId,
-    webhookSecret: decrypt(row.webhookSecret),
+    webhookSecret: decryptOptionalWebhookSecret(row.webhookSecret, decrypt),
     scope: row.scope,
     phase: row.phase,
     recoveryActivatedAt: row.recoveryActivatedAt,
@@ -107,7 +108,7 @@ export async function getStripeConnectionByAccountId(
     accessToken: decrypt(row.accessToken),
     publishableKey: row.publishableKey,
     webhookEndpointId: row.webhookEndpointId,
-    webhookSecret: decrypt(row.webhookSecret),
+    webhookSecret: decryptOptionalWebhookSecret(row.webhookSecret, decrypt),
     scope: row.scope,
     phase: row.phase,
     recoveryActivatedAt: row.recoveryActivatedAt,

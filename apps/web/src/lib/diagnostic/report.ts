@@ -15,6 +15,7 @@ export type DiagnosticReportView = {
   historicallyLostAutomatable: number;
   historicallyLostHuman: number;
   excludedAmount: number;
+  originalCurrencyTotals: Record<string, Record<string, number>>;
   analysisStartsAt: string;
   analysisEndsAt: string;
   decisionWindowComplete: boolean;
