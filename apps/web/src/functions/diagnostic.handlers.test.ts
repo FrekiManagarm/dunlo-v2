@@ -201,4 +201,37 @@ describe("diagnostic server-function handlers", () => {
       containsEq(mocks.where.mock.calls[0][0], "connection_user_id", "user_owned"),
     ).toBe(true);
   });
+
+  it("keeps monitoring unavailable after authorizing the authenticated owner and requested connection", async () => {
+    mocks.rows.push([ownedConnection]);
+    const { enableMonitoring } = await import("./diagnostic");
+
+    await expect(
+      enableMonitoring({
+        context: { session: { user: { id: "user_owned" } } },
+        data: { connectionId: "conn_owned" },
+      }),
+    ).resolves.toEqual({ ok: false, code: "monitoring_not_available" });
+
+    expect(containsEq(mocks.where.mock.calls[0][0], "connection_id", "conn_owned")).toBe(true);
+    expect(containsEq(mocks.where.mock.calls[0][0], "connection_user_id", "user_owned")).toBe(true);
+  });
+
+  it("rejects monitoring for a connection the authenticated user does not own", async () => {
+    mocks.rows.push([]);
+    const { enableMonitoring } = await import("./diagnostic");
+
+    await expect(
+      enableMonitoring({
+        context: { session: { user: { id: "user_owned" } } },
+        data: { connectionId: "conn_other_user" },
+      }),
+    ).rejects.toThrow(/not found/i);
+
+    expect(
+      containsEq(mocks.where.mock.calls[0][0], "connection_id", "conn_other_user"),
+    ).toBe(true);
+    expect(
+      containsEq(mocks.where.mock.calls[0][0], "connection_user_id", "user_owned")).toBe(true);
+  });
 });
