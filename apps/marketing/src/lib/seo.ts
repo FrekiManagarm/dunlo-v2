@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 export const SITE_URL = "https://dunlo.io";
 export const SITE_NAME = "Dunlo";
-export const DEFAULT_TITLE = "Dunlo - See What Failed Payments Cost Your MRR";
+export const DEFAULT_TITLE = "Dunlo — See What Failed Payments Cost Your MRR";
 export const DEFAULT_DESCRIPTION =
   "Connect Stripe in read-only mode to see the recurring MRR at risk, what is addressable, and what needs human review before you activate recovery.";
 export const DEFAULT_KEYWORDS = [

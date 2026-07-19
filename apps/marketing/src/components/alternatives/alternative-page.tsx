@@ -11,6 +11,7 @@ import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials"
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
 import { PublicProofLayer } from "@/components/public-proof-layer";
+import { getRelatedAlternativeSlugs } from "@/lib/related-alternatives";
 
 type ComparisonRow = {
   label: string;
@@ -1854,6 +1855,13 @@ export const VS_ROUTE_PAGES = Object.values(ALTERNATIVES).filter((page) =>
 );
 
 export function AlternativePage({ page }: { page: AlternativePageData }) {
+  const relatedPages = getRelatedAlternativeSlugs(page.slug)
+    .map((slug) => ALTERNATIVES[slug])
+    .filter(
+      (relatedPage): relatedPage is AlternativePageData =>
+        relatedPage !== undefined,
+    );
+
   return (
     <div className="min-h-dvh overflow-x-hidden bg-dunlo-ground font-sans text-dunlo-ink">
       <Nav />
@@ -2047,6 +2055,31 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             tone="dunlo"
           />
         </section>
+
+        {relatedPages.length > 0 ? (
+          <section className="border-y border-dunlo-line py-7 md:py-9">
+            <div className="flex flex-wrap items-baseline justify-between gap-3">
+              <h2 className="text-2xl font-bold tracking-tight text-dunlo-ink">
+                Related comparisons
+              </h2>
+              <p className="text-sm text-dunlo-ink/64">
+                More ways to evaluate the recovery layer you need.
+              </p>
+            </div>
+            <div className="mt-5 flex flex-wrap gap-3">
+              {relatedPages.map((relatedPage) => (
+                <Link
+                  key={relatedPage.slug}
+                  href={relatedPage.path}
+                  className="inline-flex min-h-11 items-center gap-2 rounded-full border border-dunlo-line px-4 text-sm font-semibold text-dunlo-deep transition-colors hover:border-dunlo-deep hover:bg-dunlo-mist focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-deep focus-visible:ring-offset-2"
+                >
+                  Dunlo vs {relatedPage.competitorName}
+                  <ArrowRight size={14} aria-hidden />
+                </Link>
+              ))}
+            </div>
+          </section>
+        ) : null}
 
         <PublicProofLayer compact />
 

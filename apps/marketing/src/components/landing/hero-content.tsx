@@ -52,7 +52,7 @@ export function HeroContent() {
           transition={{ duration: 0.78, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
           className="mt-8 max-w-84 text-4xl font-semibold leading-[1.02] tracking-tight text-gray-950 sm:max-w-xl sm:text-5xl sm:leading-[0.98] md:text-6xl"
         >
-          Recover failed payments without burning customer trust
+          Recover failed Stripe payments before they churn.
         </motion.h1>
 
         <motion.p
