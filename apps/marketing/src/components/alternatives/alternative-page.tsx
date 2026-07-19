@@ -11,6 +11,7 @@ import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials"
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
 import { PublicProofLayer } from "@/components/public-proof-layer";
+import { getRelatedAlternativeSlugs } from "@/lib/related-alternatives";
 
 type ComparisonRow = {
   label: string;
@@ -1854,6 +1855,13 @@ export const VS_ROUTE_PAGES = Object.values(ALTERNATIVES).filter((page) =>
 );
 
 export function AlternativePage({ page }: { page: AlternativePageData }) {
+  const relatedPages = getRelatedAlternativeSlugs(page.slug)
+    .map((slug) => ALTERNATIVES[slug])
+    .filter(
+      (relatedPage): relatedPage is AlternativePageData =>
+        relatedPage !== undefined,
+    );
+
   return (
     <div className="min-h-dvh overflow-x-hidden bg-dunlo-ground font-sans text-dunlo-ink">
       <Nav />
