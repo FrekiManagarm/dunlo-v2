@@ -147,12 +147,14 @@ function createRepository(options?: {
     leaseOwnerId?: string;
   };
   reclaimBeforePersist?: boolean;
+  clock?: () => Date;
 }) {
   const snapshots: DiagnosticSnapshotView[] = options?.current
     ? [options.current]
     : [];
   const findings: Array<{ snapshotId: string }> = [];
   const phases: string[] = [];
+  const clock = options?.clock ?? (() => NOW);
   const progress = new Map<
     string,
     {
@@ -235,7 +237,7 @@ function createRepository(options?: {
         ) {
           runs.set(connectionId, {
             status: "running",
-            leaseExpiresAt: new Date(now.getTime() + 60_000),
+            leaseExpiresAt: new Date(now.getTime() + 300_000),
             leaseOwnerId,
           });
           progress.set(connectionId, {
@@ -252,7 +254,7 @@ function createRepository(options?: {
       }
       runs.set(connectionId, {
         status: "running",
-        leaseExpiresAt: new Date(now.getTime() + 60_000),
+        leaseExpiresAt: new Date(now.getTime() + 300_000),
         leaseOwnerId,
       });
       progress.set(connectionId, {
@@ -266,7 +268,7 @@ function createRepository(options?: {
       async ({ connectionId, leaseOwnerId, progress: nextProgress }) => {
         const run = runs.get(connectionId);
         if (!run || run.leaseOwnerId !== leaseOwnerId) return false;
-        run.leaseExpiresAt = new Date(NOW.getTime() + 600_000);
+        run.leaseExpiresAt = new Date(clock().getTime() + 300_000);
         progress.set(connectionId, nextProgress);
         return true;
       },
@@ -430,13 +432,64 @@ describe("DiagnosticService", () => {
       waiter.run({
         connectionId: "conn_1",
         reason: "scheduled",
-        now: new Date(NOW.getTime() + 300_000),
+        now: new Date(NOW.getTime() + 240_000),
       }),
     ).rejects.toBeInstanceOf(DiagnosticRunRetryableError);
 
     expect(waiterSource.loadAccount).not.toHaveBeenCalled();
     releaseSubscriptions?.();
     await ownerRun;
+  });
+
+  it("renews ownership while a Stripe call remains blocked beyond the lease", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    try {
+      const fixture = createRepository({
+        clock: () => new Date(Date.now()),
+      });
+      const ownerSource = completeSource();
+      const reclaimerSource = completeSource();
+      let releaseAccount: (() => void) | undefined;
+      const accountReleased = new Promise<void>((resolve) => {
+        releaseAccount = resolve;
+      });
+      const originalLoadAccount = ownerSource.loadAccount;
+      ownerSource.loadAccount = vi.fn(async () => {
+        await accountReleased;
+        return originalLoadAccount();
+      });
+      const owner = createService(fixture.repository, ownerSource);
+      const reclaimer = createService(fixture.repository, reclaimerSource, {
+        wait: async () => {},
+      });
+
+      const ownerRun = owner.run({
+        connectionId: "conn_1",
+        reason: "scheduled",
+        now: NOW,
+      });
+      for (let attempt = 0; attempt < 10; attempt += 1) {
+        if (vi.mocked(ownerSource.loadAccount).mock.calls.length > 0) break;
+        await Promise.resolve();
+      }
+      expect(ownerSource.loadAccount).toHaveBeenCalledOnce();
+
+      await vi.advanceTimersByTimeAsync(360_000);
+      await expect(
+        reclaimer.run({
+          connectionId: "conn_1",
+          reason: "scheduled",
+          now: new Date(NOW.getTime() + 360_000),
+        }),
+      ).rejects.toBeInstanceOf(DiagnosticRunRetryableError);
+
+      expect(reclaimerSource.loadAccount).not.toHaveBeenCalled();
+      releaseAccount?.();
+      await ownerRun;
+    } finally {
+      vi.useRealTimers();
+    }
   });
 
   it("refuses progress from an owner after its lease is reclaimed", async () => {

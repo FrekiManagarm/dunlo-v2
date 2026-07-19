@@ -45,6 +45,7 @@ const ANALYSIS_WINDOW_DAYS = 90;
 const DECISION_WINDOW_DAYS = 30;
 const DAY_MS = 86_400_000;
 const DIAGNOSTIC_LEASE_MS = 300_000;
+const DIAGNOSTIC_HEARTBEAT_MS = 60_000;
 const DIAGNOSTIC_WAIT_ATTEMPTS = 60;
 const DIAGNOSTIC_WAIT_MS = 1_000;
 
@@ -248,14 +249,21 @@ export class DiagnosticService {
       checkpoints: [],
       errorCategory: null,
     });
+    const lifetimeHeartbeat = this.startHeartbeat(
+      input.connectionId,
+      window,
+      leaseOwnerId,
+    );
 
     try {
       const source = this.options.createSource(connection);
       const account = await source.loadAccount();
+      lifetimeHeartbeat.assertOwnership();
       await this.heartbeat(input.connectionId, window, leaseOwnerId);
       const subscriptions = await loadAllSubscriptions(source, () =>
         this.heartbeat(input.connectionId, window, leaseOwnerId),
       );
+      lifetimeHeartbeat.assertOwnership();
       await this.checkpoint(
         input.connectionId,
         window,
@@ -265,6 +273,7 @@ export class DiagnosticService {
       const invoices = await loadAllInvoices(source, window, () =>
         this.heartbeat(input.connectionId, window, leaseOwnerId),
       );
+      lifetimeHeartbeat.assertOwnership();
       await this.checkpoint(
         input.connectionId,
         window,
@@ -276,6 +285,7 @@ export class DiagnosticService {
         invoices.items.map((invoice) => invoice.id),
         () => this.heartbeat(input.connectionId, window, leaseOwnerId),
       );
+      lifetimeHeartbeat.assertOwnership();
       await this.checkpoint(
         input.connectionId,
         window,
@@ -300,6 +310,7 @@ export class DiagnosticService {
             reason: "rate_unavailable" as const,
             currency: "usd",
           };
+      lifetimeHeartbeat.assertOwnership();
       await this.checkpoint(
         input.connectionId,
         window,
@@ -341,6 +352,7 @@ export class DiagnosticService {
             leaseOwnerId,
           }),
       );
+      lifetimeHeartbeat.assertOwnership();
       if (persisted.leaseLost) throw new DiagnosticRunLeaseLostError();
       await this.checkpoint(
         input.connectionId,
@@ -386,6 +398,8 @@ export class DiagnosticService {
         });
       }
       throw error;
+    } finally {
+      lifetimeHeartbeat.stop();
     }
   }
 
@@ -464,6 +478,37 @@ export class DiagnosticService {
       checkpoints: current.checkpoints,
       errorCategory: current.errorCategory,
     });
+  }
+
+  private startHeartbeat(
+    connectionId: string,
+    window: DiagnosticWindow,
+    leaseOwnerId: string,
+  ): { assertOwnership(): void; stop(): void } {
+    let failure: Error | null = null;
+    let renewing = false;
+    const renew = () => {
+      if (failure || renewing) return;
+      renewing = true;
+      void this.heartbeat(connectionId, window, leaseOwnerId)
+        .catch((error: unknown) => {
+          failure =
+            error instanceof Error ? error : new DiagnosticRunLeaseLostError();
+        })
+        .finally(() => {
+          renewing = false;
+        });
+    };
+    const interval = setInterval(renew, DIAGNOSTIC_HEARTBEAT_MS);
+
+    return {
+      assertOwnership() {
+        if (failure) throw failure;
+      },
+      stop() {
+        clearInterval(interval);
+      },
+    };
   }
 
   private async waitForSnapshot(
