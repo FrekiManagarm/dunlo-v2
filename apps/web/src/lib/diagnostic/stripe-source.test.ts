@@ -192,10 +192,16 @@ describe("createStripeDiagnosticSource", () => {
       id: "pi_recurring",
       latest_charge: "ch_recurring",
       livemode: false,
+      last_payment_error: {
+        advice_code: "update_payment_method",
+        decline_code: "issuer_not_available",
+      },
     });
     client.charges.retrieve.mockResolvedValue({
       id: "ch_recurring",
-      failure_code: "card_declined",
+      failure_code: "charge_failure",
+      advice_code: "charge_advice",
+      network_decline_code: "charge_decline",
       livemode: false,
     });
     const source = createStripeDiagnosticSource(client);
@@ -214,6 +220,9 @@ describe("createStripeDiagnosticSource", () => {
         invoiceId: "in_recurring",
         paymentIntentId: "pi_recurring",
         chargeId: "ch_recurring",
+        adviceCode: "update_payment_method",
+        declineCode: "issuer_not_available",
+        errorCode: "charge_failure",
       }),
     ]);
   });

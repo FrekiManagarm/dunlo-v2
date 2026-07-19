@@ -66,7 +66,7 @@ export type PaymentEvidence = {
   invoiceId: string;
   paymentIntentId: string | null;
   chargeId: string | null;
-  failureCode: string | null;
+  errorCode: string | null;
   declineCode: string | null;
   adviceCode: string | null;
   mode: StripeMode;
@@ -343,29 +343,25 @@ export function createStripeDiagnosticSource(
         }
 
         const chargeId = idOrNull(paymentIntent.value.latest_charge);
+        const paymentError = paymentIntent.value.last_payment_error;
+        const paymentIntentErrorCode = stringOrNull(
+          paymentError && objectValue(paymentError, "code"),
+        );
+        const paymentIntentDeclineCode = stringOrNull(
+          paymentError && objectValue(paymentError, "decline_code"),
+        );
+        const paymentIntentAdviceCode = stringOrNull(
+          paymentError && objectValue(paymentError, "advice_code"),
+        );
+
         if (!chargeId) {
           evidence.push({
             invoiceId,
             paymentIntentId: paymentIntent.value.id,
             chargeId: null,
-            failureCode: stringOrNull(
-              paymentIntent.value.last_payment_error &&
-                objectValue(paymentIntent.value.last_payment_error, "code"),
-            ),
-            declineCode: stringOrNull(
-              paymentIntent.value.last_payment_error &&
-                objectValue(
-                  paymentIntent.value.last_payment_error,
-                  "decline_code",
-                ),
-            ),
-            adviceCode: stringOrNull(
-              paymentIntent.value.last_payment_error &&
-                objectValue(
-                  paymentIntent.value.last_payment_error,
-                  "advice_code",
-                ),
-            ),
+            errorCode: paymentIntentErrorCode,
+            declineCode: paymentIntentDeclineCode,
+            adviceCode: paymentIntentAdviceCode,
             mode: modeOf(paymentIntent.value),
             coverage: completeCoverage(1, 1),
           });
@@ -389,11 +385,18 @@ export function createStripeDiagnosticSource(
           invoiceId,
           paymentIntentId: paymentIntent.value.id,
           chargeId: charge.value.id,
-          failureCode: stringOrNull(charge.value.failure_code),
-          declineCode: stringOrNull(charge.value.failure_code),
-          adviceCode: stringOrNull(
-            charge.value.outcome &&
-              objectValue(charge.value.outcome, "advice_code"),
+          errorCode:
+            paymentIntentErrorCode ?? stringOrNull(charge.value.failure_code),
+          declineCode:
+            paymentIntentDeclineCode ??
+            stringOrNull(charge.value.network_decline_code),
+          adviceCode: firstString(
+            paymentIntentAdviceCode,
+            stringOrNull(charge.value.advice_code),
+            stringOrNull(
+              charge.value.outcome &&
+                objectValue(charge.value.outcome, "advice_code"),
+            ),
           ),
           mode: modeOf(charge.value),
           coverage: completeCoverage(2, 2),
@@ -423,7 +426,7 @@ function partialPaymentEvidence(
     invoiceId: invoice.id,
     paymentIntentId,
     chargeId,
-    failureCode: null,
+    errorCode: null,
     declineCode: null,
     adviceCode: null,
     mode: invoice.mode,
@@ -511,6 +514,10 @@ function idOrNull(value: unknown): string | null {
 
 function stringOrNull(value: unknown): string | null {
   return typeof value === "string" ? value : null;
+}
+
+function firstString(...values: Array<string | null>): string | null {
+  return values.find((value) => value !== null) ?? null;
 }
 
 function numberOrNull(value: unknown): number | null {
