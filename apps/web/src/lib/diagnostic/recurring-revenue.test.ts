@@ -273,6 +273,71 @@ describe("normalizeRecurringRevenue", () => {
     expect(normalizeRecurringRevenue(input)).toMatchObject(expected);
   });
 
+  it("ignores newer non-metered invoices when selecting variable history", () => {
+    const meteredLine = (amount: number) => ({
+      amount,
+      currency: "usd",
+      kind: "recurring" as const,
+      pricing: "metered" as const,
+      interval: "month" as const,
+      intervalCount: 1,
+    });
+    const oneOffLine = (amount: number) => ({
+      amount,
+      currency: "usd",
+      kind: "one_off" as const,
+      pricing: "fixed" as const,
+      interval: "month" as const,
+      intervalCount: 1,
+    });
+    const input = baseInput({
+      subscriptions: [
+        {
+          id: "sub_metered_history",
+          status: "active",
+          lines: [meteredLine(0)],
+          finalizedInvoices: [
+            {
+              id: "in_1",
+              finalizedAt: "2026-01-01T00:00:00.000Z",
+              status: "paid",
+              lines: [meteredLine(9000)],
+            },
+            {
+              id: "in_2",
+              finalizedAt: "2026-02-01T00:00:00.000Z",
+              status: "paid",
+              lines: [meteredLine(12000)],
+            },
+            {
+              id: "in_3",
+              finalizedAt: "2026-03-01T00:00:00.000Z",
+              status: "paid",
+              lines: [meteredLine(15000)],
+            },
+            {
+              id: "in_4",
+              finalizedAt: "2026-04-01T00:00:00.000Z",
+              status: "paid",
+              lines: [oneOffLine(1000)],
+            },
+            {
+              id: "in_5",
+              finalizedAt: "2026-05-01T00:00:00.000Z",
+              status: "paid",
+              lines: [oneOffLine(1000)],
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(normalizeRecurringRevenue(input)).toMatchObject({
+      variableMrr: { usd: 12000 },
+      limitedConfidenceMrr: {},
+    });
+  });
+
   it("does not mutate the adapter input", () => {
     const input = baseInput({
       subscriptions: [

@@ -110,7 +110,13 @@ function normalizeVariableMrr(
   invoices: readonly RecurringRevenueInvoice[],
 ): { amounts: MoneyByCurrency; isLimitedConfidence: boolean } {
   const latestInvoices = invoices
-    .filter((invoice) => finalInvoiceStatuses.has(invoice.status))
+    .filter(
+      (invoice) =>
+        finalInvoiceStatuses.has(invoice.status) &&
+        invoice.lines.some(
+          (line) => line.kind === "recurring" && line.pricing === "metered",
+        ),
+    )
     .slice()
     .sort((left, right) => right.finalizedAt.localeCompare(left.finalizedAt))
     .slice(0, 3);
