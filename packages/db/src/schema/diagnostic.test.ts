@@ -131,6 +131,17 @@ describe("diagnostic lifecycle schema", () => {
     ).toBe(true);
   });
 
+  it("stores an expiring lease for diagnostic run ownership", () => {
+    const columns = columnsFor(domain.diagnosticRun);
+
+    expect(columns.lease_expires_at?.notNull).toBe(true);
+    expect(
+      diagnosticMigrations.some((migration) =>
+        migration.includes('ADD COLUMN "lease_expires_at" timestamp'),
+      ),
+    ).toBe(true);
+  });
+
   it("cascades diagnostic data when its connection is deleted", () => {
     expect(domain).toHaveProperty("diagnosticSnapshot");
     expect(domain).toHaveProperty("diagnosticFinding");

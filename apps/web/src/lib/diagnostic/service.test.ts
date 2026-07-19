@@ -3,9 +3,11 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   DiagnosticService,
+  DiagnosticRunRetryableError,
   type DiagnosticConnection,
   type DiagnosticProgress,
   type DiagnosticRepository,
+  type DiagnosticServiceOptions,
   type DiagnosticSnapshotView,
 } from "./service";
 import type {
@@ -130,6 +132,10 @@ function partialSource(): StripeDiagnosticSource {
 function createRepository(options?: {
   current?: DiagnosticSnapshotView | null;
   source?: StripeDiagnosticSource;
+  run?: {
+    status: Exclude<DiagnosticProgress["status"], "idle">;
+    leaseExpiresAt: Date;
+  };
 }) {
   const snapshots: DiagnosticSnapshotView[] = options?.current
     ? [options.current]
@@ -144,6 +150,14 @@ function createRepository(options?: {
       errorCategory: DiagnosticProgress["errorCategory"];
     }
   >();
+  const runs = new Map<
+    string,
+    {
+      status: Exclude<DiagnosticProgress["status"], "idle">;
+      leaseExpiresAt: Date;
+    }
+  >();
+  if (options?.run) runs.set("conn_1", options.run);
   const persist = vi.fn(async ({ snapshot, newFindings, phase }) => {
     const existing = snapshots.find(
       (candidate) =>
@@ -180,13 +194,33 @@ function createRepository(options?: {
       const saved = progress.get(connectionId);
       return saved ? { connectionId, ...saved } : null;
     }),
-    claimRun: vi.fn(async ({ connectionId }) => {
-      if (progress.has(connectionId)) {
+    claimRun: vi.fn(async ({ connectionId, now }) => {
+      const run = runs.get(connectionId);
+      if (run) {
+        if (
+          run.status === "failed" ||
+          (run.status === "running" && run.leaseExpiresAt <= now)
+        ) {
+          runs.set(connectionId, {
+            status: "running",
+            leaseExpiresAt: new Date(now.getTime() + 60_000),
+          });
+          progress.set(connectionId, {
+            status: "running",
+            checkpoints: [],
+            errorCategory: null,
+          });
+          return { owner: true as const };
+        }
         return {
           owner: false as const,
-          status: progress.get(connectionId)!.status,
+          status: run.status,
         };
       }
+      runs.set(connectionId, {
+        status: "running",
+        leaseExpiresAt: new Date(now.getTime() + 60_000),
+      });
       progress.set(connectionId, {
         status: "running",
         checkpoints: [],
@@ -207,6 +241,7 @@ function createRepository(options?: {
 function createService(
   repository: DiagnosticRepository,
   source: StripeDiagnosticSource,
+  options?: Pick<DiagnosticServiceOptions, "wait">,
 ) {
   return new DiagnosticService({
     repository,
@@ -223,6 +258,7 @@ function createService(
         },
       })),
     },
+    ...options,
   });
 }
 
@@ -253,8 +289,13 @@ describe("DiagnosticService", () => {
     const fixture = createRepository();
     const firstSource = completeSource();
     const secondSource = completeSource();
-    const firstService = createService(fixture.repository, firstSource);
-    const secondService = createService(fixture.repository, secondSource);
+    const wait = vi.fn(async () => {});
+    const firstService = createService(fixture.repository, firstSource, {
+      wait,
+    });
+    const secondService = createService(fixture.repository, secondSource, {
+      wait,
+    });
 
     const results = await Promise.all([
       firstService.run({
@@ -273,21 +314,64 @@ describe("DiagnosticService", () => {
     expect(fixture.findings).toHaveLength(1);
     expect(results.filter((result) => result.reused)).toHaveLength(1);
     expect(
-      firstSource.loadAccount.mock.calls.length +
-        secondSource.loadAccount.mock.calls.length,
+      vi.mocked(firstSource.loadAccount).mock.calls.length +
+        vi.mocked(secondSource.loadAccount).mock.calls.length,
     ).toBe(1);
     expect(
-      firstSource.loadSubscriptions.mock.calls.length +
-        secondSource.loadSubscriptions.mock.calls.length,
+      vi.mocked(firstSource.loadSubscriptions).mock.calls.length +
+        vi.mocked(secondSource.loadSubscriptions).mock.calls.length,
     ).toBe(1);
     expect(
-      firstSource.loadInvoices.mock.calls.length +
-        secondSource.loadInvoices.mock.calls.length,
+      vi.mocked(firstSource.loadInvoices).mock.calls.length +
+        vi.mocked(secondSource.loadInvoices).mock.calls.length,
     ).toBe(1);
     expect(
-      firstSource.loadPaymentEvidence.mock.calls.length +
-        secondSource.loadPaymentEvidence.mock.calls.length,
+      vi.mocked(firstSource.loadPaymentEvidence).mock.calls.length +
+        vi.mocked(secondSource.loadPaymentEvidence).mock.calls.length,
     ).toBe(1);
+  });
+
+  it("reclaims an expired running lease before reading Stripe", async () => {
+    const fixture = createRepository({
+      run: {
+        status: "running",
+        leaseExpiresAt: new Date(NOW.getTime() - 1),
+      },
+    });
+    const source = completeSource();
+    const service = createService(fixture.repository, source);
+
+    const result = await service.run({
+      connectionId: "conn_1",
+      reason: "scheduled",
+      now: NOW,
+    });
+
+    expect(result.reused).toBe(false);
+    expect(source.loadAccount).toHaveBeenCalledTimes(1);
+  });
+
+  it("returns a retryable error after bounded waiting for a live owner", async () => {
+    const fixture = createRepository({
+      run: {
+        status: "running",
+        leaseExpiresAt: new Date(NOW.getTime() + 60_000),
+      },
+    });
+    const source = completeSource();
+    const wait = vi.fn(async () => {});
+    const service = createService(fixture.repository, source, { wait });
+
+    await expect(
+      service.run({
+        connectionId: "conn_1",
+        reason: "scheduled",
+        now: NOW,
+      }),
+    ).rejects.toBeInstanceOf(DiagnosticRunRetryableError);
+
+    expect(wait).toHaveBeenCalledTimes(59);
+    expect(source.loadAccount).not.toHaveBeenCalled();
   });
 
   it("publishes diagnostic checkpoints in their approved order", async () => {

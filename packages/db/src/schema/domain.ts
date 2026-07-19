@@ -224,6 +224,7 @@ export const diagnosticRun = pgTable(
     status: text("status").notNull(),
     checkpoints: jsonb("checkpoints").$type<string[]>().notNull(),
     errorCategory: text("error_category"),
+    leaseExpiresAt: timestamp("lease_expires_at").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()
@@ -240,6 +241,7 @@ export const diagnosticRun = pgTable(
       table.connectionId,
       table.updatedAt,
     ),
+    index("diagnostic_run_lease_expires_at_idx").on(table.leaseExpiresAt),
   ],
 );
 

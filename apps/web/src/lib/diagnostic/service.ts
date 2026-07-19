@@ -5,7 +5,7 @@ import {
   stripeConnection,
   type ConnectionPhase,
 } from "@dunlo-v2/db/schema/domain";
-import { and, desc, eq, ne } from "drizzle-orm";
+import { and, desc, eq, lte, ne } from "drizzle-orm";
 
 import Stripe from "stripe";
 
@@ -44,6 +44,9 @@ import type {
 const ANALYSIS_WINDOW_DAYS = 90;
 const DECISION_WINDOW_DAYS = 30;
 const DAY_MS = 86_400_000;
+const DIAGNOSTIC_LEASE_MS = 300_000;
+const DIAGNOSTIC_WAIT_ATTEMPTS = 60;
+const DIAGNOSTIC_WAIT_MS = 1_000;
 
 export type DiagnosticConnection = {
   id: string;
@@ -137,6 +140,14 @@ export type DiagnosticRunClaim =
   | { owner: true }
   | { owner: false; status: Exclude<DiagnosticProgress["status"], "idle"> };
 
+export class DiagnosticRunRetryableError extends Error {
+  readonly retryable = true;
+
+  constructor() {
+    super("Diagnostic run is still in progress. Retry this request.");
+  }
+}
+
 export type DiagnosticRepository = {
   getConnection(connectionId: string): Promise<DiagnosticConnection | null>;
   findSnapshotForWindow(
@@ -148,6 +159,7 @@ export type DiagnosticRepository = {
   claimRun(input: {
     connectionId: string;
     window: DiagnosticWindow;
+    now: Date;
   }): Promise<DiagnosticRunClaim>;
   saveProgress(input: {
     connectionId: string;
@@ -164,6 +176,7 @@ export type DiagnosticServiceOptions = {
   repository: DiagnosticRepository;
   createSource(connection: DiagnosticConnection): StripeDiagnosticSource;
   fx: EcbReferenceRateAdapter;
+  wait?: (milliseconds: number) => Promise<void>;
 };
 
 type DiagnosticRunInput = {
@@ -203,6 +216,7 @@ export class DiagnosticService {
     const claim = await this.options.repository.claimRun({
       connectionId: input.connectionId,
       window,
+      now: input.now,
     });
     if (!claim.owner) {
       const snapshot = await this.waitForSnapshot(input.connectionId, window);
@@ -385,7 +399,7 @@ export class DiagnosticService {
     connectionId: string,
     window: DiagnosticWindow,
   ): Promise<DiagnosticSnapshotView> {
-    while (true) {
+    for (let attempt = 0; attempt < DIAGNOSTIC_WAIT_ATTEMPTS; attempt += 1) {
       const snapshot = await this.options.repository.findSnapshotForWindow(
         connectionId,
         window,
@@ -396,8 +410,11 @@ export class DiagnosticService {
       if (progress?.status === "failed") {
         throw new Error("Diagnostic run failed before producing a snapshot.");
       }
-      await new Promise((resolve) => setTimeout(resolve, 10));
+      if (attempt < DIAGNOSTIC_WAIT_ATTEMPTS - 1) {
+        await (this.options.wait ?? wait)(DIAGNOSTIC_WAIT_MS);
+      }
     }
+    throw new DiagnosticRunRetryableError();
   }
 }
 
@@ -428,6 +445,10 @@ function diagnosticWindow(now: Date): DiagnosticWindow {
     decisionStartsAt: new Date(end.getTime() - DECISION_WINDOW_DAYS * DAY_MS),
     decisionEndsAt: end,
   };
+}
+
+function wait(milliseconds: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, milliseconds));
 }
 
 async function loadAllSubscriptions(source: StripeDiagnosticSource): Promise<{
@@ -811,8 +832,9 @@ function createDatabaseRepository(): DiagnosticRepository {
           }
         : null;
     },
-    async claimRun({ connectionId, window }) {
+    async claimRun({ connectionId, window, now }) {
       const database = await loadDb();
+      const leaseExpiresAt = new Date(now.getTime() + DIAGNOSTIC_LEASE_MS);
       const [inserted] = await database
         .insert(diagnosticRun)
         .values({
@@ -822,6 +844,7 @@ function createDatabaseRepository(): DiagnosticRepository {
           status: "running",
           checkpoints: [],
           errorCategory: null,
+          leaseExpiresAt,
         })
         .onConflictDoNothing({
           target: [
@@ -854,12 +877,33 @@ function createDatabaseRepository(): DiagnosticRepository {
             status: "running",
             checkpoints: [],
             errorCategory: null,
+            leaseExpiresAt,
             updatedAt: new Date(),
           })
           .where(
             and(
               eq(diagnosticRun.id, existing.id),
               eq(diagnosticRun.status, "failed"),
+            ),
+          )
+          .returning({ id: diagnosticRun.id });
+        if (reclaimed) return { owner: true };
+      }
+      if (existing.status === "running" && existing.leaseExpiresAt <= now) {
+        const [reclaimed] = await database
+          .update(diagnosticRun)
+          .set({
+            status: "running",
+            checkpoints: [],
+            errorCategory: null,
+            leaseExpiresAt,
+            updatedAt: new Date(),
+          })
+          .where(
+            and(
+              eq(diagnosticRun.id, existing.id),
+              eq(diagnosticRun.status, "running"),
+              lte(diagnosticRun.leaseExpiresAt, now),
             ),
           )
           .returning({ id: diagnosticRun.id });
@@ -884,6 +928,7 @@ function createDatabaseRepository(): DiagnosticRepository {
           status: progress.status,
           checkpoints: progress.checkpoints,
           errorCategory: progress.errorCategory,
+          leaseExpiresAt: new Date(Date.now() + DIAGNOSTIC_LEASE_MS),
         })
         .onConflictDoUpdate({
           target: [
@@ -896,6 +941,7 @@ function createDatabaseRepository(): DiagnosticRepository {
             checkpoints: progress.checkpoints,
             errorCategory: progress.errorCategory,
             updatedAt: new Date(),
+            leaseExpiresAt: new Date(Date.now() + DIAGNOSTIC_LEASE_MS),
           },
         });
     },
