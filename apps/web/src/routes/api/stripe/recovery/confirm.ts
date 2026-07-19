@@ -12,6 +12,39 @@ const inputSchema = z.object({
   selectedSequenceIds: z.array(z.string().min(1)).min(1),
 });
 
+export async function runAtomicRecoveryConfirmation(
+  execute: typeof db.execute,
+  input: {
+    connectionId: string;
+    userId: string;
+    selectedSequenceIds: string[];
+  },
+): Promise<boolean> {
+  const sequenceIds = [...new Set(input.selectedSequenceIds)];
+  const selectedIds = sql.join(
+    sequenceIds.map((id) => sql`${id}`),
+    sql`, `,
+  );
+  const result = await execute(sql`
+    WITH selected AS (
+      SELECT id FROM recovery_sequence
+      WHERE user_id = ${input.userId} AND id IN (${selectedIds})
+    ), eligible AS (
+      UPDATE stripe_connection SET phase = 'recovery_active', recovery_activated_at = NOW()
+      WHERE id = ${input.connectionId} AND user_id = ${input.userId}
+        AND scope = 'read_write' AND phase = 'email_configured'
+        AND webhook_endpoint_id IS NOT NULL
+        AND EXISTS (SELECT 1 FROM email_provider WHERE user_id = ${input.userId})
+        AND (SELECT count(*) FROM selected) = ${sequenceIds.length}
+      RETURNING user_id
+    ), sequences AS (
+      UPDATE recovery_sequence SET is_active = id IN (${selectedIds})
+      WHERE user_id IN (SELECT user_id FROM eligible)
+    ) SELECT user_id FROM eligible
+  `);
+  return result.rows.length > 0;
+}
+
 export const Route = createFileRoute("/api/stripe/recovery/confirm")({
   server: {
     handlers: {
@@ -24,34 +57,13 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
           return new Response("Invalid recovery confirmation", { status: 400 });
 
         try {
-          const sequenceIds = [...new Set(parsed.data.selectedSequenceIds)];
-          const selectedIds = sql.join(
-            sequenceIds.map((id) => sql`${id}`),
-            sql`, `,
-          );
-          const result = await db.execute(sql`
-            WITH selected AS (
-              SELECT id FROM recovery_sequence
-              WHERE user_id = ${session.user.id} AND id IN (${selectedIds})
-            ), eligible AS (
-              UPDATE stripe_connection
-              SET phase = 'recovery_active', recovery_activated_at = NOW()
-              WHERE id = ${parsed.data.connectionId}
-                AND user_id = ${session.user.id}
-                AND scope = 'read_write'
-                AND phase = 'email_configured'
-                AND webhook_endpoint_id IS NOT NULL
-                AND EXISTS (SELECT 1 FROM email_provider WHERE user_id = ${session.user.id})
-                AND (SELECT count(*) FROM selected) = ${sequenceIds.length}
-              RETURNING user_id
-            ), sequences AS (
-              UPDATE recovery_sequence
-              SET is_active = id IN (${selectedIds})
-              WHERE user_id IN (SELECT user_id FROM eligible)
-            )
-            SELECT user_id FROM eligible
-          `);
-          if (!result.rows.length)
+          if (
+            !(await runAtomicRecoveryConfirmation(db.execute, {
+              connectionId: parsed.data.connectionId,
+              userId: session.user.id,
+              selectedSequenceIds: parsed.data.selectedSequenceIds,
+            }))
+          )
             throw new Error("Recovery prerequisites are incomplete");
         } catch (error) {
           return new Response(
