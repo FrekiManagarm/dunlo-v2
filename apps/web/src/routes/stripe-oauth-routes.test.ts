@@ -150,7 +150,9 @@ describe("Stripe OAuth route contracts", () => {
     mocks.authSession.mockResolvedValue({ user: { id: "user_123" } });
     mocks.selectLimit.mockReset();
     mocks.selectWhere.mockClear();
-    mocks.updateWhere.mockReset().mockResolvedValue([{ id: "conn_123" }]);
+    mocks.updateWhere.mockReset().mockReturnValue({
+      returning: () => [{ id: "conn_123" }],
+    });
     mocks.updateSet.mockReset().mockImplementation(() => ({
       where: mocks.updateWhere,
       returning: () => [{ id: "conn_123" }],

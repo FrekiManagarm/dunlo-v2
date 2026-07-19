@@ -60,6 +60,21 @@ export async function reconcileWebhook(
       apiVersion: STRIPE_API_VERSION,
     });
 
+    const remoteEndpoints = await stripe.webhookEndpoints.list(
+      { limit: 100 },
+      { stripeAccount: stripeAccountId },
+    );
+    if (
+      remoteEndpoints.data.some(
+        (endpoint) => endpoint.metadata?.stripeAccountId === stripeAccountId,
+      )
+    ) {
+      console.error(
+        "[stripe/reconcileWebhook] existing remote endpoint is missing local credentials",
+      );
+      return null;
+    }
+
     const webhook = await stripe.webhookEndpoints.create(
       {
         url: webhookUrl,

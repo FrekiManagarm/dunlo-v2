@@ -5,7 +5,7 @@ import {
   stripeConnection,
 } from "@dunlo-v2/db/schema/domain";
 import { createFileRoute } from "@tanstack/react-router";
-import { and, eq } from "drizzle-orm";
+import { and, eq, exists } from "drizzle-orm";
 import { z } from "zod";
 
 import {
@@ -62,7 +62,17 @@ export const Route = createFileRoute("/api/stripe/activate")({
         if (!webhook)
           return new Response("Webhook reconciliation failed", { status: 502 });
 
-        await db
+        const currentRecommendation = db
+          .select({ id: diagnosticSnapshot.id })
+          .from(diagnosticSnapshot)
+          .where(
+            and(
+              eq(diagnosticSnapshot.connectionId, connection.id),
+              eq(diagnosticSnapshot.isCurrent, true),
+              eq(diagnosticSnapshot.verdict, "activation_recommended"),
+            ),
+          );
+        const [advanced] = await db
           .update(stripeConnection)
           .set({ phase: "write_authorized" })
           .where(
@@ -70,8 +80,12 @@ export const Route = createFileRoute("/api/stripe/activate")({
               eq(stripeConnection.id, connection.id),
               eq(stripeConnection.userId, session.user.id),
               eq(stripeConnection.phase, "activation_requested"),
+              exists(currentRecommendation),
             ),
-          );
+          )
+          .returning({ id: stripeConnection.id });
+        if (!advanced)
+          return new Response("Activation is not available", { status: 409 });
         await seedDefaultSequences(session.user.id, { isActive: false });
         return Response.json({ ok: true });
       },

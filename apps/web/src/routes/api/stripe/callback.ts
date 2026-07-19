@@ -209,7 +209,7 @@ export const Route = createFileRoute("/api/stripe/callback")({
                 eq(diagnosticSnapshot.verdict, "activation_recommended"),
               ),
             );
-          await db
+          const [authorized] = await db
             .update(stripeConnection)
             .set({
               accessToken: encrypt(token.access_token),
@@ -225,7 +225,9 @@ export const Route = createFileRoute("/api/stripe/callback")({
                 eq(stripeConnection.phase, "diagnostic_ready"),
                 exists(currentRecommendation),
               ),
-            );
+            )
+            .returning({ id: stripeConnection.id });
+          if (!authorized) return redirectWithError("activation_not_available");
           const webhook = await reconcileWebhook(
             token.stripe_user_id,
             token.access_token,
