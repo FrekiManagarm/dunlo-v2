@@ -35,6 +35,7 @@ type ExportFinding = {
   amount: number;
   currency: string;
   category: string;
+  [key: string]: unknown;
 };
 
 export function buildDiagnosticExport(input: {

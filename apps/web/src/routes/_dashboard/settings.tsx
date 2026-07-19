@@ -605,7 +605,12 @@ function EscalationTab({
 
   const disconnectStripeMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/stripe/disconnect", { method: "POST" });
+      if (!initial.connectionId) throw new Error("Stripe connection not found");
+      const res = await fetch("/api/stripe/disconnect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ connectionId: initial.connectionId }),
+      });
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as {
           error?: string;
@@ -793,7 +798,11 @@ function EscalationTab({
                 Stripe-derived recovery records.
               </p>
               <a
-                href="/api/stripe/export"
+                href={
+                  initial.connectionId
+                    ? `/api/stripe/export?connectionId=${encodeURIComponent(initial.connectionId)}`
+                    : "#"
+                }
                 download
                 className={`inline-flex items-center gap-1.5 text-xs font-semibold text-dunlo-dim hover:text-dunlo-deep ${
                   !initial.hasConnection ? "pointer-events-none opacity-40" : ""

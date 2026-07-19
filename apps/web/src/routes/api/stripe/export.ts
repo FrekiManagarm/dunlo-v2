@@ -6,9 +6,12 @@ import {
   stripeConnection,
 } from "@dunlo-v2/db/schema/domain";
 import { createFileRoute } from "@tanstack/react-router";
-import { and, desc, eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
+import { z } from "zod";
 
 import { buildDiagnosticExport } from "@/lib/diagnostic/export";
+
+const searchSchema = z.object({ connectionId: z.string().min(1) });
 
 export const Route = createFileRoute("/api/stripe/export")({
   server: {
@@ -19,11 +22,27 @@ export const Route = createFileRoute("/api/stripe/export")({
           return Response.json({ error: "Unauthorized" }, { status: 401 });
         }
 
+        const parsed = searchSchema.safeParse(
+          Object.fromEntries(new URL(request.url).searchParams),
+        );
+        if (!parsed.success) {
+          return Response.json(
+            { error: "Invalid export request" },
+            {
+              status: 400,
+            },
+          );
+        }
+
         const [connection] = await db
           .select({ id: stripeConnection.id })
           .from(stripeConnection)
-          .where(eq(stripeConnection.userId, session.user.id))
-          .orderBy(desc(stripeConnection.updatedAt))
+          .where(
+            and(
+              eq(stripeConnection.id, parsed.data.connectionId),
+              eq(stripeConnection.userId, session.user.id),
+            ),
+          )
           .limit(1);
         if (!connection) {
           return Response.json(
@@ -67,7 +86,7 @@ export const Route = createFileRoute("/api/stripe/export")({
           exportedAt: new Date(),
           snapshot: {
             ...snapshot,
-            fxRateDate: snapshot.fxRateDate.toISOString(),
+            fxRateDate: String(snapshot.fxRateDate),
             fxRateToUsd: String(snapshot.fxRateToUsd),
           },
           findings,
