@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import { PgDialect } from "drizzle-orm/pg-core";
 
 import { qualifyDiagnostic } from "./qualification";
 import {
@@ -10,6 +11,7 @@ const webhookMocks = vi.hoisted(() => {
   const selectRows: unknown[][] = [];
   const inserts: Array<{ table: unknown; values: unknown }> = [];
   const updates: unknown[] = [];
+  let fixture: any;
   const constructEvent = vi.fn();
   const getStripeConnectionByAccountId = vi.fn();
   const getStripeConnectionById = vi.fn();
@@ -17,40 +19,91 @@ const webhookMocks = vi.hoisted(() => {
   const triggerDiagnostic = vi.fn();
   const seedDefaultSequences = vi.fn();
   const sendAlertNotification = vi.fn();
+  const generateEscalationDraft = vi.fn();
+  const getConnectedStripe = vi.fn();
   const execute = vi.fn();
   const authSession = vi.fn();
   const select = vi.fn(() => {
+    const nextRows = () => selectRows.shift() ?? [];
     const query = {
       from: vi.fn(),
       innerJoin: vi.fn(),
       where: vi.fn(),
+      orderBy: vi.fn(),
+      limit: vi.fn(),
+      then: undefined as unknown,
     };
     query.from.mockReturnValue(query);
     query.innerJoin.mockReturnValue(query);
-    query.where.mockImplementation(() => {
-      const rows = selectRows.shift() ?? [];
-      return Object.assign(Promise.resolve(rows), {
-        limit: vi.fn(async () => rows),
-      });
-    });
+    query.where.mockReturnValue(query);
+    query.orderBy.mockReturnValue(query);
+    query.limit.mockImplementation(async () => nextRows());
+    query.then = (onfulfilled: (rows: unknown[]) => unknown) =>
+      Promise.resolve(nextRows()).then(onfulfilled);
     return query;
   });
   const insert = vi.fn((table: unknown) => ({
     values: vi.fn(async (values: unknown) => {
       inserts.push({ table, values });
+      if (!fixture) return;
+      if (
+        typeof values === "object" &&
+        values !== null &&
+        "failedPaymentId" in values
+      ) {
+        fixture.recoveryAttempts.push(values);
+      } else if (
+        typeof values === "object" &&
+        values !== null &&
+        "stripePaymentIntentId" in values
+      ) {
+        fixture.failedPayments.push(values);
+      } else if (
+        typeof values === "object" &&
+        values !== null &&
+        "draftSubject" in values
+      ) {
+        fixture.escalations.push(values);
+      }
     }),
   }));
   const update = vi.fn(() => {
     const query = {
       set: vi.fn(),
       where: vi.fn(),
-      returning: vi.fn(async () => [{ id: "conn_fixture" }]),
+      returning: vi.fn(),
+      then: undefined as unknown,
     };
     query.set.mockImplementation((values: unknown) => {
       updates.push(values);
+      if (
+        fixture &&
+        typeof values === "object" &&
+        values !== null &&
+        ("phase" in values || "scope" in values)
+      ) {
+        Object.assign(fixture.connection, values);
+      }
       return query;
     });
     query.where.mockReturnValue(query);
+    query.returning.mockImplementation(async () => {
+      if (
+        fixture &&
+        updates.at(-1) &&
+        typeof updates.at(-1) === "object" &&
+        updates.at(-1) !== null &&
+        "monitoringEnabled" in updates.at(-1) &&
+        (!fixture.hasReadySnapshot ||
+          fixture.connection.scope !== "read_only" ||
+          fixture.connection.phase !== "monitoring")
+      ) {
+        return [];
+      }
+      return [{ id: "conn_fixture" }];
+    });
+    query.then = (onfulfilled: () => unknown) =>
+      Promise.resolve(undefined).then(onfulfilled);
     return query;
   });
 
@@ -65,8 +118,13 @@ const webhookMocks = vi.hoisted(() => {
     triggerDiagnostic,
     seedDefaultSequences,
     sendAlertNotification,
+    generateEscalationDraft,
+    getConnectedStripe,
     execute,
     authSession,
+    setFixture: (nextFixture: unknown) => {
+      fixture = nextFixture;
+    },
     db: { select, insert, update, execute },
   };
 });
@@ -83,6 +141,7 @@ vi.mock("@tanstack/react-start", () => ({
     };
     return builder;
   },
+  createMiddleware: () => ({ server: () => ({}) }),
 }));
 vi.mock("@dunlo-v2/db", () => ({ db: webhookMocks.db }));
 vi.mock("@dunlo-v2/auth", () => ({
@@ -138,13 +197,13 @@ vi.mock("@/lib/stripe-webhooks", () => ({
   reconcileWebhook: webhookMocks.reconcileWebhook,
 }));
 vi.mock("@/functions/escalations", () => ({
-  generateEscalationDraft: vi.fn(),
+  generateEscalationDraft: webhookMocks.generateEscalationDraft,
 }));
 vi.mock("@/lib/stripe", () => ({
   getPlatformStripe: () => ({
     webhooks: { constructEvent: webhookMocks.constructEvent },
   }),
-  getConnectedStripe: vi.fn(),
+  getConnectedStripe: webhookMocks.getConnectedStripe,
 }));
 vi.mock("@/lib/notifications", () => ({
   sendAlertNotification: webhookMocks.sendAlertNotification,
@@ -177,11 +236,15 @@ type SafetyFixture = {
   readonly stripeAccountId: string;
   readonly selectedSequenceIds: string[];
   readonly recoveryActivatedAt: Date;
+  readonly hasReadySnapshot: boolean;
+  readonly failedPayments: unknown[];
   readonly recoveryAttempts: unknown[];
   readonly emails: unknown[];
   readonly escalations: unknown[];
   readonly portalSessions: unknown[];
   readonly writeSideStripeCalls: unknown[];
+  readonly sequences: Array<{ id: string; isActive: boolean }>;
+  readonly confirmationQueries: Array<{ sql: string; params: unknown[] }>;
   connection: {
     userId: string;
     stripeAccountId: string;
@@ -212,16 +275,23 @@ function createSafetyFixture(): SafetyFixture {
     stripeAccountId: "acct_fixture",
     selectedSequenceIds: ["sequence_card_declined"],
     recoveryActivatedAt: new Date("2026-07-19T12:00:00.000Z"),
+    hasReadySnapshot: true,
+    failedPayments: [],
     recoveryAttempts: [],
     emails: [],
     escalations: [],
     portalSessions: [],
     writeSideStripeCalls: [],
+    sequences: [
+      { id: "sequence_card_declined", isActive: false },
+      { id: "sequence_expired_card", isActive: false },
+    ],
+    confirmationQueries: [],
     connection: {
       userId: "user_fixture",
       stripeAccountId: "acct_fixture",
       scope: "read_only",
-      phase: "diagnosing",
+      phase: "diagnostic_ready",
       recoveryActivatedAt: null,
       escalationThreshold: 50_000,
     },
@@ -319,6 +389,7 @@ async function deliverFailure(route: WebhookRoute) {
 describe("diagnostic-to-recovery safety flow", () => {
   it("keeps diagnostic, monitoring, and activation inert until confirmed recovery handles a future failure", async () => {
     const fixture = createSafetyFixture();
+    webhookMocks.setFixture(fixture);
     webhookMocks.selectRows.length = 0;
     webhookMocks.inserts.length = 0;
     webhookMocks.updates.length = 0;
@@ -328,7 +399,31 @@ describe("diagnostic-to-recovery safety flow", () => {
     webhookMocks.reconcileWebhook.mockReset();
     webhookMocks.triggerDiagnostic.mockReset().mockResolvedValue(undefined);
     webhookMocks.seedDefaultSequences.mockReset().mockResolvedValue(undefined);
-    webhookMocks.sendAlertNotification.mockReset().mockResolvedValue(undefined);
+    webhookMocks.sendAlertNotification
+      .mockReset()
+      .mockImplementation(async (notification) => {
+        fixture.emails.push(notification);
+      });
+    webhookMocks.generateEscalationDraft
+      .mockReset()
+      .mockImplementation(async (escalationId) => {
+        fixture.escalations.push({ escalationId, drafted: true });
+      });
+    webhookMocks.getConnectedStripe.mockReset().mockImplementation(() => ({
+      invoices: {
+        pay: async (invoiceId: string) => {
+          fixture.writeSideStripeCalls.push({ type: "invoice_pay", invoiceId });
+        },
+      },
+      billingPortal: {
+        sessions: {
+          create: async (input: unknown) => {
+            fixture.portalSessions.push(input);
+            return { url: "https://stripe.test/portal" };
+          },
+        },
+      },
+    }));
     webhookMocks.execute.mockReset();
     webhookMocks.authSession.mockReset().mockResolvedValue({
       user: { id: fixture.userId },
@@ -415,7 +510,14 @@ describe("diagnostic-to-recovery safety flow", () => {
       qualificationBasis: "historical",
     });
 
-    fixture.connection.phase = "monitoring";
+    const { enableMonitoring } = await import("../../functions/diagnostic");
+    webhookMocks.selectRows.push([fixture.connection]);
+    await expect(
+      enableMonitoring({
+        context: { session: { user: { id: fixture.userId } } },
+        data: { connectionId: fixture.connectionId },
+      }),
+    ).resolves.toEqual({ ok: true });
     expect(fixture.connection).toMatchObject({
       scope: "read_only",
       phase: "monitoring",
@@ -426,6 +528,10 @@ describe("diagnostic-to-recovery safety flow", () => {
     expect(fixture.escalations).toHaveLength(0);
     expect(fixture.portalSessions).toHaveLength(0);
     expect(fixture.writeSideStripeCalls).toHaveLength(0);
+    expect(webhookMocks.sendAlertNotification).not.toHaveBeenCalled();
+    expect(webhookMocks.generateEscalationDraft).not.toHaveBeenCalled();
+    expect(webhookMocks.getConnectedStripe).not.toHaveBeenCalled();
+    expect(webhookMocks.reconcileWebhook).not.toHaveBeenCalled();
 
     const activationState = createStripeOAuthState(
       {
@@ -492,8 +598,10 @@ describe("diagnostic-to-recovery safety flow", () => {
     });
     const insertsBeforeRecovery = webhookMocks.inserts.length;
 
-    fixture.connection.scope = "read_write";
-    fixture.connection.phase = "email_configured";
+    expect(fixture.connection).toMatchObject({
+      scope: "read_write",
+      phase: "email_configured",
+    });
     webhookMocks.getStripeConnectionById.mockResolvedValue({
       id: fixture.connectionId,
       ...fixture.connection,
@@ -537,12 +645,26 @@ describe("diagnostic-to-recovery safety flow", () => {
         webhookSecret: "whsec_fixture",
       };
     });
-    webhookMocks.execute.mockImplementation(async () => {
+    webhookMocks.execute.mockImplementation(async (statement) => {
+      const query = new PgDialect().sqlToQuery(statement);
+      fixture.confirmationQueries.push(query);
+      const selectedIds = fixture.sequences
+        .filter((sequence) => query.params.includes(sequence.id))
+        .map((sequence) => sequence.id);
+      const hasExactSelection =
+        query.sql.includes("WITH selected AS") &&
+        query.sql.includes("(SELECT count(*) FROM selected)") &&
+        selectedIds.length === fixture.selectedSequenceIds.length &&
+        fixture.selectedSequenceIds.every((id) => selectedIds.includes(id));
       if (
         fixture.connection.scope !== "read_write" ||
-        fixture.connection.phase !== "email_configured"
+        fixture.connection.phase !== "email_configured" ||
+        !hasExactSelection
       )
         return { rows: [] };
+      for (const sequence of fixture.sequences) {
+        sequence.isActive = selectedIds.includes(sequence.id);
+      }
       fixture.connection.phase = "recovery_active";
       fixture.connection.recoveryActivatedAt = fixture.recoveryActivatedAt;
       return { rows: [{ user_id: fixture.userId }] };
@@ -559,10 +681,44 @@ describe("diagnostic-to-recovery safety flow", () => {
       phase: "recovery_active",
       recoveryActivatedAt: fixture.recoveryActivatedAt,
     });
+    expect(fixture.confirmationQueries).toHaveLength(1);
+    expect(fixture.confirmationQueries[0]).toMatchObject({
+      sql: expect.stringContaining("WITH selected AS"),
+    });
+    expect(fixture.sequences).toEqual([
+      { id: "sequence_card_declined", isActive: true },
+      { id: "sequence_expired_card", isActive: false },
+    ]);
+
+    const sideEffectsBeforeHistoricalEvent = {
+      failedPayments: fixture.failedPayments.length,
+      recoveryAttempts: fixture.recoveryAttempts.length,
+      emails: fixture.emails.length,
+      escalations: fixture.escalations.length,
+      portalSessions: fixture.portalSessions.length,
+      writeSideStripeCalls: fixture.writeSideStripeCalls.length,
+    };
+    webhookMocks.constructEvent.mockReturnValue(
+      failedInvoiceEvent(
+        Math.floor(fixture.recoveryActivatedAt.getTime() / 1000) - 1,
+      ),
+    );
+    await expect(deliverFailure(Route)).resolves.toMatchObject({ status: 200 });
+    expect({
+      failedPayments: fixture.failedPayments.length,
+      recoveryAttempts: fixture.recoveryAttempts.length,
+      emails: fixture.emails.length,
+      escalations: fixture.escalations.length,
+      portalSessions: fixture.portalSessions.length,
+      writeSideStripeCalls: fixture.writeSideStripeCalls.length,
+    }).toEqual(sideEffectsBeforeHistoricalEvent);
+    expect(webhookMocks.sendAlertNotification).not.toHaveBeenCalled();
+    expect(webhookMocks.generateEscalationDraft).not.toHaveBeenCalled();
+    expect(webhookMocks.getConnectedStripe).not.toHaveBeenCalled();
 
     webhookMocks.selectRows.push(
       [],
-      [{ id: fixture.selectedSequenceIds[0] }],
+      fixture.sequences.filter((sequence) => sequence.isActive),
       [{ id: "step_selected", stepNumber: 1, delayHours: 0 }],
     );
     webhookMocks.constructEvent.mockReturnValue(
@@ -571,6 +727,13 @@ describe("diagnostic-to-recovery safety flow", () => {
       ),
     );
     await expect(deliverFailure(Route)).resolves.toMatchObject({ status: 200 });
+    expect(fixture.failedPayments).toHaveLength(1);
+    expect(fixture.recoveryAttempts).toEqual([
+      expect.objectContaining({
+        sequenceStepId: "step_selected",
+        status: "scheduled",
+      }),
+    ]);
     expect(webhookMocks.inserts.slice(insertsBeforeRecovery)).toEqual([
       expect.objectContaining({
         table: expect.objectContaining({ id: "failed_payment_id" }),

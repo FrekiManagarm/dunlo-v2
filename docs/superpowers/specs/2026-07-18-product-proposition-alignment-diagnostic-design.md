@@ -402,11 +402,11 @@ After a successful upgrade:
 
 1. Replace the encrypted read-only credential with the read-write credential.
 2. Store the returned scope.
-3. Create or reconcile the required webhook endpoint idempotently.
-4. Seed relevant default sequences in a disabled state.
-5. Continue to email-provider setup.
-6. Present a final workflow summary.
-7. Activate recovery only after explicit confirmation.
+3. Seed relevant default sequences in a disabled state.
+4. Continue to email-provider setup.
+5. Present a final workflow summary.
+6. At explicit final confirmation, create or reconcile the required webhook endpoint idempotently; if that operation cannot complete, keep the connection unactivated and make confirmation retryable.
+7. Activate recovery only after that successful confirmation.
 
 Project 1 activates future failures only. Existing diagnostic findings never create recovery attempts.
 
@@ -524,7 +524,7 @@ Browser verification is unexecuted because no browser is available in this envir
 - Rate-limit retry resumes without duplicated findings.
 - Diagnostic jobs are idempotent.
 - A failed refresh keeps the prior snapshot.
-- Activation OAuth upgrades scope and reconciles one webhook.
+- Activation OAuth upgrades scope and seeds disabled sequences; final confirmation reconciles one webhook before activating recovery.
 - Recovery remains disabled until email configuration and final confirmation.
 - Diagnostic findings never schedule historical emails.
 - Disconnect removes all connection-scoped diagnostic and recovery data.
