@@ -26,6 +26,7 @@ export type DecryptedStripeConnection = {
   webhookSecret: string;
   scope: string | null;
   phase: string;
+  recoveryActivatedAt: Date | null;
   escalationThreshold: number | null;
   escalationCurrency: string;
 };
@@ -53,6 +54,7 @@ export async function getStripeConnection(
     webhookSecret: decrypt(row.webhookSecret),
     scope: row.scope,
     phase: row.phase,
+    recoveryActivatedAt: row.recoveryActivatedAt,
     escalationThreshold: row.escalationThreshold,
     escalationCurrency: row.escalationCurrency,
   };
@@ -80,6 +82,7 @@ export async function getStripeConnectionById(
     webhookSecret: decrypt(row.webhookSecret),
     scope: row.scope,
     phase: row.phase,
+    recoveryActivatedAt: row.recoveryActivatedAt,
     escalationThreshold: row.escalationThreshold,
     escalationCurrency: row.escalationCurrency,
   };
@@ -107,6 +110,7 @@ export async function getStripeConnectionByAccountId(
     webhookSecret: decrypt(row.webhookSecret),
     scope: row.scope,
     phase: row.phase,
+    recoveryActivatedAt: row.recoveryActivatedAt,
     escalationThreshold: row.escalationThreshold,
     escalationCurrency: row.escalationCurrency,
   };

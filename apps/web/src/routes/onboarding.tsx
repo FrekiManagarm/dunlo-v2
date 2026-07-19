@@ -156,6 +156,12 @@ function ConnectedOnboarding({
         <EmailProviderStep />
       </OnboardingShell>
     );
+  if (state.phase === "activation_requested")
+    return (
+      <OnboardingShell>
+        <ActivationRetry connectionId={connectionId} />
+      </OnboardingShell>
+    );
   if (state.phase === "email_configured" || state.phase === "recovery_active")
     return (
       <OnboardingShell>
@@ -218,6 +224,48 @@ function EmailProviderStep() {
       >
         View email settings
       </Link>
+    </section>
+  );
+}
+
+function ActivationRetry({ connectionId }: { connectionId: string }) {
+  const [retrying, setRetrying] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const retry = async () => {
+    setRetrying(true);
+    setError(null);
+    const response = await fetch("/api/stripe/activate", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ connectionId }),
+    });
+    if (response.ok) window.location.reload();
+    else {
+      setError(await response.text());
+      setRetrying(false);
+    }
+  };
+  return (
+    <section>
+      <h1 className="text-2xl font-bold text-zinc-950">
+        Finish recovery setup
+      </h1>
+      <p className="mt-2 text-sm text-zinc-600">
+        Dunlo could not finish webhook setup. Recovery is still off.
+      </p>
+      {error ? (
+        <p role="alert" className="mt-3 text-sm text-red-600">
+          {error}
+        </p>
+      ) : null}
+      <button
+        type="button"
+        onClick={retry}
+        disabled={retrying}
+        className="mt-6 h-11 rounded-full bg-dunlo px-5 text-sm font-semibold text-white disabled:opacity-50"
+      >
+        {retrying ? "Retrying…" : "Retry webhook setup"}
+      </button>
     </section>
   );
 }

@@ -34,3 +34,9 @@ bunx vite build --emptyOutDir false
 ```
 
 `bunx tsc --noEmit -p apps/web/tsconfig.json` still reports the established repository-wide errors in `autumn.config.ts`, diagnostic handler mocks, payments tests, legacy nullable Stripe decryptions, dashboard alerts, and reset password. After regenerating the route tree through Vite, it reports no Task 12 route, component, email, webhook, onboarding, settings, or route-tree errors.
+
+## Review follow-up
+
+- The OAuth callback now repeats the owner, `diagnostic_ready`, current-snapshot, and `activation_recommended` checks immediately before write setup.
+- Webhook creation is serialized per Stripe account with a transaction-scoped PostgreSQL advisory lock. The activation timestamp is persisted and webhook events created before it are ignored.
+- Sequence activation is rejected before `recovery_active`; reset preserves enabled defaults only after recovery is active. The retry endpoint is available from onboarding, and the confirmation UI now uses TanStack Form with Zod acknowledgement validation.

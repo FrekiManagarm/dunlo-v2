@@ -1,7 +1,10 @@
 import { auth } from "@dunlo-v2/auth";
 import { db } from "@dunlo-v2/db";
 import { encrypt } from "@dunlo-v2/db/encrypt";
-import { stripeConnection } from "@dunlo-v2/db/schema/domain";
+import {
+  diagnosticSnapshot,
+  stripeConnection,
+} from "@dunlo-v2/db/schema/domain";
 import { env } from "@dunlo-v2/env/server";
 import { createFileRoute } from "@tanstack/react-router";
 import { and, eq } from "drizzle-orm";
@@ -175,6 +178,13 @@ export const Route = createFileRoute("/api/stripe/callback")({
           const [connection] = await db
             .select({ id: stripeConnection.id })
             .from(stripeConnection)
+            .innerJoin(
+              diagnosticSnapshot,
+              and(
+                eq(diagnosticSnapshot.connectionId, stripeConnection.id),
+                eq(diagnosticSnapshot.isCurrent, true),
+              ),
+            )
             .where(
               and(
                 eq(stripeConnection.userId, session.user.id),
@@ -182,6 +192,8 @@ export const Route = createFileRoute("/api/stripe/callback")({
                   stripeConnection.stripeAccountId,
                   oauthState.targetStripeAccountId,
                 ),
+                eq(stripeConnection.phase, "diagnostic_ready"),
+                eq(diagnosticSnapshot.verdict, "activation_recommended"),
               ),
             )
             .limit(1);
@@ -196,7 +208,13 @@ export const Route = createFileRoute("/api/stripe/callback")({
               phase: "write_authorized",
               liveMode: token.livemode ?? null,
             })
-            .where(eq(stripeConnection.id, connection.id));
+            .where(
+              and(
+                eq(stripeConnection.id, connection.id),
+                eq(stripeConnection.userId, session.user.id),
+                eq(stripeConnection.phase, "diagnostic_ready"),
+              ),
+            );
           const webhook = await reconcileWebhook(
             token.stripe_user_id,
             token.access_token,

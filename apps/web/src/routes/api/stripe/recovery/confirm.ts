@@ -84,7 +84,10 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
               );
             const [activated] = await tx
               .update(stripeConnection)
-              .set({ phase: "recovery_active" })
+              .set({
+                phase: "recovery_active",
+                recoveryActivatedAt: new Date(),
+              })
               .where(
                 and(
                   eq(stripeConnection.id, connection.id),

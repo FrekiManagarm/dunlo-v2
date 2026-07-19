@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
+import { z } from "zod";
 
 import { sequencesQueryOptions } from "@/lib/queries";
 
@@ -13,7 +14,6 @@ export function ActivationSummary({
   active: boolean;
 }) {
   const sequences = useQuery(sequencesQueryOptions());
-  const [accepted, setAccepted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedSequenceIds, setSelectedSequenceIds] = useState<string[]>([]);
@@ -33,31 +33,35 @@ export function ActivationSummary({
     );
   };
 
-  const confirm = async () => {
-    setSubmitting(true);
-    setError(null);
-    try {
-      const response = await fetch("/api/stripe/recovery/confirm", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          connectionId,
-          accepted,
-          workflowVersion: WORKFLOW_VERSION,
-          selectedSequenceIds,
-        }),
-      });
-      if (!response.ok) throw new Error(await response.text());
-      window.location.reload();
-    } catch (cause) {
-      setError(
-        cause instanceof Error
-          ? cause.message
-          : "Recovery could not be activated.",
-      );
-      setSubmitting(false);
-    }
-  };
+  const form = useForm({
+    defaultValues: { accepted: false },
+    validators: { onSubmit: z.object({ accepted: z.literal(true) }) },
+    onSubmit: async () => {
+      setSubmitting(true);
+      setError(null);
+      try {
+        const response = await fetch("/api/stripe/recovery/confirm", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            connectionId,
+            accepted: true,
+            workflowVersion: WORKFLOW_VERSION,
+            selectedSequenceIds,
+          }),
+        });
+        if (!response.ok) throw new Error(await response.text());
+        window.location.reload();
+      } catch (cause) {
+        setError(
+          cause instanceof Error
+            ? cause.message
+            : "Recovery could not be activated.",
+        );
+        setSubmitting(false);
+      }
+    },
+  });
 
   return (
     <section aria-labelledby="activation-summary" className="space-y-6">
@@ -91,29 +95,47 @@ export function ActivationSummary({
               </li>
             ))}
           </ul>
-          <label className="flex gap-3 text-sm text-zinc-700">
-            <input
-              type="checkbox"
-              checked={accepted}
-              onChange={(event) => setAccepted(event.target.checked)}
-              className="mt-1 size-4 accent-dunlo"
-            />
-            I confirm that Dunlo may apply these selected sequences to future
-            payment failures only.
-          </label>
-          {error ? (
-            <p role="alert" className="text-sm text-red-600">
-              {error}
-            </p>
-          ) : null}
-          <button
-            type="button"
-            disabled={!accepted || !selectedSequenceIds.length || submitting}
-            onClick={confirm}
-            className="inline-flex h-11 rounded-full bg-dunlo px-5 text-sm font-semibold text-white disabled:opacity-50"
+          <form
+            onSubmit={(event) => {
+              event.preventDefault();
+              form.handleSubmit();
+            }}
           >
-            {submitting ? "Activating…" : "Activate recovery"}
-          </button>
+            <form.Field name="accepted">
+              {(field) => (
+                <label className="flex gap-3 text-sm text-zinc-700">
+                  <input
+                    type="checkbox"
+                    checked={field.state.value}
+                    onChange={(event) =>
+                      field.handleChange(event.target.checked)
+                    }
+                    className="mt-1 size-4 accent-dunlo"
+                  />
+                  I confirm that Dunlo may apply these selected sequences to
+                  future payment failures only.
+                </label>
+              )}
+            </form.Field>
+            {error ? (
+              <p role="alert" className="text-sm text-red-600">
+                {error}
+              </p>
+            ) : null}
+            <form.Subscribe selector={(state) => state.values.accepted}>
+              {(accepted) => (
+                <button
+                  type="submit"
+                  disabled={
+                    !accepted || !selectedSequenceIds.length || submitting
+                  }
+                  className="inline-flex h-11 rounded-full bg-dunlo px-5 text-sm font-semibold text-white disabled:opacity-50"
+                >
+                  {submitting ? "Activating…" : "Activate recovery"}
+                </button>
+              )}
+            </form.Subscribe>
+          </form>
           <p className="text-xs text-zinc-500">
             Workflow version: {WORKFLOW_VERSION}
           </p>
@@ -122,3 +144,4 @@ export function ActivationSummary({
     </section>
   );
 }
+import { useForm } from "@tanstack/react-form";

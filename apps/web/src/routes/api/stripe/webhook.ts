@@ -406,7 +406,9 @@ export const Route = createFileRoute("/api/stripe/webhook")({
         }
         if (
           connection.scope !== "read_write" ||
-          connection.phase !== "recovery_active"
+          connection.phase !== "recovery_active" ||
+          !connection.recoveryActivatedAt ||
+          event.created * 1000 < connection.recoveryActivatedAt.getTime()
         ) {
           return Response.json({ received: true, ignored: true });
         }

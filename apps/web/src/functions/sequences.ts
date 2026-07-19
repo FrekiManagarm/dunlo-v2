@@ -1,5 +1,9 @@
 import { db } from "@dunlo-v2/db";
-import { recoverySequence, sequenceStep } from "@dunlo-v2/db/schema/domain";
+import {
+  recoverySequence,
+  sequenceStep,
+  stripeConnection,
+} from "@dunlo-v2/db/schema/domain";
 import { createServerFn } from "@tanstack/react-start";
 import { and, asc, eq } from "drizzle-orm";
 import { z } from "zod";
@@ -137,6 +141,20 @@ export const toggleSequence = createServerFn({ method: "POST" })
       .limit(1);
 
     if (!owned) throw new Error("Sequence not found");
+    if (data.isActive) {
+      const [connection] = await db
+        .select({ id: stripeConnection.id })
+        .from(stripeConnection)
+        .where(
+          and(
+            eq(stripeConnection.userId, userId),
+            eq(stripeConnection.phase, "recovery_active"),
+          ),
+        )
+        .limit(1);
+      if (!connection)
+        throw new Error("Confirm recovery before activating sequences");
+    }
 
     await db
       .update(recoverySequence)
@@ -228,11 +246,19 @@ export const resetSequencesToDefault = createServerFn({ method: "POST" })
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 
+    const [connection] = await db
+      .select({ phase: stripeConnection.phase })
+      .from(stripeConnection)
+      .where(eq(stripeConnection.userId, userId))
+      .limit(1);
+
     await db
       .delete(recoverySequence)
       .where(eq(recoverySequence.userId, userId));
 
-    await seedDefaultSequences(userId);
+    await seedDefaultSequences(userId, {
+      isActive: connection?.phase === "recovery_active",
+    });
 
     return { ok: true };
   });

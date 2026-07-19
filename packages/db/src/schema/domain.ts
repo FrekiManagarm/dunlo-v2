@@ -79,6 +79,7 @@ export const stripeConnection = pgTable(
     liveMode: boolean("live_mode"),
     escalationThreshold: integer("escalation_threshold").default(50000),
     escalationCurrency: text("escalation_currency").default("eur").notNull(),
+    recoveryActivatedAt: timestamp("recovery_activated_at"),
     createdAt: timestamp("created_at").defaultNow().notNull(),
     updatedAt: timestamp("updated_at")
       .defaultNow()

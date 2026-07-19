@@ -40,4 +40,27 @@ describe("recovery activation boundary", () => {
     expect(onboarding).toContain("ActivationSummary");
     expect(onboarding).not.toContain("syncExistingFailedPayments");
   });
+
+  it("fences stale authorization, concurrent webhook creation, and pre-activation events", () => {
+    const callback = source("src/routes/api/stripe/callback.ts");
+    const webhooks = source("src/lib/stripe-webhooks.ts");
+    const webhookRoute = source("src/routes/api/stripe/webhook.ts");
+    const sequences = source("src/functions/sequences.ts");
+    const summary = source("src/components/diagnostic/activation-summary.tsx");
+
+    expect(callback).toContain(
+      'eq(stripeConnection.phase, "diagnostic_ready")',
+    );
+    expect(callback).toContain(
+      'eq(diagnosticSnapshot.verdict, "activation_recommended")',
+    );
+    expect(webhooks).toContain("pg_advisory_xact_lock");
+    expect(webhookRoute).toContain("recoveryActivatedAt");
+    expect(webhookRoute).toContain("event.created * 1000");
+    expect(sequences).toContain("Confirm recovery before activating sequences");
+    expect(sequences).toContain('connection?.phase === "recovery_active"');
+    expect(summary).toContain("useForm");
+    expect(summary).toContain("z.literal(true)");
+    expect(source("src/routes/onboarding.tsx")).toContain("ActivationRetry");
+  });
 });
