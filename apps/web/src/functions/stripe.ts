@@ -25,6 +25,7 @@ export type DecryptedStripeConnection = {
   webhookEndpointId: string | null;
   webhookSecret: string;
   scope: string | null;
+  phase: string;
   escalationThreshold: number | null;
   escalationCurrency: string;
 };
@@ -51,6 +52,7 @@ export async function getStripeConnection(
     webhookEndpointId: row.webhookEndpointId,
     webhookSecret: decrypt(row.webhookSecret),
     scope: row.scope,
+    phase: row.phase,
     escalationThreshold: row.escalationThreshold,
     escalationCurrency: row.escalationCurrency,
   };
@@ -77,6 +79,7 @@ export async function getStripeConnectionById(
     webhookEndpointId: row.webhookEndpointId,
     webhookSecret: decrypt(row.webhookSecret),
     scope: row.scope,
+    phase: row.phase,
     escalationThreshold: row.escalationThreshold,
     escalationCurrency: row.escalationCurrency,
   };
@@ -103,6 +106,7 @@ export async function getStripeConnectionByAccountId(
     webhookEndpointId: row.webhookEndpointId,
     webhookSecret: decrypt(row.webhookSecret),
     scope: row.scope,
+    phase: row.phase,
     escalationThreshold: row.escalationThreshold,
     escalationCurrency: row.escalationCurrency,
   };
@@ -127,8 +131,7 @@ const DEFAULT_SEQUENCES: DefaultSequence[] = [
       {
         stepNumber: 1,
         delayHours: 0,
-        subject:
-          "Your card has expired — update to keep {{product_name}}",
+        subject: "Your card has expired — update to keep {{product_name}}",
         body: `Hi {{customer_name}},\n\nWe tried to charge {{amount}} to your card ending in {{last_four}}, but it has expired.\n\nUpdate your card here to keep things running: {{update_payment_url}}\n\nThanks,\n{{sender_name}}`,
       },
       {
@@ -140,8 +143,7 @@ const DEFAULT_SEQUENCES: DefaultSequence[] = [
       {
         stepNumber: 3,
         delayHours: 72,
-        subject:
-          "Final notice: your {{product_name}} subscription is at risk",
+        subject: "Final notice: your {{product_name}} subscription is at risk",
         body: `Hi {{customer_name}},\n\nThis is the last reminder before we pause your subscription. The {{amount}} charge is still failing because your card expired.\n\nUpdate now: {{update_payment_url}}\n\n{{sender_name}}`,
       },
     ],
@@ -249,7 +251,7 @@ export async function seedDefaultSequences(
       userId,
       failureCode: seq.failureCode,
       name: seq.name,
-      isActive: options.isActive ?? true,
+      isActive: options.isActive ?? false,
     });
 
     for (const step of seq.steps) {
@@ -332,11 +334,11 @@ export async function importExistingFailedPayments(
     const customerId =
       typeof pi.customer === "string"
         ? pi.customer
-        : (pi.customer as { id: string } | null)?.id ?? "";
+        : ((pi.customer as { id: string } | null)?.id ?? "");
     const invoiceId =
       typeof pi.invoice === "string"
         ? pi.invoice
-        : (pi.invoice as { id: string } | null)?.id ?? null;
+        : ((pi.invoice as { id: string } | null)?.id ?? null);
 
     const threshold = connection.escalationThreshold;
     const shouldEscalate =
@@ -424,10 +426,8 @@ export async function importExistingFailedPayments(
 
 export const syncExistingFailedPayments = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .handler(async ({ context }) => {
-    if (!context.session?.user) throw new Error("Unauthorized");
-    const userId = context.session.user.id;
-    const connection = await getStripeConnection(userId);
-    if (!connection) throw new Error("Stripe not connected");
-    return importExistingFailedPayments(userId, connection);
+  .handler(async () => {
+    throw new Error(
+      "Historical failed payments cannot be imported into recovery.",
+    );
   });

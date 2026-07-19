@@ -15,7 +15,7 @@ const WEBHOOK_EVENTS: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
   "customer.updated",
 ];
 
-export async function setupWebhooks(
+export async function reconcileWebhook(
   stripeAccountId: string,
   accessToken: string,
 ): Promise<{ webhookEndpointId: string; webhookSecret: string } | null> {
@@ -43,7 +43,10 @@ export async function setupWebhooks(
   if (isLocalDev) {
     await db
       .update(stripeConnection)
-      .set({ webhookSecret: encrypt("whsec_local_dev_secret") })
+      .set({
+        webhookEndpointId: "local_dev_webhook",
+        webhookSecret: encrypt("whsec_local_dev_secret"),
+      })
       .where(eq(stripeConnection.stripeAccountId, stripeAccountId));
 
     return {
@@ -76,7 +79,7 @@ export async function setupWebhooks(
 
     return { webhookEndpointId: webhook.id, webhookSecret: webhook.secret! };
   } catch (err) {
-    console.error("[stripe/setupWebhooks] failed:", err);
+    console.error("[stripe/reconcileWebhook] failed:", err);
     return null;
   }
 }

@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 
 import { DiagnosticReport } from "@/components/diagnostic/diagnostic-report";
+import { ActivationSummary } from "@/components/diagnostic/activation-summary";
 import { MonitoringConsent } from "@/components/diagnostic/monitoring-consent";
 import { PermissionStep } from "@/components/diagnostic/permission-step";
 import { ProgressStep } from "@/components/diagnostic/progress-step";
@@ -158,7 +159,10 @@ function ConnectedOnboarding({
   if (state.phase === "email_configured" || state.phase === "recovery_active")
     return (
       <OnboardingShell>
-        <ActivationSummary active={state.phase === "recovery_active"} />
+        <ActivationSummary
+          connectionId={connectionId}
+          active={state.phase === "recovery_active"}
+        />
       </OnboardingShell>
     );
 
@@ -213,29 +217,6 @@ function EmailProviderStep() {
         className="mt-6 inline-flex h-11 items-center rounded-full bg-dunlo px-5 text-sm font-semibold text-white"
       >
         View email settings
-      </Link>
-    </section>
-  );
-}
-
-function ActivationSummary({ active }: { active: boolean }) {
-  return (
-    <section>
-      <h1 className="text-2xl font-bold text-zinc-950">
-        {active
-          ? "Recovery is active"
-          : "Review activation before enabling recovery"}
-      </h1>
-      <p className="mt-2 text-sm leading-6 text-zinc-600">
-        {active
-          ? "Only future payment failures are eligible for the configured recovery workflow."
-          : "Recovery remains off until you explicitly confirm the final workflow."}
-      </p>
-      <Link
-        to="/dashboard"
-        className="mt-6 inline-flex h-11 items-center rounded-full bg-dunlo px-5 text-sm font-semibold text-white"
-      >
-        Go to dashboard
       </Link>
     </section>
   );

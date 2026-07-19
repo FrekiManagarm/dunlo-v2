@@ -29,10 +29,12 @@ import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhoo
 import { Route as ApiStripeDisconnectRouteImport } from './routes/api/stripe/disconnect'
 import { Route as ApiStripeConnectRouteImport } from './routes/api/stripe/connect'
 import { Route as ApiStripeCallbackRouteImport } from './routes/api/stripe/callback'
+import { Route as ApiStripeActivateRouteImport } from './routes/api/stripe/activate'
 import { Route as ApiCronProcessEmailsRouteImport } from './routes/api/cron/process-emails'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 import { Route as DashboardPaymentsIdRouteImport } from './routes/_dashboard/payments_.$id'
 import { Route as ApiStripeWebhookAccountIdRouteImport } from './routes/api/stripe/webhook.$accountId'
+import { Route as ApiStripeRecoveryConfirmRouteImport } from './routes/api/stripe/recovery/confirm'
 
 const SignupRoute = SignupRouteImport.update({
   id: '/signup',
@@ -133,6 +135,11 @@ const ApiStripeCallbackRoute = ApiStripeCallbackRouteImport.update({
   path: '/api/stripe/callback',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiStripeActivateRoute = ApiStripeActivateRouteImport.update({
+  id: '/api/stripe/activate',
+  path: '/api/stripe/activate',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiCronProcessEmailsRoute = ApiCronProcessEmailsRouteImport.update({
   id: '/api/cron/process-emails',
   path: '/api/cron/process-emails',
@@ -154,6 +161,12 @@ const ApiStripeWebhookAccountIdRoute =
     path: '/$accountId',
     getParentRoute: () => ApiStripeWebhookRoute,
   } as any)
+const ApiStripeRecoveryConfirmRoute =
+  ApiStripeRecoveryConfirmRouteImport.update({
+    id: '/api/stripe/recovery/confirm',
+    path: '/api/stripe/recovery/confirm',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -174,10 +187,12 @@ export interface FileRoutesByFullPath {
   '/payments/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
+  '/api/stripe/activate': typeof ApiStripeActivateRoute
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
   '/api/stripe/connect': typeof ApiStripeConnectRoute
   '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRouteWithChildren
+  '/api/stripe/recovery/confirm': typeof ApiStripeRecoveryConfirmRoute
   '/api/stripe/webhook/$accountId': typeof ApiStripeWebhookAccountIdRoute
 }
 export interface FileRoutesByTo {
@@ -199,10 +214,12 @@ export interface FileRoutesByTo {
   '/payments/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
+  '/api/stripe/activate': typeof ApiStripeActivateRoute
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
   '/api/stripe/connect': typeof ApiStripeConnectRoute
   '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRouteWithChildren
+  '/api/stripe/recovery/confirm': typeof ApiStripeRecoveryConfirmRoute
   '/api/stripe/webhook/$accountId': typeof ApiStripeWebhookAccountIdRoute
 }
 export interface FileRoutesById {
@@ -226,10 +243,12 @@ export interface FileRoutesById {
   '/_dashboard/payments_/$id': typeof DashboardPaymentsIdRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
   '/api/cron/process-emails': typeof ApiCronProcessEmailsRoute
+  '/api/stripe/activate': typeof ApiStripeActivateRoute
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
   '/api/stripe/connect': typeof ApiStripeConnectRoute
   '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRouteWithChildren
+  '/api/stripe/recovery/confirm': typeof ApiStripeRecoveryConfirmRoute
   '/api/stripe/webhook/$accountId': typeof ApiStripeWebhookAccountIdRoute
 }
 export interface FileRouteTypes {
@@ -253,10 +272,12 @@ export interface FileRouteTypes {
     | '/payments/$id'
     | '/api/auth/$'
     | '/api/cron/process-emails'
+    | '/api/stripe/activate'
     | '/api/stripe/callback'
     | '/api/stripe/connect'
     | '/api/stripe/disconnect'
     | '/api/stripe/webhook'
+    | '/api/stripe/recovery/confirm'
     | '/api/stripe/webhook/$accountId'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -278,10 +299,12 @@ export interface FileRouteTypes {
     | '/payments/$id'
     | '/api/auth/$'
     | '/api/cron/process-emails'
+    | '/api/stripe/activate'
     | '/api/stripe/callback'
     | '/api/stripe/connect'
     | '/api/stripe/disconnect'
     | '/api/stripe/webhook'
+    | '/api/stripe/recovery/confirm'
     | '/api/stripe/webhook/$accountId'
   id:
     | '__root__'
@@ -304,10 +327,12 @@ export interface FileRouteTypes {
     | '/_dashboard/payments_/$id'
     | '/api/auth/$'
     | '/api/cron/process-emails'
+    | '/api/stripe/activate'
     | '/api/stripe/callback'
     | '/api/stripe/connect'
     | '/api/stripe/disconnect'
     | '/api/stripe/webhook'
+    | '/api/stripe/recovery/confirm'
     | '/api/stripe/webhook/$accountId'
   fileRoutesById: FileRoutesById
 }
@@ -323,10 +348,12 @@ export interface RootRouteChildren {
   DashboardBenchmarkRoute: typeof DashboardBenchmarkRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
   ApiCronProcessEmailsRoute: typeof ApiCronProcessEmailsRoute
+  ApiStripeActivateRoute: typeof ApiStripeActivateRoute
   ApiStripeCallbackRoute: typeof ApiStripeCallbackRoute
   ApiStripeConnectRoute: typeof ApiStripeConnectRoute
   ApiStripeDisconnectRoute: typeof ApiStripeDisconnectRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRouteWithChildren
+  ApiStripeRecoveryConfirmRoute: typeof ApiStripeRecoveryConfirmRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -471,6 +498,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiStripeCallbackRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/stripe/activate': {
+      id: '/api/stripe/activate'
+      path: '/api/stripe/activate'
+      fullPath: '/api/stripe/activate'
+      preLoaderRoute: typeof ApiStripeActivateRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/cron/process-emails': {
       id: '/api/cron/process-emails'
       path: '/api/cron/process-emails'
@@ -498,6 +532,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/api/stripe/webhook/$accountId'
       preLoaderRoute: typeof ApiStripeWebhookAccountIdRouteImport
       parentRoute: typeof ApiStripeWebhookRoute
+    }
+    '/api/stripe/recovery/confirm': {
+      id: '/api/stripe/recovery/confirm'
+      path: '/api/stripe/recovery/confirm'
+      fullPath: '/api/stripe/recovery/confirm'
+      preLoaderRoute: typeof ApiStripeRecoveryConfirmRouteImport
+      parentRoute: typeof rootRouteImport
     }
   }
 }
@@ -551,10 +592,12 @@ const rootRouteChildren: RootRouteChildren = {
   DashboardBenchmarkRoute: DashboardBenchmarkRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
   ApiCronProcessEmailsRoute: ApiCronProcessEmailsRoute,
+  ApiStripeActivateRoute: ApiStripeActivateRoute,
   ApiStripeCallbackRoute: ApiStripeCallbackRoute,
   ApiStripeConnectRoute: ApiStripeConnectRoute,
   ApiStripeDisconnectRoute: ApiStripeDisconnectRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRouteWithChildren,
+  ApiStripeRecoveryConfirmRoute: ApiStripeRecoveryConfirmRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

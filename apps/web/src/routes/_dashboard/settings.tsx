@@ -36,7 +36,6 @@ import {
   Loader2,
   LogOut,
   Mail,
-  RefreshCw,
   Save,
   Send,
   TrendingUp,
@@ -58,7 +57,6 @@ import {
   getEscalationSettings,
   updateEscalationSettings,
 } from "@/functions/escalations";
-import { syncExistingFailedPayments } from "@/functions/stripe";
 import {
   simulateFailedPayment,
   simulateEscalation,
@@ -587,36 +585,19 @@ function EscalationTab({
   initial: Awaited<ReturnType<typeof getEscalationSettings>>;
 }) {
   const posthog = usePostHog();
-  const [syncResult, setSyncResult] = useState<{
-    imported: number;
-    skipped: number;
-  } | null>(null);
   const [disconnectDialogOpen, setDisconnectDialogOpen] = useState(false);
 
   const saveEscalationSettingsMutation = useMutation({
-    mutationFn: (data: { threshold: number; currency: "eur" | "usd" | "gbp" }) =>
-      updateEscalationSettings({ data }),
+    mutationFn: (data: {
+      threshold: number;
+      currency: "eur" | "usd" | "gbp";
+    }) => updateEscalationSettings({ data }),
     onSuccess: () => {
       posthog.capture("settings_updated", { section: "escalation" });
       toast.success("Escalation settings saved");
     },
     onError: (e) => {
       toast.error(e instanceof Error ? e.message : "Save failed");
-    },
-  });
-
-  const syncPaymentsMutation = useMutation({
-    mutationFn: () => syncExistingFailedPayments(),
-    onSuccess: (result) => {
-      setSyncResult(result);
-      toast.success(
-        result.imported > 0
-          ? `${result.imported} payment${result.imported === 1 ? "" : "s"} imported`
-          : "No new payments to import",
-      );
-    },
-    onError: (e) => {
-      toast.error(e instanceof Error ? e.message : "Sync failed");
     },
   });
 
@@ -635,7 +616,6 @@ function EscalationTab({
   });
   const { mutateAsync: saveEscalationSettings } =
     saveEscalationSettingsMutation;
-  const { mutateAsync: syncPayments } = syncPaymentsMutation;
   const { mutateAsync: disconnectStripe } = disconnectStripeMutation;
 
   const form = useForm({
@@ -656,11 +636,6 @@ function EscalationTab({
       }),
     },
   });
-
-  const onSync = async () => {
-    setSyncResult(null);
-    await syncPayments().catch(() => undefined);
-  };
 
   const onDisconnectConfirm = async () => {
     await disconnectStripe().catch(() => undefined);
@@ -783,42 +758,6 @@ function EscalationTab({
             </form.Subscribe>
           </div>
         </form>
-      </div>
-
-      {/* Sync card */}
-      <div className="rounded-2xl border border-zinc-100 bg-white shadow-[0_1px_4px_0_rgba(0,0,0,0.04)]">
-        <div className="flex items-start justify-between gap-6 px-6 py-5">
-          <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 mb-1">
-              Import
-            </p>
-            <p className="text-sm font-semibold tracking-tight text-zinc-900">
-              Sync existing failed payments
-            </p>
-            <p className="mt-1 text-xs text-zinc-500 leading-relaxed max-w-sm">
-              Pull failed PaymentIntents from the last 90 days and enqueue them
-              into recovery sequences. Already-imported payments are skipped.
-            </p>
-            {syncResult && (
-              <p className="mt-2 text-[11px] font-semibold text-dunlo-deep">
-                {syncResult.imported} imported · {syncResult.skipped} already in
-                Dunlo
-              </p>
-            )}
-          </div>
-          <button
-            onClick={onSync}
-            disabled={syncPaymentsMutation.isPending || !initial.hasConnection}
-            className="shrink-0 flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-xs font-semibold text-zinc-700 transition-all hover:bg-zinc-50 hover:border-zinc-300 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {syncPaymentsMutation.isPending ? (
-              <Loader2 size={12} className="animate-spin" />
-            ) : (
-              <RefreshCw size={12} />
-            )}
-            {syncPaymentsMutation.isPending ? "Syncing…" : "Sync now"}
-          </button>
-        </div>
       </div>
 
       {/* Stripe disconnect */}

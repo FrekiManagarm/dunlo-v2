@@ -11,7 +11,7 @@ import {
   clearStripeOAuthStateCookie,
   verifyStripeOAuthState,
 } from "@/lib/stripe-oauth-state";
-import { setupWebhooks } from "@/lib/stripe-webhooks";
+import { reconcileWebhook } from "@/lib/stripe-webhooks";
 import { triggerDiagnostic } from "@/trigger/run-diagnostic";
 
 const STATE_COOKIE = "stripe_oauth_state";
@@ -197,7 +197,7 @@ export const Route = createFileRoute("/api/stripe/callback")({
               liveMode: token.livemode ?? null,
             })
             .where(eq(stripeConnection.id, connection.id));
-          const webhook = await setupWebhooks(
+          const webhook = await reconcileWebhook(
             token.stripe_user_id,
             token.access_token,
           );

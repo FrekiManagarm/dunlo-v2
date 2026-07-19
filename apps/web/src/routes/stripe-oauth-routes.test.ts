@@ -29,7 +29,7 @@ const mocks = vi.hoisted(() => {
     updateSet,
     insertValues,
     triggerDiagnostic: vi.fn(),
-    setupWebhooks: vi.fn(),
+    reconcileWebhook: vi.fn(),
     seedDefaultSequences: vi.fn(),
     fetch: vi.fn(),
     db: {
@@ -90,7 +90,7 @@ vi.mock(
   async () => import("../lib/stripe-oauth-state"),
 );
 vi.mock("@/lib/stripe-webhooks", () => ({
-  setupWebhooks: mocks.setupWebhooks,
+  reconcileWebhook: mocks.reconcileWebhook,
 }));
 vi.mock("@/functions/stripe", () => ({
   seedDefaultSequences: mocks.seedDefaultSequences,
@@ -155,7 +155,7 @@ describe("Stripe OAuth route contracts", () => {
     }));
     mocks.insertValues.mockReset().mockResolvedValue(undefined);
     mocks.triggerDiagnostic.mockReset().mockResolvedValue(undefined);
-    mocks.setupWebhooks.mockReset().mockResolvedValue({
+    mocks.reconcileWebhook.mockReset().mockResolvedValue({
       webhookEndpointId: "we_123",
       webhookSecret: "whsec_123",
     });
@@ -277,7 +277,7 @@ describe("Stripe OAuth route contracts", () => {
       connectionId: expect.any(String),
       reason: "initial",
     });
-    expect(mocks.setupWebhooks).not.toHaveBeenCalled();
+    expect(mocks.reconcileWebhook).not.toHaveBeenCalled();
     expect(mocks.seedDefaultSequences).not.toHaveBeenCalled();
     expect(mocks.insertValues).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -317,7 +317,7 @@ describe("Stripe OAuth route contracts", () => {
     );
     expect(response.headers.get("set-cookie")).toContain("Max-Age=0");
     expect(mocks.triggerDiagnostic).not.toHaveBeenCalled();
-    expect(mocks.setupWebhooks).not.toHaveBeenCalled();
+    expect(mocks.reconcileWebhook).not.toHaveBeenCalled();
     expect(mocks.seedDefaultSequences).not.toHaveBeenCalled();
     expect(mocks.updateWhere).not.toHaveBeenCalled();
   });
@@ -347,14 +347,14 @@ describe("Stripe OAuth route contracts", () => {
       "/onboarding?error=stripe_account_mismatch",
     );
     expect(response.headers.get("set-cookie")).toContain("Max-Age=0");
-    expect(mocks.setupWebhooks).not.toHaveBeenCalled();
+    expect(mocks.reconcileWebhook).not.toHaveBeenCalled();
     expect(mocks.seedDefaultSequences).not.toHaveBeenCalled();
   });
 
   it("returns a retryable activation state when webhook reconciliation fails", async () => {
     mocks.selectLimit.mockResolvedValueOnce([{ id: "conn_123" }]);
     mocks.fetch.mockResolvedValueOnce(token("read_write"));
-    mocks.setupWebhooks.mockResolvedValueOnce(null);
+    mocks.reconcileWebhook.mockResolvedValueOnce(null);
     const state = createStripeOAuthState(
       {
         nonce: "activation_nonce",
@@ -412,7 +412,10 @@ describe("Stripe OAuth route contracts", () => {
 
     expect(response.headers.get("location")).toBe("/onboarding?step=3");
     expect(response.headers.get("set-cookie")).toContain("Max-Age=0");
-    expect(mocks.setupWebhooks).toHaveBeenCalledWith("acct_123", "access_123");
+    expect(mocks.reconcileWebhook).toHaveBeenCalledWith(
+      "acct_123",
+      "access_123",
+    );
     expect(mocks.seedDefaultSequences).toHaveBeenCalledWith("user_123", {
       isActive: false,
     });
