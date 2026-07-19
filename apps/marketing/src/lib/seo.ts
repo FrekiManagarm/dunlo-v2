@@ -2,20 +2,19 @@ import type { Metadata } from "next";
 
 export const SITE_URL = "https://dunlo.io";
 export const SITE_NAME = "Dunlo";
-export const DEFAULT_TITLE =
-  "Dunlo - Recover Failed Payments Before They Churn";
+export const DEFAULT_TITLE = "Dunlo - See What Failed Payments Cost Your MRR";
 export const DEFAULT_DESCRIPTION =
-  "Recover failed payments with failure-aware emails, Stripe-hosted update links, and founder review. Start free in beta before revenue quietly churns.";
+  "Connect Stripe in read-only mode to see the recurring MRR at risk, what is addressable, and what needs human review before you activate recovery.";
 export const DEFAULT_KEYWORDS = [
   "Dunlo",
   "dunlo",
   "dunlo.io",
-  "Stripe payment recovery",
+  "Stripe failed payment diagnostic",
   "Stripe failed payments",
   "failed payment recovery",
-  "customer-friendly dunning",
+  "failed MRR analysis",
   "dunning software for SaaS",
-  "recover failed payments",
+  "Stripe payment recovery",
   "involuntary churn",
   "Stripe dunning",
   "SaaS payment recovery",

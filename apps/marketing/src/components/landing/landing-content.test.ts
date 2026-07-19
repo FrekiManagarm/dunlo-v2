@@ -58,7 +58,8 @@ describe("landing content", () => {
       {
         reason: "Insufficient funds",
         stripeCode: "insufficient_funds",
-        customerMeaning: "Timing matters more than sending another reminder now.",
+        customerMeaning:
+          "Timing matters more than sending another reminder now.",
         action: "Wait 4 hours",
         status: "Retry scheduled",
         isExample: true,
@@ -83,23 +84,23 @@ describe("landing content", () => {
   test("publishes trust facts instead of synthetic customer proof", () => {
     expect(TRUST_ITEMS).toStrictEqual([
       {
-        title: "Stripe OAuth",
-        body: "Connect without sharing Stripe credentials with Dunlo.",
+        title: "Read-only OAuth first",
+        body: "The diagnostic cannot retry charges, send customer emails, or change Stripe.",
         href: "/privacy",
       },
       {
-        title: "No card storage",
-        body: "Payment updates stay inside Stripe-hosted flows.",
+        title: "Private decision report",
+        body: "Coverage, exclusions, currency context, and assumptions stay visible to you.",
         href: "/privacy",
       },
       {
-        title: "Founder control",
-        body: "Pause sensitive accounts before a recovery message is sent.",
+        title: "No hidden activation",
+        body: "Recovery needs a second Stripe consent, your email provider, and a final confirmation.",
         href: "/#founder-review",
       },
       {
-        title: "Free in beta",
-        body: "No recovered-revenue cut while Dunlo remains in beta.",
+        title: "Export or disconnect",
+        body: "Download your diagnostic, then delete the Stripe-derived data for that connection.",
         href: "/#pricing",
       },
     ]);
@@ -110,22 +111,22 @@ describe("landing content", () => {
       {
         question: "Is this just Stripe Smart Retries with nicer emails?",
         answer:
-          "No. Stripe can retry cards. Dunlo handles the customer-facing recovery layer around Stripe: message, timing, founder review, and recovered-payment reporting.",
+          "No. Dunlo begins by showing what failed recurring payments cost, which cases are automatable, and which need a person. If you activate recovery later, it adds the customer-facing layer around Stripe: message, timing, founder review, and recovered-payment reporting.",
       },
       {
         question: "Will customers know an automation sent the email?",
         answer:
-          "The copy is plain, specific, and tied to the payment reason. High-value or sensitive accounts can pause for founder review before anything is sent.",
+          "No customer receives anything during the diagnostic. If you activate recovery, Dunlo uses the email provider you configure; high-value or sensitive accounts can pause for founder review before anything is sent.",
       },
       {
         question: "How does Dunlo connect to Stripe?",
         answer:
-          "Dunlo uses Stripe OAuth. You authorize access in Stripe and can revoke that connection from Stripe or Dunlo.",
+          "Dunlo first uses read-only Stripe OAuth for the diagnostic. Recovery requires a separate read-write consent and a final confirmation. You can revoke the connection from Stripe or Dunlo.",
       },
       {
         question: "Does Dunlo store card numbers?",
         answer:
-          "No. Card updates happen through Stripe-hosted flows. Dunlo uses payment and subscription context, not full card numbers or CVC data.",
+          "No. Dunlo uses payment and subscription context, not full card numbers or CVC data. Card updates stay inside Stripe-hosted flows.",
       },
       {
         question: "Do I pay during beta?",
@@ -135,18 +136,18 @@ describe("landing content", () => {
       {
         question: "Can sensitive accounts require founder review?",
         answer:
-          "Yes. Important accounts can pause before a message is sent so a founder can review the Stripe context and prepared draft.",
+          "Yes. Once recovery is activated, important accounts can pause before a message is sent so a founder can review the Stripe context and prepared draft.",
       },
     ]);
   });
 
   test("keeps pricing and resources intentionally compact", () => {
     expect(PRICING_FEATURES).toStrictEqual([
-      "Stripe failure-reason detection",
-      "Recovery emails matched to the failure",
-      "Stripe-hosted payment update links",
+      "12-month recurring payment diagnostic",
+      "Coverage, exclusions, and currency context",
+      "Explicit read-only monitoring",
+      "Optional recovery from your email provider",
       "Founder review for sensitive accounts",
-      "Recovered-payment tracking",
     ]);
     expect(RESOURCE_LINKS).toStrictEqual([
       {

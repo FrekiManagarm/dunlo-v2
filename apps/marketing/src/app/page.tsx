@@ -30,14 +30,15 @@ export default function Page() {
             "@type": "SoftwareApplication",
             name: "Dunlo",
             applicationCategory: "BusinessApplication",
-            applicationSubCategory: "Stripe payment recovery",
+            applicationSubCategory:
+              "Stripe failed-payment diagnostic and recovery",
             description: DEFAULT_DESCRIPTION,
             featureList: [
-              "Stripe failure-code detection",
-              "Failure-aware recovery emails",
-              "Stripe-hosted payment update links",
-              "Founder review for risky accounts",
-              "Recovered revenue tracking",
+              "Read-only Stripe payment diagnostic",
+              "Recurring MRR-at-risk analysis with coverage and exclusions",
+              "Explicit read-only monitoring",
+              "Optional recovery after separate consent and confirmation",
+              "Founder review for sensitive accounts",
             ],
             audience: {
               "@type": "Audience",

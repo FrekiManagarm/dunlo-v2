@@ -22,7 +22,7 @@ describe("landing design contract", () => {
     expect(layout).not.toContain("Geist");
   });
 
-  test("uses real product captures instead of simulated hero cards", () => {
+  test("uses product truth rather than synthetic outcome claims", () => {
     const assets = read(
       "apps/marketing/src/components/landing/product-assets.ts",
     );
@@ -36,7 +36,8 @@ describe("landing design contract", () => {
       "apps/marketing/src/components/landing/escalation.tsx",
     );
 
-    expect(hero).toContain("PRODUCT_IMAGES.overview");
+    expect(hero).toContain("Illustrative diagnostic report");
+    expect(hero).toContain("Nothing changes in Stripe.");
     expect(howItWorks).toContain("PRODUCT_IMAGES.sequences");
     expect(escalation).toContain("PRODUCT_IMAGES.escalations");
     expect(`${hero}\n${howItWorks}\n${escalation}`).not.toContain(

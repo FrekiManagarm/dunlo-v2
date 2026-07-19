@@ -63,10 +63,10 @@ export function Nav() {
           </Link>
           <Link
             href={SIGNUP_URL}
-            onClick={() => captureCtaClick("Start free", SIGNUP_URL)}
+            onClick={() => captureCtaClick("Run my diagnostic", SIGNUP_URL)}
             className="flex min-h-10 items-center gap-1.5 rounded-full bg-dunlo px-4 text-sm font-bold text-dunlo-ink transition-transform hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
-            Start free
+            Run my diagnostic
             <ChevronRight size={14} aria-hidden />
           </Link>
         </div>
@@ -74,10 +74,10 @@ export function Nav() {
         <div className="flex items-center gap-2 md:hidden">
           <Link
             href={SIGNUP_URL}
-            onClick={() => captureCtaClick("Start free", SIGNUP_URL)}
+            onClick={() => captureCtaClick("Run my diagnostic", SIGNUP_URL)}
             className="inline-flex min-h-10 shrink-0 items-center rounded-full bg-dunlo px-4 text-sm font-bold text-dunlo-ink transition-transform active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white"
           >
-            Start free
+            Run diagnostic
           </Link>
           <details
             ref={mobileMenuRef}

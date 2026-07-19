@@ -5,16 +5,16 @@ import { PRODUCT_IMAGES } from "./product-assets";
 
 const STEPS = [
   {
-    title: "Connect Stripe",
-    body: "OAuth connects the payment context without exposing your Stripe credentials.",
+    title: "Measure privately",
+    body: "Read-only OAuth analyses recurring invoice history. It cannot retry charges, send emails, or alter Stripe.",
   },
   {
-    title: "Let the failure speak",
-    body: "Each decline code selects a timing, message, and secure customer action.",
+    title: "Decide with context",
+    body: "See coverage, exclusions, addressable revenue, and which accounts should stay human before choosing a next step.",
   },
   {
-    title: "Recover or review",
-    body: "Routine paths run. Sensitive accounts wait for your decision.",
+    title: "Activate deliberately",
+    body: "Monitoring stays read-only. Recovery needs a second Stripe consent, your email provider, and a final confirmation.",
   },
 ] as const;
 
@@ -27,24 +27,29 @@ export function HowItWorks() {
       <div className="mx-auto max-w-[1400px]">
         <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
           <h2 className="max-w-4xl text-balance text-4xl font-bold leading-[0.92] tracking-[-0.04em] md:text-7xl">
-            One event in Stripe. One clear recovery path.
+            Start with the number. Then decide what should happen next.
           </h2>
           <div className="lg:justify-self-end">
             <p className="max-w-[52ch] text-pretty text-base leading-7 text-dunlo-ink/72 md:text-lg md:leading-8">
-              Dunlo turns payment failures into a visible sequence your team
-              can understand, edit, and trust.
+              The first report is deliberately quiet: it explains the cost of
+              failed recurring payments without touching a charge or customer.
             </p>
             <TrackedLink
               href={SIGNUP_URL}
               eventProperties={{
-                button_text: "Start free in beta",
+                button_text: "Run my private diagnostic",
                 destination: SIGNUP_URL,
                 location: "homepage_how_it_works",
               }}
               className="group mt-7 inline-flex min-h-12 items-center gap-3 rounded-full bg-dunlo-ink px-6 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-ink focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo"
             >
-              Start free in beta
-              <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+              Run my private diagnostic
+              <span
+                className="transition-transform group-hover:translate-x-1"
+                aria-hidden="true"
+              >
+                →
+              </span>
             </TrackedLink>
           </div>
         </div>
@@ -52,7 +57,7 @@ export function HowItWorks() {
         <div className="mt-16 overflow-hidden rounded-2xl bg-[#0b1822] shadow-[0_8px_0_rgba(5,28,19,0.22)] md:mt-20">
           <Image
             src={PRODUCT_IMAGES.sequences}
-            alt="Dunlo recovery sequence for a failed Stripe card payment"
+            alt="Dunlo workflow showing the transition from Stripe diagnostic to deliberate recovery activation"
             width={1413}
             height={1080}
             sizes="(min-width: 1440px) 1400px, 100vw"

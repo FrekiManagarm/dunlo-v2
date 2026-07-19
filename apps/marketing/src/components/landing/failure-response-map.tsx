@@ -9,14 +9,17 @@ export function FailureResponseMap() {
       <div className="mx-auto max-w-7xl">
         <div className="grid gap-8 lg:grid-cols-[0.82fr_1.18fr] lg:items-end">
           <div>
-            <p className="text-sm font-semibold text-dunlo-deep">Failure-aware recovery</p>
+            <p className="text-sm font-semibold text-dunlo-deep">
+              Decision-quality diagnosis
+            </p>
             <h2 className="mt-5 max-w-xl text-balance text-4xl font-bold leading-[0.94] tracking-[-0.04em] text-dunlo-ink md:text-6xl">
-              The decline decides the next move.
+              Separate the signal from the wishful thinking.
             </h2>
           </div>
           <p className="max-w-[58ch] text-pretty text-base leading-7 text-gray-700 md:text-lg md:leading-8">
-            A failed payment is not one problem. Dunlo translates Stripe's
-            signal into the right timing, message, or human handoff.
+            Dunlo classifies the Stripe context before it recommends action. The
+            report makes automatable opportunity, founder-review work, and
+            excluded revenue visibly different.
           </p>
         </div>
 
@@ -41,12 +44,26 @@ export function FailureResponseMap() {
               </div>
               <dl className="contents text-sm leading-6">
                 <div>
-                  <dt className="text-xs font-semibold text-gray-500">What Dunlo says</dt>
-                  <dd className="mt-2 max-w-[42ch] text-base leading-7 text-gray-700">{item.response}</dd>
+                  <dt className="text-xs font-semibold text-gray-500">
+                    What the report says
+                  </dt>
+                  <dd className="mt-2 max-w-[42ch] text-base leading-7 text-gray-700">
+                    {item.response}
+                  </dd>
                 </div>
                 <div className="md:text-right">
-                  <dt className="text-xs font-semibold text-gray-500">Next action</dt>
-                  <dd className="mt-2 text-lg font-bold text-dunlo-ink">{item.action} <span className="ml-2 text-dunlo transition-transform group-hover:translate-x-1" aria-hidden="true">→</span></dd>
+                  <dt className="text-xs font-semibold text-gray-500">
+                    If you activate later
+                  </dt>
+                  <dd className="mt-2 text-lg font-bold text-dunlo-ink">
+                    {item.action}{" "}
+                    <span
+                      className="ml-2 text-dunlo transition-transform group-hover:translate-x-1"
+                      aria-hidden="true"
+                    >
+                      →
+                    </span>
+                  </dd>
                 </div>
               </dl>
             </article>

@@ -16,31 +16,36 @@ export function Escalation() {
             Automation knows when to stop.
           </h2>
           <p className="mt-7 max-w-[52ch] text-pretty text-base leading-7 text-white/68 md:text-lg md:leading-8">
-            High-value or ambiguous failures land in a focused review queue.
-            Dunlo prepares the Stripe context and a draft. You decide what the
-            customer receives.
+            Once you choose to activate recovery, high-value or ambiguous
+            failures land in a focused review queue. Dunlo prepares the Stripe
+            context and a draft; you decide what the customer receives.
           </p>
           <dl className="mt-10 grid grid-cols-2 border-y border-white/14 py-6 text-sm">
             <div>
-              <dt className="text-white/45">Failure context</dt>
+              <dt className="text-white/45">After activation</dt>
               <dd className="mt-2 font-semibold text-white">At a glance</dd>
             </div>
             <div>
-              <dt className="text-white/45">Before send</dt>
+              <dt className="text-white/45">Before each sensitive send</dt>
               <dd className="mt-2 font-semibold text-dunlo">Founder decides</dd>
             </div>
           </dl>
           <TrackedLink
             href={SIGNUP_URL}
             eventProperties={{
-              button_text: "Start with founder control",
+              button_text: "Run my private diagnostic",
               destination: SIGNUP_URL,
               location: "homepage_founder_review",
             }}
             className="group mt-8 inline-flex min-h-12 items-center gap-3 rounded-full bg-white px-6 text-sm font-bold text-dunlo-ink transition-transform hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo-ink"
           >
-            Start with founder control
-            <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+            Run my private diagnostic
+            <span
+              className="transition-transform group-hover:translate-x-1"
+              aria-hidden="true"
+            >
+              →
+            </span>
           </TrackedLink>
         </div>
 
