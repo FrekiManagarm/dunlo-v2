@@ -32,6 +32,7 @@ import {
   AlertTriangle,
   CheckCircle2,
   CreditCard,
+  Download,
   FlaskConical,
   Loader2,
   LogOut,
@@ -586,6 +587,7 @@ function EscalationTab({
 }) {
   const posthog = usePostHog();
   const [disconnectDialogOpen, setDisconnectDialogOpen] = useState(false);
+  const [disconnectStatus, setDisconnectStatus] = useState("");
 
   const saveEscalationSettingsMutation = useMutation({
     mutationFn: (data: {
@@ -604,14 +606,26 @@ function EscalationTab({
   const disconnectStripeMutation = useMutation({
     mutationFn: async () => {
       const res = await fetch("/api/stripe/disconnect", { method: "POST" });
-      if (!res.ok) throw new Error(`Disconnect failed (${res.status})`);
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(body?.error ?? `Disconnect failed (${res.status})`);
+      }
     },
     onSuccess: () => {
+      setDisconnectStatus(
+        "Stripe is disconnected and the selected connection data has been deleted.",
+      );
       toast.success("Stripe disconnected");
-      window.location.href = "/onboarding";
+      window.setTimeout(() => {
+        window.location.href = "/onboarding";
+      }, 800);
     },
     onError: (e) => {
-      toast.error(e instanceof Error ? e.message : "Disconnect failed");
+      const message = e instanceof Error ? e.message : "Disconnect failed";
+      setDisconnectStatus(`Stripe could not be disconnected: ${message}`);
+      toast.error(message);
     },
   });
   const { mutateAsync: saveEscalationSettings } =
@@ -772,12 +786,29 @@ function EscalationTab({
         </div>
         <div className="px-6 py-5">
           <div className="flex items-start justify-between gap-6">
-            <p className="text-xs text-zinc-500 leading-relaxed max-w-sm">
-              Removes the OAuth connection and deregisters the webhook. Your
-              recovery sequences and all historical payment data are preserved.
-            </p>
+            <div className="max-w-sm space-y-2">
+              <p className="text-xs text-zinc-500 leading-relaxed">
+                Export your diagnostic before removing this Stripe connection.
+                Disconnecting permanently deletes its diagnostic and
+                Stripe-derived recovery records.
+              </p>
+              <a
+                href="/api/stripe/export"
+                download
+                className={`inline-flex items-center gap-1.5 text-xs font-semibold text-dunlo-dim hover:text-dunlo-deep ${
+                  !initial.hasConnection ? "pointer-events-none opacity-40" : ""
+                }`}
+                aria-disabled={!initial.hasConnection}
+              >
+                <Download size={13} />
+                Export diagnostic JSON
+              </a>
+            </div>
             <button
-              onClick={() => setDisconnectDialogOpen(true)}
+              onClick={() => {
+                setDisconnectStatus("");
+                setDisconnectDialogOpen(true);
+              }}
               disabled={
                 !initial.hasConnection || disconnectStripeMutation.isPending
               }
@@ -791,6 +822,13 @@ function EscalationTab({
               {initial.hasConnection ? "Disconnect" : "Not connected"}
             </button>
           </div>
+          <p
+            role="status"
+            aria-live="polite"
+            className="mt-3 text-xs text-zinc-500"
+          >
+            {disconnectStatus}
+          </p>
         </div>
       </div>
 
@@ -808,9 +846,11 @@ function EscalationTab({
                 Disconnect Stripe?
               </AlertDialogTitle>
               <AlertDialogDescription className="mt-1 max-w-sm text-sm leading-6 text-zinc-500">
-                This removes the OAuth connection and deregisters the webhook.
-                Your recovery sequences and historical payment data stay
-                preserved and will be reused if you reconnect.
+                This permanently removes the OAuth connection and Dunlo webhook
+                for this Stripe account. It deletes this account&apos;s
+                diagnostic snapshots and findings, failed payments, recovery
+                attempts, and escalations. Your Dunlo account, email-provider
+                configuration, and recovery sequence templates remain.
               </AlertDialogDescription>
             </AlertDialogHeader>
           </div>

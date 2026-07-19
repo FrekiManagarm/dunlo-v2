@@ -26,6 +26,7 @@ import { Route as DashboardDiagnosticRouteImport } from './routes/_dashboard/dia
 import { Route as DashboardDashboardRouteImport } from './routes/_dashboard/dashboard'
 import { Route as DashboardAlertsRouteImport } from './routes/_dashboard/alerts'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
+import { Route as ApiStripeExportRouteImport } from './routes/api/stripe/export'
 import { Route as ApiStripeDisconnectRouteImport } from './routes/api/stripe/disconnect'
 import { Route as ApiStripeConnectRouteImport } from './routes/api/stripe/connect'
 import { Route as ApiStripeCallbackRouteImport } from './routes/api/stripe/callback'
@@ -120,6 +121,11 @@ const ApiStripeWebhookRoute = ApiStripeWebhookRouteImport.update({
   path: '/api/stripe/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiStripeExportRoute = ApiStripeExportRouteImport.update({
+  id: '/api/stripe/export',
+  path: '/api/stripe/export',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiStripeDisconnectRoute = ApiStripeDisconnectRouteImport.update({
   id: '/api/stripe/disconnect',
   path: '/api/stripe/disconnect',
@@ -191,6 +197,7 @@ export interface FileRoutesByFullPath {
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
   '/api/stripe/connect': typeof ApiStripeConnectRoute
   '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
+  '/api/stripe/export': typeof ApiStripeExportRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRouteWithChildren
   '/api/stripe/recovery/confirm': typeof ApiStripeRecoveryConfirmRoute
   '/api/stripe/webhook/$accountId': typeof ApiStripeWebhookAccountIdRoute
@@ -218,6 +225,7 @@ export interface FileRoutesByTo {
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
   '/api/stripe/connect': typeof ApiStripeConnectRoute
   '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
+  '/api/stripe/export': typeof ApiStripeExportRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRouteWithChildren
   '/api/stripe/recovery/confirm': typeof ApiStripeRecoveryConfirmRoute
   '/api/stripe/webhook/$accountId': typeof ApiStripeWebhookAccountIdRoute
@@ -247,6 +255,7 @@ export interface FileRoutesById {
   '/api/stripe/callback': typeof ApiStripeCallbackRoute
   '/api/stripe/connect': typeof ApiStripeConnectRoute
   '/api/stripe/disconnect': typeof ApiStripeDisconnectRoute
+  '/api/stripe/export': typeof ApiStripeExportRoute
   '/api/stripe/webhook': typeof ApiStripeWebhookRouteWithChildren
   '/api/stripe/recovery/confirm': typeof ApiStripeRecoveryConfirmRoute
   '/api/stripe/webhook/$accountId': typeof ApiStripeWebhookAccountIdRoute
@@ -276,6 +285,7 @@ export interface FileRouteTypes {
     | '/api/stripe/callback'
     | '/api/stripe/connect'
     | '/api/stripe/disconnect'
+    | '/api/stripe/export'
     | '/api/stripe/webhook'
     | '/api/stripe/recovery/confirm'
     | '/api/stripe/webhook/$accountId'
@@ -303,6 +313,7 @@ export interface FileRouteTypes {
     | '/api/stripe/callback'
     | '/api/stripe/connect'
     | '/api/stripe/disconnect'
+    | '/api/stripe/export'
     | '/api/stripe/webhook'
     | '/api/stripe/recovery/confirm'
     | '/api/stripe/webhook/$accountId'
@@ -331,6 +342,7 @@ export interface FileRouteTypes {
     | '/api/stripe/callback'
     | '/api/stripe/connect'
     | '/api/stripe/disconnect'
+    | '/api/stripe/export'
     | '/api/stripe/webhook'
     | '/api/stripe/recovery/confirm'
     | '/api/stripe/webhook/$accountId'
@@ -352,6 +364,7 @@ export interface RootRouteChildren {
   ApiStripeCallbackRoute: typeof ApiStripeCallbackRoute
   ApiStripeConnectRoute: typeof ApiStripeConnectRoute
   ApiStripeDisconnectRoute: typeof ApiStripeDisconnectRoute
+  ApiStripeExportRoute: typeof ApiStripeExportRoute
   ApiStripeWebhookRoute: typeof ApiStripeWebhookRouteWithChildren
   ApiStripeRecoveryConfirmRoute: typeof ApiStripeRecoveryConfirmRoute
 }
@@ -477,6 +490,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiStripeWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/stripe/export': {
+      id: '/api/stripe/export'
+      path: '/api/stripe/export'
+      fullPath: '/api/stripe/export'
+      preLoaderRoute: typeof ApiStripeExportRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/stripe/disconnect': {
       id: '/api/stripe/disconnect'
       path: '/api/stripe/disconnect'
@@ -596,6 +616,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiStripeCallbackRoute: ApiStripeCallbackRoute,
   ApiStripeConnectRoute: ApiStripeConnectRoute,
   ApiStripeDisconnectRoute: ApiStripeDisconnectRoute,
+  ApiStripeExportRoute: ApiStripeExportRoute,
   ApiStripeWebhookRoute: ApiStripeWebhookRouteWithChildren,
   ApiStripeRecoveryConfirmRoute: ApiStripeRecoveryConfirmRoute,
 }

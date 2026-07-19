@@ -169,14 +169,10 @@ export async function deleteWebhooks(
   accessToken: string,
   stripeAccountId: string,
 ): Promise<void> {
-  try {
-    const stripe = new Stripe(accessToken, { apiVersion: STRIPE_API_VERSION });
-    await stripe.webhookEndpoints.del(
-      webhookEndpointId,
-      {},
-      { stripeAccount: stripeAccountId },
-    );
-  } catch (err) {
-    console.error("[stripe/deleteWebhooks] failed:", err);
-  }
+  const stripe = new Stripe(accessToken, { apiVersion: STRIPE_API_VERSION });
+  await stripe.webhookEndpoints.del(
+    webhookEndpointId,
+    {},
+    { stripeAccount: stripeAccountId },
+  );
 }
