@@ -225,7 +225,10 @@ export const getOnboardingState = createServerFn({ method: "GET" })
     };
   });
 
-export async function seedDefaultSequences(userId: string): Promise<void> {
+export async function seedDefaultSequences(
+  userId: string,
+  options: { isActive?: boolean } = {},
+): Promise<void> {
   for (const seq of DEFAULT_SEQUENCES) {
     const existing = await db
       .select({ id: recoverySequence.id })
@@ -246,7 +249,7 @@ export async function seedDefaultSequences(userId: string): Promise<void> {
       userId,
       failureCode: seq.failureCode,
       name: seq.name,
-      isActive: true,
+      isActive: options.isActive ?? true,
     });
 
     for (const step of seq.steps) {

@@ -1,20 +1,72 @@
 import { auth } from "@dunlo-v2/auth";
+import { db } from "@dunlo-v2/db";
+import {
+  diagnosticSnapshot,
+  stripeConnection,
+} from "@dunlo-v2/db/schema/domain";
 import { env } from "@dunlo-v2/env/server";
 import { createFileRoute } from "@tanstack/react-router";
+import { and, desc, eq } from "drizzle-orm";
 
-const STATE_COOKIE = "stripe_oauth_state";
-const STATE_TTL_SECONDS = 60 * 10;
+import {
+  buildStripeOAuthStateCookie,
+  createStripeOAuthState,
+  type StripeOAuthIntent,
+} from "@/lib/stripe-oauth-state";
 
-function buildStateCookie(value: string): string {
-  const parts = [
-    `${STATE_COOKIE}=${value}`,
-    "Path=/",
-    "HttpOnly",
-    "SameSite=Lax",
-    `Max-Age=${STATE_TTL_SECONDS}`,
-  ];
-  if (env.NODE_ENV === "production") parts.push("Secure");
-  return parts.join("; ");
+type ActivationConnection = {
+  stripeAccountId: string;
+  planCode: string;
+};
+
+function isSafeReturnPath(value: string | null, fallback: string): string {
+  if (!value || !value.startsWith("/") || value.startsWith("//")) {
+    return fallback;
+  }
+  return value;
+}
+
+function redirectToOnboarding(error: string): Response {
+  return new Response(null, {
+    status: 302,
+    headers: { Location: `/onboarding?error=${encodeURIComponent(error)}` },
+  });
+}
+
+function emitOAuthEvent(
+  event: "diagnostic_oauth_started" | "diagnostic_activation_started",
+  intent: StripeOAuthIntent,
+  planBand: string,
+): void {
+  console.info("[stripe/oauth]", { event, intent, planBand });
+}
+
+async function findActivationConnection(
+  userId: string,
+): Promise<ActivationConnection | null> {
+  const [connection] = await db
+    .select({
+      stripeAccountId: stripeConnection.stripeAccountId,
+      planCode: diagnosticSnapshot.planCode,
+    })
+    .from(stripeConnection)
+    .innerJoin(
+      diagnosticSnapshot,
+      and(
+        eq(diagnosticSnapshot.connectionId, stripeConnection.id),
+        eq(diagnosticSnapshot.isCurrent, true),
+      ),
+    )
+    .where(
+      and(
+        eq(stripeConnection.userId, userId),
+        eq(stripeConnection.phase, "diagnostic_ready"),
+        eq(diagnosticSnapshot.verdict, "activation_recommended"),
+      ),
+    )
+    .orderBy(desc(diagnosticSnapshot.createdAt))
+    .limit(1);
+  return connection ?? null;
 }
 
 export const Route = createFileRoute("/api/stripe/connect")({
@@ -22,7 +74,6 @@ export const Route = createFileRoute("/api/stripe/connect")({
     handlers: {
       GET: async ({ request }) => {
         const session = await auth.api.getSession({ headers: request.headers });
-
         if (!session?.user) {
           return new Response(null, {
             status: 302,
@@ -30,23 +81,64 @@ export const Route = createFileRoute("/api/stripe/connect")({
           });
         }
 
-        const state = crypto.randomUUID();
+        const url = new URL(request.url);
+        const requestedIntent = url.searchParams.get("intent") ?? "diagnostic";
+        if (
+          requestedIntent !== "diagnostic" &&
+          requestedIntent !== "activation"
+        ) {
+          return redirectToOnboarding("invalid_oauth_intent");
+        }
+        const intent = requestedIntent as StripeOAuthIntent;
+        const activation =
+          intent === "activation"
+            ? await findActivationConnection(session.user.id)
+            : null;
+        if (intent === "activation" && !activation) {
+          return redirectToOnboarding("activation_not_available");
+        }
+
+        const returnPath = isSafeReturnPath(
+          url.searchParams.get("returnTo"),
+          intent === "diagnostic" ? "/onboarding?step=2" : "/onboarding?step=3",
+        );
+        const state = createStripeOAuthState(
+          {
+            nonce: crypto.randomUUID(),
+            userId: session.user.id,
+            intent,
+            ...(activation
+              ? { targetStripeAccountId: activation.stripeAccountId }
+              : {}),
+            issuedAt: new Date(),
+            returnPath,
+          },
+          env.BETTER_AUTH_SECRET,
+        );
+        const scope = intent === "diagnostic" ? "read_only" : "read_write";
+        emitOAuthEvent(
+          intent === "diagnostic"
+            ? "diagnostic_oauth_started"
+            : "diagnostic_activation_started",
+          intent,
+          activation?.planCode ?? "diagnostic_pending",
+        );
 
         const params = new URLSearchParams({
           response_type: "code",
           client_id: env.STRIPE_CLIENT_ID,
-          scope: "read_write",
+          scope,
           redirect_uri: `${env.APP_URL}/api/stripe/callback`,
-          state,
+          state: state.nonce,
         });
-
-        const oauthUrl = `https://connect.stripe.com/oauth/authorize?${params.toString()}`;
-
         return new Response(null, {
           status: 302,
           headers: {
-            Location: oauthUrl,
-            "Set-Cookie": buildStateCookie(state),
+            Location: `https://connect.stripe.com/oauth/authorize?${params.toString()}`,
+            "Set-Cookie": buildStripeOAuthStateCookie(
+              state.sealed,
+              env.NODE_ENV === "production",
+            ),
           },
         });
       },

@@ -2,7 +2,7 @@ import Stripe from "stripe";
 import { eq } from "drizzle-orm";
 import { db } from "@dunlo-v2/db";
 import { stripeConnection } from "@dunlo-v2/db/schema/domain";
-import { encrypt } from "@dunlo-v2/db/encrypt";
+import { decrypt, encrypt } from "@dunlo-v2/db/encrypt";
 import { env } from "@dunlo-v2/env/server";
 
 const STRIPE_API_VERSION = "2024-12-18.acacia" as Stripe.LatestApiVersion;
@@ -19,6 +19,21 @@ export async function setupWebhooks(
   stripeAccountId: string,
   accessToken: string,
 ): Promise<{ webhookEndpointId: string; webhookSecret: string } | null> {
+  const [existing] = await db
+    .select({
+      webhookEndpointId: stripeConnection.webhookEndpointId,
+      webhookSecret: stripeConnection.webhookSecret,
+    })
+    .from(stripeConnection)
+    .where(eq(stripeConnection.stripeAccountId, stripeAccountId))
+    .limit(1);
+  if (existing?.webhookEndpointId && existing.webhookSecret) {
+    return {
+      webhookEndpointId: existing.webhookEndpointId,
+      webhookSecret: decrypt(existing.webhookSecret),
+    };
+  }
+
   const baseUrl = env.APP_URL;
   const webhookUrl = `${baseUrl}/api/stripe/webhook/${stripeAccountId}`;
 
