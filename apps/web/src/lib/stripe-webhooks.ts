@@ -15,6 +15,22 @@ const WEBHOOK_EVENTS: Stripe.WebhookEndpointCreateParams.EnabledEvent[] = [
   "customer.updated",
 ];
 
+export async function verifyStoredWebhook(
+  retrieve: (
+    id: string,
+    options: { stripeAccount: string },
+  ) => Promise<unknown>,
+  webhookEndpointId: string,
+  stripeAccountId: string,
+): Promise<boolean> {
+  try {
+    await retrieve(webhookEndpointId, { stripeAccount: stripeAccountId });
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function reconcileWebhook(
   stripeAccountId: string,
   accessToken: string,
@@ -38,13 +54,18 @@ export async function reconcileWebhook(
       const stripe = new Stripe(accessToken, {
         apiVersion: STRIPE_API_VERSION,
       });
-      await stripe.webhookEndpoints.retrieve(existing.webhookEndpointId, {
-        stripeAccount: stripeAccountId,
-      });
-      return {
-        webhookEndpointId: existing.webhookEndpointId,
-        webhookSecret: decrypt(existing.webhookSecret),
-      };
+      if (
+        await verifyStoredWebhook(
+          stripe.webhookEndpoints.retrieve.bind(stripe.webhookEndpoints),
+          existing.webhookEndpointId,
+          stripeAccountId,
+        )
+      )
+        return {
+          webhookEndpointId: existing.webhookEndpointId,
+          webhookSecret: decrypt(existing.webhookSecret),
+        };
+      throw new Error("stale_webhook_endpoint");
     } catch {
       await db
         .update(stripeConnection)
