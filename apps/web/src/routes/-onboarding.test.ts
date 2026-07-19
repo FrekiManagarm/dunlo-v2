@@ -13,21 +13,16 @@ const dashboardBenchmarkSource = readFileSync(
 );
 
 describe("onboarding flow", () => {
-  it("includes benchmark review as the second onboarding step", () => {
-    expect(onboardingSource).toContain(".max(4)");
-    expect(onboardingSource).toContain("Step {step} of 4");
-    expect(onboardingSource).toContain("Your Stripe benchmark is ready");
-    expect(onboardingSource).toContain(
-      "Similar SaaS companies average {formatRate(benchmark.averageRate)}",
-    );
+  it("derives the guided screen from the persisted diagnostic phase", () => {
+    expect(onboardingSource).toContain("diagnosticStateQueryOptions");
+    expect(onboardingSource).toContain('phase === "diagnosing"');
+    expect(onboardingSource).toContain("diagnostic_ready");
+    expect(onboardingSource).not.toContain(".max(4)");
+    expect(onboardingSource).not.toContain("Your Stripe benchmark is ready");
   });
 
-  it("continues from the standalone benchmark page to email setup", () => {
-    expect(dashboardBenchmarkSource).toContain(
-      "search={{ step: 3, error: undefined, msg: undefined }}",
-    );
-    expect(dashboardBenchmarkSource).not.toContain(
-      "search={{ step: 2, error: undefined, msg: undefined }}",
-    );
+  it("redirects the old authenticated benchmark path to diagnostic", () => {
+    expect(dashboardBenchmarkSource).toContain('to: "/diagnostic"');
+    expect(dashboardBenchmarkSource).not.toContain("userBenchmarkQueryOptions");
   });
 });

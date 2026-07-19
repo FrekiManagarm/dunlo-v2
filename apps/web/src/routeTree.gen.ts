@@ -22,6 +22,7 @@ import { Route as DashboardSettingsRouteImport } from './routes/_dashboard/setti
 import { Route as DashboardSequencesRouteImport } from './routes/_dashboard/sequences'
 import { Route as DashboardPaymentsRouteImport } from './routes/_dashboard/payments'
 import { Route as DashboardEscalationsRouteImport } from './routes/_dashboard/escalations'
+import { Route as DashboardDiagnosticRouteImport } from './routes/_dashboard/diagnostic'
 import { Route as DashboardDashboardRouteImport } from './routes/_dashboard/dashboard'
 import { Route as DashboardAlertsRouteImport } from './routes/_dashboard/alerts'
 import { Route as ApiStripeWebhookRouteImport } from './routes/api/stripe/webhook'
@@ -97,6 +98,11 @@ const DashboardEscalationsRoute = DashboardEscalationsRouteImport.update({
   path: '/escalations',
   getParentRoute: () => DashboardRoute,
 } as any)
+const DashboardDiagnosticRoute = DashboardDiagnosticRouteImport.update({
+  id: '/diagnostic',
+  path: '/diagnostic',
+  getParentRoute: () => DashboardRoute,
+} as any)
 const DashboardDashboardRoute = DashboardDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
@@ -159,6 +165,7 @@ export interface FileRoutesByFullPath {
   '/signup': typeof SignupRoute
   '/alerts': typeof DashboardAlertsRoute
   '/dashboard': typeof DashboardDashboardRoute
+  '/diagnostic': typeof DashboardDiagnosticRoute
   '/escalations': typeof DashboardEscalationsRoute
   '/payments': typeof DashboardPaymentsRoute
   '/sequences': typeof DashboardSequencesRoute
@@ -183,6 +190,7 @@ export interface FileRoutesByTo {
   '/signup': typeof SignupRoute
   '/alerts': typeof DashboardAlertsRoute
   '/dashboard': typeof DashboardDashboardRoute
+  '/diagnostic': typeof DashboardDiagnosticRoute
   '/escalations': typeof DashboardEscalationsRoute
   '/payments': typeof DashboardPaymentsRoute
   '/sequences': typeof DashboardSequencesRoute
@@ -209,6 +217,7 @@ export interface FileRoutesById {
   '/signup': typeof SignupRoute
   '/_dashboard/alerts': typeof DashboardAlertsRoute
   '/_dashboard/dashboard': typeof DashboardDashboardRoute
+  '/_dashboard/diagnostic': typeof DashboardDiagnosticRoute
   '/_dashboard/escalations': typeof DashboardEscalationsRoute
   '/_dashboard/payments': typeof DashboardPaymentsRoute
   '/_dashboard/sequences': typeof DashboardSequencesRoute
@@ -235,6 +244,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/alerts'
     | '/dashboard'
+    | '/diagnostic'
     | '/escalations'
     | '/payments'
     | '/sequences'
@@ -259,6 +269,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/alerts'
     | '/dashboard'
+    | '/diagnostic'
     | '/escalations'
     | '/payments'
     | '/sequences'
@@ -284,6 +295,7 @@ export interface FileRouteTypes {
     | '/signup'
     | '/_dashboard/alerts'
     | '/_dashboard/dashboard'
+    | '/_dashboard/diagnostic'
     | '/_dashboard/escalations'
     | '/_dashboard/payments'
     | '/_dashboard/sequences'
@@ -410,6 +422,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof DashboardEscalationsRouteImport
       parentRoute: typeof DashboardRoute
     }
+    '/_dashboard/diagnostic': {
+      id: '/_dashboard/diagnostic'
+      path: '/diagnostic'
+      fullPath: '/diagnostic'
+      preLoaderRoute: typeof DashboardDiagnosticRouteImport
+      parentRoute: typeof DashboardRoute
+    }
     '/_dashboard/dashboard': {
       id: '/_dashboard/dashboard'
       path: '/dashboard'
@@ -486,6 +505,7 @@ declare module '@tanstack/react-router' {
 interface DashboardRouteChildren {
   DashboardAlertsRoute: typeof DashboardAlertsRoute
   DashboardDashboardRoute: typeof DashboardDashboardRoute
+  DashboardDiagnosticRoute: typeof DashboardDiagnosticRoute
   DashboardEscalationsRoute: typeof DashboardEscalationsRoute
   DashboardPaymentsRoute: typeof DashboardPaymentsRoute
   DashboardSequencesRoute: typeof DashboardSequencesRoute
@@ -496,6 +516,7 @@ interface DashboardRouteChildren {
 const DashboardRouteChildren: DashboardRouteChildren = {
   DashboardAlertsRoute: DashboardAlertsRoute,
   DashboardDashboardRoute: DashboardDashboardRoute,
+  DashboardDiagnosticRoute: DashboardDiagnosticRoute,
   DashboardEscalationsRoute: DashboardEscalationsRoute,
   DashboardPaymentsRoute: DashboardPaymentsRoute,
   DashboardSequencesRoute: DashboardSequencesRoute,

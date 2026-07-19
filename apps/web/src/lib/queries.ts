@@ -6,6 +6,10 @@ import {
   getUserBenchmarkData,
 } from "@/functions/benchmark";
 import { getEmailProvider } from "@/functions/email-provider";
+import {
+  getDiagnosticReport,
+  getDiagnosticState,
+} from "@/functions/diagnostic";
 import { getEscalations, getEscalationSettings } from "@/functions/escalations";
 import {
   getDashboardData,
@@ -86,6 +90,20 @@ export const onboardingStateQueryOptions = () =>
   queryOptions({
     queryKey: ["onboarding-state"] as const,
     queryFn: () => getOnboardingState(),
+  });
+
+export const diagnosticStateQueryOptions = (connectionId?: string) =>
+  queryOptions({
+    queryKey: ["diagnostic", "state", connectionId ?? "current"] as const,
+    queryFn: () => getDiagnosticState({ data: { connectionId } }),
+    refetchInterval: (query) =>
+      query.state.data?.phase === "diagnosing" ? 2_500 : false,
+  });
+
+export const diagnosticReportQueryOptions = (connectionId: string) =>
+  queryOptions({
+    queryKey: ["diagnostic", "report", connectionId] as const,
+    queryFn: () => getDiagnosticReport({ data: { connectionId } }),
   });
 
 export const publicBenchmarkQueryOptions = () =>

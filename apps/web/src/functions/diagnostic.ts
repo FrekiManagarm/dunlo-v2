@@ -1,0 +1,216 @@
+import { db } from "@dunlo-v2/db";
+import {
+  diagnosticRun,
+  diagnosticSnapshot,
+  stripeConnection,
+  type ConnectionPhase,
+} from "@dunlo-v2/db/schema/domain";
+import { createServerFn } from "@tanstack/react-start";
+import { and, desc, eq } from "drizzle-orm";
+import { z } from "zod";
+
+import type { DiagnosticReportView } from "../components/diagnostic/diagnostic-report";
+import {
+  diagnosticVerdictSchema,
+  type DiagnosticCheckpoint,
+} from "../lib/diagnostic/types";
+import { authMiddleware } from "../middleware/auth";
+
+type SafeConnection = {
+  id: string;
+  userId: string;
+  phase: ConnectionPhase;
+  scope: string | null;
+  monitoringEnabled: boolean;
+  liveMode: boolean | null;
+  accessToken?: string;
+  webhookSecret?: string | null;
+};
+
+type SafeSnapshot = Partial<DiagnosticReportView> & {
+  verdict: DiagnosticReportView["verdict"];
+  stripeCustomerId?: string;
+  stripeInvoiceId?: string;
+};
+
+export function getDiagnosticStateForUser(
+  connection: SafeConnection,
+  userId: string,
+) {
+  if (connection.userId !== userId)
+    throw new Error("Diagnostic connection not found.");
+  return {
+    connectionId: connection.id,
+    phase: connection.phase,
+    scope: connection.scope,
+    monitoringEnabled: connection.monitoringEnabled,
+    liveMode: connection.liveMode,
+  };
+}
+
+export function createDiagnosticView(input: {
+  connection: SafeConnection;
+  snapshot: SafeSnapshot;
+}) {
+  const snapshot = input.snapshot;
+  return {
+    connectionId: input.connection.id,
+    verdict: snapshot.verdict,
+    planCode: snapshot.planCode ?? "unknown",
+    planPriceUsd: snapshot.planPriceUsd ?? 0,
+    breakEvenUsd: snapshot.breakEvenUsd ?? 0,
+    dominantCurrency: snapshot.dominantCurrency ?? "usd",
+    monthlyAddressable: snapshot.monthlyAddressable ?? 0,
+    observedFailed: snapshot.observedFailed ?? 0,
+    naturallyRecovered: snapshot.naturallyRecovered ?? 0,
+    openAutomatable: snapshot.openAutomatable ?? 0,
+    openHuman: snapshot.openHuman ?? 0,
+    historicallyLostAutomatable: snapshot.historicallyLostAutomatable ?? 0,
+    historicallyLostHuman: snapshot.historicallyLostHuman ?? 0,
+    excludedAmount: snapshot.excludedAmount ?? 0,
+    analysisStartsAt: snapshot.analysisStartsAt ?? new Date(0).toISOString(),
+    analysisEndsAt: snapshot.analysisEndsAt ?? new Date(0).toISOString(),
+    decisionWindowComplete: snapshot.decisionWindowComplete ?? false,
+    coverageComplete: snapshot.coverageComplete ?? false,
+    pagesLoaded: snapshot.pagesLoaded ?? 0,
+    recordsLoaded: snapshot.recordsLoaded ?? 0,
+    fxSource: snapshot.fxSource ?? "Unavailable",
+    fxRateDate: snapshot.fxRateDate ?? "Unavailable",
+    liveMode: input.connection.liveMode,
+  } satisfies DiagnosticReportView & { connectionId: string };
+}
+
+export function monitoringUnavailable() {
+  return { ok: false as const, code: "monitoring_not_available" as const };
+}
+
+const connectionInput = z.object({
+  connectionId: z.string().min(1).optional(),
+});
+
+async function ownedConnection(userId: string, connectionId?: string) {
+  const query = db
+    .select()
+    .from(stripeConnection)
+    .where(
+      connectionId
+        ? and(
+            eq(stripeConnection.id, connectionId),
+            eq(stripeConnection.userId, userId),
+          )
+        : eq(stripeConnection.userId, userId),
+    )
+    .orderBy(desc(stripeConnection.updatedAt))
+    .limit(1);
+  const [connection] = await query;
+  if (!connection) throw new Error("Diagnostic connection not found.");
+  return connection;
+}
+
+async function currentConnection(userId: string, connectionId?: string) {
+  try {
+    return await ownedConnection(userId, connectionId);
+  } catch (error) {
+    if (
+      !connectionId &&
+      error instanceof Error &&
+      error.message === "Diagnostic connection not found."
+    ) {
+      return null;
+    }
+    throw error;
+  }
+}
+
+export const getDiagnosticState = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .inputValidator(connectionInput)
+  .handler(async ({ context, data }) => {
+    if (!context.session?.user) throw new Error("Unauthorized");
+    const connection = await currentConnection(
+      context.session.user.id,
+      data.connectionId,
+    );
+    if (!connection) {
+      return {
+        connectionId: null,
+        phase: null,
+        scope: null,
+        monitoringEnabled: false,
+        liveMode: null,
+        progress: {
+          status: "idle" as const,
+          checkpoints: [] as DiagnosticCheckpoint[],
+          errorCategory: null,
+        },
+      };
+    }
+    const [run] = await db
+      .select({
+        status: diagnosticRun.status,
+        checkpoints: diagnosticRun.checkpoints,
+        errorCategory: diagnosticRun.errorCategory,
+      })
+      .from(diagnosticRun)
+      .where(eq(diagnosticRun.connectionId, connection.id))
+      .orderBy(desc(diagnosticRun.updatedAt))
+      .limit(1);
+    return {
+      ...getDiagnosticStateForUser(connection, context.session.user.id),
+      progress: {
+        status:
+          run?.status === "running" ||
+          run?.status === "failed" ||
+          run?.status === "completed"
+            ? run.status
+            : "idle",
+        checkpoints: (run?.checkpoints ?? []) as DiagnosticCheckpoint[],
+        errorCategory:
+          run?.errorCategory === "source" ||
+          run?.errorCategory === "persistence"
+            ? run.errorCategory
+            : null,
+      },
+    };
+  });
+
+export const getDiagnosticReport = createServerFn({ method: "GET" })
+  .middleware([authMiddleware])
+  .inputValidator(z.object({ connectionId: z.string().min(1) }))
+  .handler(async ({ context, data }) => {
+    if (!context.session?.user) throw new Error("Unauthorized");
+    const connection = await ownedConnection(
+      context.session.user.id,
+      data.connectionId,
+    );
+    const [snapshot] = await db
+      .select()
+      .from(diagnosticSnapshot)
+      .where(
+        and(
+          eq(diagnosticSnapshot.connectionId, connection.id),
+          eq(diagnosticSnapshot.userId, context.session.user.id),
+          eq(diagnosticSnapshot.isCurrent, true),
+        ),
+      )
+      .limit(1);
+    if (!snapshot) throw new Error("Diagnostic report not found.");
+    return createDiagnosticView({
+      connection,
+      snapshot: {
+        ...snapshot,
+        verdict: diagnosticVerdictSchema.parse(snapshot.verdict),
+        analysisStartsAt: snapshot.analysisStartsAt.toISOString(),
+        analysisEndsAt: snapshot.analysisEndsAt.toISOString(),
+      },
+    });
+  });
+
+export const enableMonitoring = createServerFn({ method: "POST" })
+  .middleware([authMiddleware])
+  .inputValidator(z.object({ connectionId: z.string().min(1) }))
+  .handler(async ({ context, data }) => {
+    if (!context.session?.user) throw new Error("Unauthorized");
+    await ownedConnection(context.session.user.id, data.connectionId);
+    return monitoringUnavailable();
+  });
