@@ -35,6 +35,15 @@ describe("onboarding flow", () => {
     );
     expect(onboardingSource).toContain('setMonitoringStatus("enabled")');
     expect(onboardingSource).not.toContain('"current"');
+    expect(onboardingSource).toContain(
+      "Your Stripe connection remains read-only",
+    );
+    expect(onboardingSource).toContain(
+      "Recovery and monitoring are\n          not enabled",
+    );
+    expect(onboardingSource).toContain(
+      'active={state.phase === "recovery_active"}',
+    );
   });
 
   it("redirects the old authenticated benchmark path to diagnostic", () => {
