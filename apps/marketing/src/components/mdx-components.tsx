@@ -7,7 +7,7 @@ export const mdxComponents = {
   h2: ({ children, ...props }: HeadingProps) => (
     <h2
       {...props}
-      className="mt-12 mb-4 text-2xl font-bold tracking-tight text-foreground border-l-[3px] border-dunlo pl-4"
+      className="mb-4 mt-14 border-t border-dunlo-line pt-8 text-3xl font-bold tracking-[-0.025em] text-foreground"
     >
       {children}
     </h2>
@@ -43,7 +43,7 @@ export const mdxComponents = {
   code: ({ children, ...props }: HTMLAttributes<HTMLElement>) => (
     <code
       {...props}
-      className="rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-[0.85em] text-zinc-800 border border-zinc-200"
+      className="rounded-md bg-zinc-100 px-1.5 py-0.5 font-mono text-[0.85em] text-dunlo-ink/88 border border-dunlo-line"
     >
       {children}
     </code>
@@ -62,7 +62,7 @@ export const mdxComponents = {
   blockquote: ({ children, ...props }: HTMLAttributes<HTMLQuoteElement>) => (
     <blockquote
       {...props}
-      className="my-6 border-l-[3px] border-dunlo/40 pl-5 text-muted-foreground italic bg-dunlo/5 py-3 pr-4 rounded-r-lg"
+      className="my-8 rounded-xl bg-dunlo px-6 py-5 font-medium text-dunlo-ink"
     >
       {children}
     </blockquote>
@@ -79,7 +79,10 @@ export const mdxComponents = {
   ),
 
   li: ({ children, ...props }: HTMLAttributes<HTMLLIElement>) => (
-    <li {...props} className="relative pl-5 before:absolute before:left-0 before:top-[0.6em] before:w-1.5 before:h-1.5 before:rounded-full before:bg-dunlo/60">
+    <li
+      {...props}
+      className="relative pl-5 before:absolute before:left-0 before:top-[0.6em] before:w-1.5 before:h-1.5 before:rounded-full before:bg-dunlo/60"
+    >
       {children}
     </li>
   ),

@@ -10,6 +10,7 @@ import {
 } from "@tanstack/react-router";
 import {
   AlertCircle,
+  Activity,
   Bell,
   BookOpen,
   LayoutDashboard,
@@ -36,6 +37,7 @@ export const Route = createFileRoute("/_dashboard")({
 
 const MAIN_NAV = [
   { icon: LayoutDashboard, label: "Overview", to: "/dashboard" as const },
+  { icon: Activity, label: "Diagnostic", to: "/diagnostic" as const },
   { icon: Receipt, label: "Payments", to: "/payments" as const },
   { icon: Zap, label: "Recovery sequences", to: "/sequences" as const },
   { icon: AlertCircle, label: "Escalations", to: "/escalations" as const },

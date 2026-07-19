@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Recovery guide",
-    metricLabel: "codes",
-    metricValue: "8",
   });
 }

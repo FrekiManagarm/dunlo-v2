@@ -181,7 +181,9 @@ export const sendEscalationEmail = createServerFn({ method: "POST" })
       },
       to: row.failed_payment.customerEmail,
       subject: row.escalation.draftSubject,
-      html: wrapEmail(`<p style="font-size:14px;line-height:1.65;color:#475569;margin:0;">${row.escalation.draftBody.replace(/\n/g, "<br />")}</p>`),
+      html: wrapEmail(
+        `<p style="font-size:14px;line-height:1.65;color:#475569;margin:0;">${row.escalation.draftBody.replace(/\n/g, "<br />")}</p>`,
+      ),
     });
 
     await db
@@ -226,6 +228,7 @@ export type EscalationSettings = {
   thresholdMajor: number | null;
   currency: string;
   hasConnection: boolean;
+  connectionId: string | null;
 };
 
 export const getEscalationSettings = createServerFn({ method: "GET" })
@@ -242,7 +245,12 @@ export const getEscalationSettings = createServerFn({ method: "GET" })
       .limit(1);
 
     if (!row) {
-      return { thresholdMajor: null, currency: "eur", hasConnection: false };
+      return {
+        thresholdMajor: null,
+        currency: "eur",
+        hasConnection: false,
+        connectionId: null,
+      };
     }
 
     return {
@@ -252,6 +260,7 @@ export const getEscalationSettings = createServerFn({ method: "GET" })
           : null,
       currency: row.escalationCurrency ?? "eur",
       hasConnection: true,
+      connectionId: row.id,
     };
   });
 

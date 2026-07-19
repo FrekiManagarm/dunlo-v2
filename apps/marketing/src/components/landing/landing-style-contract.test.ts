@@ -115,8 +115,8 @@ describe("landing design contract", () => {
     );
 
     expect(roi).toContain("const FAILED_PAYMENT_RATE = 0.05");
-    expect(roi).toContain("RECOVERABILITY_RATE");
-    expect(roi).toContain("RECOVERABILITY_PERCENT");
+    expect(roi).toContain("MODELED_RECOVERY_ASSUMPTION_RATE");
+    expect(roi).toContain("MODELED_RECOVERY_ASSUMPTION_PERCENT");
     expect(roi).toContain("RECOVERY_MODEL_UPDATED");
     expect(roi).toContain("Illustrative estimate");
     expect(roi).toContain("not a");

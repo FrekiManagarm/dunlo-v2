@@ -11,20 +11,13 @@ type DunloOgImageProps = {
   title: string;
   description: string;
   badge?: string;
-  metricLabel?: string;
-  metricValue?: string;
 };
 
 const palette = {
   accent: "#00E87B",
-  accentDeep: "#009950",
-  accentSoft: "#DDFBEA",
-  paper: "#F8FAF7",
-  ink: "#111714",
-  muted: "#55635C",
-  line: "#DDE7DF",
-  dark: "#151A17",
-  white: "#FFFFFF",
+  ink: "#07110C",
+  white: "#F8FCF9",
+  muted: "#A8B8AF",
 };
 
 const outfitWeights = [400, 500, 700, 800, 900] as const;
@@ -49,240 +42,121 @@ const outfitFonts = Promise.all(
 function clampText(text: string, maxLength: number) {
   if (text.length <= maxLength) return text;
 
-  const truncated = text.slice(0, maxLength - 3).trim();
+  const truncated = text.slice(0, maxLength - 1).trim();
   const lastSpace = truncated.lastIndexOf(" ");
   const cleanText = (lastSpace > 0 ? truncated.slice(0, lastSpace) : truncated)
     .trim()
     .replace(/[.,;:]+$/, "");
 
-  return `${cleanText}...`;
+  return `${cleanText}…`;
 }
 
 function titleFontSize(title: string) {
-  if (title.length > 78) return 50;
-  if (title.length > 62) return 56;
-  if (title.length > 48) return 58;
-  return 64;
+  if (title.length > 82) return 48;
+  if (title.length > 68) return 52;
+  if (title.length > 54) return 57;
+  return 66;
 }
 
 function LogoMark() {
   return (
-    <svg width="56" height="56" viewBox="0 0 56 56" fill="none">
-      <rect width="56" height="56" rx="17" fill={palette.accent} />
-      <path
-        d="M28 42.5A14.5 14.5 0 1 0 13.5 28"
-        stroke={palette.white}
-        strokeLinecap="round"
-        strokeWidth="4.3"
+    <svg width="50" height="50" viewBox="0 0 50 50" fill="none">
+      <rect
+        width="50"
+        height="50"
+        rx="14"
+        fill={palette.accent}
       />
       <path
-        d="M9.8 31.8L13.5 28L17.2 31.8"
+        d="M25 38A13 13 0 1 0 12 25"
+        stroke={palette.white}
+        strokeLinecap="round"
+        strokeWidth="4"
+      />
+      <path
+        d="M8.7 28.4L12 25L15.3 28.4"
         stroke={palette.white}
         strokeLinecap="round"
         strokeLinejoin="round"
-        strokeWidth="4.3"
+        strokeWidth="4"
       />
     </svg>
   );
 }
 
-function ProductPreview({
-  metricLabel,
-  metricValue,
-}: {
-  metricLabel: string;
-  metricValue: string;
-}) {
-  const rows = [
-    ["Hearthline", "expired_card", "$87", "email sent"],
-    ["RivetDesk", "authentication_required", "$129", "review"],
-    ["Northstar Labs", "insufficient_funds", "$348", "retry"],
-  ];
-
+function RecoveryPath() {
   return (
     <div
       style={{
         position: "absolute",
-        right: 72,
-        top: 82,
-        width: 388,
-        height: 470,
-        borderRadius: 34,
-        border: `1px solid ${palette.line}`,
-        background: palette.white,
-        boxShadow: "0 42px 90px rgba(21, 26, 23, 0.16)",
-        overflow: "hidden",
+        right: 0,
+        top: 0,
+        width: 382,
+        height: "100%",
+        background: palette.accent,
+        color: palette.ink,
         display: "flex",
-        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
       }}
     >
       <div
         style={{
-          height: 60,
-          background: "#F1F5F2",
-          borderBottom: `1px solid ${palette.line}`,
+          position: "absolute",
+          right: -134,
+          top: -94,
+          width: 420,
+          height: 420,
+          border: `2px solid ${palette.ink}`,
+          borderRadius: 999,
+          opacity: 0.12,
           display: "flex",
-          alignItems: "center",
-          justifyContent: "space-between",
-          padding: "0 24px",
         }}
+      />
+      <div
+        style={{
+          position: "absolute",
+          left: -110,
+          bottom: -168,
+          width: 360,
+          height: 360,
+          border: `2px solid ${palette.ink}`,
+          borderRadius: 999,
+          opacity: 0.1,
+          display: "flex",
+        }}
+      />
+      <svg
+        width="382"
+        height="630"
+        viewBox="0 0 382 630"
+        fill="none"
+        style={{ position: "absolute", inset: 0 }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-          <span
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 999,
-              background: "#C8D4CB",
-            }}
-          />
-          <span
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 999,
-              background: "#C8D4CB",
-            }}
-          />
-          <span
-            style={{
-              width: 10,
-              height: 10,
-              borderRadius: 999,
-              background: palette.accent,
-            }}
-          />
-        </div>
-        <div
-          style={{
-            color: palette.accentDeep,
-            fontSize: 14,
-            fontWeight: 800,
-          }}
-        >
-          monitoring
-        </div>
-      </div>
-
-      <div style={{ padding: 24, display: "flex", flexDirection: "column" }}>
-        <div
-          style={{
-            borderRadius: 26,
-            background: palette.dark,
-            color: palette.white,
-            padding: 24,
-            display: "flex",
-            flexDirection: "column",
-          }}
-        >
-          <div
-            style={{
-              color: palette.accent,
-              fontSize: 14,
-              fontWeight: 900,
-              letterSpacing: 2.4,
-              textTransform: "uppercase",
-            }}
-          >
-            {metricLabel}
-          </div>
-          <div
-            style={{
-              marginTop: 18,
-              fontSize: 58,
-              lineHeight: 0.92,
-              fontWeight: 900,
-              letterSpacing: -1,
-            }}
-          >
-            {metricValue}
-          </div>
-          <div
-            style={{
-              marginTop: 12,
-              color: "rgba(255,255,255,0.58)",
-              fontSize: 19,
-              fontWeight: 600,
-            }}
-          >
-            failed-payment revenue in motion
-          </div>
-        </div>
-
-        <div
-          style={{
-            marginTop: 18,
-            display: "flex",
-            flexDirection: "column",
-            gap: 10,
-          }}
-        >
-          {rows.map(([company, code, amount, status]) => (
-            <div
-              key={company}
-              style={{
-                borderRadius: 20,
-                background: "#F5F7F4",
-                border: "1px solid #EDF2EE",
-                padding: "14px 16px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-              }}
-            >
-              <div style={{ display: "flex", flexDirection: "column" }}>
-                <div
-                  style={{
-                    color: palette.ink,
-                    fontSize: 17,
-                    fontWeight: 800,
-                  }}
-                >
-                  {company}
-                </div>
-                <div
-                  style={{
-                    marginTop: 3,
-                    color: palette.muted,
-                    fontSize: 13,
-                    fontWeight: 700,
-                  }}
-                >
-                  {code}
-                </div>
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "flex-end",
-                }}
-              >
-                <div
-                  style={{
-                    color: palette.ink,
-                    fontSize: 17,
-                    fontWeight: 900,
-                  }}
-                >
-                  {amount}
-                </div>
-                <div
-                  style={{
-                    marginTop: 3,
-                    color:
-                      status === "review" ? palette.accentDeep : palette.muted,
-                    fontSize: 13,
-                    fontWeight: 800,
-                  }}
-                >
-                  {status}
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
+        <path
+          d="M76 90C76 183 296 154 296 264C296 371 88 349 88 461C88 510 126 540 183 540"
+          stroke={palette.ink}
+          strokeWidth="12"
+          strokeLinecap="round"
+        />
+        <circle cx="76" cy="90" r="20" fill={palette.ink} />
+        <circle
+          cx="296"
+          cy="264"
+          r="20"
+          fill={palette.accent}
+          stroke={palette.ink}
+          strokeWidth="10"
+        />
+        <circle cx="88" cy="461" r="20" fill={palette.ink} />
+        <path
+          d="M166 514L192 540L166 566"
+          stroke={palette.ink}
+          strokeWidth="12"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
     </div>
   );
 }
@@ -291,8 +165,6 @@ export async function createDunloOgImage({
   title,
   description,
   badge = "Stripe payment recovery",
-  metricLabel = "recovered",
-  metricValue = "$248",
 }: DunloOgImageProps) {
   const displayTitle = clampText(title.replace(/ - Dunlo( Blog)?$/, ""), 92);
   const displayDescription = clampText(description, 118);
@@ -306,26 +178,17 @@ export async function createDunloOgImage({
           width: "100%",
           height: "100%",
           overflow: "hidden",
-          background: palette.paper,
+          background: palette.ink,
           display: "flex",
           fontFamily: "Outfit, Arial, sans-serif",
-          color: palette.ink,
+          color: palette.white,
         }}
       >
         <div
           style={{
             position: "absolute",
-            inset: 0,
-            backgroundImage:
-              "linear-gradient(90deg, rgba(17, 23, 20, 0.08) 1px, transparent 1px), linear-gradient(0deg, rgba(17, 23, 20, 0.06) 1px, transparent 1px)",
-            backgroundSize: "72px 72px",
-          }}
-        />
-        <div
-          style={{
-            position: "absolute",
-            left: 78,
-            top: 76,
+            left: 64,
+            top: 52,
             display: "flex",
             alignItems: "center",
           }}
@@ -333,10 +196,11 @@ export async function createDunloOgImage({
           <LogoMark />
           <div
             style={{
-              marginLeft: 18,
-              fontSize: 34,
+              marginLeft: 16,
+              display: "flex",
+              fontSize: 31,
               fontWeight: 900,
-              letterSpacing: -0.4,
+              letterSpacing: -0.6,
             }}
           >
             dunlo
@@ -346,9 +210,9 @@ export async function createDunloOgImage({
         <div
           style={{
             position: "absolute",
-            left: 78,
-            top: 170,
-            width: 610,
+            left: 64,
+            top: 148,
+            width: 690,
             display: "flex",
             flexDirection: "column",
           }}
@@ -358,23 +222,22 @@ export async function createDunloOgImage({
               display: "flex",
               alignItems: "center",
               alignSelf: "flex-start",
-              height: 42,
+              height: 38,
+              border: "1px solid rgba(248,252,249,0.22)",
               borderRadius: 999,
-              border: `1px solid ${palette.line}`,
-              background: palette.white,
-              padding: "0 18px",
-              color: palette.accentDeep,
-              fontSize: 18,
-              fontWeight: 900,
+              padding: "0 16px",
+              color: palette.white,
+              fontSize: 17,
+              fontWeight: 700,
             }}
           >
             <span
               style={{
-                width: 10,
-                height: 10,
+                width: 8,
+                height: 8,
+                marginRight: 10,
                 borderRadius: 999,
                 background: palette.accent,
-                marginRight: 10,
               }}
             />
             {badge}
@@ -382,29 +245,52 @@ export async function createDunloOgImage({
           <div
             style={{
               marginTop: 24,
+              display: "flex",
+              maxWidth: 690,
               fontSize: titleFontSize(displayTitle),
-              lineHeight: 0.96,
+              lineHeight: 0.94,
               fontWeight: 900,
-              letterSpacing: -1.2,
+              letterSpacing: -2.1,
             }}
           >
             {displayTitle}
           </div>
           <div
             style={{
-              marginTop: 26,
-              width: 540,
+              marginTop: 24,
+              width: 650,
+              display: "flex",
               color: palette.muted,
-              fontSize: 27,
-              lineHeight: 1.26,
-              fontWeight: 600,
+              fontSize: 24,
+              lineHeight: 1.3,
+              fontWeight: 500,
             }}
           >
             {displayDescription}
           </div>
         </div>
 
-        <ProductPreview metricLabel={metricLabel} metricValue={metricValue} />
+        <div
+          style={{
+            position: "absolute",
+            left: 64,
+            bottom: 34,
+            width: 690,
+            borderTop: "1px solid rgba(248,252,249,0.16)",
+            paddingTop: 16,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            color: palette.muted,
+            fontSize: 16,
+            fontWeight: 700,
+          }}
+        >
+          <span>dunlo.io</span>
+          <span>Free during beta · no recovery cut</span>
+        </div>
+
+        <RecoveryPath />
       </div>
     ),
     {

@@ -32,11 +32,11 @@ import {
   AlertTriangle,
   CheckCircle2,
   CreditCard,
+  Download,
   FlaskConical,
   Loader2,
   LogOut,
   Mail,
-  RefreshCw,
   Save,
   Send,
   TrendingUp,
@@ -58,7 +58,6 @@ import {
   getEscalationSettings,
   updateEscalationSettings,
 } from "@/functions/escalations";
-import { syncExistingFailedPayments } from "@/functions/stripe";
 import {
   simulateFailedPayment,
   simulateEscalation,
@@ -587,15 +586,14 @@ function EscalationTab({
   initial: Awaited<ReturnType<typeof getEscalationSettings>>;
 }) {
   const posthog = usePostHog();
-  const [syncResult, setSyncResult] = useState<{
-    imported: number;
-    skipped: number;
-  } | null>(null);
   const [disconnectDialogOpen, setDisconnectDialogOpen] = useState(false);
+  const [disconnectStatus, setDisconnectStatus] = useState("");
 
   const saveEscalationSettingsMutation = useMutation({
-    mutationFn: (data: { threshold: number; currency: "eur" | "usd" | "gbp" }) =>
-      updateEscalationSettings({ data }),
+    mutationFn: (data: {
+      threshold: number;
+      currency: "eur" | "usd" | "gbp";
+    }) => updateEscalationSettings({ data }),
     onSuccess: () => {
       posthog.capture("settings_updated", { section: "escalation" });
       toast.success("Escalation settings saved");
@@ -605,37 +603,38 @@ function EscalationTab({
     },
   });
 
-  const syncPaymentsMutation = useMutation({
-    mutationFn: () => syncExistingFailedPayments(),
-    onSuccess: (result) => {
-      setSyncResult(result);
-      toast.success(
-        result.imported > 0
-          ? `${result.imported} payment${result.imported === 1 ? "" : "s"} imported`
-          : "No new payments to import",
-      );
-    },
-    onError: (e) => {
-      toast.error(e instanceof Error ? e.message : "Sync failed");
-    },
-  });
-
   const disconnectStripeMutation = useMutation({
     mutationFn: async () => {
-      const res = await fetch("/api/stripe/disconnect", { method: "POST" });
-      if (!res.ok) throw new Error(`Disconnect failed (${res.status})`);
+      if (!initial.connectionId) throw new Error("Stripe connection not found");
+      const res = await fetch("/api/stripe/disconnect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ connectionId: initial.connectionId }),
+      });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as {
+          error?: string;
+        } | null;
+        throw new Error(body?.error ?? `Disconnect failed (${res.status})`);
+      }
     },
     onSuccess: () => {
+      setDisconnectStatus(
+        "Stripe is disconnected and the selected connection data has been deleted.",
+      );
       toast.success("Stripe disconnected");
-      window.location.href = "/onboarding";
+      window.setTimeout(() => {
+        window.location.href = "/onboarding";
+      }, 800);
     },
     onError: (e) => {
-      toast.error(e instanceof Error ? e.message : "Disconnect failed");
+      const message = e instanceof Error ? e.message : "Disconnect failed";
+      setDisconnectStatus(`Stripe could not be disconnected: ${message}`);
+      toast.error(message);
     },
   });
   const { mutateAsync: saveEscalationSettings } =
     saveEscalationSettingsMutation;
-  const { mutateAsync: syncPayments } = syncPaymentsMutation;
   const { mutateAsync: disconnectStripe } = disconnectStripeMutation;
 
   const form = useForm({
@@ -656,11 +655,6 @@ function EscalationTab({
       }),
     },
   });
-
-  const onSync = async () => {
-    setSyncResult(null);
-    await syncPayments().catch(() => undefined);
-  };
 
   const onDisconnectConfirm = async () => {
     await disconnectStripe().catch(() => undefined);
@@ -785,42 +779,6 @@ function EscalationTab({
         </form>
       </div>
 
-      {/* Sync card */}
-      <div className="rounded-2xl border border-zinc-100 bg-white shadow-[0_1px_4px_0_rgba(0,0,0,0.04)]">
-        <div className="flex items-start justify-between gap-6 px-6 py-5">
-          <div className="min-w-0">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-zinc-400 mb-1">
-              Import
-            </p>
-            <p className="text-sm font-semibold tracking-tight text-zinc-900">
-              Sync existing failed payments
-            </p>
-            <p className="mt-1 text-xs text-zinc-500 leading-relaxed max-w-sm">
-              Pull failed PaymentIntents from the last 90 days and enqueue them
-              into recovery sequences. Already-imported payments are skipped.
-            </p>
-            {syncResult && (
-              <p className="mt-2 text-[11px] font-semibold text-dunlo-deep">
-                {syncResult.imported} imported · {syncResult.skipped} already in
-                Dunlo
-              </p>
-            )}
-          </div>
-          <button
-            onClick={onSync}
-            disabled={syncPaymentsMutation.isPending || !initial.hasConnection}
-            className="shrink-0 flex items-center gap-2 rounded-xl border border-zinc-200 bg-white px-4 py-2 text-xs font-semibold text-zinc-700 transition-all hover:bg-zinc-50 hover:border-zinc-300 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-40"
-          >
-            {syncPaymentsMutation.isPending ? (
-              <Loader2 size={12} className="animate-spin" />
-            ) : (
-              <RefreshCw size={12} />
-            )}
-            {syncPaymentsMutation.isPending ? "Syncing…" : "Sync now"}
-          </button>
-        </div>
-      </div>
-
       {/* Stripe disconnect */}
       <div className="rounded-2xl border border-zinc-100 bg-white shadow-[0_1px_4px_0_rgba(0,0,0,0.04)]">
         <div className="px-6 py-5 border-b border-zinc-50">
@@ -833,12 +791,33 @@ function EscalationTab({
         </div>
         <div className="px-6 py-5">
           <div className="flex items-start justify-between gap-6">
-            <p className="text-xs text-zinc-500 leading-relaxed max-w-sm">
-              Removes the OAuth connection and deregisters the webhook. Your
-              recovery sequences and all historical payment data are preserved.
-            </p>
+            <div className="max-w-sm space-y-2">
+              <p className="text-xs text-zinc-500 leading-relaxed">
+                Export your diagnostic before removing this Stripe connection.
+                Disconnecting permanently deletes its diagnostic and
+                Stripe-derived recovery records.
+              </p>
+              <a
+                href={
+                  initial.connectionId
+                    ? `/api/stripe/export?connectionId=${encodeURIComponent(initial.connectionId)}`
+                    : "#"
+                }
+                download
+                className={`inline-flex items-center gap-1.5 text-xs font-semibold text-dunlo-dim hover:text-dunlo-deep ${
+                  !initial.hasConnection ? "pointer-events-none opacity-40" : ""
+                }`}
+                aria-disabled={!initial.hasConnection}
+              >
+                <Download size={13} />
+                Export diagnostic JSON
+              </a>
+            </div>
             <button
-              onClick={() => setDisconnectDialogOpen(true)}
+              onClick={() => {
+                setDisconnectStatus("");
+                setDisconnectDialogOpen(true);
+              }}
               disabled={
                 !initial.hasConnection || disconnectStripeMutation.isPending
               }
@@ -852,6 +831,13 @@ function EscalationTab({
               {initial.hasConnection ? "Disconnect" : "Not connected"}
             </button>
           </div>
+          <p
+            role="status"
+            aria-live="polite"
+            className="mt-3 text-xs text-zinc-500"
+          >
+            {disconnectStatus}
+          </p>
         </div>
       </div>
 
@@ -869,9 +855,11 @@ function EscalationTab({
                 Disconnect Stripe?
               </AlertDialogTitle>
               <AlertDialogDescription className="mt-1 max-w-sm text-sm leading-6 text-zinc-500">
-                This removes the OAuth connection and deregisters the webhook.
-                Your recovery sequences and historical payment data stay
-                preserved and will be reused if you reconnect.
+                This permanently removes the OAuth connection and Dunlo webhook
+                for this Stripe account. It deletes this account&apos;s
+                diagnostic snapshots and findings, failed payments, recovery
+                attempts, and escalations. Your Dunlo account, email-provider
+                configuration, and recovery sequence templates remain.
               </AlertDialogDescription>
             </AlertDialogHeader>
           </div>

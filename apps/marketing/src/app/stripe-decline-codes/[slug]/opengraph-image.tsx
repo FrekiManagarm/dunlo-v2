@@ -28,7 +28,5 @@ export default async function Image({
     title: guide.title,
     description: guide.metaDescription,
     badge: "Stripe decline code",
-    metricLabel: "code",
-    metricValue: guide.code,
   });
 }

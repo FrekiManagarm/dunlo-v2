@@ -6,6 +6,10 @@ import {
   getUserBenchmarkData,
 } from "@/functions/benchmark";
 import { getEmailProvider } from "@/functions/email-provider";
+import {
+  getDiagnosticReport,
+  getDiagnosticState,
+} from "@/functions/diagnostic";
 import { getEscalations, getEscalationSettings } from "@/functions/escalations";
 import {
   getDashboardData,
@@ -14,6 +18,7 @@ import {
 } from "@/functions/payments";
 import { getSequences } from "@/functions/sequences";
 import { getOnboardingState } from "@/functions/stripe";
+import { shouldPollDiagnosticProgress } from "@/lib/diagnostic/polling";
 
 const PAYMENT_STATUSES = [
   "in_recovery",
@@ -86,6 +91,32 @@ export const onboardingStateQueryOptions = () =>
   queryOptions({
     queryKey: ["onboarding-state"] as const,
     queryFn: () => getOnboardingState(),
+  });
+
+export const diagnosticConnectionQueryOptions = () =>
+  queryOptions({
+    queryKey: ["diagnostic", "connection"] as const,
+    queryFn: () => getDiagnosticState({ data: {} }),
+  });
+
+export const diagnosticStateQueryOptions = (connectionId: string) =>
+  queryOptions({
+    queryKey: ["diagnostic", "state", connectionId] as const,
+    queryFn: () => getDiagnosticState({ data: { connectionId } }),
+    refetchInterval: (query) =>
+      query.state.data &&
+      shouldPollDiagnosticProgress({
+        phase: query.state.data.phase,
+        progressStatus: query.state.data.progress.status,
+      })
+        ? 2_500
+        : false,
+  });
+
+export const diagnosticReportQueryOptions = (connectionId: string) =>
+  queryOptions({
+    queryKey: ["diagnostic", "report", connectionId] as const,
+    queryFn: () => getDiagnosticReport({ data: { connectionId } }),
   });
 
 export const publicBenchmarkQueryOptions = () =>

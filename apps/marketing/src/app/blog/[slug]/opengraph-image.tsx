@@ -19,7 +19,5 @@ export default async function Image({ params }: BlogPostOgImageProps) {
     title: post.data.title,
     description: post.data.description,
     badge: post.data.tags[0] ?? "Dunlo blog",
-    metricLabel: post.data.readingTime ?? "article",
-    metricValue: "read",
   });
 }

@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "SaaS churn calculator",
-    metricLabel: "churn",
-    metricValue: "risk",
   });
 }

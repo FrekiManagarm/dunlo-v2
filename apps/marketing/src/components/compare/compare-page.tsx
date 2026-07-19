@@ -391,39 +391,39 @@ export const COMPARE_ROUTE_PAGES = Object.values(COMPARE_PAGES);
 
 export function ComparePage({ page }: { page: ComparePageData }) {
   return (
-    <div className="min-h-dvh overflow-hidden bg-stone-100 font-sans text-gray-950">
+    <div className="min-h-dvh overflow-hidden bg-dunlo-ground font-sans text-dunlo-ink">
       <Nav />
       <main className="mx-auto max-w-6xl px-4 pb-14 pt-28 md:px-6 md:pt-36">
-        <section className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-sm">
+        <section className="overflow-hidden rounded-2xl bg-dunlo-ink text-white">
           <div className="grid gap-0 lg:grid-cols-[1.06fr_0.94fr]">
             <div className="px-6 py-10 md:px-10 md:py-14 lg:px-14">
-              <div className="mb-5 inline-flex items-center gap-2 rounded-full border border-gray-200 bg-gray-50 px-4 py-1.5 text-sm font-semibold text-gray-600">
-                <GitCompareArrows size={15} className="text-dunlo-deep" />
+              <div className="mb-5 inline-flex items-center gap-2 text-sm font-semibold text-dunlo">
+                <GitCompareArrows size={15} />
                 Competitor comparison
               </div>
-              <h1 className="max-w-3xl text-4xl font-bold leading-[1.04] tracking-tight md:text-6xl">
+              <h1 className="max-w-3xl text-4xl font-bold leading-[0.96] tracking-[-0.04em] md:text-6xl">
                 {page.headline}
               </h1>
-              <p className="mt-6 max-w-2xl text-base leading-8 text-gray-600 md:text-lg">
+              <p className="mt-6 max-w-2xl text-base leading-8 text-white/68 md:text-lg">
                 {page.intro}
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <a
                   href="#comparison"
-                  className="inline-flex h-12 items-center justify-center rounded-full bg-gray-950 px-6 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
+                  className="inline-flex h-12 items-center justify-center rounded-full bg-dunlo px-6 text-sm font-bold text-dunlo-ink transition-transform hover:-translate-y-px hover:bg-dunlo-hover"
                 >
                   Compare details
                 </a>
                 <Link
                   href={SIGNUP_URL}
-                  className="inline-flex h-12 items-center justify-center rounded-full border border-gray-200 px-6 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-300 hover:bg-gray-50"
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-white/24 px-6 text-sm font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/6"
                 >
                   Start with Dunlo
                 </Link>
               </div>
             </div>
 
-            <aside className="border-t border-gray-200 bg-gray-50 px-6 py-8 md:px-10 lg:border-l lg:border-t-0 lg:px-12 lg:py-14">
+            <aside className="border-t border-dunlo-ink/16 bg-dunlo px-6 py-8 text-dunlo-ink md:px-10 lg:border-l lg:border-t-0 lg:px-12 lg:py-14">
               <div className="space-y-7">
                 <SummaryBlock label={page.firstName} text={page.firstSummary} />
                 <SummaryBlock
@@ -435,7 +435,7 @@ export function ComparePage({ page }: { page: ComparePageData }) {
           </div>
         </section>
 
-        <section className="mt-4 rounded-[2rem] border border-gray-200 bg-gray-950 px-6 py-8 text-white md:px-10">
+        <section className="mt-4 rounded-2xl border border-dunlo-line bg-dunlo-ink px-6 py-8 text-white md:px-10">
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo">
             TL;DR
           </p>
@@ -446,18 +446,18 @@ export function ComparePage({ page }: { page: ComparePageData }) {
 
         <section
           id="comparison"
-          className="mt-4 rounded-[2rem] border border-gray-200 bg-white px-4 py-6 md:px-8 md:py-8"
+          className="mt-4 rounded-2xl border border-dunlo-line bg-white px-4 py-6 md:px-8 md:py-8"
         >
           <div className="mb-6 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo-ink/56">
                 Side-by-side
               </p>
               <h2 className="mt-2 text-2xl font-bold tracking-tight md:text-3xl">
                 What changes in practice
               </h2>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-gray-500">
+            <p className="max-w-xl text-sm leading-6 text-dunlo-ink/56">
               This page targets the neutral {page.firstName} vs{" "}
               {page.secondName} search intent. Dunlo appears as a third option
               only where the Stripe recovery use case is narrower.
@@ -467,34 +467,34 @@ export function ComparePage({ page }: { page: ComparePageData }) {
           <div className="overflow-x-auto">
             <table className="w-full min-w-225 border-collapse text-left">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="w-[18%] py-4 pr-5 text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+                <tr className="border-b border-dunlo-line">
+                  <th className="w-[18%] py-4 pr-5 text-xs font-semibold uppercase tracking-[0.14em] text-dunlo-ink/56">
                     Criteria
                   </th>
-                  <th className="w-[28%] px-5 py-4 text-sm font-semibold text-gray-950">
+                  <th className="w-[28%] px-5 py-4 text-sm font-semibold text-dunlo-ink">
                     {page.firstName}
                   </th>
-                  <th className="w-[28%] px-5 py-4 text-sm font-semibold text-gray-950">
+                  <th className="w-[28%] px-5 py-4 text-sm font-semibold text-dunlo-ink">
                     {page.secondName}
                   </th>
-                  <th className="w-[26%] px-5 py-4 text-sm font-semibold text-gray-950">
+                  <th className="w-[26%] px-5 py-4 text-sm font-semibold text-dunlo-ink">
                     Bottom line
                   </th>
                 </tr>
               </thead>
               <tbody>
                 {page.rows.map((row) => (
-                  <tr key={row.label} className="border-b border-gray-100">
-                    <th className="py-5 pr-5 align-top text-sm font-semibold text-gray-950">
+                  <tr key={row.label} className="border-b border-dunlo-line/60">
+                    <th className="py-5 pr-5 align-top text-sm font-semibold text-dunlo-ink">
                       {row.label}
                     </th>
-                    <td className="px-5 py-5 align-top text-sm leading-6 text-gray-600">
+                    <td className="px-5 py-5 align-top text-sm leading-6 text-dunlo-ink/68">
                       {row.first}
                     </td>
-                    <td className="px-5 py-5 align-top text-sm leading-6 text-gray-600">
+                    <td className="px-5 py-5 align-top text-sm leading-6 text-dunlo-ink/68">
                       {row.second}
                     </td>
-                    <td className="px-5 py-5 align-top text-sm font-medium leading-6 text-gray-800">
+                    <td className="px-5 py-5 align-top text-sm font-medium leading-6 text-dunlo-ink/88">
                       {row.takeaway}
                     </td>
                   </tr>
@@ -508,7 +508,7 @@ export function ComparePage({ page }: { page: ComparePageData }) {
           {page.useCases.map((section) => (
             <article
               key={section.title}
-              className="rounded-[2rem] border border-gray-200 bg-white px-6 py-7 md:px-8"
+              className="rounded-2xl border border-dunlo-line bg-white px-6 py-7 md:px-8"
             >
               <h2 className="text-xl font-bold tracking-tight">
                 {section.title}
@@ -517,7 +517,7 @@ export function ComparePage({ page }: { page: ComparePageData }) {
                 {section.items.map((item) => (
                   <li
                     key={item}
-                    className="flex gap-3 text-sm leading-6 text-gray-600"
+                    className="flex gap-3 text-sm leading-6 text-dunlo-ink/68"
                   >
                     <BadgeCheck
                       size={17}
@@ -531,26 +531,24 @@ export function ComparePage({ page }: { page: ComparePageData }) {
           ))}
         </section>
 
-        <section className="mt-4 rounded-[2rem] border border-dunlo/20 bg-dunlo/10 px-6 py-8 md:px-10">
-          <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo-deep">
-            Third option
-          </p>
+        <section className="mt-4 rounded-2xl border border-dunlo/20 bg-dunlo/10 px-6 py-8 md:px-10">
+          <p className="text-sm font-semibold text-dunlo-deep">Third option</p>
           <h2 className="mt-3 max-w-3xl text-2xl font-bold tracking-tight md:text-3xl">
             Where Dunlo fits
           </h2>
-          <p className="mt-4 max-w-3xl text-sm leading-7 text-gray-700 md:text-base">
+          <p className="mt-4 max-w-3xl text-sm leading-7 text-dunlo-ink/76 md:text-base">
             {page.dunloAngle}
           </p>
           <Link
             href={SIGNUP_URL}
-            className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-semibold text-white transition-colors hover:bg-gray-800"
+            className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo-ink px-6 text-sm font-semibold text-white transition-colors hover:bg-dunlo-ink/90"
           >
             Start free
             <ArrowRight size={15} />
           </Link>
         </section>
 
-        <section className="mt-4 rounded-[2rem] border border-gray-200 bg-white px-6 py-7 md:px-8">
+        <section className="mt-4 rounded-2xl border border-dunlo-line bg-white px-6 py-7 md:px-8">
           <h2 className="text-xl font-bold tracking-tight">
             Looking for an alternative instead?
           </h2>
@@ -559,10 +557,10 @@ export function ComparePage({ page }: { page: ComparePageData }) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="group rounded-2xl border border-gray-200 bg-gray-50 p-5 transition-colors hover:border-dunlo/30 hover:bg-white"
+                className="group rounded-2xl border border-dunlo-line bg-dunlo-mist p-5 transition-colors hover:border-dunlo/30 hover:bg-white"
               >
-                <p className="text-sm font-bold text-gray-950">{link.label}</p>
-                <p className="mt-2 text-sm leading-6 text-gray-600">
+                <p className="text-sm font-bold text-dunlo-ink">{link.label}</p>
+                <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
                   {link.body}
                 </p>
                 <span className="mt-4 inline-flex items-center gap-2 text-sm font-bold text-dunlo-deep transition-all group-hover:gap-3">
@@ -574,8 +572,8 @@ export function ComparePage({ page }: { page: ComparePageData }) {
           </div>
         </section>
 
-        <section className="mt-4 rounded-[2rem] border border-gray-200 bg-white px-6 py-6 md:px-8">
-          <h2 className="text-base font-semibold text-gray-950">Sources</h2>
+        <section className="mt-4 rounded-2xl border border-dunlo-line bg-white px-6 py-6 md:px-8">
+          <h2 className="text-base font-semibold text-dunlo-ink">Sources</h2>
           <div className="mt-4 flex flex-wrap gap-3">
             {page.sourceLinks.map((source) => (
               <a
@@ -583,7 +581,7 @@ export function ComparePage({ page }: { page: ComparePageData }) {
                 href={source.href}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50"
+                className="rounded-full border border-dunlo-line px-4 py-2 text-sm font-medium text-dunlo-ink/76 transition-colors hover:border-dunlo-line hover:bg-dunlo-mist"
               >
                 {source.label}
               </a>
@@ -599,10 +597,10 @@ export function ComparePage({ page }: { page: ComparePageData }) {
 function SummaryBlock({ label, text }: { label: string; text: string }) {
   return (
     <div>
-      <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">
+      <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo-ink/56">
         {label}
       </p>
-      <p className="mt-3 text-lg font-semibold leading-7 text-gray-950">
+      <p className="mt-3 text-lg font-semibold leading-7 text-dunlo-ink">
         {text}
       </p>
     </div>

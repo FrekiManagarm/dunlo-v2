@@ -1,64 +1,79 @@
 import { auth } from "@dunlo-v2/auth";
 import { db } from "@dunlo-v2/db";
 import { encrypt } from "@dunlo-v2/db/encrypt";
-import { stripeConnection } from "@dunlo-v2/db/schema/domain";
+import {
+  diagnosticSnapshot,
+  stripeConnection,
+} from "@dunlo-v2/db/schema/domain";
 import { env } from "@dunlo-v2/env/server";
 import { createFileRoute } from "@tanstack/react-router";
-import { and, eq } from "drizzle-orm";
+import { and, eq, exists } from "drizzle-orm";
 
-import { seedDefaultSequences, importExistingFailedPayments, getStripeConnection } from "@/functions/stripe";
-import { setupWebhooks } from "@/lib/stripe-webhooks";
+import { seedDefaultSequences } from "@/functions/stripe";
+import {
+  clearStripeOAuthStateCookie,
+  verifyStripeOAuthState,
+} from "@/lib/stripe-oauth-state";
+import { triggerDiagnostic } from "@/trigger/run-diagnostic";
 
 const STATE_COOKIE = "stripe_oauth_state";
-
-function clearStateCookie(): string {
-  const parts = [
-    `${STATE_COOKIE}=`,
-    "Path=/",
-    "HttpOnly",
-    "SameSite=Lax",
-    "Max-Age=0",
-  ];
-  if (env.NODE_ENV === "production") parts.push("Secure");
-  return parts.join("; ");
-}
-
-function parseCookies(header: string | null): Record<string, string> {
-  const out: Record<string, string> = {};
-  if (!header) return out;
-  for (const part of header.split(";")) {
-    const idx = part.indexOf("=");
-    if (idx === -1) continue;
-    const key = part.slice(0, idx).trim();
-    const value = part.slice(idx + 1).trim();
-    if (key) out[key] = decodeURIComponent(value);
-  }
-  return out;
-}
-
-function redirectWithError(message: string): Response {
-  const params = new URLSearchParams({
-    error: "stripe_failed",
-    msg: message,
-  });
-  return new Response(null, {
-    status: 302,
-    headers: {
-      Location: `/onboarding?${params.toString()}`,
-      "Set-Cookie": clearStateCookie(),
-    },
-  });
-}
+const DIAGNOSTIC_DOWNGRADE_PHASES = new Set([
+  "write_authorized",
+  "email_configured",
+  "recovery_active",
+]);
 
 type StripeOAuthTokenResponse = {
   access_token: string;
-  refresh_token?: string;
-  token_type?: string;
   stripe_publishable_key?: string;
   stripe_user_id: string;
   scope?: string;
   livemode?: boolean;
 };
+
+function clearStateCookie(): string {
+  return clearStripeOAuthStateCookie(env.NODE_ENV === "production");
+}
+
+function parseCookies(header: string | null): Record<string, string> {
+  const cookies: Record<string, string> = {};
+  if (!header) return cookies;
+  for (const part of header.split(";")) {
+    const separator = part.indexOf("=");
+    if (separator === -1) continue;
+    const key = part.slice(0, separator).trim();
+    const value = part.slice(separator + 1).trim();
+    if (key) cookies[key] = value;
+  }
+  return cookies;
+}
+
+function redirect(location: string): Response {
+  return new Response(null, {
+    status: 302,
+    headers: { Location: location, "Set-Cookie": clearStateCookie() },
+  });
+}
+
+function redirectWithError(error: string): Response {
+  return redirect(`/onboarding?error=${encodeURIComponent(error)}`);
+}
+
+async function exchangeCode(
+  code: string,
+): Promise<StripeOAuthTokenResponse | null> {
+  const response = await fetch("https://connect.stripe.com/oauth/token", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams({
+      grant_type: "authorization_code",
+      code,
+      client_secret: env.STRIPE_SECRET_KEY,
+    }).toString(),
+  });
+  if (!response.ok) return null;
+  return (await response.json()) as StripeOAuthTokenResponse;
+}
 
 export const Route = createFileRoute("/api/stripe/callback")({
   server: {
@@ -66,113 +81,159 @@ export const Route = createFileRoute("/api/stripe/callback")({
       GET: async ({ request }) => {
         try {
           const url = new URL(request.url);
+          const stateNonce = url.searchParams.get("state");
           const code = url.searchParams.get("code");
-          const state = url.searchParams.get("state");
-          const errorParam = url.searchParams.get("error");
-
-          if (errorParam) {
-            return redirectWithError(errorParam);
-          }
-
-          if (!code || !state) {
+          if (url.searchParams.has("error"))
+            return redirectWithError("oauth_denied");
+          if (!stateNonce || !code)
             return redirectWithError("missing_code_or_state");
-          }
-
-          const cookies = parseCookies(request.headers.get("cookie"));
-          const cookieState = cookies[STATE_COOKIE];
-          if (!cookieState || cookieState !== state) {
-            return redirectWithError("invalid_state");
-          }
 
           const session = await auth.api.getSession({
             headers: request.headers,
           });
-          if (!session?.user) {
-            return new Response(null, {
-              status: 302,
-              headers: { Location: "/login" },
+          if (!session?.user) return redirect("/login");
+
+          const sealed = parseCookies(request.headers.get("cookie"))[
+            STATE_COOKIE
+          ];
+          if (!sealed) return redirectWithError("invalid_oauth_state");
+          const oauthState = verifyStripeOAuthState(sealed, {
+            nonce: stateNonce,
+            userId: session.user.id,
+            now: new Date(),
+            secret: env.BETTER_AUTH_SECRET,
+          });
+
+          const token = await exchangeCode(code);
+          if (!token) {
+            console.error("[stripe/callback]", {
+              errorCategory: "token_exchange_failed",
             });
-          }
-
-          const tokenRes = await fetch(
-            "https://connect.stripe.com/oauth/token",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/x-www-form-urlencoded" },
-              body: new URLSearchParams({
-                grant_type: "authorization_code",
-                code,
-                client_secret: env.STRIPE_SECRET_KEY,
-              }).toString(),
-            },
-          );
-
-          if (!tokenRes.ok) {
-            const errBody = await tokenRes.text();
-            console.error("[stripe/callback] token exchange failed", errBody);
             return redirectWithError("token_exchange_failed");
           }
 
-          const token = (await tokenRes.json()) as StripeOAuthTokenResponse;
-
-          const [existing] = await db
-            .select()
-            .from(stripeConnection)
-            .where(
-              and(
-                eq(stripeConnection.userId, session.user.id),
-                eq(stripeConnection.stripeAccountId, token.stripe_user_id),
-              ),
-            )
-            .limit(1);
-
-          if (existing) {
-            await db
-              .update(stripeConnection)
-              .set({
-                accessToken: encrypt(token.access_token),
-                publishableKey: token.stripe_publishable_key ?? null,
-                scope: token.scope ?? "read_write",
+          if (oauthState.intent === "diagnostic") {
+            if (token.scope !== "read_only") {
+              return redirectWithError("unexpected_oauth_scope");
+            }
+            const [accountOwner] = await db
+              .select({
+                id: stripeConnection.id,
+                userId: stripeConnection.userId,
+                phase: stripeConnection.phase,
               })
-              .where(eq(stripeConnection.id, existing.id));
-          } else {
-            await db.insert(stripeConnection).values({
-              id: crypto.randomUUID(),
-              userId: session.user.id,
-              stripeAccountId: token.stripe_user_id,
+              .from(stripeConnection)
+              .where(eq(stripeConnection.stripeAccountId, token.stripe_user_id))
+              .limit(1);
+            if (accountOwner && accountOwner.userId !== session.user.id) {
+              return redirectWithError("stripe_account_in_use");
+            }
+            if (
+              accountOwner &&
+              DIAGNOSTIC_DOWNGRADE_PHASES.has(accountOwner.phase)
+            ) {
+              return redirectWithError("diagnostic_downgrade_not_allowed");
+            }
+
+            const connectionValues = {
               accessToken: encrypt(token.access_token),
               publishableKey: token.stripe_publishable_key ?? null,
               webhookEndpointId: null,
-              webhookSecret: encrypt("placeholder"),
-              scope: token.scope ?? "read_write",
-              escalationThreshold: 50000,
-              escalationCurrency: "eur",
-            });
+              webhookSecret: null,
+              scope: "read_only",
+              phase: "diagnosing" as const,
+              monitoringEnabled: false,
+              liveMode: token.livemode ?? null,
+            };
+            let connectionId: string;
+            if (accountOwner) {
+              connectionId = accountOwner.id;
+              await db
+                .update(stripeConnection)
+                .set(connectionValues)
+                .where(eq(stripeConnection.id, accountOwner.id));
+            } else {
+              connectionId = crypto.randomUUID();
+              await db.insert(stripeConnection).values({
+                id: connectionId,
+                userId: session.user.id,
+                stripeAccountId: token.stripe_user_id,
+                ...connectionValues,
+                escalationThreshold: 50000,
+                escalationCurrency: "eur",
+              });
+            }
+
+            await triggerDiagnostic({ connectionId, reason: "initial" });
+            return redirect(oauthState.returnPath);
           }
 
-          await setupWebhooks(token.stripe_user_id, token.access_token);
+          if (
+            token.scope !== "read_write" ||
+            token.stripe_user_id !== oauthState.targetStripeAccountId
+          ) {
+            return redirectWithError("stripe_account_mismatch");
+          }
+          const [connection] = await db
+            .select({ id: stripeConnection.id })
+            .from(stripeConnection)
+            .innerJoin(
+              diagnosticSnapshot,
+              and(
+                eq(diagnosticSnapshot.connectionId, stripeConnection.id),
+                eq(diagnosticSnapshot.isCurrent, true),
+              ),
+            )
+            .where(
+              and(
+                eq(stripeConnection.userId, session.user.id),
+                eq(
+                  stripeConnection.stripeAccountId,
+                  oauthState.targetStripeAccountId,
+                ),
+                eq(stripeConnection.phase, "diagnostic_ready"),
+                eq(diagnosticSnapshot.verdict, "activation_recommended"),
+              ),
+            )
+            .limit(1);
+          if (!connection) return redirectWithError("stripe_account_mismatch");
 
-          await seedDefaultSequences(session.user.id);
-
-          const connection = await getStripeConnection(session.user.id);
-          if (connection) {
-            importExistingFailedPayments(session.user.id, connection).catch(
-              (e) => console.error("[stripe/callback] initial sync failed", e),
+          const currentRecommendation = db
+            .select({ id: diagnosticSnapshot.id })
+            .from(diagnosticSnapshot)
+            .where(
+              and(
+                eq(diagnosticSnapshot.connectionId, connection.id),
+                eq(diagnosticSnapshot.isCurrent, true),
+                eq(diagnosticSnapshot.verdict, "activation_recommended"),
+              ),
             );
-          }
-
-          return new Response(null, {
-            status: 302,
-            headers: {
-              Location: "/onboarding?step=2",
-              "Set-Cookie": clearStateCookie(),
-            },
+          const [authorized] = await db
+            .update(stripeConnection)
+            .set({
+              accessToken: encrypt(token.access_token),
+              publishableKey: token.stripe_publishable_key ?? null,
+              scope: "read_write",
+              phase: "write_authorized",
+              liveMode: token.livemode ?? null,
+            })
+            .where(
+              and(
+                eq(stripeConnection.id, connection.id),
+                eq(stripeConnection.userId, session.user.id),
+                eq(stripeConnection.phase, "diagnostic_ready"),
+                exists(currentRecommendation),
+              ),
+            )
+            .returning({ id: stripeConnection.id });
+          if (!authorized) return redirectWithError("activation_not_available");
+          await seedDefaultSequences(session.user.id, { isActive: false });
+          return redirect(oauthState.returnPath);
+        } catch {
+          console.error("[stripe/callback]", {
+            errorCategory: "oauth_callback",
           });
-        } catch (err) {
-          console.error("[stripe/callback] error", err);
-          const message =
-            err instanceof Error ? err.message.slice(0, 200) : "unknown";
-          return redirectWithError(message);
+          return redirectWithError("stripe_failed");
         }
       },
     },
