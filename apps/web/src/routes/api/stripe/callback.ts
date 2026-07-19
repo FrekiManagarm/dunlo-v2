@@ -7,7 +7,7 @@ import {
 } from "@dunlo-v2/db/schema/domain";
 import { env } from "@dunlo-v2/env/server";
 import { createFileRoute } from "@tanstack/react-router";
-import { and, eq } from "drizzle-orm";
+import { and, eq, exists } from "drizzle-orm";
 
 import { seedDefaultSequences } from "@/functions/stripe";
 import {
@@ -199,6 +199,16 @@ export const Route = createFileRoute("/api/stripe/callback")({
             .limit(1);
           if (!connection) return redirectWithError("stripe_account_mismatch");
 
+          const currentRecommendation = db
+            .select({ id: diagnosticSnapshot.id })
+            .from(diagnosticSnapshot)
+            .where(
+              and(
+                eq(diagnosticSnapshot.connectionId, connection.id),
+                eq(diagnosticSnapshot.isCurrent, true),
+                eq(diagnosticSnapshot.verdict, "activation_recommended"),
+              ),
+            );
           await db
             .update(stripeConnection)
             .set({
@@ -213,6 +223,7 @@ export const Route = createFileRoute("/api/stripe/callback")({
                 eq(stripeConnection.id, connection.id),
                 eq(stripeConnection.userId, session.user.id),
                 eq(stripeConnection.phase, "diagnostic_ready"),
+                exists(currentRecommendation),
               ),
             );
           const webhook = await reconcileWebhook(

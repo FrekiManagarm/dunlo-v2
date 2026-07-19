@@ -54,11 +54,11 @@ describe("recovery activation boundary", () => {
     expect(callback).toContain(
       'eq(diagnosticSnapshot.verdict, "activation_recommended")',
     );
-    expect(webhooks).toContain("pg_advisory_xact_lock");
+    expect(webhooks).toContain("idempotencyKey");
     expect(webhookRoute).toContain("recoveryActivatedAt");
     expect(webhookRoute).toContain("event.created * 1000");
     expect(sequences).toContain("Confirm recovery before activating sequences");
-    expect(sequences).toContain('connection?.phase === "recovery_active"');
+    expect(sequences).toContain("seedDefaultSequences(userId, { isActive: false })");
     expect(summary).toContain("useForm");
     expect(summary).toContain("z.literal(true)");
     expect(source("src/routes/onboarding.tsx")).toContain("ActivationRetry");

@@ -256,9 +256,7 @@ export const resetSequencesToDefault = createServerFn({ method: "POST" })
       .delete(recoverySequence)
       .where(eq(recoverySequence.userId, userId));
 
-    await seedDefaultSequences(userId, {
-      isActive: connection?.phase === "recovery_active",
-    });
+    await seedDefaultSequences(userId, { isActive: false });
 
     return { ok: true };
   });

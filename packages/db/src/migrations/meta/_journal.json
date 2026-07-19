@@ -29,6 +29,13 @@
       "when": 1784450547632,
       "tag": "0003_famous_black_tom",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1784451000000,
+      "tag": "0004_recovery_activation_watermark",
+      "breakpoints": true
     }
   ]
 }

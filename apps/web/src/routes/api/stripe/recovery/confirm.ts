@@ -29,76 +29,72 @@ export const Route = createFileRoute("/api/stripe/recovery/confirm")({
           return new Response("Invalid recovery confirmation", { status: 400 });
 
         try {
-          await db.transaction(async (tx) => {
-            const [connection] = await tx
-              .select({ id: stripeConnection.id })
-              .from(stripeConnection)
-              .where(
-                and(
-                  eq(stripeConnection.id, parsed.data.connectionId),
-                  eq(stripeConnection.userId, session.user.id),
-                  eq(stripeConnection.scope, "read_write"),
-                  eq(stripeConnection.phase, "email_configured"),
-                  isNotNull(stripeConnection.webhookEndpointId),
-                ),
-              )
-              .limit(1);
-            if (!connection)
-              throw new Error("Recovery prerequisites are incomplete");
+          const [connection] = await db
+            .select({ id: stripeConnection.id })
+            .from(stripeConnection)
+            .where(
+              and(
+                eq(stripeConnection.id, parsed.data.connectionId),
+                eq(stripeConnection.userId, session.user.id),
+                eq(stripeConnection.scope, "read_write"),
+                eq(stripeConnection.phase, "email_configured"),
+                isNotNull(stripeConnection.webhookEndpointId),
+              ),
+            )
+            .limit(1);
+          if (!connection)
+            throw new Error("Recovery prerequisites are incomplete");
 
-            const [provider] = await tx
-              .select({ id: emailProvider.id })
-              .from(emailProvider)
-              .where(eq(emailProvider.userId, session.user.id))
-              .limit(1);
-            if (!provider)
-              throw new Error("Recovery prerequisites are incomplete");
+          const [provider] = await db
+            .select({ id: emailProvider.id })
+            .from(emailProvider)
+            .where(eq(emailProvider.userId, session.user.id))
+            .limit(1);
+          if (!provider)
+            throw new Error("Recovery prerequisites are incomplete");
 
-            const sequences = await tx
-              .select({ id: recoverySequence.id })
-              .from(recoverySequence)
-              .where(
-                and(
-                  eq(recoverySequence.userId, session.user.id),
-                  inArray(recoverySequence.id, parsed.data.selectedSequenceIds),
-                ),
-              );
-            if (
-              sequences.length !== new Set(parsed.data.selectedSequenceIds).size
-            ) {
-              throw new Error("Invalid recovery sequences");
-            }
+          const sequences = await db
+            .select({ id: recoverySequence.id })
+            .from(recoverySequence)
+            .where(
+              and(
+                eq(recoverySequence.userId, session.user.id),
+                inArray(recoverySequence.id, parsed.data.selectedSequenceIds),
+              ),
+            );
+          if (
+            sequences.length !== new Set(parsed.data.selectedSequenceIds).size
+          ) {
+            throw new Error("Invalid recovery sequences");
+          }
 
-            await tx
-              .update(recoverySequence)
-              .set({ isActive: false })
-              .where(eq(recoverySequence.userId, session.user.id));
-            await tx
-              .update(recoverySequence)
-              .set({ isActive: true })
-              .where(
-                and(
-                  eq(recoverySequence.userId, session.user.id),
-                  inArray(recoverySequence.id, parsed.data.selectedSequenceIds),
-                ),
-              );
-            const [activated] = await tx
-              .update(stripeConnection)
-              .set({
-                phase: "recovery_active",
-                recoveryActivatedAt: new Date(),
-              })
-              .where(
-                and(
-                  eq(stripeConnection.id, connection.id),
-                  eq(stripeConnection.userId, session.user.id),
-                  eq(stripeConnection.phase, "email_configured"),
-                ),
-              )
-              .returning({ id: stripeConnection.id });
-            if (!activated)
-              throw new Error("Recovery activation changed; review again");
-          });
+          const [activated] = await db
+            .update(stripeConnection)
+            .set({ phase: "recovery_active", recoveryActivatedAt: new Date() })
+            .where(
+              and(
+                eq(stripeConnection.id, connection.id),
+                eq(stripeConnection.userId, session.user.id),
+                eq(stripeConnection.phase, "email_configured"),
+              ),
+            )
+            .returning({ id: stripeConnection.id });
+          if (!activated)
+            throw new Error("Recovery activation changed; review again");
+
+          await db
+            .update(recoverySequence)
+            .set({ isActive: false })
+            .where(eq(recoverySequence.userId, session.user.id));
+          await db
+            .update(recoverySequence)
+            .set({ isActive: true })
+            .where(
+              and(
+                eq(recoverySequence.userId, session.user.id),
+                inArray(recoverySequence.id, parsed.data.selectedSequenceIds),
+              ),
+            );
         } catch (error) {
           return new Response(
             error instanceof Error

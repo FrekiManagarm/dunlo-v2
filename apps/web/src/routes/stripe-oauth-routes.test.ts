@@ -80,6 +80,7 @@ vi.mock("drizzle-orm", () => ({
   and: (...args: unknown[]) => args,
   desc: (value: unknown) => value,
   eq: (...args: unknown[]) => args,
+  exists: (value: unknown) => value,
   inArray: (...args: unknown[]) => args,
 }));
 vi.mock("@/trigger/run-diagnostic", () => ({
