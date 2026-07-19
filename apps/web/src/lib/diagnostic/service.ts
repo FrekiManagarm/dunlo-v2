@@ -133,6 +133,10 @@ export type DiagnosticPersistenceResult = {
 
 type StoredDiagnosticProgress = Omit<DiagnosticProgress, "connectionId">;
 
+export type DiagnosticRunClaim =
+  | { owner: true }
+  | { owner: false; status: Exclude<DiagnosticProgress["status"], "idle"> };
+
 export type DiagnosticRepository = {
   getConnection(connectionId: string): Promise<DiagnosticConnection | null>;
   findSnapshotForWindow(
@@ -141,6 +145,10 @@ export type DiagnosticRepository = {
   ): Promise<DiagnosticSnapshotView | null>;
   getCurrent(connectionId: string): Promise<DiagnosticSnapshotView | null>;
   getProgress(connectionId: string): Promise<DiagnosticProgress | null>;
+  claimRun(input: {
+    connectionId: string;
+    window: DiagnosticWindow;
+  }): Promise<DiagnosticRunClaim>;
   saveProgress(input: {
     connectionId: string;
     window: DiagnosticWindow;
@@ -185,12 +193,27 @@ export class DiagnosticService {
     );
 
     if (existing) {
-      await this.saveProgress(input.connectionId, window, {
-        status: "completed",
-        checkpoints: ["snapshot_persisted"],
-        errorCategory: null,
-      });
+      const progress = await this.options.repository.getProgress(
+        input.connectionId,
+      );
+      if (progress) this.progress.set(input.connectionId, progress);
       return { snapshot: existing, phase: connection.phase, reused: true };
+    }
+
+    const claim = await this.options.repository.claimRun({
+      connectionId: input.connectionId,
+      window,
+    });
+    if (!claim.owner) {
+      const snapshot = await this.waitForSnapshot(input.connectionId, window);
+      const persistedConnection = await this.options.repository.getConnection(
+        input.connectionId,
+      );
+      return {
+        snapshot,
+        phase: persistedConnection?.phase ?? connection.phase,
+        reused: true,
+      };
     }
 
     await this.saveProgress(input.connectionId, window, {
@@ -356,6 +379,25 @@ export class DiagnosticService {
       checkpoints: [...current.checkpoints, checkpoint],
       errorCategory: current.errorCategory,
     });
+  }
+
+  private async waitForSnapshot(
+    connectionId: string,
+    window: DiagnosticWindow,
+  ): Promise<DiagnosticSnapshotView> {
+    while (true) {
+      const snapshot = await this.options.repository.findSnapshotForWindow(
+        connectionId,
+        window,
+      );
+      if (snapshot) return snapshot;
+
+      const progress = await this.options.repository.getProgress(connectionId);
+      if (progress?.status === "failed") {
+        throw new Error("Diagnostic run failed before producing a snapshot.");
+      }
+      await new Promise((resolve) => setTimeout(resolve, 10));
+    }
   }
 }
 
@@ -768,6 +810,68 @@ function createDatabaseRepository(): DiagnosticRepository {
               row.errorCategory as DiagnosticProgress["errorCategory"],
           }
         : null;
+    },
+    async claimRun({ connectionId, window }) {
+      const database = await loadDb();
+      const [inserted] = await database
+        .insert(diagnosticRun)
+        .values({
+          connectionId,
+          analysisStartsAt: window.analysisStartsAt,
+          analysisEndsAt: window.analysisEndsAt,
+          status: "running",
+          checkpoints: [],
+          errorCategory: null,
+        })
+        .onConflictDoNothing({
+          target: [
+            diagnosticRun.connectionId,
+            diagnosticRun.analysisStartsAt,
+            diagnosticRun.analysisEndsAt,
+          ],
+        })
+        .returning({ id: diagnosticRun.id });
+      if (inserted) return { owner: true };
+
+      const [existing] = await database
+        .select()
+        .from(diagnosticRun)
+        .where(
+          and(
+            eq(diagnosticRun.connectionId, connectionId),
+            eq(diagnosticRun.analysisStartsAt, window.analysisStartsAt),
+            eq(diagnosticRun.analysisEndsAt, window.analysisEndsAt),
+          ),
+        )
+        .limit(1);
+      if (!existing) {
+        throw new Error("Diagnostic run claim could not be resolved.");
+      }
+      if (existing.status === "failed") {
+        const [reclaimed] = await database
+          .update(diagnosticRun)
+          .set({
+            status: "running",
+            checkpoints: [],
+            errorCategory: null,
+            updatedAt: new Date(),
+          })
+          .where(
+            and(
+              eq(diagnosticRun.id, existing.id),
+              eq(diagnosticRun.status, "failed"),
+            ),
+          )
+          .returning({ id: diagnosticRun.id });
+        if (reclaimed) return { owner: true };
+      }
+      return {
+        owner: false,
+        status: existing.status as Exclude<
+          DiagnosticProgress["status"],
+          "idle"
+        >,
+      };
     },
     async saveProgress({ connectionId, window, progress }) {
       const database = await loadDb();

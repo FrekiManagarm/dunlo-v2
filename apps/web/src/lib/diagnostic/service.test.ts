@@ -139,7 +139,7 @@ function createRepository(options?: {
   const progress = new Map<
     string,
     {
-      status: "idle" | "running" | "completed" | "failed";
+      status: Exclude<DiagnosticProgress["status"], "idle">;
       checkpoints: DiagnosticProgress["checkpoints"];
       errorCategory: DiagnosticProgress["errorCategory"];
     }
@@ -179,6 +179,20 @@ function createRepository(options?: {
     getProgress: vi.fn(async (connectionId) => {
       const saved = progress.get(connectionId);
       return saved ? { connectionId, ...saved } : null;
+    }),
+    claimRun: vi.fn(async ({ connectionId }) => {
+      if (progress.has(connectionId)) {
+        return {
+          owner: false as const,
+          status: progress.get(connectionId)!.status,
+        };
+      }
+      progress.set(connectionId, {
+        status: "running",
+        checkpoints: [],
+        errorCategory: null,
+      });
+      return { owner: true as const };
     }),
     saveProgress: vi.fn(async ({ connectionId, progress: nextProgress }) => {
       progress.set(connectionId, nextProgress);
@@ -237,16 +251,43 @@ describe("DiagnosticService", () => {
 
   it("deduplicates genuinely concurrent jobs for the same connection and window", async () => {
     const fixture = createRepository();
-    const service = createService(fixture.repository, completeSource());
+    const firstSource = completeSource();
+    const secondSource = completeSource();
+    const firstService = createService(fixture.repository, firstSource);
+    const secondService = createService(fixture.repository, secondSource);
 
     const results = await Promise.all([
-      service.run({ connectionId: "conn_1", reason: "initial", now: NOW }),
-      service.run({ connectionId: "conn_1", reason: "initial", now: NOW }),
+      firstService.run({
+        connectionId: "conn_1",
+        reason: "initial",
+        now: NOW,
+      }),
+      secondService.run({
+        connectionId: "conn_1",
+        reason: "initial",
+        now: NOW,
+      }),
     ]);
 
     expect(fixture.snapshots).toHaveLength(1);
     expect(fixture.findings).toHaveLength(1);
     expect(results.filter((result) => result.reused)).toHaveLength(1);
+    expect(
+      firstSource.loadAccount.mock.calls.length +
+        secondSource.loadAccount.mock.calls.length,
+    ).toBe(1);
+    expect(
+      firstSource.loadSubscriptions.mock.calls.length +
+        secondSource.loadSubscriptions.mock.calls.length,
+    ).toBe(1);
+    expect(
+      firstSource.loadInvoices.mock.calls.length +
+        secondSource.loadInvoices.mock.calls.length,
+    ).toBe(1);
+    expect(
+      firstSource.loadPaymentEvidence.mock.calls.length +
+        secondSource.loadPaymentEvidence.mock.calls.length,
+    ).toBe(1);
   });
 
   it("publishes diagnostic checkpoints in their approved order", async () => {
@@ -325,6 +366,36 @@ describe("DiagnosticService", () => {
         ],
       },
     );
+  });
+
+  it("preserves full checkpoint history when a completed snapshot is reused", async () => {
+    const fixture = createRepository();
+    const firstService = createService(fixture.repository, completeSource());
+    await firstService.run({
+      connectionId: "conn_1",
+      reason: "initial",
+      now: NOW,
+    });
+
+    const secondService = createService(fixture.repository, completeSource());
+    const reused = await secondService.run({
+      connectionId: "conn_1",
+      reason: "initial",
+      now: NOW,
+    });
+
+    expect(reused.reused).toBe(true);
+    await expect(secondService.getProgress("conn_1")).resolves.toMatchObject({
+      status: "completed",
+      checkpoints: [
+        "account_loaded",
+        "invoices_loaded",
+        "payment_evidence_loaded",
+        "revenue_normalized",
+        "findings_classified",
+        "snapshot_persisted",
+      ],
+    });
   });
 
   it("persists an insufficient-data snapshot when coverage is incomplete", async () => {
