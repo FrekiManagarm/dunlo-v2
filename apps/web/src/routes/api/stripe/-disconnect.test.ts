@@ -4,8 +4,7 @@ const mocks = vi.hoisted(() => {
   const selectLimit = vi.fn();
   const updateWhere = vi.fn();
   const updateSet = vi.fn();
-  const deleteWhere = vi.fn();
-  const deleteTable = vi.fn();
+  const execute = vi.fn();
   const selectQuery = {
     from: vi.fn(),
     where: vi.fn(),
@@ -24,12 +23,11 @@ const mocks = vi.hoisted(() => {
     selectLimit,
     updateWhere,
     updateSet,
-    deleteWhere,
-    deleteTable,
+    execute,
     db: {
       select: vi.fn(() => selectQuery),
       update: vi.fn(() => ({ set: updateSet })),
-      delete: deleteTable,
+      execute,
     },
   };
 });
@@ -75,6 +73,10 @@ vi.mock("drizzle-orm", () => ({
   and: (...values: unknown[]) => values,
   desc: (value: unknown) => value,
   eq: (column: unknown, value: unknown) => [column, value],
+  sql: (strings: TemplateStringsArray, ...values: unknown[]) => ({
+    strings,
+    values,
+  }),
 }));
 
 type RouteWithPostHandler = {
@@ -93,11 +95,6 @@ const connection = {
   webhookEndpointId: "we_123",
 };
 
-function deleteQuery() {
-  const query = { where: vi.fn() };
-  return query;
-}
-
 function requestFor(connectionId = "conn_123") {
   return new Request("https://app.dunlo.test/api/stripe/disconnect", {
     method: "POST",
@@ -115,12 +112,11 @@ describe("POST /api/stripe/disconnect", () => {
     mocks.updateSet.mockReset().mockImplementation(() => ({
       where: mocks.updateWhere,
     }));
-    mocks.deleteWhere.mockReset().mockResolvedValue(undefined);
+    mocks.execute.mockReset().mockResolvedValue({ rows: [{ id: "conn_123" }] });
     mocks.deleteWebhooks.mockReset().mockResolvedValue(undefined);
     mocks.deauthorize
       .mockReset()
       .mockResolvedValue({ stripe_user_id: "acct_123" });
-    mocks.deleteTable.mockReset().mockImplementation(() => deleteQuery());
   });
 
   it("is successful and idempotent when no connection remains", async () => {
@@ -138,20 +134,11 @@ describe("POST /api/stripe/disconnect", () => {
       disconnected: true,
       alreadyDisconnected: true,
     });
-    expect(mocks.deleteTable).not.toHaveBeenCalled();
+    expect(mocks.execute).not.toHaveBeenCalled();
   });
 
-  it("cancels monitoring, removes remote access, and deletes only the explicit connection account data", async () => {
+  it("deletes all local connection data with one atomic Neon HTTP statement", async () => {
     mocks.selectLimit.mockResolvedValue([connection]);
-    const localDeletes: Array<{
-      table: unknown;
-      where: ReturnType<typeof vi.fn>;
-    }> = [];
-    mocks.deleteTable.mockImplementation((table: unknown) => {
-      const query = deleteQuery();
-      localDeletes.push({ table, where: query.where });
-      return query;
-    });
     const { Route } = (await import("./disconnect")) as {
       Route: RouteWithPostHandler;
     };
@@ -175,18 +162,19 @@ describe("POST /api/stripe/disconnect", () => {
       stripe_user_id: "acct_123",
     });
     expect(mocks.db).not.toHaveProperty("transaction");
-    expect(localDeletes).toHaveLength(2);
-    expect(localDeletes.map(({ table }) => table)).not.toContain(
-      "email_provider",
+    expect(mocks.db).not.toHaveProperty("delete");
+    expect(mocks.execute).toHaveBeenCalledTimes(1);
+    const [statement] = mocks.execute.mock.calls[0] ?? [];
+    expect(statement.strings.join("?")).toContain("WITH deleted_payments AS");
+    expect(statement.strings.join("?")).toContain("DELETE FROM failed_payment");
+    expect(statement.strings.join("?")).toContain(
+      "DELETE FROM stripe_connection",
     );
-    expect(localDeletes.map(({ table }) => table)).not.toContain("user");
-    expect(localDeletes[0]?.where).toHaveBeenCalledWith([
-      ["payment_account_id", "acct_123"],
-      ["payment_user_id", "user_123"],
-    ]);
-    expect(localDeletes[1]?.where).toHaveBeenCalledWith([
-      ["connection_id", "conn_123"],
-      ["connection_user_id", "user_123"],
+    expect(statement.values).toEqual([
+      "acct_123",
+      "user_123",
+      "conn_123",
+      "user_123",
     ]);
     expect(response.status).toBe(200);
     await expect(response.json()).resolves.toEqual({ disconnected: true });
@@ -206,7 +194,7 @@ describe("POST /api/stripe/disconnect", () => {
     expect(mocks.updateSet).toHaveBeenLastCalledWith({
       phase: "disconnect_failed",
     });
-    expect(mocks.deleteTable).not.toHaveBeenCalled();
+    expect(mocks.execute).not.toHaveBeenCalled();
     expect(response.status).toBe(502);
     await expect(response.json()).resolves.toEqual({
       error: "remote_cleanup_failed",
@@ -216,9 +204,7 @@ describe("POST /api/stripe/disconnect", () => {
 
   it("does not report success before local deletion finishes", async () => {
     mocks.selectLimit.mockResolvedValue([connection]);
-    mocks.deleteTable.mockImplementation(() => ({
-      where: vi.fn().mockRejectedValue(new Error("Database unavailable")),
-    }));
+    mocks.execute.mockRejectedValue(new Error("Database unavailable"));
     const { Route } = (await import("./disconnect")) as {
       Route: RouteWithPostHandler;
     };
@@ -260,7 +246,7 @@ describe("POST /api/stripe/disconnect", () => {
 
     expect(mocks.deleteWebhooks).toHaveBeenCalledTimes(2);
     expect(mocks.deauthorize).toHaveBeenCalledTimes(2);
-    expect(mocks.deleteTable).toHaveBeenCalledTimes(2);
+    expect(mocks.execute).toHaveBeenCalledTimes(1);
     expect(retryResponse.status).toBe(200);
   });
 

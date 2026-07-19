@@ -1,10 +1,10 @@
 import { auth } from "@dunlo-v2/auth";
 import { db } from "@dunlo-v2/db";
 import { decrypt } from "@dunlo-v2/db/encrypt";
-import { failedPayment, stripeConnection } from "@dunlo-v2/db/schema/domain";
+import { stripeConnection } from "@dunlo-v2/db/schema/domain";
 import { env } from "@dunlo-v2/env/server";
 import { createFileRoute } from "@tanstack/react-router";
-import { and, eq } from "drizzle-orm";
+import { and, eq, sql } from "drizzle-orm";
 import Stripe from "stripe";
 import { z } from "zod";
 
@@ -18,6 +18,26 @@ function isAlreadyRemoved(error: unknown): boolean {
     ("statusCode" in error && error.statusCode === 404) ||
     ("status" in error && error.status === 404)
   );
+}
+
+async function runAtomicConnectionCleanup(
+  execute: typeof db.execute,
+  input: { connectionId: string; stripeAccountId: string; userId: string },
+): Promise<boolean> {
+  const result = await execute(sql`
+    WITH deleted_payments AS (
+      DELETE FROM failed_payment
+      WHERE stripe_account_id = ${input.stripeAccountId}
+        AND user_id = ${input.userId}
+      RETURNING id
+    ), deleted_connection AS (
+      DELETE FROM stripe_connection
+      WHERE id = ${input.connectionId} AND user_id = ${input.userId}
+      RETURNING id
+    )
+    SELECT id FROM deleted_connection
+  `);
+  return result.rows.length > 0;
 }
 
 export const Route = createFileRoute("/api/stripe/disconnect")({
@@ -119,22 +139,15 @@ export const Route = createFileRoute("/api/stripe/disconnect")({
         }
 
         try {
-          await db
-            .delete(failedPayment)
-            .where(
-              and(
-                eq(failedPayment.stripeAccountId, connection.stripeAccountId),
-                eq(failedPayment.userId, userId),
-              ),
-            );
-          await db
-            .delete(stripeConnection)
-            .where(
-              and(
-                eq(stripeConnection.id, connection.id),
-                eq(stripeConnection.userId, userId),
-              ),
-            );
+          if (
+            !(await runAtomicConnectionCleanup(db.execute, {
+              connectionId: connection.id,
+              stripeAccountId: connection.stripeAccountId,
+              userId,
+            }))
+          ) {
+            throw new Error("Connection was not deleted");
+          }
         } catch {
           await db
             .update(stripeConnection)
