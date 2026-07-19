@@ -200,8 +200,10 @@ describe("createStripeDiagnosticSource", () => {
     client.charges.retrieve.mockResolvedValue({
       id: "ch_recurring",
       failure_code: "charge_failure",
-      advice_code: "charge_advice",
-      network_decline_code: "charge_decline",
+      outcome: {
+        advice_code: "charge_advice",
+        network_decline_code: "charge_decline",
+      },
       livemode: false,
     });
     const source = createStripeDiagnosticSource(client);
@@ -222,6 +224,48 @@ describe("createStripeDiagnosticSource", () => {
         chargeId: "ch_recurring",
         adviceCode: "update_payment_method",
         declineCode: "issuer_not_available",
+        errorCode: "charge_failure",
+      }),
+    ]);
+  });
+
+  it("uses nested charge outcome codes only when the PaymentIntent lacks them", async () => {
+    const client = createFakeStripeClient();
+    client.invoices.list.mockResolvedValue({
+      data: [
+        {
+          id: "in_fallback",
+          subscription: "sub_1",
+          payment_intent: "pi_fallback",
+          lines: { data: [] },
+        },
+      ],
+      has_more: false,
+    });
+    client.paymentIntents.retrieve.mockResolvedValue({
+      id: "pi_fallback",
+      latest_charge: "ch_fallback",
+      livemode: false,
+      last_payment_error: {},
+    });
+    client.charges.retrieve.mockResolvedValue({
+      id: "ch_fallback",
+      failure_code: "charge_failure",
+      outcome: {
+        advice_code: "try_again_later",
+        network_decline_code: "network_declined",
+      },
+      livemode: false,
+    });
+    const source = createStripeDiagnosticSource(client);
+
+    await source.loadInvoices(window);
+
+    await expect(source.loadPaymentEvidence(["in_fallback"])).resolves.toEqual([
+      expect.objectContaining({
+        invoiceId: "in_fallback",
+        adviceCode: "try_again_later",
+        declineCode: "network_declined",
         errorCode: "charge_failure",
       }),
     ]);

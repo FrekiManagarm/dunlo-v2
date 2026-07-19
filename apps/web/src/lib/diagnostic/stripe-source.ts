@@ -381,6 +381,7 @@ export function createStripeDiagnosticSource(
           continue;
         }
 
+        const chargeOutcome = charge.value.outcome;
         evidence.push({
           invoiceId,
           paymentIntentId: paymentIntent.value.id,
@@ -389,15 +390,15 @@ export function createStripeDiagnosticSource(
             paymentIntentErrorCode ?? stringOrNull(charge.value.failure_code),
           declineCode:
             paymentIntentDeclineCode ??
-            stringOrNull(charge.value.network_decline_code),
-          adviceCode: firstString(
-            paymentIntentAdviceCode,
-            stringOrNull(charge.value.advice_code),
             stringOrNull(
-              charge.value.outcome &&
-                objectValue(charge.value.outcome, "advice_code"),
+              chargeOutcome &&
+                objectValue(chargeOutcome, "network_decline_code"),
             ),
-          ),
+          adviceCode:
+            paymentIntentAdviceCode ??
+            stringOrNull(
+              chargeOutcome && objectValue(chargeOutcome, "advice_code"),
+            ),
           mode: modeOf(charge.value),
           coverage: completeCoverage(2, 2),
         });
@@ -514,10 +515,6 @@ function idOrNull(value: unknown): string | null {
 
 function stringOrNull(value: unknown): string | null {
   return typeof value === "string" ? value : null;
-}
-
-function firstString(...values: Array<string | null>): string | null {
-  return values.find((value) => value !== null) ?? null;
 }
 
 function numberOrNull(value: unknown): number | null {
