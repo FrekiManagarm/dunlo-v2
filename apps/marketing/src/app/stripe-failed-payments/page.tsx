@@ -86,9 +86,29 @@ const RELATED_GUIDES = [
     href: "/stripe-failed-payment-recovery-software",
   },
   {
+    title: "Stripe Smart Retries",
+    copy: "See which failures benefit from retry timing and which need customer action.",
+    href: "/stripe-smart-retries-alternative",
+  },
+  {
+    title: "Involuntary churn",
+    copy: "Measure when a failed payment becomes churn and how much MRR remains recoverable.",
+    href: "/blog/involuntary-churn-in-saas",
+  },
+  {
     title: "Stripe dunning workflow",
     copy: "Build the email cadence, retry windows, and escalation path around each failed invoice.",
     href: "/stripe-dunning",
+  },
+  {
+    title: "Stripe decline codes",
+    copy: "Decode the card failure reason before choosing the email, retry timing, or escalation path.",
+    href: "/stripe-decline-codes",
+  },
+  {
+    title: "card_velocity_exceeded",
+    copy: "Handle issuer-limit declines with safer timing and a clear customer action.",
+    href: "/stripe-decline-codes/card-velocity-exceeded",
   },
   {
     title: "Dunning schedule calculator",

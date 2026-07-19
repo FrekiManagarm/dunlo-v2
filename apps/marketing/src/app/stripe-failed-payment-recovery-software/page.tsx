@@ -100,6 +100,11 @@ const RELATED_LINKS = [
     copy: "Build the recovery cadence around failed invoices and customer trust.",
   },
   {
+    title: "Stripe decline codes",
+    href: "/stripe-decline-codes",
+    copy: "Map the Stripe failure reason to the safest customer email and retry path.",
+  },
+  {
     title: "Payment recovery alternatives",
     href: "/alternatives",
     copy: "Compare Dunlo with dunning tools, billing suites, and custom Stripe logic.",

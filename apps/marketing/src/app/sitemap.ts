@@ -3,6 +3,11 @@ import { ALTERNATIVES } from "@/components/alternatives/alternative-page";
 import { COMPARE_ROUTE_PAGES } from "@/components/compare/compare-page";
 import { getAllPosts } from "@/lib/blog";
 import { absoluteUrl } from "@/lib/seo";
+import {
+  STRIPE_DECLINE_CODE_GUIDES,
+  declineCodePath,
+  type StripeDeclineCodeGuide,
+} from "@/lib/stripe-decline-codes";
 
 type SitemapEntry = {
   path: string;
@@ -29,12 +34,6 @@ const STATIC_ROUTES = [
     lastModified: "2026-05-23",
     changeFrequency: "weekly",
     priority: 0.85,
-  },
-  {
-    path: "/product-hunt",
-    lastModified: "2026-06-15",
-    changeFrequency: "weekly",
-    priority: 0.88,
   },
   {
     path: "/benchmark",
@@ -86,13 +85,19 @@ const STATIC_ROUTES = [
   },
   {
     path: "/stripe-dunning",
-    lastModified: "2026-06-02",
+    lastModified: "2026-07-13",
     changeFrequency: "weekly",
     priority: 0.9,
   },
   {
+    path: "/stripe-decline-codes",
+    lastModified: "2026-07-03",
+    changeFrequency: "weekly",
+    priority: 0.93,
+  },
+  {
     path: "/stripe-smart-retries-alternative",
-    lastModified: "2026-06-11",
+    lastModified: "2026-07-13",
     changeFrequency: "weekly",
     priority: 0.94,
   },
@@ -113,21 +118,6 @@ const STATIC_ROUTES = [
     lastModified: "2026-05-23",
     changeFrequency: "monthly",
     priority: 0.45,
-  },
-] satisfies SitemapEntry[];
-
-const MACHINE_READABLE_ROUTES = [
-  {
-    path: "/llms.txt",
-    lastModified: "2026-06-19",
-    changeFrequency: "weekly",
-    priority: 0.7,
-  },
-  {
-    path: "/pricing.md",
-    lastModified: "2026-06-15",
-    changeFrequency: "weekly",
-    priority: 0.7,
   },
 ] satisfies SitemapEntry[];
 
@@ -155,7 +145,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const blogRoutes = getAllPosts().map((post) =>
     toRoute({
       path: `/blog/${post.slug}`,
-      lastModified: post.date,
+      lastModified: post.updated ?? post.date,
       changeFrequency: "weekly",
       priority: 0.72,
     }),
@@ -170,11 +160,21 @@ export default function sitemap(): MetadataRoute.Sitemap {
     }),
   );
 
+  const declineCodeRoutes = STRIPE_DECLINE_CODE_GUIDES.map(
+    (guide: StripeDeclineCodeGuide) =>
+      toRoute({
+        path: declineCodePath(guide.slug),
+        lastModified: guide.dateModified ?? "2026-07-03",
+        changeFrequency: "monthly",
+        priority: 0.74,
+      }),
+  );
+
   return [
     ...STATIC_ROUTES.map(toRoute),
-    ...MACHINE_READABLE_ROUTES.map(toRoute),
     ...alternativeRoutes,
     ...compareRoutes,
+    ...declineCodeRoutes,
     ...blogRoutes,
   ];
 }

@@ -2,8 +2,7 @@ import type { Metadata } from "next";
 
 export const SITE_URL = "https://dunlo.io";
 export const SITE_NAME = "Dunlo";
-export const DEFAULT_TITLE =
-  "Dunlo - Recover Failed Payments Before They Churn";
+export const DEFAULT_TITLE = "Dunlo — Stripe Payment Recovery for SaaS";
 export const DEFAULT_DESCRIPTION =
   "Recover failed payments with failure-aware emails, Stripe-hosted update links, and founder review. Start free in beta before revenue quietly churns.";
 export const DEFAULT_KEYWORDS = [

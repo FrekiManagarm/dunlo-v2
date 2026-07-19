@@ -8,6 +8,8 @@ export const blogPosts = defineCollections({
   schema: pageSchema.extend({
     description: z.string(),
     date: z.string(),
+    seoTitle: z.string().optional(),
+    updated: z.string().optional(),
     published: z.boolean().default(true),
     tags: z.array(z.string()).default([]),
     keywords: z.array(z.string()).default([]),

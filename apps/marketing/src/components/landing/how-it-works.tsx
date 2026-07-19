@@ -1,230 +1,83 @@
-"use client";
-
-import Link from "next/link";
+import Image from "next/image";
+import { TrackedLink } from "@/components/tracked-link";
 import { SIGNUP_URL } from "@/lib/app-url";
-import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
-import {
-  ArrowRight,
-  Check,
-  CreditCard,
-  MailCheck,
-  Radar,
-  Route,
-} from "lucide-react";
-import { useEffect, useState } from "react";
+import { PRODUCT_IMAGES } from "./product-assets";
 
-const steps = [
+const STEPS = [
   {
-    n: "01",
-    label: "Connect Stripe",
-    title: "Dunlo reads failed charges as they happen.",
-    body: "Stripe OAuth brings in invoice, customer, payment intent, and decline reason context.",
-    icon: CreditCard,
+    title: "Connect Stripe",
+    body: "OAuth connects the payment context without exposing your Stripe credentials.",
   },
   {
-    n: "02",
-    label: "Choose the path",
-    title: "Each failure reason gets its own move.",
-    body: "Expired cards, bank approvals, insufficient funds, and hard declines do not share one generic email.",
-    icon: Route,
+    title: "Let the failure speak",
+    body: "Each decline code selects a timing, message, and secure customer action.",
   },
   {
-    n: "03",
-    label: "Recover or review",
-    title: "Simple cases run. Sensitive accounts pause.",
-    body: "Dunlo either sends the recovery sequence or waits for a founder review when the account is worth it.",
-    icon: MailCheck,
+    title: "Recover or review",
+    body: "Routine paths run. Sensitive accounts wait for your decision.",
   },
-] as const;
-
-const rows = [
-  ["invoice.payment_failed", "caught", "now"],
-  ["authentication_required", "mapped", "SCA path"],
-  ["founder_threshold", "paused", "$500+"],
-  ["payment_method_updated", "recovered", "$956"],
 ] as const;
 
 export function HowItWorks() {
-  const reduceMotion = useReducedMotion();
-  const [active, setActive] = useState(0);
-
-  useEffect(() => {
-    if (reduceMotion) return;
-
-    const timer = window.setInterval(() => {
-      setActive((current) => (current + 1) % steps.length);
-    }, 2400);
-
-    return () => window.clearInterval(timer);
-  }, [reduceMotion]);
-
-  const activeStep = steps[active]!;
-  const ActiveIcon = activeStep.icon;
-
   return (
     <section
       id="how-it-works"
-      className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white"
+      className="scroll-mt-24 overflow-hidden bg-dunlo px-4 py-24 text-dunlo-ink md:px-6 md:py-36"
     >
-      <div className="grid gap-0 lg:grid-cols-[0.72fr_1.28fr]">
-        <div className="border-b border-gray-200 p-6 md:p-9 lg:border-b-0 lg:border-r">
-          <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-            How it works
-          </p>
-          <h2 className="mt-4 max-w-md text-4xl font-semibold leading-none tracking-tight text-gray-950 md:text-6xl">
-            One Stripe event becomes a recovery path.
+      <div className="mx-auto max-w-[1400px]">
+        <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr] lg:items-end">
+          <h2 className="max-w-4xl text-balance text-4xl font-bold leading-[0.92] tracking-[-0.04em] md:text-7xl">
+            One event in Stripe. One clear recovery path.
           </h2>
-          <p className="mt-5 max-w-[56ch] text-base leading-7 text-gray-600">
-            Dunlo keeps the setup short, then makes every failed payment visible
-            as it moves from signal to message to recovered revenue.
-          </p>
-          <Link
-            href={SIGNUP_URL}
-            className="mt-8 inline-flex items-center gap-2 rounded-full bg-dunlo px-5 py-3 text-sm font-semibold text-white transition-all hover:bg-dunlo-hover active:scale-[0.98]"
-          >
-            Connect Stripe
-            <ArrowRight size={16} strokeWidth={2} />
-          </Link>
-        </div>
-
-        <div className="bg-stone-50 p-4 md:p-7">
-          <div className="grid gap-4 lg:grid-cols-[0.72fr_1.28fr]">
-            <div className="space-y-3">
-              {steps.map((step, index) => {
-                const Icon = step.icon;
-                const isActive = active === index;
-
-                return (
-                  <button
-                    key={step.n}
-                    type="button"
-                    onClick={() => setActive(index)}
-                    className={`w-full rounded-[1.35rem] border p-4 text-left transition-all active:scale-[0.99] ${
-                      isActive
-                        ? "border-dunlo/40 bg-white shadow-[0_18px_50px_-42px_rgba(15,23,42,0.5)]"
-                        : "border-gray-200 bg-white/65 hover:bg-white"
-                    }`}
-                  >
-                    <div className="flex items-center justify-between gap-4">
-                      <div className="flex items-center gap-3">
-                        <span
-                          className={`flex size-9 items-center justify-center rounded-full ${
-                            isActive
-                              ? "bg-dunlo text-white"
-                              : "border border-gray-200 bg-gray-50 text-gray-500"
-                          }`}
-                        >
-                          <Icon size={17} strokeWidth={2} />
-                        </span>
-                        <span className="font-mono text-xs font-semibold text-gray-500">
-                          {step.n}
-                        </span>
-                      </div>
-                      {isActive && (
-                        <span className="h-px w-12 bg-dunlo/50" />
-                      )}
-                    </div>
-                    <p className="mt-4 text-lg font-semibold tracking-tight text-gray-950">
-                      {step.label}
-                    </p>
-                    <p className="mt-2 text-sm leading-6 text-gray-600">
-                      {step.body}
-                    </p>
-                  </button>
-                );
-              })}
-            </div>
-
-            <div className="rounded-[1.7rem] border border-gray-200 bg-white p-4 shadow-[0_26px_80px_-62px_rgba(15,23,42,0.48)] md:p-5">
-              <div className="flex items-center justify-between border-b border-gray-100 pb-4">
-                <div>
-                  <p className="font-mono text-[10px] font-semibold uppercase tracking-[0.16em] text-gray-400">
-                    Recovery loop
-                  </p>
-                  <AnimatePresence mode="wait" initial={false}>
-                    <motion.h3
-                      key={activeStep.title}
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -8 }}
-                      transition={{ duration: 0.28 }}
-                      className="mt-2 max-w-lg text-2xl font-semibold tracking-tight text-gray-950"
-                    >
-                      {activeStep.title}
-                    </motion.h3>
-                  </AnimatePresence>
-                </div>
-                <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-dunlo/12 text-dunlo-deep">
-                  <ActiveIcon size={19} strokeWidth={2} />
-                </span>
-              </div>
-
-              <div className="mt-5 rounded-[1.35rem] bg-gray-950 p-4 text-white shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Radar size={17} strokeWidth={2} className="text-dunlo" />
-                    <span className="font-mono text-xs font-semibold text-white/60">
-                      stripe_event_stream
-                    </span>
-                  </div>
-                  <span className="rounded-full bg-dunlo/12 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-dunlo">
-                    live
-                  </span>
-                </div>
-
-                <div className="mt-4 divide-y divide-white/10">
-                  {rows.map(([event, status, detail], index) => {
-                    const isDone = index <= active + 1;
-                    return (
-                      <div
-                        key={event}
-                        className="grid grid-cols-[1fr_auto_auto] items-center gap-3 py-3 first:pt-0 last:pb-0"
-                      >
-                        <div className="min-w-0">
-                          <p className="truncate font-mono text-xs font-semibold text-white/80">
-                            {event}
-                          </p>
-                          <p className="mt-1 text-xs text-white/35">
-                            {detail}
-                          </p>
-                        </div>
-                        <span
-                          className={`rounded-full px-2.5 py-1 text-xs font-semibold ${
-                            isDone
-                              ? "bg-dunlo/12 text-dunlo"
-                              : "bg-white/10 text-white/35"
-                          }`}
-                        >
-                          {status}
-                        </span>
-                        <span
-                          className={`flex size-6 items-center justify-center rounded-full ${
-                            isDone ? "bg-dunlo text-white" : "bg-white/10"
-                          }`}
-                        >
-                          {isDone && <Check size={13} strokeWidth={2} />}
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="mt-4 grid grid-cols-3 gap-2">
-                {["OAuth", "Sequences", "Revenue"].map((label) => (
-                  <div key={label} className="rounded-2xl bg-gray-50 p-3">
-                    <p className="font-mono text-sm font-semibold text-gray-950">
-                      {label}
-                    </p>
-                    <p className="mt-1 text-[11px] font-medium text-gray-500">
-                      connected
-                    </p>
-                  </div>
-                ))}
-              </div>
-            </div>
+          <div className="lg:justify-self-end">
+            <p className="max-w-[52ch] text-pretty text-base leading-7 text-dunlo-ink/72 md:text-lg md:leading-8">
+              Dunlo turns payment failures into a visible sequence your team
+              can understand, edit, and trust.
+            </p>
+            <TrackedLink
+              href={SIGNUP_URL}
+              eventProperties={{
+                button_text: "Start free in beta",
+                destination: SIGNUP_URL,
+                location: "homepage_how_it_works",
+              }}
+              className="group mt-7 inline-flex min-h-12 items-center gap-3 rounded-full bg-dunlo-ink px-6 text-sm font-bold text-white transition-transform hover:-translate-y-0.5 active:translate-y-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-dunlo-ink focus-visible:ring-offset-2 focus-visible:ring-offset-dunlo"
+            >
+              Start free in beta
+              <span className="transition-transform group-hover:translate-x-1" aria-hidden="true">→</span>
+            </TrackedLink>
           </div>
         </div>
+
+        <div className="mt-16 overflow-hidden rounded-2xl bg-[#0b1822] shadow-[0_8px_0_rgba(5,28,19,0.22)] md:mt-20">
+          <Image
+            src={PRODUCT_IMAGES.sequences}
+            alt="Dunlo recovery sequence for a failed Stripe card payment"
+            width={1413}
+            height={1080}
+            sizes="(min-width: 1440px) 1400px, 100vw"
+            className="h-auto w-full"
+          />
+        </div>
+
+        <ol className="mt-10 grid border-t border-dunlo-ink/28 md:grid-cols-3">
+          {STEPS.map((step, index) => (
+            <li
+              key={step.title}
+              className="border-b border-dunlo-ink/28 py-7 md:border-b-0 md:border-r md:px-7 md:first:pl-0 md:last:border-r-0"
+            >
+              <div className="flex items-baseline gap-4">
+                <span className="font-mono text-xs font-bold text-dunlo-ink/46">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <h3 className="text-xl font-bold">{step.title}</h3>
+              </div>
+              <p className="mt-3 max-w-[36ch] pl-8 text-sm leading-6 text-dunlo-ink/68">
+                {step.body}
+              </p>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );

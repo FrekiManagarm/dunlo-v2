@@ -12,6 +12,8 @@ export type BlogPostMeta = {
   title: string;
   description: string;
   date: string;
+  seoTitle?: string;
+  updated?: string;
   published: boolean;
   tags: string[];
   keywords: string[];
@@ -25,6 +27,8 @@ function toPostMeta(page: ReturnType<typeof blogSource.getPages>[number]) {
     title: page.data.title,
     description: page.data.description,
     date: page.data.date,
+    seoTitle: page.data.seoTitle,
+    updated: page.data.updated,
     published: page.data.published,
     tags: page.data.tags,
     keywords: page.data.keywords,
