@@ -148,6 +148,7 @@ function createRepository(options?: {
   };
   reclaimBeforePersist?: boolean;
   clock?: () => Date;
+  delayProgressAt?: number;
 }) {
   const snapshots: DiagnosticSnapshotView[] = options?.current
     ? [options.current]
@@ -178,6 +179,11 @@ function createRepository(options?: {
     });
   }
   let ownerNumber = 0;
+  let progressSaveCount = 0;
+  let releaseDelayedProgress: (() => void) | undefined;
+  const delayedProgress = new Promise<void>((resolve) => {
+    releaseDelayedProgress = resolve;
+  });
   const persist = vi.fn(
     async ({ snapshot, newFindings, phase, leaseOwnerId }) => {
       if (options?.reclaimBeforePersist) {
@@ -266,6 +272,10 @@ function createRepository(options?: {
     }),
     saveProgress: vi.fn(
       async ({ connectionId, leaseOwnerId, progress: nextProgress }) => {
+        progressSaveCount += 1;
+        if (progressSaveCount === options?.delayProgressAt) {
+          await delayedProgress;
+        }
         const run = runs.get(connectionId);
         if (!run || run.leaseOwnerId !== leaseOwnerId) return false;
         run.leaseExpiresAt = new Date(clock().getTime() + 300_000);
@@ -284,6 +294,7 @@ function createRepository(options?: {
     phases,
     progress,
     runs,
+    releaseDelayedProgress,
     transaction,
   };
 }
@@ -487,6 +498,63 @@ describe("DiagnosticService", () => {
       expect(reclaimerSource.loadAccount).not.toHaveBeenCalled();
       releaseAccount?.();
       await ownerRun;
+    } finally {
+      vi.useRealTimers();
+    }
+  });
+
+  it("drains an in-flight timer renewal before completing progress", async () => {
+    vi.useFakeTimers();
+    vi.setSystemTime(NOW);
+    try {
+      const fixture = createRepository({
+        clock: () => new Date(Date.now()),
+        delayProgressAt: 2,
+      });
+      const source = completeSource();
+      let releaseAccount: (() => void) | undefined;
+      const accountReleased = new Promise<void>((resolve) => {
+        releaseAccount = resolve;
+      });
+      const originalLoadAccount = source.loadAccount;
+      source.loadAccount = vi.fn(async () => {
+        await accountReleased;
+        return originalLoadAccount();
+      });
+      const service = createService(fixture.repository, source);
+
+      const run = service.run({
+        connectionId: "conn_1",
+        reason: "scheduled",
+        now: NOW,
+      });
+      for (let attempt = 0; attempt < 10; attempt += 1) {
+        if (vi.mocked(source.loadAccount).mock.calls.length > 0) break;
+        await Promise.resolve();
+      }
+      await vi.advanceTimersByTimeAsync(60_000);
+      expect(fixture.releaseDelayedProgress).toBeDefined();
+
+      releaseAccount?.();
+      let settled = false;
+      void run.then(() => {
+        settled = true;
+      });
+      for (let attempt = 0; attempt < 100; attempt += 1) {
+        if (fixture.transaction.mock.calls.length > 0) break;
+        await Promise.resolve();
+      }
+      expect(fixture.transaction).toHaveBeenCalledOnce();
+      expect(settled).toBe(false);
+      await expect(service.getProgress("conn_1")).resolves.toMatchObject({
+        status: "running",
+      });
+
+      fixture.releaseDelayedProgress?.();
+      await run;
+      await expect(service.getProgress("conn_1")).resolves.toMatchObject({
+        status: "completed",
+      });
     } finally {
       vi.useRealTimers();
     }

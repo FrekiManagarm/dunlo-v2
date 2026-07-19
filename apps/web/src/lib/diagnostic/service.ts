@@ -354,6 +354,8 @@ export class DiagnosticService {
       );
       lifetimeHeartbeat.assertOwnership();
       if (persisted.leaseLost) throw new DiagnosticRunLeaseLostError();
+      await lifetimeHeartbeat.stop();
+      lifetimeHeartbeat.assertOwnership();
       await this.checkpoint(
         input.connectionId,
         window,
@@ -399,7 +401,7 @@ export class DiagnosticService {
       }
       throw error;
     } finally {
-      lifetimeHeartbeat.stop();
+      await lifetimeHeartbeat.stop();
     }
   }
 
@@ -484,19 +486,19 @@ export class DiagnosticService {
     connectionId: string,
     window: DiagnosticWindow,
     leaseOwnerId: string,
-  ): { assertOwnership(): void; stop(): void } {
+  ): { assertOwnership(): void; stop(): Promise<void> } {
     let failure: Error | null = null;
-    let renewing = false;
+    let active = true;
+    let renewal: Promise<void> | null = null;
     const renew = () => {
-      if (failure || renewing) return;
-      renewing = true;
-      void this.heartbeat(connectionId, window, leaseOwnerId)
+      if (!active || failure || renewal) return;
+      renewal = this.heartbeat(connectionId, window, leaseOwnerId)
         .catch((error: unknown) => {
           failure =
             error instanceof Error ? error : new DiagnosticRunLeaseLostError();
         })
         .finally(() => {
-          renewing = false;
+          renewal = null;
         });
     };
     const interval = setInterval(renew, DIAGNOSTIC_HEARTBEAT_MS);
@@ -505,8 +507,10 @@ export class DiagnosticService {
       assertOwnership() {
         if (failure) throw failure;
       },
-      stop() {
+      async stop() {
+        active = false;
         clearInterval(interval);
+        await renewal;
       },
     };
   }
