@@ -119,7 +119,9 @@ export const diagnosticSnapshot = pgTable(
     staleAt: timestamp("stale_at"),
     fixedMrr: integer("fixed_mrr").default(0).notNull(),
     variableMrr: integer("variable_mrr").default(0).notNull(),
-    limitedConfidenceMrr: integer("limited_confidence_mrr").default(0).notNull(),
+    limitedConfidenceMrr: integer("limited_confidence_mrr")
+      .default(0)
+      .notNull(),
     excludedMrr: integer("excluded_mrr").default(0).notNull(),
     dominantCurrency: text("dominant_currency").notNull(),
     dominantCurrencyShareBps: integer("dominant_currency_share_bps")
@@ -132,7 +134,9 @@ export const diagnosticSnapshot = pgTable(
     historicallyLostAutomatable: integer("historically_lost_automatable")
       .default(0)
       .notNull(),
-    historicallyLostHuman: integer("historically_lost_human").default(0).notNull(),
+    historicallyLostHuman: integer("historically_lost_human")
+      .default(0)
+      .notNull(),
     excludedAmount: integer("excluded_amount").default(0).notNull(),
     monthlyAddressable: integer("monthly_addressable").default(0).notNull(),
     addressableNow: integer("addressable_now").default(0).notNull(),
@@ -157,6 +161,11 @@ export const diagnosticSnapshot = pgTable(
       .notNull(),
   },
   (table) => [
+    uniqueIndex("diagnostic_snapshot_connection_window_unique").on(
+      table.connectionId,
+      table.analysisStartsAt,
+      table.analysisEndsAt,
+    ),
     uniqueIndex("diagnostic_snapshot_current_connection_unique")
       .on(table.connectionId)
       .where(sql`${table.isCurrent} = true`),
@@ -198,6 +207,39 @@ export const diagnosticFinding = pgTable(
     index("diagnostic_finding_snapshot_id_idx").on(table.snapshotId),
     index("diagnostic_finding_connection_id_idx").on(table.connectionId),
     index("diagnostic_finding_created_at_idx").on(table.createdAt),
+  ],
+);
+
+export const diagnosticRun = pgTable(
+  "diagnostic_run",
+  {
+    id: text("id")
+      .primaryKey()
+      .$defaultFn(() => crypto.randomUUID()),
+    connectionId: text("connection_id")
+      .notNull()
+      .references(() => stripeConnection.id, { onDelete: "cascade" }),
+    analysisStartsAt: timestamp("analysis_starts_at").notNull(),
+    analysisEndsAt: timestamp("analysis_ends_at").notNull(),
+    status: text("status").notNull(),
+    checkpoints: jsonb("checkpoints").$type<string[]>().notNull(),
+    errorCategory: text("error_category"),
+    createdAt: timestamp("created_at").defaultNow().notNull(),
+    updatedAt: timestamp("updated_at")
+      .defaultNow()
+      .$onUpdate(() => /* @__PURE__ */ new Date())
+      .notNull(),
+  },
+  (table) => [
+    uniqueIndex("diagnostic_run_connection_window_unique").on(
+      table.connectionId,
+      table.analysisStartsAt,
+      table.analysisEndsAt,
+    ),
+    index("diagnostic_run_connection_updated_at_idx").on(
+      table.connectionId,
+      table.updatedAt,
+    ),
   ],
 );
 

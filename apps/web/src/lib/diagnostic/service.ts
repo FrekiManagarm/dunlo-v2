@@ -1,10 +1,11 @@
 import {
   diagnosticFinding,
+  diagnosticRun,
   diagnosticSnapshot,
   stripeConnection,
   type ConnectionPhase,
 } from "@dunlo-v2/db/schema/domain";
-import { and, eq } from "drizzle-orm";
+import { and, desc, eq, ne } from "drizzle-orm";
 
 import Stripe from "stripe";
 
@@ -125,6 +126,13 @@ export type DiagnosticPersistence = {
   phase: ConnectionPhase;
 };
 
+export type DiagnosticPersistenceResult = {
+  snapshot: DiagnosticSnapshotView;
+  created: boolean;
+};
+
+type StoredDiagnosticProgress = Omit<DiagnosticProgress, "connectionId">;
+
 export type DiagnosticRepository = {
   getConnection(connectionId: string): Promise<DiagnosticConnection | null>;
   findSnapshotForWindow(
@@ -132,10 +140,16 @@ export type DiagnosticRepository = {
     window: DiagnosticWindow,
   ): Promise<DiagnosticSnapshotView | null>;
   getCurrent(connectionId: string): Promise<DiagnosticSnapshotView | null>;
-  transaction(
-    work: (persistence: Pick<DiagnosticRepository, "persist">) => Promise<void>,
-  ): Promise<void>;
-  persist(input: DiagnosticPersistence): Promise<void>;
+  getProgress(connectionId: string): Promise<DiagnosticProgress | null>;
+  saveProgress(input: {
+    connectionId: string;
+    window: DiagnosticWindow;
+    progress: StoredDiagnosticProgress;
+  }): Promise<void>;
+  transaction<T>(
+    work: (persistence: Pick<DiagnosticRepository, "persist">) => Promise<T>,
+  ): Promise<T>;
+  persist(input: DiagnosticPersistence): Promise<DiagnosticPersistenceResult>;
 };
 
 export type DiagnosticServiceOptions = {
@@ -171,8 +185,7 @@ export class DiagnosticService {
     );
 
     if (existing) {
-      this.progress.set(input.connectionId, {
-        connectionId: input.connectionId,
+      await this.saveProgress(input.connectionId, window, {
         status: "completed",
         checkpoints: ["snapshot_persisted"],
         errorCategory: null,
@@ -180,8 +193,7 @@ export class DiagnosticService {
       return { snapshot: existing, phase: connection.phase, reused: true };
     }
 
-    this.progress.set(input.connectionId, {
-      connectionId: input.connectionId,
+    await this.saveProgress(input.connectionId, window, {
       status: "running",
       checkpoints: [],
       errorCategory: null,
@@ -190,16 +202,19 @@ export class DiagnosticService {
     try {
       const source = this.options.createSource(connection);
       const account = await source.loadAccount();
-      this.checkpoint(input.connectionId, "account_loaded");
-
       const subscriptions = await loadAllSubscriptions(source);
+      await this.checkpoint(input.connectionId, window, "account_loaded");
       const invoices = await loadAllInvoices(source, window);
-      this.checkpoint(input.connectionId, "invoices_loaded");
+      await this.checkpoint(input.connectionId, window, "invoices_loaded");
 
       const paymentEvidence = await source.loadPaymentEvidence(
         invoices.items.map((invoice) => invoice.id),
       );
-      this.checkpoint(input.connectionId, "payment_evidence_loaded");
+      await this.checkpoint(
+        input.connectionId,
+        window,
+        "payment_evidence_loaded",
+      );
 
       const coverage = mergeCoverage([
         account.coverage,
@@ -218,7 +233,7 @@ export class DiagnosticService {
             reason: "rate_unavailable" as const,
             currency: "usd",
           };
-      this.checkpoint(input.connectionId, "revenue_normalized");
+      await this.checkpoint(input.connectionId, window, "revenue_normalized");
 
       const classified = classifyInvoices(
         invoices.items,
@@ -226,7 +241,7 @@ export class DiagnosticService {
         paymentEvidence,
         input.now,
       );
-      this.checkpoint(input.connectionId, "findings_classified");
+      await this.checkpoint(input.connectionId, window, "findings_classified");
 
       const snapshot = createSnapshot({
         connection,
@@ -240,32 +255,46 @@ export class DiagnosticService {
       });
       const phase = phaseFor(snapshot.verdict, connection.phase);
 
-      await this.options.repository.transaction(async (persistence) => {
-        await persistence.persist({
-          snapshot,
-          newFindings: classified.findings,
-          phase,
-        });
-      });
-      this.checkpoint(input.connectionId, "snapshot_persisted");
-      this.progress.set(input.connectionId, {
-        connectionId: input.connectionId,
+      const persisted = await this.options.repository.transaction(
+        async (persistence) =>
+          persistence.persist({
+            snapshot,
+            newFindings: classified.findings,
+            phase,
+          }),
+      );
+      await this.checkpoint(input.connectionId, window, "snapshot_persisted");
+      await this.saveProgress(input.connectionId, window, {
         status: "completed",
         checkpoints: this.progress.get(input.connectionId)?.checkpoints ?? [],
         errorCategory: null,
       });
 
-      return { snapshot, phase, reused: false };
+      const persistedConnection = persisted.created
+        ? connection
+        : await this.options.repository.getConnection(input.connectionId);
+      return {
+        snapshot: persisted.snapshot,
+        phase: persistedConnection?.phase ?? connection.phase,
+        reused: !persisted.created,
+      };
     } catch (error) {
       const current = this.progress.get(input.connectionId);
-      this.progress.set(input.connectionId, {
-        connectionId: input.connectionId,
+      const failedProgress: StoredDiagnosticProgress = {
         status: "failed",
         checkpoints: current?.checkpoints ?? [],
         errorCategory: current?.checkpoints.includes("findings_classified")
           ? "persistence"
           : "source",
-      });
+      };
+      try {
+        await this.saveProgress(input.connectionId, window, failedProgress);
+      } catch {
+        this.progress.set(input.connectionId, {
+          connectionId: input.connectionId,
+          ...failedProgress,
+        });
+      }
       throw error;
     }
   }
@@ -277,6 +306,11 @@ export class DiagnosticService {
   }
 
   async getProgress(connectionId: string): Promise<DiagnosticProgress> {
+    const persisted = await this.options.repository.getProgress(connectionId);
+    if (persisted) {
+      this.progress.set(connectionId, persisted);
+      return persisted;
+    }
     return (
       this.progress.get(connectionId) ?? {
         connectionId,
@@ -287,13 +321,41 @@ export class DiagnosticService {
     );
   }
 
-  private checkpoint(
+  private async saveProgress(
     connectionId: string,
+    window: DiagnosticWindow,
+    progress: StoredDiagnosticProgress,
+  ): Promise<void> {
+    const next = {
+      connectionId,
+      status: progress.status,
+      checkpoints: [...progress.checkpoints],
+      errorCategory: progress.errorCategory,
+    } satisfies DiagnosticProgress;
+    this.progress.set(connectionId, next);
+    await this.options.repository.saveProgress({
+      connectionId,
+      window,
+      progress: {
+        status: next.status,
+        checkpoints: next.checkpoints,
+        errorCategory: next.errorCategory,
+      },
+    });
+  }
+
+  private async checkpoint(
+    connectionId: string,
+    window: DiagnosticWindow,
     checkpoint: DiagnosticCheckpoint,
-  ): void {
+  ): Promise<void> {
     const current = this.progress.get(connectionId);
     if (!current) return;
-    current.checkpoints.push(checkpoint);
+    await this.saveProgress(connectionId, window, {
+      status: current.status,
+      checkpoints: [...current.checkpoints, checkpoint],
+      errorCategory: current.errorCategory,
+    });
   }
 }
 
@@ -689,11 +751,55 @@ function createDatabaseRepository(): DiagnosticRepository {
         .limit(1);
       return row ? snapshotView(row) : null;
     },
+    async getProgress(connectionId) {
+      const database = await loadDb();
+      const [row] = await database
+        .select()
+        .from(diagnosticRun)
+        .where(eq(diagnosticRun.connectionId, connectionId))
+        .orderBy(desc(diagnosticRun.updatedAt))
+        .limit(1);
+      return row
+        ? {
+            connectionId,
+            status: row.status as DiagnosticProgress["status"],
+            checkpoints: row.checkpoints as DiagnosticCheckpoint[],
+            errorCategory:
+              row.errorCategory as DiagnosticProgress["errorCategory"],
+          }
+        : null;
+    },
+    async saveProgress({ connectionId, window, progress }) {
+      const database = await loadDb();
+      await database
+        .insert(diagnosticRun)
+        .values({
+          connectionId,
+          analysisStartsAt: window.analysisStartsAt,
+          analysisEndsAt: window.analysisEndsAt,
+          status: progress.status,
+          checkpoints: progress.checkpoints,
+          errorCategory: progress.errorCategory,
+        })
+        .onConflictDoUpdate({
+          target: [
+            diagnosticRun.connectionId,
+            diagnosticRun.analysisStartsAt,
+            diagnosticRun.analysisEndsAt,
+          ],
+          set: {
+            status: progress.status,
+            checkpoints: progress.checkpoints,
+            errorCategory: progress.errorCategory,
+            updatedAt: new Date(),
+          },
+        });
+    },
     async transaction(work) {
       const database = await loadDb();
-      await database.transaction(async (transaction) => {
-        await work(databasePersistence(transaction));
-      });
+      return database.transaction(async (transaction) =>
+        work(databasePersistence(transaction)),
+      );
     },
     async persist() {
       throw new Error("Diagnostic persistence must execute in a transaction.");
@@ -711,6 +817,40 @@ function databasePersistence(
 ): Pick<DiagnosticRepository, "persist"> {
   return {
     async persist({ snapshot, newFindings, phase }) {
+      const [inserted] = await executor
+        .insert(diagnosticSnapshot)
+        .values({ ...snapshot, isCurrent: false })
+        .onConflictDoNothing({
+          target: [
+            diagnosticSnapshot.connectionId,
+            diagnosticSnapshot.analysisStartsAt,
+            diagnosticSnapshot.analysisEndsAt,
+          ],
+        })
+        .returning();
+      if (!inserted) {
+        const [existing] = await executor
+          .select()
+          .from(diagnosticSnapshot)
+          .where(
+            and(
+              eq(diagnosticSnapshot.connectionId, snapshot.connectionId),
+              eq(
+                diagnosticSnapshot.analysisStartsAt,
+                snapshot.analysisStartsAt,
+              ),
+              eq(diagnosticSnapshot.analysisEndsAt, snapshot.analysisEndsAt),
+            ),
+          )
+          .limit(1);
+        if (!existing) {
+          throw new Error(
+            "Diagnostic snapshot conflict could not be resolved.",
+          );
+        }
+        return { snapshot: snapshotView(existing), created: false };
+      }
+
       await executor
         .update(diagnosticSnapshot)
         .set({ isCurrent: false })
@@ -718,9 +858,13 @@ function databasePersistence(
           and(
             eq(diagnosticSnapshot.connectionId, snapshot.connectionId),
             eq(diagnosticSnapshot.isCurrent, true),
+            ne(diagnosticSnapshot.id, snapshot.id),
           ),
         );
-      await executor.insert(diagnosticSnapshot).values(snapshot);
+      await executor
+        .update(diagnosticSnapshot)
+        .set({ isCurrent: true })
+        .where(eq(diagnosticSnapshot.id, snapshot.id));
       if (newFindings.length > 0) {
         await executor.insert(diagnosticFinding).values(
           newFindings.map((finding) => ({
@@ -750,6 +894,7 @@ function databasePersistence(
         .update(stripeConnection)
         .set({ phase, lastAnalyzedAt: snapshot.analysisEndsAt })
         .where(eq(stripeConnection.id, snapshot.connectionId));
+      return { snapshot, created: true };
     },
   };
 }
@@ -772,7 +917,7 @@ function snapshotView(
     staleAt: row.staleAt,
     pagesLoaded: row.pagesLoaded,
     recordsLoaded: row.recordsLoaded,
-    findingsCount: 0,
+    findingsCount: row.observedFailed,
   };
 }
 

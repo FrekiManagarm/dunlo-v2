@@ -1,4 +1,4 @@
-import { readFileSync } from "node:fs";
+import { readFileSync, readdirSync } from "node:fs";
 import { getTableName } from "drizzle-orm";
 import { getTableConfig } from "drizzle-orm/pg-core";
 import { describe, expect, expectTypeOf, it } from "vitest";
@@ -26,8 +26,8 @@ function columnsFor(table: Parameters<typeof getTableConfig>[0]) {
 }
 
 function cascadeTargets(table: Parameters<typeof getTableConfig>[0]) {
-  return getTableConfig(table).foreignKeys
-    .filter((foreignKey) => foreignKey.onDelete === "cascade")
+  return getTableConfig(table)
+    .foreignKeys.filter((foreignKey) => foreignKey.onDelete === "cascade")
     .map((foreignKey) => getTableName(foreignKey.reference().foreignTable));
 }
 
@@ -35,6 +35,13 @@ const diagnosticMigration = readFileSync(
   new URL("../migrations/0000_optimal_shocker.sql", import.meta.url),
   "utf8",
 );
+const diagnosticMigrations = readdirSync(
+  new URL("../migrations/", import.meta.url),
+)
+  .filter((file) => file.endsWith(".sql"))
+  .map((file) =>
+    readFileSync(new URL(`../migrations/${file}`, import.meta.url), "utf8"),
+  );
 
 describe("diagnostic lifecycle schema", () => {
   it("exposes the exact connection lifecycle", () => {
@@ -60,7 +67,9 @@ describe("diagnostic lifecycle schema", () => {
     expect(indexes).toEqual(
       expect.arrayContaining([
         expect.objectContaining({
-          config: expect.objectContaining({ name: "stripe_connection_phase_idx" }),
+          config: expect.objectContaining({
+            name: "stripe_connection_phase_idx",
+          }),
         }),
         expect.objectContaining({
           config: expect.objectContaining({
@@ -78,7 +87,9 @@ describe("diagnostic lifecycle schema", () => {
     const table = domain.diagnosticSnapshot;
     const config = getTableConfig(table);
     const currentSnapshotIndex = config.indexes.find(
-      (tableIndex) => tableIndex.config.name === "diagnostic_snapshot_current_connection_unique",
+      (tableIndex) =>
+        tableIndex.config.name ===
+        "diagnostic_snapshot_current_connection_unique",
     );
 
     expect(getTableName(table)).toBe("diagnostic_snapshot");
@@ -91,10 +102,40 @@ describe("diagnostic lifecycle schema", () => {
     ).toEqual(["connection_id"]);
   });
 
+  it("persists one snapshot and progress record per connection window", () => {
+    const snapshotIndexes = getTableConfig(domain.diagnosticSnapshot).indexes;
+    const windowIndex = snapshotIndexes.find(
+      (tableIndex) =>
+        tableIndex.config.name ===
+        "diagnostic_snapshot_connection_window_unique",
+    );
+
+    expect(windowIndex?.config.unique).toBe(true);
+    expect(
+      windowIndex?.config.columns.map((column) =>
+        "name" in column ? column.name : undefined,
+      ),
+    ).toEqual(["connection_id", "analysis_starts_at", "analysis_ends_at"]);
+    expect(domain).toHaveProperty("diagnosticRun");
+    expect(
+      diagnosticMigrations.some((migration) =>
+        migration.includes('CREATE TABLE "diagnostic_run"'),
+      ),
+    ).toBe(true);
+    expect(
+      diagnosticMigrations.some((migration) =>
+        migration.includes(
+          'CREATE UNIQUE INDEX "diagnostic_snapshot_connection_window_unique"',
+        ),
+      ),
+    ).toBe(true);
+  });
+
   it("cascades diagnostic data when its connection is deleted", () => {
     expect(domain).toHaveProperty("diagnosticSnapshot");
     expect(domain).toHaveProperty("diagnosticFinding");
-    if (!("diagnosticSnapshot" in domain) || !("diagnosticFinding" in domain)) return;
+    if (!("diagnosticSnapshot" in domain) || !("diagnosticFinding" in domain))
+      return;
 
     expect(cascadeTargets(domain.diagnosticSnapshot)).toEqual(
       expect.arrayContaining(["stripe_connection", "user"]),

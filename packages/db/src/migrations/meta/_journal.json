@@ -8,6 +8,13 @@
       "when": 1784418981945,
       "tag": "0000_optimal_shocker",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784449312454,
+      "tag": "0001_mature_micromax",
+      "breakpoints": true
     }
   ]
 }

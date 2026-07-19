@@ -4,6 +4,7 @@ import { describe, expect, it, vi } from "vitest";
 import {
   DiagnosticService,
   type DiagnosticConnection,
+  type DiagnosticProgress,
   type DiagnosticRepository,
   type DiagnosticSnapshotView,
 } from "./service";
@@ -135,11 +136,28 @@ function createRepository(options?: {
     : [];
   const findings: Array<{ snapshotId: string }> = [];
   const phases: string[] = [];
+  const progress = new Map<
+    string,
+    {
+      status: "idle" | "running" | "completed" | "failed";
+      checkpoints: DiagnosticProgress["checkpoints"];
+      errorCategory: DiagnosticProgress["errorCategory"];
+    }
+  >();
   const persist = vi.fn(async ({ snapshot, newFindings, phase }) => {
+    const existing = snapshots.find(
+      (candidate) =>
+        candidate.analysisStartsAt.getTime() ===
+          snapshot.analysisStartsAt.getTime() &&
+        candidate.analysisEndsAt.getTime() ===
+          snapshot.analysisEndsAt.getTime(),
+    );
+    if (existing) return { snapshot: existing, created: false };
     for (const existing of snapshots) existing.isCurrent = false;
     snapshots.push(snapshot);
     findings.push(...newFindings.map(() => ({ snapshotId: snapshot.id })));
     phases.push(phase);
+    return { snapshot, created: true };
   });
   const transaction = vi.fn(async (work) => work({ persist }));
 
@@ -158,11 +176,18 @@ function createRepository(options?: {
     getCurrent: vi.fn(
       async () => snapshots.find((snapshot) => snapshot.isCurrent) ?? null,
     ),
+    getProgress: vi.fn(async (connectionId) => {
+      const saved = progress.get(connectionId);
+      return saved ? { connectionId, ...saved } : null;
+    }),
+    saveProgress: vi.fn(async ({ connectionId, progress: nextProgress }) => {
+      progress.set(connectionId, nextProgress);
+    }),
     transaction,
     persist,
   };
 
-  return { repository, snapshots, findings, phases, transaction };
+  return { repository, snapshots, findings, phases, progress, transaction };
 }
 
 function createService(
@@ -205,8 +230,23 @@ describe("DiagnosticService", () => {
 
     expect(first.reused).toBe(false);
     expect(second.reused).toBe(true);
+    expect(second.snapshot.findingsCount).toBe(first.snapshot.findingsCount);
     expect(fixture.snapshots).toHaveLength(1);
     expect(fixture.transaction).toHaveBeenCalledTimes(1);
+  });
+
+  it("deduplicates genuinely concurrent jobs for the same connection and window", async () => {
+    const fixture = createRepository();
+    const service = createService(fixture.repository, completeSource());
+
+    const results = await Promise.all([
+      service.run({ connectionId: "conn_1", reason: "initial", now: NOW }),
+      service.run({ connectionId: "conn_1", reason: "initial", now: NOW }),
+    ]);
+
+    expect(fixture.snapshots).toHaveLength(1);
+    expect(fixture.findings).toHaveLength(1);
+    expect(results.filter((result) => result.reused)).toHaveLength(1);
   });
 
   it("publishes diagnostic checkpoints in their approved order", async () => {
@@ -225,6 +265,66 @@ describe("DiagnosticService", () => {
         "snapshot_persisted",
       ],
     });
+  });
+
+  it("does not publish account_loaded until subscriptions are loaded", async () => {
+    const fixture = createRepository();
+    const source = completeSource();
+    let resolveSubscriptions: (() => void) | undefined;
+    const subscriptionsLoaded = new Promise<void>((resolve) => {
+      resolveSubscriptions = resolve;
+    });
+    const originalLoadSubscriptions = source.loadSubscriptions;
+    source.loadSubscriptions = vi.fn(async (...args) => {
+      await subscriptionsLoaded;
+      return originalLoadSubscriptions(...args);
+    });
+    const service = createService(fixture.repository, source);
+
+    const run = service.run({
+      connectionId: "conn_1",
+      reason: "initial",
+      now: NOW,
+    });
+
+    await vi.waitFor(() => {
+      expect(source.loadSubscriptions).toHaveBeenCalledOnce();
+    });
+    await expect(service.getProgress("conn_1")).resolves.toMatchObject({
+      checkpoints: [],
+    });
+
+    resolveSubscriptions?.();
+    await run;
+  });
+
+  it("restores persisted progress after the service is recreated", async () => {
+    const fixture = createRepository();
+    const firstService = createService(fixture.repository, completeSource());
+
+    await firstService.run({
+      connectionId: "conn_1",
+      reason: "initial",
+      now: NOW,
+    });
+
+    const recreatedService = createService(
+      fixture.repository,
+      completeSource(),
+    );
+    await expect(recreatedService.getProgress("conn_1")).resolves.toMatchObject(
+      {
+        status: "completed",
+        checkpoints: [
+          "account_loaded",
+          "invoices_loaded",
+          "payment_evidence_loaded",
+          "revenue_normalized",
+          "findings_classified",
+          "snapshot_persisted",
+        ],
+      },
+    );
   });
 
   it("persists an insufficient-data snapshot when coverage is incomplete", async () => {
