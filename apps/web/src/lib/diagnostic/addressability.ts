@@ -80,6 +80,8 @@ const humanCodes = new Set([
   "do_not_honor",
 ]);
 
+const endedSubscriptionStatuses = new Set(["canceled", "ended"]);
+
 export function classifyFailure(evidence: FailureEvidence): ClassificationResult {
   if (evidence.recoveredAfterFailure && evidence.invoiceStatus === "paid") {
     return result(
@@ -215,12 +217,9 @@ function categoryFor(
   path: RecoveryPath,
   evidence: FailureEvidence,
 ): DiagnosticCategory | null {
-  if (evidence.invoiceStatus === "open") {
-    return path === "automatable" ? "open_automatable" : "open_human";
-  }
-
   if (
-    historicalOutcome(evidence.invoiceStatus) &&
+    (historicalOutcome(evidence.invoiceStatus) ||
+      subscriptionEnded(evidence.subscriptionStatus)) &&
     evidence.hasInvoluntaryFailureEvidence
   ) {
     return path === "automatable"
@@ -228,11 +227,19 @@ function categoryFor(
       : "historically_lost_human";
   }
 
+  if (evidence.invoiceStatus === "open") {
+    return path === "automatable" ? "open_automatable" : "open_human";
+  }
+
   return null;
 }
 
 function historicalOutcome(invoiceStatus: string): boolean {
   return invoiceStatus === "void" || invoiceStatus === "uncollectible";
+}
+
+function subscriptionEnded(subscriptionStatus: string | null): boolean {
+  return subscriptionStatus !== null && endedSubscriptionStatuses.has(subscriptionStatus);
 }
 
 function normalizeCode(value: string | null): string | null {

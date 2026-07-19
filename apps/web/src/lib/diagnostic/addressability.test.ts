@@ -132,6 +132,39 @@ describe("classifyFailure", () => {
     },
   );
 
+  it("classifies an ended subscription with an automatable failure as historically lost", () => {
+    expect(
+      classifyFailure(
+        evidence({
+          invoiceStatus: "open",
+          subscriptionStatus: "canceled",
+          adviceCode: "try_again_later",
+          hasInvoluntaryFailureEvidence: true,
+        }),
+      ),
+    ).toMatchObject({
+      category: "historically_lost_automatable",
+      sourceSignal: "advice_code",
+    });
+  });
+
+  it("classifies an ended subscription with a human failure path as historically lost", () => {
+    expect(
+      classifyFailure(
+        evidence({
+          invoiceStatus: "open",
+          subscriptionStatus: "canceled",
+          adviceCode: "do_not_try_again",
+          hasLegitimatePaymentAction: true,
+          hasInvoluntaryFailureEvidence: true,
+        }),
+      ),
+    ).toMatchObject({
+      category: "historically_lost_human",
+      sourceSignal: "advice_code",
+    });
+  });
+
   it("excludes unknown evidence rather than automating it", () => {
     expect(
       classifyFailure(evidence({ declineCode: "future_stripe_code" })),
