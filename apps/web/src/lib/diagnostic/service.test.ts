@@ -3,6 +3,7 @@ import { describe, expect, it, vi } from "vitest";
 
 import {
   DiagnosticService,
+  DiagnosticRunLeaseLostError,
   DiagnosticRunRetryableError,
   type DiagnosticConnection,
   type DiagnosticWindow,
@@ -145,6 +146,7 @@ function createRepository(options?: {
     leaseExpiresAt: Date;
     leaseOwnerId?: string;
   };
+  reclaimBeforePersist?: boolean;
 }) {
   const snapshots: DiagnosticSnapshotView[] = options?.current
     ? [options.current]
@@ -174,21 +176,34 @@ function createRepository(options?: {
     });
   }
   let ownerNumber = 0;
-  const persist = vi.fn(async ({ snapshot, newFindings, phase }) => {
-    const existing = snapshots.find(
-      (candidate) =>
-        candidate.analysisStartsAt.getTime() ===
-          snapshot.analysisStartsAt.getTime() &&
-        candidate.analysisEndsAt.getTime() ===
-          snapshot.analysisEndsAt.getTime(),
-    );
-    if (existing) return { snapshot: existing, created: false };
-    for (const existing of snapshots) existing.isCurrent = false;
-    snapshots.push(snapshot);
-    findings.push(...newFindings.map(() => ({ snapshotId: snapshot.id })));
-    phases.push(phase);
-    return { snapshot, created: true };
-  });
+  const persist = vi.fn(
+    async ({ snapshot, newFindings, phase, leaseOwnerId }) => {
+      if (options?.reclaimBeforePersist) {
+        runs.set(snapshot.connectionId, {
+          status: "running",
+          leaseExpiresAt: new Date(NOW.getTime() + 600_000),
+          leaseOwnerId: "replacement-owner",
+        });
+      }
+      if (runs.get(snapshot.connectionId)?.leaseOwnerId !== leaseOwnerId) {
+        return { leaseLost: true as const };
+      }
+      const existing = snapshots.find(
+        (candidate) =>
+          candidate.analysisStartsAt.getTime() ===
+            snapshot.analysisStartsAt.getTime() &&
+          candidate.analysisEndsAt.getTime() ===
+            snapshot.analysisEndsAt.getTime(),
+      );
+      if (existing)
+        return { snapshot: existing, created: false, leaseLost: false };
+      for (const existing of snapshots) existing.isCurrent = false;
+      snapshots.push(snapshot);
+      findings.push(...newFindings.map(() => ({ snapshotId: snapshot.id })));
+      phases.push(phase);
+      return { snapshot, created: true, leaseLost: false };
+    },
+  );
   const transaction = vi.fn(async (work) => work({ persist }));
 
   const repository: DiagnosticRepository = {
@@ -457,6 +472,23 @@ describe("DiagnosticService", () => {
       status: "running",
       checkpoints: [],
     });
+  });
+
+  it("does not persist diagnostic data after ownership changes", async () => {
+    const fixture = createRepository({ reclaimBeforePersist: true });
+    const service = createService(fixture.repository, completeSource());
+
+    await expect(
+      service.run({
+        connectionId: "conn_1",
+        reason: "scheduled",
+        now: NOW,
+      }),
+    ).rejects.toBeInstanceOf(DiagnosticRunLeaseLostError);
+
+    expect(fixture.snapshots).toEqual([]);
+    expect(fixture.findings).toEqual([]);
+    expect(fixture.phases).toEqual([]);
   });
 
   it("returns a retryable error after bounded waiting for a live owner", async () => {

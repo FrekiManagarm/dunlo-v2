@@ -127,12 +127,16 @@ export type DiagnosticPersistence = {
   snapshot: PersistedDiagnosticSnapshot;
   newFindings: DiagnosticFindingInput[];
   phase: ConnectionPhase;
+  leaseOwnerId: string;
 };
 
-export type DiagnosticPersistenceResult = {
-  snapshot: DiagnosticSnapshotView;
-  created: boolean;
-};
+export type DiagnosticPersistenceResult =
+  | {
+      snapshot: DiagnosticSnapshotView;
+      created: boolean;
+      leaseLost: false;
+    }
+  | { leaseLost: true };
 
 type StoredDiagnosticProgress = Omit<DiagnosticProgress, "connectionId">;
 
@@ -334,8 +338,10 @@ export class DiagnosticService {
             snapshot,
             newFindings: classified.findings,
             phase,
+            leaseOwnerId,
           }),
       );
+      if (persisted.leaseLost) throw new DiagnosticRunLeaseLostError();
       await this.checkpoint(
         input.connectionId,
         window,
@@ -1035,7 +1041,25 @@ function databasePersistence(
   executor: any,
 ): Pick<DiagnosticRepository, "persist"> {
   return {
-    async persist({ snapshot, newFindings, phase }) {
+    async persist({ snapshot, newFindings, phase, leaseOwnerId }) {
+      const [lease] = await executor
+        .update(diagnosticRun)
+        .set({
+          updatedAt: new Date(),
+          leaseExpiresAt: new Date(Date.now() + DIAGNOSTIC_LEASE_MS),
+        })
+        .where(
+          and(
+            eq(diagnosticRun.connectionId, snapshot.connectionId),
+            eq(diagnosticRun.analysisStartsAt, snapshot.analysisStartsAt),
+            eq(diagnosticRun.analysisEndsAt, snapshot.analysisEndsAt),
+            eq(diagnosticRun.leaseOwnerId, leaseOwnerId),
+            eq(diagnosticRun.status, "running"),
+          ),
+        )
+        .returning({ id: diagnosticRun.id });
+      if (!lease) return { leaseLost: true };
+
       const [inserted] = await executor
         .insert(diagnosticSnapshot)
         .values({ ...snapshot, isCurrent: false })
@@ -1067,7 +1091,11 @@ function databasePersistence(
             "Diagnostic snapshot conflict could not be resolved.",
           );
         }
-        return { snapshot: snapshotView(existing), created: false };
+        return {
+          snapshot: snapshotView(existing),
+          created: false,
+          leaseLost: false,
+        };
       }
 
       await executor
@@ -1113,7 +1141,7 @@ function databasePersistence(
         .update(stripeConnection)
         .set({ phase, lastAnalyzedAt: snapshot.analysisEndsAt })
         .where(eq(stripeConnection.id, snapshot.connectionId));
-      return { snapshot, created: true };
+      return { snapshot, created: true, leaseLost: false };
     },
   };
 }
