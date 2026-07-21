@@ -7,37 +7,67 @@ const onboardingSource = readFileSync(
   "utf8",
 );
 
-const stripeCallbackSource = readFileSync(
-  join(process.cwd(), "src/routes/api/stripe/callback.ts"),
-  "utf8",
-);
-
 const dashboardBenchmarkSource = readFileSync(
   join(process.cwd(), "src/routes/dashboard.benchmark.tsx"),
   "utf8",
 );
 
+const dashboardDiagnosticSource = readFileSync(
+  join(process.cwd(), "src/routes/_dashboard/diagnostic.tsx"),
+  "utf8",
+);
+
+const diagnosticQueriesSource = readFileSync(
+  join(process.cwd(), "src/lib/queries.ts"),
+  "utf8",
+);
+
 describe("onboarding flow", () => {
-  it("returns users to the onboarding benchmark step after Stripe connects", () => {
-    expect(stripeCallbackSource).toContain('Location: "/onboarding?step=2"');
-    expect(stripeCallbackSource).not.toContain('Location: "/dashboard/benchmark"');
-  });
-
-  it("includes benchmark review as the second onboarding step", () => {
-    expect(onboardingSource).toContain(".max(4)");
-    expect(onboardingSource).toContain("Step {step} of 4");
-    expect(onboardingSource).toContain("Your Stripe benchmark is ready");
+  it("derives the guided screen from the persisted diagnostic phase", () => {
+    expect(onboardingSource).toContain("diagnosticStateQueryOptions");
+    expect(onboardingSource).toContain('phase === "diagnosing"');
+    expect(onboardingSource).toContain("diagnostic_ready");
+    expect(onboardingSource).not.toContain(".max(4)");
+    expect(onboardingSource).not.toContain("Your Stripe benchmark is ready");
+    expect(onboardingSource).toContain("/api/stripe/connect?intent=activation");
     expect(onboardingSource).toContain(
-      "Similar SaaS companies average {formatRate(benchmark.averageRate)}",
+      "connectionId=${encodeURIComponent(connectionId)}",
     );
+    expect(onboardingSource).toContain('setMonitoringStatus("enabled")');
+    expect(onboardingSource).not.toContain('"current"');
+    expect(onboardingSource).toContain(
+      "Your Stripe connection remains read-only",
+    );
+    expect(onboardingSource).toContain(
+      "Recovery and monitoring are\n          not enabled",
+    );
+    expect(onboardingSource).toContain(
+      'active={state.phase === "recovery_active"}',
+    );
+    expect(onboardingSource).toContain(
+      "Configuring a sender does not run recovery sequences",
+    );
+    expect(onboardingSource).toContain("final confirmation");
   });
 
-  it("continues from the standalone benchmark page to email setup", () => {
-    expect(dashboardBenchmarkSource).toContain(
-      "search={{ step: 3, error: undefined, msg: undefined }}",
+  it("redirects the old authenticated benchmark path to diagnostic", () => {
+    expect(dashboardBenchmarkSource).toContain('to: "/diagnostic"');
+    expect(dashboardBenchmarkSource).not.toContain("userBenchmarkQueryOptions");
+  });
+
+  it("gives the dashboard report usable activation and monitoring callbacks", () => {
+    expect(dashboardDiagnosticSource).toContain(
+      "/api/stripe/connect?intent=activation",
     );
-    expect(dashboardBenchmarkSource).not.toContain(
-      "search={{ step: 2, error: undefined, msg: undefined }}",
+    expect(dashboardDiagnosticSource).toContain("enableMonitoring");
+    expect(dashboardDiagnosticSource).toContain("onKeepReadOnly");
+  });
+
+  it("polls an idle or running diagnostic using its connection id", () => {
+    expect(diagnosticQueriesSource).toContain(
+      '["diagnostic", "state", connectionId]',
     );
+    expect(diagnosticQueriesSource).toContain("shouldPollDiagnosticProgress");
+    expect(diagnosticQueriesSource).not.toContain('"current"');
   });
 });

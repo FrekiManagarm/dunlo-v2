@@ -12,8 +12,8 @@ import { useEffect, useMemo, useState } from "react";
 import { captureMarketingEvent } from "@/lib/posthog";
 import { SIGNUP_URL } from "@/lib/app-url";
 import {
-  RECOVERABILITY_RATE,
-  RECOVERABILITY_PERCENT,
+  MODELED_RECOVERY_ASSUMPTION_PERCENT,
+  MODELED_RECOVERY_ASSUMPTION_RATE,
   RECOVERY_MODEL_UPDATED,
 } from "@/lib/recovery-assumptions";
 
@@ -52,7 +52,7 @@ export function RoiCalculator() {
     [mrr],
   );
   const recovered = useMemo(
-    () => Math.round(monthlyFailed * RECOVERABILITY_RATE),
+    () => Math.round(monthlyFailed * MODELED_RECOVERY_ASSUMPTION_RATE),
     [monthlyFailed],
   );
   const annualRecoverable = recovered * 12;
@@ -148,8 +148,9 @@ export function RoiCalculator() {
             <div className="mt-12 border-t border-white/14 pt-6">
               <p className="max-w-[62ch] text-sm leading-6 text-white/62">
                 Illustrative estimate using an assumed 5% failed-payment rate
-                and {RECOVERABILITY_PERCENT} recoverability. It is not a
-                benchmark result or a guarantee. Model updated {RECOVERY_MODEL_UPDATED}.
+                and a {MODELED_RECOVERY_ASSUMPTION_PERCENT} illustrative
+                modeled recovery assumption. It is not a benchmark result or a
+                guarantee. Model updated {RECOVERY_MODEL_UPDATED}.
               </p>
               <div className="mt-6 flex flex-col gap-3 sm:flex-row">
                 <Link

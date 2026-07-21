@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Payment recovery metric",
-    metricLabel: "MRR",
-    metricValue: "risk",
   });
 }

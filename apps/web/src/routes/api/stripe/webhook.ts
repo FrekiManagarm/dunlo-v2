@@ -29,13 +29,12 @@ const SUCCESS_EVENTS = new Set<string>([
   "invoice.payment_succeeded",
 ]);
 
-const PAYMENT_METHOD_EVENTS = new Set<string>([
-  "customer.updated",
-]);
+const PAYMENT_METHOD_EVENTS = new Set<string>(["customer.updated"]);
 
-function pickFailureCode(
-  event: Stripe.Event,
-): { code: string; message: string | null } {
+function pickFailureCode(event: Stripe.Event): {
+  code: string;
+  message: string | null;
+} {
   if (event.type === "payment_intent.payment_failed") {
     const pi = event.data.object as Stripe.PaymentIntent;
     return {
@@ -69,9 +68,9 @@ function extractFailureContext(event: Stripe.Event) {
     const charge =
       piWithCharges.charges && "data" in piWithCharges.charges
         ? piWithCharges.charges.data[0]
-        : (typeof pi.latest_charge === "object" && pi.latest_charge !== null
-            ? (pi.latest_charge as Stripe.Charge)
-            : undefined);
+        : typeof pi.latest_charge === "object" && pi.latest_charge !== null
+          ? (pi.latest_charge as Stripe.Charge)
+          : undefined;
     return {
       paymentIntentId: pi.id,
       invoiceId: (pi.invoice as string | null) ?? null,
@@ -82,8 +81,7 @@ function extractFailureContext(event: Stripe.Event) {
         (pi.receipt_email as string | null) ??
         (charge?.billing_details?.email as string | null) ??
         null,
-      customerName:
-        (charge?.billing_details?.name as string | null) ?? null,
+      customerName: (charge?.billing_details?.name as string | null) ?? null,
       lastFour:
         (charge?.payment_method_details?.card?.last4 as string | null) ?? null,
       description: pi.description ?? null,
@@ -95,12 +93,12 @@ function extractFailureContext(event: Stripe.Event) {
       paymentIntentId:
         typeof inv.payment_intent === "string"
           ? inv.payment_intent
-          : inv.payment_intent?.id ?? `inv_${inv.id}`,
+          : (inv.payment_intent?.id ?? `inv_${inv.id}`),
       invoiceId: inv.id,
       customerId:
         typeof inv.customer === "string"
           ? inv.customer
-          : inv.customer?.id ?? null,
+          : (inv.customer?.id ?? null),
       amount: inv.amount_due,
       currency: inv.currency,
       customerEmail: inv.customer_email ?? null,
@@ -271,14 +269,14 @@ export async function processRecoveredPayment(
     invoiceId =
       typeof pi.invoice === "string"
         ? pi.invoice
-        : (pi.invoice as Stripe.Invoice | null)?.id ?? null;
+        : ((pi.invoice as Stripe.Invoice | null)?.id ?? null);
   } else if (event.type === "invoice.payment_succeeded") {
     const inv = event.data.object as Stripe.Invoice;
     invoiceId = inv.id;
     paymentIntentId =
       typeof inv.payment_intent === "string"
         ? inv.payment_intent
-        : inv.payment_intent?.id ?? null;
+        : (inv.payment_intent?.id ?? null);
   }
 
   if (!paymentIntentId && !invoiceId) return null;
@@ -329,9 +327,13 @@ export async function processPaymentMethodUpdate(
   connection: DecryptedStripeConnection,
 ): Promise<void> {
   const customer = event.data.object as Stripe.Customer;
-  const prev = (event.data.previous_attributes ?? {}) as Record<string, unknown>;
+  const prev = (event.data.previous_attributes ?? {}) as Record<
+    string,
+    unknown
+  >;
 
-  const paymentMethodChanged = "invoice_settings" in prev || "default_source" in prev;
+  const paymentMethodChanged =
+    "invoice_settings" in prev || "default_source" in prev;
   if (!paymentMethodChanged) return;
 
   const payments = await db
@@ -401,6 +403,14 @@ export const Route = createFileRoute("/api/stripe/webhook")({
         const connection = await getStripeConnectionByAccountId(accountId);
         if (!connection) {
           return new Response("Unknown connected account", { status: 400 });
+        }
+        if (
+          connection.scope !== "read_write" ||
+          connection.phase !== "recovery_active" ||
+          !connection.recoveryActivatedAt ||
+          event.created * 1000 < connection.recoveryActivatedAt.getTime()
+        ) {
+          return Response.json({ received: true, ignored: true });
         }
 
         try {

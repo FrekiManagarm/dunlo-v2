@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Free calculator",
-    metricLabel: "Schedule",
-    metricValue: "14d",
   });
 }

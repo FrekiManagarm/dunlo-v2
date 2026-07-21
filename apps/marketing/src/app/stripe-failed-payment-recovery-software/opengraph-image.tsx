@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Recovery software",
-    metricLabel: "Stripe",
-    metricValue: "SaaS",
   });
 }

@@ -1,0 +1,48 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1784418981945,
+      "tag": "0000_optimal_shocker",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1784449312454,
+      "tag": "0001_mature_micromax",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1784450143752,
+      "tag": "0002_graceful_winter_soldier",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1784450547632,
+      "tag": "0003_famous_black_tom",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1784451000000,
+      "tag": "0004_recovery_activation_watermark",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1784452000000,
+      "tag": "0005_preserve_legacy_recovery_lifecycle",
+      "breakpoints": true
+    }
+  ]
+}

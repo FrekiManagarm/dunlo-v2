@@ -26,7 +26,5 @@ export default async function Image({ params }: CompareOgImageProps) {
     title: page.headline,
     description: page.metaDescription,
     badge: `${page.firstName} vs ${page.secondName}`,
-    metricLabel: "compare",
-    metricValue: "vs",
   });
 }

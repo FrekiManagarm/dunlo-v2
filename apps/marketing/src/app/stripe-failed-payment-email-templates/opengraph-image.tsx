@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Dunning email templates",
-    metricLabel: "failure",
-    metricValue: "email",
   });
 }

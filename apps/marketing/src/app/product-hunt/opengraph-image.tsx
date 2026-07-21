@@ -11,7 +11,5 @@ export default function Image() {
     description:
       "Failure-aware emails, smarter retry timing, founder review, and recovered revenue tracking for Stripe-first SaaS teams.",
     badge: "Launching on Product Hunt",
-    metricLabel: "at risk today",
-    metricValue: "$2.8k",
   });
 }

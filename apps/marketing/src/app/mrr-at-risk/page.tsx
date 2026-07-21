@@ -131,18 +131,18 @@ export const metadata: Metadata = pageSeoMetadata({
 
 export default function MrrAtRiskPage() {
   return (
-    <div className="min-h-dvh overflow-hidden bg-stone-100 font-sans text-gray-950">
+    <div className="min-h-dvh overflow-hidden bg-dunlo-ground font-sans text-dunlo-ink">
       <Nav />
       <main className="space-y-5 px-3 pb-5 pt-24 md:px-4 md:pb-6 md:pt-28">
-        <section className="mx-auto grid max-w-6xl gap-8 rounded-[2rem] border border-gray-200 bg-white px-5 py-8 shadow-sm md:px-8 md:py-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:px-10 lg:py-12">
+        <section className="mx-auto grid max-w-6xl gap-8 overflow-hidden rounded-2xl bg-dunlo-ink px-5 py-8 text-white md:px-8 md:py-10 lg:grid-cols-[0.92fr_1.08fr] lg:items-center lg:px-10 lg:py-12">
           <div>
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+            <p className="text-sm font-semibold text-dunlo">
               Payment recovery metric
             </p>
-            <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[1.02] tracking-tight md:text-6xl">
+            <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[0.96] tracking-[-0.04em] md:text-6xl">
               MRR at risk is failed revenue before it becomes churn.
             </h1>
-            <p className="mt-5 max-w-2xl text-base leading-8 text-gray-600 md:text-lg">
+            <p className="mt-5 max-w-2xl text-base leading-8 text-white/68 md:text-lg">
               For SaaS teams, a failed Stripe payment should not move straight
               into churn reporting. Track it as MRR at risk first, then recover
               it with the right email, retry, update link, or founder review.
@@ -150,46 +150,44 @@ export default function MrrAtRiskPage() {
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/benchmark"
-                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all hover:-translate-y-px hover:bg-gray-800 active:scale-[0.98]"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-dunlo-ink transition-transform hover:-translate-y-px hover:bg-dunlo-hover active:scale-[0.98]"
               >
                 Estimate MRR at risk
                 <ArrowRight size={16} strokeWidth={1.8} />
               </Link>
               <a
                 href={SIGNUP_URL}
-                className="inline-flex h-12 items-center justify-center rounded-full border border-gray-300 px-6 text-sm font-semibold text-gray-800 transition-all hover:-translate-y-px hover:border-gray-950 active:scale-[0.98]"
+                className="inline-flex h-12 items-center justify-center rounded-full border border-white/24 px-6 text-sm font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/6 active:scale-[0.98]"
               >
                 Connect Stripe
               </a>
             </div>
           </div>
 
-          <aside className="rounded-[1.5rem] border border-gray-200 bg-gray-50 p-5 md:p-6">
+          <aside className="rounded-2xl bg-white p-5 text-dunlo-ink md:p-6">
             <div className="flex items-center gap-3">
               <Calculator size={20} className="text-dunlo-deep" />
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              <p className="text-sm font-semibold text-dunlo-deep">
                 Core formula
               </p>
             </div>
-            <div className="mt-5 rounded-2xl border border-gray-200 bg-white p-5">
-              <p className="text-sm font-semibold text-gray-500">
+            <div className="mt-5 rounded-2xl border border-dunlo-line bg-white p-5">
+              <p className="text-sm font-semibold text-dunlo-ink/56">
                 MRR at risk
               </p>
-              <p className="mt-3 font-mono text-2xl font-bold leading-tight text-gray-950">
+              <p className="mt-3 font-mono text-2xl font-bold leading-tight text-dunlo-ink">
                 failed MRR - recovered MRR still unresolved
               </p>
             </div>
-            <p className="mt-4 text-sm leading-6 text-gray-600">
+            <p className="mt-4 text-sm leading-6 text-dunlo-ink/68">
               The useful metric is not just the failed amount. It is the amount
               still unresolved after recovery actions have had time to work.
             </p>
           </aside>
         </section>
 
-        <section className="mx-auto max-w-6xl rounded-[2rem] border border-gray-200 bg-white p-5 shadow-sm md:p-8">
-          <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-            Formula
-          </p>
+        <section className="mx-auto max-w-6xl rounded-2xl border border-dunlo-line bg-white p-5 md:p-8">
+          <p className="text-sm font-semibold text-dunlo-deep">Formula</p>
           <h2 className="mt-3 max-w-3xl text-3xl font-bold tracking-tight md:text-4xl">
             How to calculate MRR at risk from failed payments
           </h2>
@@ -197,9 +195,9 @@ export default function MrrAtRiskPage() {
             {FORMULA_STEPS.map((step, index) => (
               <article
                 key={step.title}
-                className="rounded-[1.5rem] border border-gray-200 bg-gray-50 p-5"
+                className="rounded-2xl border border-dunlo-line bg-dunlo-mist p-5"
               >
-                <span className="flex size-9 items-center justify-center rounded-full bg-gray-950 font-mono text-sm font-bold text-white">
+                <span className="flex size-9 items-center justify-center rounded-full bg-dunlo-ink font-mono text-sm font-bold text-white">
                   {index + 1}
                 </span>
                 <h3 className="mt-5 text-lg font-bold tracking-tight">
@@ -208,7 +206,7 @@ export default function MrrAtRiskPage() {
                 <p className="mt-2 font-mono text-sm font-bold text-dunlo-deep">
                   {step.formula}
                 </p>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
+                <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
                   {step.copy}
                 </p>
               </article>
@@ -216,24 +214,23 @@ export default function MrrAtRiskPage() {
           </div>
         </section>
 
-        <section className="mx-auto max-w-6xl rounded-[2rem] border border-gray-200 bg-white p-5 shadow-sm md:p-8">
+        <section className="mx-auto max-w-6xl rounded-2xl border border-dunlo-line bg-white p-5 md:p-8">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
-                Examples
-              </p>
+              <p className="text-sm font-semibold text-dunlo-deep">Examples</p>
               <h2 className="mt-3 text-3xl font-bold tracking-tight">
                 MRR at risk examples by SaaS stage
               </h2>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-gray-500">
-              These examples use public benchmark assumptions and are directional,
-              not a guarantee. Your real number depends on failure mix, billing
-              interval, card age, customer geography, and retry setup.
+            <p className="max-w-xl text-sm leading-6 text-dunlo-ink/56">
+              These examples use public benchmark assumptions and are
+              directional, not a guarantee. Your real number depends on failure
+              mix, billing interval, card age, customer geography, and retry
+              setup.
             </p>
           </div>
-          <div className="mt-7 overflow-hidden rounded-[1.5rem] border border-gray-200">
-            <div className="grid grid-cols-[1fr_0.7fr_0.8fr_0.8fr_1.2fr] border-b border-gray-200 bg-gray-50 px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] text-gray-500 max-md:hidden">
+          <div className="mt-7 overflow-hidden rounded-2xl border border-dunlo-line">
+            <div className="grid grid-cols-[1fr_0.7fr_0.8fr_0.8fr_1.2fr] border-b border-dunlo-line bg-dunlo-mist px-4 py-3 text-xs font-bold uppercase tracking-[0.12em] text-dunlo-ink/56 max-md:hidden">
               <div>Stage</div>
               <div>Rate</div>
               <div>Failed MRR</div>
@@ -243,19 +240,19 @@ export default function MrrAtRiskPage() {
             {EXAMPLES.map((example) => (
               <article
                 key={example.label}
-                className="grid gap-3 border-b border-gray-100 p-4 last:border-b-0 md:grid-cols-[1fr_0.7fr_0.8fr_0.8fr_1.2fr]"
+                className="grid gap-3 border-b border-dunlo-line/60 p-4 last:border-b-0 md:grid-cols-[1fr_0.7fr_0.8fr_0.8fr_1.2fr]"
               >
-                <p className="font-bold text-gray-950">{example.label}</p>
-                <p className="font-mono text-sm font-bold text-gray-700">
+                <p className="font-bold text-dunlo-ink">{example.label}</p>
+                <p className="font-mono text-sm font-bold text-dunlo-ink/76">
                   {example.failedRate}
                 </p>
-                <p className="font-mono text-sm font-bold text-gray-700">
+                <p className="font-mono text-sm font-bold text-dunlo-ink/76">
                   {example.failedMrr}
                 </p>
                 <p className="font-mono text-sm font-bold text-dunlo-deep">
                   {example.recoverable}
                 </p>
-                <p className="text-sm leading-6 text-gray-600">
+                <p className="text-sm leading-6 text-dunlo-ink/68">
                   {example.takeaway}
                 </p>
               </article>
@@ -264,7 +261,7 @@ export default function MrrAtRiskPage() {
         </section>
 
         <section className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[0.82fr_1.18fr]">
-          <div className="rounded-[2rem] border border-gray-900 bg-gray-950 p-7 text-white md:p-9">
+          <div className="rounded-2xl border border-dunlo-ink bg-dunlo-ink p-7 text-white md:p-9">
             <CircleDollarSign size={22} className="text-dunlo" />
             <h2 className="mt-5 text-3xl font-bold tracking-tight">
               Track the state, not just the failure.
@@ -279,13 +276,13 @@ export default function MrrAtRiskPage() {
             {RECOVERY_METRICS.map((metric) => (
               <article
                 key={metric}
-                className="flex gap-3 rounded-[1.5rem] border border-gray-200 bg-white p-5 shadow-sm"
+                className="flex gap-3 rounded-2xl border border-dunlo-line bg-white p-5"
               >
                 <BadgeCheck
                   size={18}
                   className="mt-0.5 shrink-0 text-dunlo-deep"
                 />
-                <p className="text-sm font-semibold leading-6 text-gray-700">
+                <p className="text-sm font-semibold leading-6 text-dunlo-ink/76">
                   {metric}
                 </p>
               </article>
@@ -294,17 +291,17 @@ export default function MrrAtRiskPage() {
         </section>
 
         <section className="mx-auto grid max-w-6xl gap-5 lg:grid-cols-[1.08fr_0.92fr]">
-          <div className="rounded-[2rem] border border-gray-200 bg-white p-7 shadow-sm md:p-9">
+          <div className="rounded-2xl border border-dunlo-line bg-white p-7 md:p-9">
             <div className="flex items-center gap-3">
               <MailCheck size={20} className="text-dunlo-deep" />
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo-deep">
+              <p className="text-sm font-semibold text-dunlo-deep">
                 Recovery action
               </p>
             </div>
             <h2 className="mt-5 text-3xl font-bold tracking-tight">
               Reduce MRR at risk by matching action to failure reason.
             </h2>
-            <p className="mt-4 text-sm leading-7 text-gray-600 md:text-base">
+            <p className="mt-4 text-sm leading-7 text-dunlo-ink/68 md:text-base">
               Expired cards need update links. Insufficient funds need timing.
               Bank blocks need clear context. Authentication failures need a
               confirmation path. Dunlo turns those states into recovery
@@ -312,7 +309,7 @@ export default function MrrAtRiskPage() {
             </p>
             <Link
               href="/stripe-failed-payment-email-templates"
-              className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-bold text-white transition-all hover:bg-gray-800"
+              className="mt-6 inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo-ink px-6 text-sm font-bold text-white transition-all hover:bg-dunlo-ink/90"
             >
               View email templates
               <ArrowRight size={15} />
@@ -323,7 +320,7 @@ export default function MrrAtRiskPage() {
 
         <RelatedGuidesSection />
 
-        <section className="mx-auto max-w-6xl rounded-[2rem] border border-gray-900 bg-gray-950 p-7 text-white md:p-9">
+        <section className="mx-auto max-w-6xl rounded-2xl border border-dunlo-ink bg-dunlo-ink p-7 text-white md:p-9">
           <div className="grid gap-6 md:grid-cols-[1fr_auto] md:items-center">
             <div>
               <p className="font-mono text-xs font-semibold uppercase tracking-[0.18em] text-dunlo">
@@ -339,7 +336,7 @@ export default function MrrAtRiskPage() {
             </div>
             <a
               href={SIGNUP_URL}
-              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-gray-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+              className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-dunlo-ink transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
               Start free
               <ArrowRight size={15} />
@@ -355,18 +352,20 @@ export default function MrrAtRiskPage() {
 
 function FaqSection() {
   return (
-    <section className="rounded-[2rem] border border-gray-200 bg-white p-6 shadow-sm md:p-8">
+    <section className="rounded-2xl border border-dunlo-line bg-white p-6 md:p-8">
       <div className="flex items-center gap-3">
         <ShieldCheck size={20} className="text-dunlo-deep" />
         <h2 className="text-2xl font-bold tracking-tight">MRR at risk FAQ</h2>
       </div>
-      <div className="mt-6 divide-y divide-gray-200 border-y border-gray-200">
+      <div className="mt-6 divide-y divide-dunlo-line border-y border-dunlo-line">
         {FAQS.map((faq) => (
           <div key={faq.question} className="py-5">
             <h3 className="text-base font-bold tracking-tight">
               {faq.question}
             </h3>
-            <p className="mt-2 text-sm leading-6 text-gray-600">{faq.answer}</p>
+            <p className="mt-2 text-sm leading-6 text-dunlo-ink/68">
+              {faq.answer}
+            </p>
           </div>
         ))}
       </div>
@@ -382,14 +381,16 @@ function RelatedGuidesSection() {
           <Link
             key={guide.href}
             href={guide.href}
-            className="group rounded-[2rem] border border-gray-200 bg-white p-6 shadow-sm transition-all hover:-translate-y-px hover:border-dunlo/40"
+            className="group rounded-2xl border border-dunlo-line bg-white p-6 transition-all hover:-translate-y-px hover:border-dunlo/40"
           >
             <BadgeCheck size={19} className="text-dunlo-deep" />
-            <h2 className="mt-4 text-xl font-bold tracking-tight text-gray-950">
+            <h2 className="mt-4 text-xl font-bold tracking-tight text-dunlo-ink">
               {guide.title}
             </h2>
-            <p className="mt-3 text-sm leading-6 text-gray-600">{guide.copy}</p>
-            <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-gray-950 transition-colors group-hover:text-dunlo-deep">
+            <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
+              {guide.copy}
+            </p>
+            <span className="mt-5 inline-flex items-center gap-2 text-sm font-bold text-dunlo-ink transition-colors group-hover:text-dunlo-deep">
               Open guide
               <ArrowRight size={15} strokeWidth={1.8} />
             </span>

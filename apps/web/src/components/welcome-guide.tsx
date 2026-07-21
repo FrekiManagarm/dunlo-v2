@@ -29,7 +29,7 @@ const STEPS = [
     label: "Step 4 of 4",
     title: "Revenue recovered",
     description:
-      "Track every dollar recovered. Most teams recover 40–60% of failed payments within their first week.",
+      "See failed payments, recovery activity, and customer actions in one place.",
   },
 ] as const;
 

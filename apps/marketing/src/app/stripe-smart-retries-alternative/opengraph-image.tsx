@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Smart Retries alternative",
-    metricLabel: "recovery",
-    metricValue: "layer",
   });
 }

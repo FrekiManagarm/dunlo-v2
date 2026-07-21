@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Dunlo legal",
-    metricLabel: "data",
-    metricValue: "safe",
   });
 }

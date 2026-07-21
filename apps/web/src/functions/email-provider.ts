@@ -1,17 +1,33 @@
 import { db } from "@dunlo-v2/db";
-import { emailProvider } from "@dunlo-v2/db/schema/domain";
+import { emailProvider, stripeConnection } from "@dunlo-v2/db/schema/domain";
 import { createServerFn } from "@tanstack/react-start";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 
 import { authMiddleware } from "@/middleware/auth";
-import { EMAIL_PROVIDERS, sendUserEmail, type EmailProviderType } from "@/lib/email-providers";
+import {
+  EMAIL_PROVIDERS,
+  sendUserEmail,
+  type EmailProviderType,
+} from "@/lib/email-providers";
 import { wrapEmail } from "@/lib/email-wrapper";
 
 function maskKey(plain: string): string {
   if (!plain) return "";
   const prefix = plain.slice(0, 4);
   return `${prefix}_${"*".repeat(8)}`;
+}
+
+async function markEmailConfigured(userId: string): Promise<void> {
+  await db
+    .update(stripeConnection)
+    .set({ phase: "email_configured" })
+    .where(
+      and(
+        eq(stripeConnection.userId, userId),
+        eq(stripeConnection.phase, "write_authorized"),
+      ),
+    );
 }
 
 export type EmailProviderState = {
@@ -67,16 +83,21 @@ export const getEmailProvider = createServerFn({ method: "GET" })
     };
   });
 
-const saveSchema = z.object({
-  provider: z.enum(EMAIL_PROVIDERS),
-  apiKey: z.string().max(500),
-  domain: z.string().max(200).optional(),
-  fromEmail: z.email("Invalid email"),
-  fromName: z.string().min(1).max(100),
-}).refine((value) => value.provider !== "mailgun" || Boolean(value.domain?.trim()), {
-  message: "Mailgun sending domain is required",
-  path: ["domain"],
-});
+const saveSchema = z
+  .object({
+    provider: z.enum(EMAIL_PROVIDERS),
+    apiKey: z.string().max(500),
+    domain: z.string().max(200).optional(),
+    fromEmail: z.email("Invalid email"),
+    fromName: z.string().min(1).max(100),
+  })
+  .refine(
+    (value) => value.provider !== "mailgun" || Boolean(value.domain?.trim()),
+    {
+      message: "Mailgun sending domain is required",
+      path: ["domain"],
+    },
+  );
 
 export const saveEmailProvider = createServerFn({ method: "POST" })
   .inputValidator((input) => saveSchema.parse(input))
@@ -124,6 +145,7 @@ export const saveEmailProvider = createServerFn({ method: "POST" })
         .where(eq(emailProvider.userId, userId));
     }
 
+    await markEmailConfigured(userId);
     return { ok: true };
   });
 
@@ -162,5 +184,6 @@ export const sendTestEmail = createServerFn({ method: "POST" })
       `),
     });
 
+    await markEmailConfigured(userId);
     return { ok: true };
   });

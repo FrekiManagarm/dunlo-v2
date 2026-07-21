@@ -15,6 +15,7 @@ import { generateEscalationDraft } from "@/functions/escalations";
 import { storeBenchmarkSnapshotFromPaymentIntents } from "@/functions/benchmark";
 import { authMiddleware } from "@/middleware/auth";
 import { getConnectedStripe } from "@/lib/stripe";
+import { decryptOptionalWebhookSecret } from "@/lib/stripe-connection";
 
 export type DecryptedStripeConnection = {
   id: string;
@@ -23,8 +24,10 @@ export type DecryptedStripeConnection = {
   accessToken: string;
   publishableKey: string | null;
   webhookEndpointId: string | null;
-  webhookSecret: string;
+  webhookSecret: string | null;
   scope: string | null;
+  phase: string;
+  recoveryActivatedAt: Date | null;
   escalationThreshold: number | null;
   escalationCurrency: string;
 };
@@ -49,8 +52,10 @@ export async function getStripeConnection(
     accessToken: decrypt(row.accessToken),
     publishableKey: row.publishableKey,
     webhookEndpointId: row.webhookEndpointId,
-    webhookSecret: decrypt(row.webhookSecret),
+    webhookSecret: decryptOptionalWebhookSecret(row.webhookSecret, decrypt),
     scope: row.scope,
+    phase: row.phase,
+    recoveryActivatedAt: row.recoveryActivatedAt,
     escalationThreshold: row.escalationThreshold,
     escalationCurrency: row.escalationCurrency,
   };
@@ -75,8 +80,10 @@ export async function getStripeConnectionById(
     accessToken: decrypt(row.accessToken),
     publishableKey: row.publishableKey,
     webhookEndpointId: row.webhookEndpointId,
-    webhookSecret: decrypt(row.webhookSecret),
+    webhookSecret: decryptOptionalWebhookSecret(row.webhookSecret, decrypt),
     scope: row.scope,
+    phase: row.phase,
+    recoveryActivatedAt: row.recoveryActivatedAt,
     escalationThreshold: row.escalationThreshold,
     escalationCurrency: row.escalationCurrency,
   };
@@ -101,8 +108,10 @@ export async function getStripeConnectionByAccountId(
     accessToken: decrypt(row.accessToken),
     publishableKey: row.publishableKey,
     webhookEndpointId: row.webhookEndpointId,
-    webhookSecret: decrypt(row.webhookSecret),
+    webhookSecret: decryptOptionalWebhookSecret(row.webhookSecret, decrypt),
     scope: row.scope,
+    phase: row.phase,
+    recoveryActivatedAt: row.recoveryActivatedAt,
     escalationThreshold: row.escalationThreshold,
     escalationCurrency: row.escalationCurrency,
   };
@@ -127,8 +136,7 @@ const DEFAULT_SEQUENCES: DefaultSequence[] = [
       {
         stepNumber: 1,
         delayHours: 0,
-        subject:
-          "Your card has expired — update to keep {{product_name}}",
+        subject: "Your card has expired — update to keep {{product_name}}",
         body: `Hi {{customer_name}},\n\nWe tried to charge {{amount}} to your card ending in {{last_four}}, but it has expired.\n\nUpdate your card here to keep things running: {{update_payment_url}}\n\nThanks,\n{{sender_name}}`,
       },
       {
@@ -140,8 +148,7 @@ const DEFAULT_SEQUENCES: DefaultSequence[] = [
       {
         stepNumber: 3,
         delayHours: 72,
-        subject:
-          "Final notice: your {{product_name}} subscription is at risk",
+        subject: "Final notice: your {{product_name}} subscription is at risk",
         body: `Hi {{customer_name}},\n\nThis is the last reminder before we pause your subscription. The {{amount}} charge is still failing because your card expired.\n\nUpdate now: {{update_payment_url}}\n\n{{sender_name}}`,
       },
     ],
@@ -225,7 +232,10 @@ export const getOnboardingState = createServerFn({ method: "GET" })
     };
   });
 
-export async function seedDefaultSequences(userId: string): Promise<void> {
+export async function seedDefaultSequences(
+  userId: string,
+  options: { isActive?: boolean } = {},
+): Promise<void> {
   for (const seq of DEFAULT_SEQUENCES) {
     const existing = await db
       .select({ id: recoverySequence.id })
@@ -246,7 +256,7 @@ export async function seedDefaultSequences(userId: string): Promise<void> {
       userId,
       failureCode: seq.failureCode,
       name: seq.name,
-      isActive: true,
+      isActive: options.isActive ?? false,
     });
 
     for (const step of seq.steps) {
@@ -329,11 +339,11 @@ export async function importExistingFailedPayments(
     const customerId =
       typeof pi.customer === "string"
         ? pi.customer
-        : (pi.customer as { id: string } | null)?.id ?? "";
+        : ((pi.customer as { id: string } | null)?.id ?? "");
     const invoiceId =
       typeof pi.invoice === "string"
         ? pi.invoice
-        : (pi.invoice as { id: string } | null)?.id ?? null;
+        : ((pi.invoice as { id: string } | null)?.id ?? null);
 
     const threshold = connection.escalationThreshold;
     const shouldEscalate =
@@ -421,10 +431,8 @@ export async function importExistingFailedPayments(
 
 export const syncExistingFailedPayments = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
-  .handler(async ({ context }) => {
-    if (!context.session?.user) throw new Error("Unauthorized");
-    const userId = context.session.user.id;
-    const connection = await getStripeConnection(userId);
-    if (!connection) throw new Error("Stripe not connected");
-    return importExistingFailedPayments(userId, connection);
+  .handler(async () => {
+    throw new Error(
+      "Historical failed payments cannot be imported into recovery.",
+    );
   });

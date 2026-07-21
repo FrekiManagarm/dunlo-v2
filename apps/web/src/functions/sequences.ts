@@ -1,5 +1,9 @@
 import { db } from "@dunlo-v2/db";
-import { recoverySequence, sequenceStep } from "@dunlo-v2/db/schema/domain";
+import {
+  recoverySequence,
+  sequenceStep,
+  stripeConnection,
+} from "@dunlo-v2/db/schema/domain";
 import { createServerFn } from "@tanstack/react-start";
 import { and, asc, eq } from "drizzle-orm";
 import { z } from "zod";
@@ -125,6 +129,20 @@ export const toggleSequence = createServerFn({ method: "POST" })
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 
+    const [confirmationInProgress] = await db
+      .select({ id: stripeConnection.id })
+      .from(stripeConnection)
+      .where(
+        and(
+          eq(stripeConnection.userId, userId),
+          eq(stripeConnection.phase, "recovery_confirming"),
+        ),
+      )
+      .limit(1);
+    if (confirmationInProgress) {
+      throw new Error("Recovery confirmation is in progress. Please retry.");
+    }
+
     const [owned] = await db
       .select({ id: recoverySequence.id })
       .from(recoverySequence)
@@ -137,6 +155,20 @@ export const toggleSequence = createServerFn({ method: "POST" })
       .limit(1);
 
     if (!owned) throw new Error("Sequence not found");
+    if (data.isActive) {
+      const [connection] = await db
+        .select({ id: stripeConnection.id })
+        .from(stripeConnection)
+        .where(
+          and(
+            eq(stripeConnection.userId, userId),
+            eq(stripeConnection.phase, "recovery_active"),
+          ),
+        )
+        .limit(1);
+      if (!connection)
+        throw new Error("Confirm recovery before activating sequences");
+    }
 
     await db
       .update(recoverySequence)
@@ -228,11 +260,41 @@ export const resetSequencesToDefault = createServerFn({ method: "POST" })
     if (!context.session?.user) throw new Error("Unauthorized");
     const userId = context.session.user.id;
 
+    const [confirmationInProgress] = await db
+      .select({ id: stripeConnection.id })
+      .from(stripeConnection)
+      .where(
+        and(
+          eq(stripeConnection.userId, userId),
+          eq(stripeConnection.phase, "recovery_confirming"),
+        ),
+      )
+      .limit(1);
+    if (confirmationInProgress) {
+      throw new Error("Recovery confirmation is in progress. Please retry.");
+    }
+
+    const [connection] = await db
+      .select({ phase: stripeConnection.phase })
+      .from(stripeConnection)
+      .where(
+        and(
+          eq(stripeConnection.userId, userId),
+          eq(stripeConnection.phase, "recovery_active"),
+        ),
+      )
+      .limit(1);
+    if (connection) {
+      throw new Error(
+        "Resetting active recovery sequences requires a new confirmation",
+      );
+    }
+
     await db
       .delete(recoverySequence)
       .where(eq(recoverySequence.userId, userId));
 
-    await seedDefaultSequences(userId);
+    await seedDefaultSequences(userId, { isActive: false });
 
     return { ok: true };
   });

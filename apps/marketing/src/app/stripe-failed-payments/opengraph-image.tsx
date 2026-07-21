@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Stripe payment recovery",
-    metricLabel: "failure",
-    metricValue: "code",
   });
 }

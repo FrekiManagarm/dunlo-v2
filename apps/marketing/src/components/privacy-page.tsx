@@ -1,55 +1,42 @@
-import Link from "next/link";
-import { ArrowLeft } from "lucide-react";
-
 import { Footer } from "@/components/landing/footer";
-import { Logo } from "@/components/logo";
+import { Nav } from "@/components/landing/nav";
 import { SITE_NAME } from "@/lib/seo";
 
 const UPDATED_AT = "May 19, 2026";
 export function PrivacyPolicyPage() {
   return (
-    <div className="min-h-dvh bg-stone-100 font-sans text-gray-900">
-      <header className="border-b border-gray-200 bg-white">
-        <div className="mx-auto flex max-w-5xl items-center justify-between px-5 py-5">
-          <Link href="/" aria-label="Back to Dunlo home">
-            <Logo size={24} />
-          </Link>
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 rounded-full border border-gray-200 px-4 py-2 text-sm font-semibold text-gray-700 transition-colors hover:bg-gray-50 hover:text-gray-900"
-          >
-            <ArrowLeft size={15} />
-            Home
-          </Link>
-        </div>
-      </header>
+    <div className="min-h-dvh bg-dunlo-ground font-sans text-dunlo-ink">
+      <Nav />
 
-      <main className="mx-auto max-w-5xl px-5 py-16 md:py-20">
-        <div className="max-w-3xl">
-          <p className="text-sm font-semibold uppercase tracking-widest text-dunlo-deep">
-            {SITE_NAME} legal
-          </p>
-          <h1 className="mt-4 text-4xl font-bold tracking-tight text-gray-950 md:text-6xl">
-            Privacy Policy
-          </h1>
-          <p className="mt-5 text-base leading-8 text-gray-600">
-            Dunlo helps SaaS teams recover failed payments. This policy explains
-            what data we collect, why we use it, how Google sign-in data is
-            handled, and how you can contact us about your information.
-          </p>
-          <p className="mt-4 text-sm font-medium text-gray-500">
-            Last updated: {UPDATED_AT}
-          </p>
-        </div>
+      <main>
+        <header className="bg-dunlo-ink px-5 pb-20 pt-36 text-white md:pb-24 md:pt-44">
+          <div className="mx-auto max-w-5xl">
+            <p className="text-sm font-semibold text-dunlo">
+              {SITE_NAME} legal
+            </p>
+            <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[0.96] tracking-[-0.04em] md:text-6xl">
+              Privacy Policy
+            </h1>
+            <p className="mt-6 max-w-2xl text-base leading-8 text-white/68">
+              Dunlo helps SaaS teams recover failed payments. This policy
+              explains what data we collect, why we use it, how Google sign-in
+              data is handled, and how you can contact us about your
+              information.
+            </p>
+            <p className="mt-5 text-sm font-medium text-white/48">
+              Last updated: {UPDATED_AT}
+            </p>
+          </div>
+        </header>
 
-        <div className="mt-14 grid gap-10 border-t border-gray-300 pt-10 lg:grid-cols-[220px_1fr]">
-          <aside className="text-sm font-semibold text-gray-500">
+        <div className="mx-auto grid max-w-5xl gap-10 px-5 py-16 lg:grid-cols-[220px_1fr] md:py-20">
+          <aside className="text-sm font-semibold text-dunlo-ink/56">
             Applies to dunlo.io and the Dunlo app.
           </aside>
 
-          <div className="space-y-12 text-sm leading-7 text-gray-600">
+          <div className="space-y-12 text-sm leading-7 text-dunlo-ink/68">
             <section>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-950">
+              <h2 className="text-2xl font-bold tracking-tight text-dunlo-ink">
                 Information we collect
               </h2>
               <p className="mt-4">
@@ -68,7 +55,7 @@ export function PrivacyPolicyPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-950">
+              <h2 className="text-2xl font-bold tracking-tight text-dunlo-ink">
                 Google user data
               </h2>
               <p className="mt-4">
@@ -90,7 +77,7 @@ export function PrivacyPolicyPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-950">
+              <h2 className="text-2xl font-bold tracking-tight text-dunlo-ink">
                 How we use data
               </h2>
               <p className="mt-4">
@@ -103,7 +90,7 @@ export function PrivacyPolicyPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-950">
+              <h2 className="text-2xl font-bold tracking-tight text-dunlo-ink">
                 Sharing and processors
               </h2>
               <p className="mt-4">
@@ -116,7 +103,7 @@ export function PrivacyPolicyPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-950">
+              <h2 className="text-2xl font-bold tracking-tight text-dunlo-ink">
                 Cookies and security
               </h2>
               <p className="mt-4">
@@ -129,7 +116,7 @@ export function PrivacyPolicyPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-950">
+              <h2 className="text-2xl font-bold tracking-tight text-dunlo-ink">
                 Retention and deletion
               </h2>
               <p className="mt-4">
@@ -143,7 +130,7 @@ export function PrivacyPolicyPage() {
             </section>
 
             <section>
-              <h2 className="text-2xl font-bold tracking-tight text-gray-950">
+              <h2 className="text-2xl font-bold tracking-tight text-dunlo-ink">
                 Contact
               </h2>
               <p className="mt-4">

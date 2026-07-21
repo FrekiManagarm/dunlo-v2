@@ -26,7 +26,5 @@ export default async function Image({ params }: VsOgImageProps) {
     title: page.headline,
     description: page.metaDescription,
     badge: `${page.competitorName} comparison`,
-    metricLabel: "compare",
-    metricValue: "vs",
   });
 }

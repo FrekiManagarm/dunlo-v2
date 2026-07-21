@@ -41,11 +41,15 @@ export const Route = createFileRoute("/api/stripe/webhook/$accountId")({
         if (!connection) {
           return new Response("Unknown connected account", { status: 400 });
         }
-
         const webhookSecret =
           env.NODE_ENV === "development"
             ? env.STRIPE_WEBHOOK_SECRET
             : connection.webhookSecret;
+        if (!webhookSecret) {
+          return new Response("Webhook is not configured for this connection", {
+            status: 400,
+          });
+        }
 
         const stripe = getConnectedStripe(connection.accessToken);
         let event: Stripe.Event;
@@ -64,6 +68,14 @@ export const Route = createFileRoute("/api/stripe/webhook/$accountId")({
             `[stripe/webhook/$accountId] account mismatch: expected ${accountId}, got ${event.account}`,
           );
           return new Response("Account mismatch", { status: 400 });
+        }
+        if (
+          connection.scope !== "read_write" ||
+          connection.phase !== "recovery_active" ||
+          !connection.recoveryActivatedAt ||
+          event.created * 1000 < connection.recoveryActivatedAt.getTime()
+        ) {
+          return Response.json({ received: true, ignored: true });
         }
 
         try {

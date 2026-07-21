@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Public report",
-    metricLabel: "ranges",
-    metricValue: "4",
   });
 }

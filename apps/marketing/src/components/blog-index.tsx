@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
-import { BlogNav } from "@/components/blog-nav";
 import type { BlogPostMeta } from "@/lib/blog";
 
 type Post = BlogPostMeta;
@@ -20,7 +19,7 @@ function formatDate(date: string) {
 
 function TagPill({ tag }: { tag: string }) {
   return (
-    <span className="text-xs px-2.5 py-0.5 rounded-full bg-dunlo/10 text-dunlo-deep font-medium border border-dunlo/20">
+    <span className="rounded-full border border-dunlo-ink/18 px-3 py-1 text-xs font-semibold text-dunlo-ink/68">
       {tag}
     </span>
   );
@@ -30,40 +29,33 @@ function FeaturedCard({ post }: { post: Post }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group relative block overflow-hidden rounded-2xl border border-border bg-card p-8 md:p-10 hover:border-dunlo/40 transition-all duration-300 hover:shadow-[0_12px_40px_-12px_rgba(0,232,123,0.18)]"
+      className="group block rounded-2xl bg-dunlo p-7 text-dunlo-ink transition-transform duration-300 ease-out hover:-translate-y-1 md:p-10"
     >
-      <div className="absolute left-0 top-8 bottom-8 w-0.75 bg-dunlo rounded-r-full opacity-50 group-hover:opacity-100 transition-opacity duration-300" />
-
-      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6">
-        <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-3 mb-5">
-            <span className="font-mono text-xs text-muted-foreground tabular-nums select-none">
-              01
-            </span>
-            <div className="flex flex-wrap gap-1.5">
-              {post.tags.map((tag) => (
-                <TagPill key={tag} tag={tag} />
-              ))}
-            </div>
+      <div className="grid gap-8 md:grid-cols-[1fr_auto] md:items-start">
+        <div className="min-w-0">
+          <div className="mb-7 flex flex-wrap gap-2">
+            {post.tags.map((tag) => (
+              <TagPill key={tag} tag={tag} />
+            ))}
           </div>
 
-          <h2 className="text-2xl md:text-3xl font-bold tracking-tight leading-snug mb-3 group-hover:text-dunlo-dim transition-colors duration-200">
+          <h2 className="mb-4 max-w-4xl text-3xl font-bold leading-[1.02] tracking-[-0.035em] md:text-5xl">
             {post.title}
           </h2>
-          <p className="text-muted-foreground leading-relaxed max-w-[60ch]">
+          <p className="max-w-[62ch] text-base leading-7 text-dunlo-ink/68 md:text-lg md:leading-8">
             {post.description}
           </p>
         </div>
 
-        <div className="flex md:flex-col items-center md:items-end justify-between md:justify-start gap-4 md:gap-3 shrink-0 md:pt-0.5">
-          <time className="text-xs text-muted-foreground font-medium tabular-nums">
+        <div className="flex items-center justify-between gap-5 md:flex-col md:items-end">
+          <time className="font-mono text-xs font-semibold tabular-nums text-dunlo-ink/54">
             {formatDate(post.date)}
           </time>
-          <span className="inline-flex items-center gap-1.5 text-sm font-semibold text-dunlo-dim group-hover:gap-2.5 transition-all duration-200">
+          <span className="inline-flex min-h-11 items-center gap-2 rounded-full bg-dunlo-ink px-5 text-sm font-bold text-white">
             Read article
             <ArrowRight
               size={14}
-              className="group-hover:translate-x-0.5 transition-transform duration-200"
+              className="transition-transform group-hover:translate-x-1"
             />
           </span>
         </div>
@@ -76,37 +68,37 @@ function ArticleCard({ post, postNumber }: { post: Post; postNumber: string }) {
   return (
     <Link
       href={`/blog/${post.slug}`}
-      className="group flex flex-col h-full rounded-2xl border border-border bg-card p-6 hover:border-dunlo/40 transition-all duration-300 hover:shadow-[0_8px_28px_-8px_rgba(0,232,123,0.14)]"
+      className="group flex h-full flex-col border-t border-dunlo-line py-7 transition-colors duration-300 hover:border-dunlo/55 md:py-8"
     >
-      <div className="flex items-center justify-between mb-4">
-        <span className="font-mono text-xs text-muted-foreground tabular-nums select-none">
+      <div className="mb-5 flex items-center justify-between">
+        <span className="font-mono text-xs tabular-nums text-dunlo-ink/46 select-none">
           {postNumber}
         </span>
-        <time className="text-xs text-muted-foreground tabular-nums">
+        <time className="text-xs tabular-nums text-dunlo-ink/46">
           {formatDate(post.date)}
         </time>
       </div>
 
-      <div className="flex flex-wrap gap-1.5 mb-3">
+      <div className="mb-4 flex flex-wrap gap-2">
         {post.tags.map((tag) => (
           <TagPill key={tag} tag={tag} />
         ))}
       </div>
 
-      <h2 className="text-lg font-semibold leading-snug mb-2 group-hover:text-dunlo-dim transition-colors duration-200">
+      <h2 className="mb-3 text-2xl font-bold leading-tight tracking-[-0.025em] transition-colors duration-200 group-hover:text-dunlo-deep">
         {post.title}
       </h2>
 
-      <p className="text-sm text-muted-foreground line-clamp-2 mb-5 leading-relaxed">
+      <p className="mb-6 line-clamp-3 text-sm leading-6 text-dunlo-ink/62">
         {post.description}
       </p>
 
       <div className="mt-auto">
-        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-dunlo-dim group-hover:gap-2 transition-all duration-200">
+        <span className="inline-flex items-center gap-2 text-sm font-bold text-dunlo-deep">
           Read article
           <ArrowRight
-            size={12}
-            className="group-hover:translate-x-0.5 transition-transform duration-200"
+            size={14}
+            className="transition-transform group-hover:translate-x-1"
           />
         </span>
       </div>
@@ -130,35 +122,35 @@ export function BlogIndex({ posts }: { posts: Post[] }) {
   const [featured, ...rest] = posts;
 
   return (
-    <>
-      <BlogNav />
-      <main className="max-w-5xl mx-auto px-6 pt-28 pb-24">
+    <main className="bg-dunlo-ground pb-24">
+      <section className="relative overflow-hidden bg-dunlo-ink px-4 pb-20 pt-36 text-white md:px-6 md:pb-28 md:pt-44">
+        <div className="landing-orbit" aria-hidden="true" />
         <motion.div
-          className="mb-14"
+          className="relative mx-auto max-w-[1400px]"
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={spring}
         >
-          <div className="flex items-center gap-3 mb-5">
-            <span className="block w-6 h-0.5 bg-dunlo rounded-full" />
-            <span className="text-xs font-semibold uppercase tracking-widest text-dunlo-dim">
-              Resources
-            </span>
+          <div className="mb-7 flex items-center gap-3 text-sm font-semibold text-white/68">
+            <span className="size-2 rounded-full bg-dunlo" />
+            Recovery field notes
           </div>
-          <h1 className="text-5xl md:text-6xl font-bold tracking-tight leading-none mb-4">
-            Stripe payment recovery blog
+          <h1 className="max-w-5xl text-balance text-[clamp(3rem,6vw,5.5rem)] font-bold leading-[0.92] tracking-[-0.04em]">
+            Practical thinking for failed-payment recovery.
           </h1>
-          <p className="text-muted-foreground text-lg max-w-[48ch]">
+          <p className="mt-7 max-w-[58ch] text-pretty text-base leading-7 text-white/68 md:text-lg md:leading-8">
             Practical guides for recovering failed Stripe payments and reducing
             involuntary churn.
           </p>
         </motion.div>
+      </section>
 
+      <section className="mx-auto max-w-[1400px] px-4 pt-12 md:px-6 md:pt-16">
         {posts.length === 0 && <EmptyState />}
 
         {featured && (
           <motion.div
-            className="mb-5"
+            className="mb-12"
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ ...spring, delay: 0.08 }}
@@ -168,7 +160,7 @@ export function BlogIndex({ posts }: { posts: Post[] }) {
         )}
 
         {rest.length > 0 && (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div className="grid grid-cols-1 gap-x-12 md:grid-cols-2">
             {rest.map((post, i) => (
               <motion.div
                 key={post.slug}
@@ -184,7 +176,7 @@ export function BlogIndex({ posts }: { posts: Post[] }) {
             ))}
           </div>
         )}
-      </main>
-    </>
+      </section>
+    </main>
   );
 }

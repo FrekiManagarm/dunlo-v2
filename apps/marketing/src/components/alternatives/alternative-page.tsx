@@ -8,7 +8,8 @@ import {
 } from "lucide-react";
 import { SIGNUP_URL } from "@/lib/app-url";
 import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials";
-import { Logo } from "@/components/logo";
+import { Footer } from "@/components/landing/footer";
+import { Nav } from "@/components/landing/nav";
 import { PublicProofLayer } from "@/components/public-proof-layer";
 import { getRelatedAlternativeSlugs } from "@/lib/related-alternatives";
 
@@ -100,7 +101,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Performance-based pricing with no fixed public tiers; Slicker says customers pay only when it outperforms their current solution.",
         dunlo:
-          "Free during beta. Planned tiers are flat by MRR, starting at $19/mo, with no percentage of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Retry engine",
@@ -193,7 +194,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Pricing model",
         competitor: "Starts from $149/mo, with public pricing based on MRR.",
         dunlo:
-          "Free during beta. Planned tiers are flat by MRR, with no percentage of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Recovery focus",
@@ -281,7 +282,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Part of Stripe Billing and Revenue Recovery tooling, not a separate standalone dunning app.",
         dunlo:
-          "Free during beta. Planned tiers are flat by MRR, with no percentage of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Recovery focus",
@@ -360,7 +361,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Paddle's product page presents Retain as built into Paddle Billing at no extra cost; older Retain help pages reference performance-based and flat-fee plans.",
         dunlo:
-          "Free during beta. Planned tiers are flat by MRR, with no percentage of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Recovery focus",
@@ -502,7 +503,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Pricing",
         competitor: "Starts at $12/mo, with tiers based on monthly events.",
         dunlo:
-          "Starts at $19/mo after beta, with flat MRR-based tiers and no cut of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Stripe-native",
@@ -596,7 +597,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Metrics starts at $129/mo up to $10k MRR; Recover starts at $69/mo up to $10k MRR.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo with no percentage of recovered revenue.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Best fit",
@@ -681,7 +682,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Flat monthly pricing: Rise at $59/mo up to $75k MRR, Surge at $159/mo up to $250k MRR.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo, with no recovered-revenue cut.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Setup motion",
@@ -760,7 +761,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Starter is listed at $250/mo billed yearly, for teams with less than $5k/mo churn volume.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo and avoid recovered-revenue percentages.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Best fit",
@@ -845,7 +846,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Free up to $2,500 in monthly tracked revenue, then 1% of tracked revenue on Pro.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo for Stripe recovery.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
     ],
     competitorUseCases: [
@@ -918,7 +919,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         label: "Pricing entry",
         competitor: "ProfitWell Metrics is free.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo because Dunlo executes recovery workflows.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Best fit",
@@ -1003,7 +1004,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Smart Dunning is listed in the Performance plan at $7,188/yr for up to $100k billing/mo.",
         dunlo:
-          "Free during beta. Planned tiers start at $19/mo for focused recovery.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Best fit",
@@ -1305,7 +1306,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
         competitor:
           "Public site positions pricing as 10% of recovered revenue.",
         dunlo:
-          "Free during beta. Planned tiers are flat by MRR with no recovered-revenue percentage.",
+          "Free during beta. Future pricing will be communicated before billing starts. No customer will be charged without notice and consent.",
       },
       {
         label: "Recovery scope",
@@ -1862,67 +1863,49 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
     );
 
   return (
-    <div className="min-h-dvh overflow-x-hidden bg-stone-100 font-sans text-gray-950">
-      <header className="mx-auto flex w-full max-w-6xl items-center justify-between px-4 py-4 md:px-6 md:py-6">
-        <Link href="/" aria-label="Dunlo home">
-          <Logo />
-        </Link>
-        <nav className="flex items-center gap-5 text-sm font-medium text-gray-600">
-          <Link
-            href="/alternatives"
-            className="transition-colors hover:text-gray-950"
-          >
-            Alternatives
-          </Link>
-          <Link
-            href={SIGNUP_URL}
-            className="rounded-full bg-gray-950 px-4 py-2 text-white transition-all hover:bg-gray-800 active:scale-[0.98]"
-          >
-            Start free
-          </Link>
-        </nav>
-      </header>
+    <div className="min-h-dvh overflow-x-hidden bg-dunlo-ground font-sans text-dunlo-ink">
+      <Nav />
 
-      <main className="mx-auto w-full max-w-6xl space-y-4 px-3 pb-8 md:px-4">
-        <section className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white shadow-[0_34px_100px_-72px_rgba(15,23,42,0.7)]">
+      <main className="mx-auto w-full max-w-6xl space-y-4 px-3 pb-8 pt-24 md:px-4 md:pt-28">
+        <section className="overflow-hidden rounded-2xl bg-dunlo-ink text-white">
           <div className="grid gap-0 lg:grid-cols-[1.02fr_0.98fr]">
             <div className="min-w-0 px-6 py-10 md:px-10 md:py-14 lg:px-14">
-              <div className="inline-flex items-center gap-2 rounded-full border border-dunlo/25 bg-dunlo/10 px-3 py-1.5 text-sm font-semibold text-dunlo-deep">
+              <div className="inline-flex items-center gap-2 text-sm font-semibold text-dunlo">
                 <BadgeCheck size={15} strokeWidth={2.1} />
                 {page.eyebrow}
               </div>
-              <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[1.04] tracking-tight text-gray-950 md:text-6xl">
+              <h1 className="mt-5 max-w-3xl text-4xl font-bold leading-[0.96] tracking-[-0.04em] md:text-6xl">
                 {page.headline}
               </h1>
-              <p className="mt-6 max-w-2xl text-base leading-8 text-gray-600 md:text-lg">
+              <p className="mt-6 max-w-2xl text-base leading-8 text-white/68 md:text-lg">
                 {page.intro}
               </p>
               <div className="mt-8 flex flex-col gap-3 sm:flex-row">
                 <Link
                   href={SIGNUP_URL}
-                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-gray-950 px-6 text-sm font-semibold text-white transition-all hover:bg-gray-800 active:scale-[0.98]"
+                  className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-bold text-dunlo-ink transition-transform hover:-translate-y-px hover:bg-dunlo-hover active:scale-[0.98]"
                 >
                   Start free
                   <ArrowRight size={15} />
                 </Link>
                 <a
                   href="#comparison"
-                  className="inline-flex h-12 items-center justify-center rounded-full border border-gray-200 px-6 text-sm font-semibold text-gray-900 transition-colors hover:border-gray-300 hover:bg-gray-50"
+                  className="inline-flex h-12 items-center justify-center rounded-full border border-white/24 px-6 text-sm font-semibold text-white transition-colors hover:border-white/60 hover:bg-white/6"
                 >
                   Compare details
                 </a>
               </div>
             </div>
 
-            <aside className="min-w-0 border-t border-gray-200 bg-gray-950 px-5 py-6 text-white md:px-8 md:py-8 lg:border-l lg:border-t-0 lg:px-10 lg:py-10">
-              <div className="rounded-[1.5rem] border border-white/10 bg-white/6 p-5 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]">
-                <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo">
+            <aside className="min-w-0 border-t border-dunlo-ink/14 bg-dunlo px-5 py-6 text-dunlo-ink md:px-8 md:py-8 lg:border-l lg:border-t-0 lg:px-10 lg:py-10">
+              <div className="rounded-2xl border border-dunlo-ink/14 p-5">
+                <p className="text-sm font-semibold text-dunlo-ink/62">
                   Fast verdict
                 </p>
                 <p className="mt-4 text-2xl font-bold leading-tight tracking-tight">
                   Choose the smallest tool that fixes the failed-payment moment.
                 </p>
-                <div className="mt-6 divide-y divide-white/10 border-y border-white/10">
+                <div className="mt-6 divide-y divide-dunlo-ink/14 border-y border-dunlo-ink/14">
                   <SummaryBlock
                     label={page.competitorName}
                     text={page.competitorSummary}
@@ -1936,7 +1919,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
                 </div>
                 <Link
                   href="/benchmark"
-                  className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-dunlo px-5 text-sm font-bold text-gray-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+                  className="mt-6 inline-flex h-12 w-full items-center justify-center gap-2 rounded-full bg-dunlo px-5 text-sm font-bold text-dunlo-ink transition-all hover:bg-dunlo-hover active:scale-[0.98]"
                 >
                   Estimate my failed MRR
                   <ArrowRight size={15} />
@@ -1947,13 +1930,13 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
         </section>
 
         <section className="grid gap-4 md:grid-cols-[0.78fr_1.22fr]">
-          <div className="rounded-[1.5rem] border border-gray-200 bg-white p-6 shadow-sm">
+          <div className="rounded-2xl border border-dunlo-line bg-white p-6">
             <div className="flex items-center gap-3">
               <span className="flex size-10 items-center justify-center rounded-full bg-dunlo/12 text-dunlo-deep">
                 <Gauge size={18} strokeWidth={2.1} />
               </span>
               <div>
-                <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-400">
+                <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo-ink/46">
                   Conversion path
                 </p>
                 <h2 className="mt-1 text-xl font-bold tracking-tight">
@@ -1961,24 +1944,22 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
                 </h2>
               </div>
             </div>
-            <p className="mt-4 text-sm leading-6 text-gray-600">
+            <p className="mt-4 text-sm leading-6 text-dunlo-ink/68">
               Use the benchmark first. It gives visitors a useful estimate
               before signup and keeps the next step lighter than connecting an
               account immediately.
             </p>
           </div>
 
-          <div className="rounded-[1.5rem] border border-dunlo/25 bg-dunlo/[0.07] p-6">
-            <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo-deep">
-              Dunlo fit
-            </p>
+          <div className="rounded-2xl border border-dunlo/25 bg-dunlo/[0.07] p-6">
+            <p className="text-sm font-semibold text-dunlo-deep">Dunlo fit</p>
             <div className="mt-4 grid gap-3 md:grid-cols-3">
               {page.dunloUseCases.slice(0, 3).map((item) => (
                 <div key={item} className="flex gap-3">
-                  <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-dunlo text-gray-950">
+                  <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-dunlo text-dunlo-ink">
                     <Check size={14} strokeWidth={2.4} />
                   </span>
-                  <p className="text-sm font-semibold leading-6 text-gray-800">
+                  <p className="text-sm font-semibold leading-6 text-dunlo-ink/88">
                     {item}
                   </p>
                 </div>
@@ -1992,12 +1973,12 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             {page.decisionSections.map((section) => (
               <article
                 key={section.title}
-                className="rounded-[1.5rem] border border-gray-200 bg-white p-5 shadow-sm"
+                className="rounded-2xl border border-dunlo-line bg-white p-5"
               >
-                <h2 className="text-base font-bold tracking-tight text-gray-950">
+                <h2 className="text-base font-bold tracking-tight text-dunlo-ink">
                   {section.title}
                 </h2>
-                <p className="mt-3 text-sm leading-6 text-gray-600">
+                <p className="mt-3 text-sm leading-6 text-dunlo-ink/68">
                   {section.body}
                 </p>
               </article>
@@ -2011,18 +1992,18 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
 
         <section
           id="comparison"
-          className="overflow-hidden rounded-[2rem] border border-gray-200 bg-white"
+          className="overflow-hidden rounded-2xl border border-dunlo-line bg-white"
         >
-          <div className="flex flex-col gap-3 border-b border-gray-200 bg-stone-50 px-5 py-6 md:flex-row md:items-end md:justify-between md:px-8">
+          <div className="flex flex-col gap-3 border-b border-dunlo-line bg-dunlo-ground px-5 py-6 md:flex-row md:items-end md:justify-between md:px-8">
             <div>
-              <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-gray-500">
+              <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo-ink/56">
                 Comparison
               </p>
-              <h2 className="mt-2 text-2xl font-bold tracking-tight text-gray-950 md:text-3xl">
+              <h2 className="mt-2 text-2xl font-bold tracking-tight text-dunlo-ink md:text-3xl">
                 What changes in practice
               </h2>
             </div>
-            <p className="max-w-xl text-sm leading-6 text-gray-500">
+            <p className="max-w-xl text-sm leading-6 text-dunlo-ink/56">
               This comparison is based on public product pages and
               documentation. Dunlo details reflect the current beta offer.
             </p>
@@ -2031,11 +2012,11 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
           <div className="overflow-x-auto px-4 py-2 md:px-8 md:py-4">
             <table className="w-full min-w-190 border-collapse text-left">
               <thead>
-                <tr className="border-b border-gray-200">
-                  <th className="w-[22%] py-4 pr-6 text-xs font-semibold uppercase tracking-[0.14em] text-gray-500">
+                <tr className="border-b border-dunlo-line">
+                  <th className="w-[22%] py-4 pr-6 text-xs font-semibold uppercase tracking-[0.14em] text-dunlo-ink/56">
                     Criteria
                   </th>
-                  <th className="w-[39%] px-6 py-4 text-sm font-semibold text-gray-950">
+                  <th className="w-[39%] px-6 py-4 text-sm font-semibold text-dunlo-ink">
                     {page.competitorName}
                   </th>
                   <th className="w-[39%] px-6 py-4 text-sm font-semibold text-dunlo-deep">
@@ -2045,14 +2026,14 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
               </thead>
               <tbody>
                 {page.comparisonRows.map((row) => (
-                  <tr key={row.label} className="border-b border-gray-100">
-                    <th className="py-5 pr-6 align-top text-sm font-semibold text-gray-950">
+                  <tr key={row.label} className="border-b border-dunlo-line/60">
+                    <th className="py-5 pr-6 align-top text-sm font-semibold text-dunlo-ink">
                       {row.label}
                     </th>
-                    <td className="px-6 py-5 align-top text-sm leading-6 text-gray-600">
+                    <td className="px-6 py-5 align-top text-sm leading-6 text-dunlo-ink/68">
                       {row.competitor}
                     </td>
-                    <td className="px-6 py-5 align-top text-sm font-medium leading-6 text-gray-800">
+                    <td className="px-6 py-5 align-top text-sm font-medium leading-6 text-dunlo-ink/88">
                       {row.dunlo}
                     </td>
                   </tr>
@@ -2079,7 +2060,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
 
         <BetaTestimonialsSection compact />
 
-        <section className="rounded-3xl border border-gray-200 bg-gray-950 px-6 py-8 text-white md:px-10 md:py-10">
+        <section className="rounded-2xl border border-dunlo-line bg-dunlo-ink px-6 py-8 text-white md:px-10 md:py-10">
           <div className="flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
             <div>
               <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo">
@@ -2094,7 +2075,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
             </div>
             <Link
               href={SIGNUP_URL}
-              className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-semibold text-gray-950 transition-all hover:bg-dunlo-hover active:scale-[0.98]"
+              className="inline-flex h-12 shrink-0 items-center justify-center gap-2 rounded-full bg-dunlo px-6 text-sm font-semibold text-dunlo-ink transition-all hover:bg-dunlo-hover active:scale-[0.98]"
             >
               Start with Dunlo
               <ArrowRight size={15} />
@@ -2102,36 +2083,8 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
           </div>
         </section>
 
-        <section className="rounded-3xl border border-gray-200 bg-white px-6 py-6 md:px-8">
-          <h2 className="text-base font-semibold text-gray-950">
-            Related comparisons
-          </h2>
-          <div className="mt-4 grid gap-3 md:grid-cols-3">
-            {relatedPages.map((relatedPage) => (
-              <Link
-                key={relatedPage.slug}
-                href={relatedPage.path}
-                className="group rounded-2xl border border-gray-200 px-4 py-4 transition-colors hover:border-dunlo/30 hover:bg-dunlo/[0.05]"
-              >
-                <div className="flex items-center justify-between gap-3">
-                  <p className="font-semibold text-gray-950">
-                    Dunlo vs {relatedPage.competitorName}
-                  </p>
-                  <ArrowRight
-                    size={15}
-                    className="shrink-0 text-gray-400 transition-transform group-hover:translate-x-0.5 group-hover:text-dunlo-deep motion-reduce:transform-none motion-reduce:transition-none"
-                  />
-                </div>
-                <p className="mt-2 text-sm leading-6 text-gray-600">
-                  Compare recovery focus, setup, and fit.
-                </p>
-              </Link>
-            ))}
-          </div>
-        </section>
-
-        <section className="rounded-3xl border border-gray-200 bg-white px-6 py-6 md:px-8">
-          <h2 className="text-base font-semibold text-gray-950">Sources</h2>
+        <section className="rounded-2xl border border-dunlo-line bg-white px-6 py-6 md:px-8">
+          <h2 className="text-base font-semibold text-dunlo-ink">Sources</h2>
           <div className="mt-4 flex flex-wrap gap-3">
             {page.sourceLinks.map((source) => (
               <a
@@ -2139,7 +2092,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
                 href={source.href}
                 target="_blank"
                 rel="noreferrer"
-                className="rounded-full border border-gray-200 px-4 py-2 text-sm font-medium text-gray-700 transition-colors hover:border-gray-300 hover:bg-gray-50"
+                className="rounded-full border border-dunlo-line px-4 py-2 text-sm font-medium text-dunlo-ink/76 transition-colors hover:border-dunlo-line hover:bg-dunlo-mist"
               >
                 {source.label}
               </a>
@@ -2147,6 +2100,7 @@ export function AlternativePage({ page }: { page: AlternativePageData }) {
           </div>
         </section>
       </main>
+      <Footer />
     </div>
   );
 }
@@ -2167,19 +2121,19 @@ function SummaryBlock({
       <div className="flex items-center justify-between gap-3">
         <p
           className={`font-mono text-xs font-semibold uppercase tracking-[0.16em] ${
-            isDunlo ? "text-dunlo" : "text-white/45"
+            isDunlo ? "text-dunlo-ink" : "text-dunlo-ink/54"
           }`}
         >
           {label}
         </p>
         {isDunlo && (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-dunlo/25 bg-dunlo/12 px-2.5 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-dunlo">
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-dunlo-ink px-2.5 py-1 text-xs font-semibold text-white">
             <ShieldCheck size={12} strokeWidth={2.2} />
             Focused
           </span>
         )}
       </div>
-      <p className="mt-3 text-sm font-semibold leading-6 text-white/72 md:text-base">
+      <p className="mt-3 text-sm font-semibold leading-6 text-dunlo-ink/72 md:text-base">
         {text}
       </p>
     </div>
@@ -2199,10 +2153,10 @@ function UseCasePanel({
 
   return (
     <article
-      className={`rounded-[2rem] border px-6 py-7 md:px-8 ${
+      className={`rounded-2xl border px-6 py-7 md:px-8 ${
         isDunlo
-          ? "border-gray-900 bg-gray-950 text-white shadow-[0_28px_70px_-50px_rgba(15,23,42,0.7)]"
-          : "border-gray-200 bg-white text-gray-950"
+          ? "border-dunlo-ink bg-dunlo-ink text-white"
+          : "border-dunlo-line bg-white text-dunlo-ink"
       }`}
     >
       <h2 className="text-xl font-bold tracking-tight">{title}</h2>
@@ -2211,14 +2165,14 @@ function UseCasePanel({
           <li
             key={item}
             className={`flex gap-3 text-sm leading-6 ${
-              isDunlo ? "text-white/70" : "text-gray-600"
+              isDunlo ? "text-white/70" : "text-dunlo-ink/68"
             }`}
           >
             <span
               className={`mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full ${
                 isDunlo
-                  ? "bg-dunlo text-gray-950"
-                  : "border border-gray-200 bg-gray-50 text-dunlo-deep"
+                  ? "bg-dunlo text-dunlo-ink"
+                  : "border border-dunlo-line bg-dunlo-mist text-dunlo-deep"
               }`}
             >
               <Check size={13} strokeWidth={2.4} />
@@ -2233,7 +2187,7 @@ function UseCasePanel({
 
 function FailureCodeProofSection({ proof }: { proof: FailureCodeProof }) {
   return (
-    <section className="overflow-hidden rounded-3xl border border-gray-200 bg-gray-950 text-white">
+    <section className="overflow-hidden rounded-2xl border border-dunlo-line bg-dunlo-ink text-white">
       <div className="grid gap-0 lg:grid-cols-[0.82fr_1.18fr]">
         <div className="border-b border-white/10 px-6 py-8 md:px-10 lg:border-b-0 lg:border-r lg:px-12 lg:py-12">
           <p className="font-mono text-xs font-semibold uppercase tracking-[0.16em] text-dunlo">
@@ -2299,7 +2253,7 @@ function FailureCodeColumn({
           className={`rounded-full border px-3 py-1 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] ${
             isDunlo
               ? "border-dunlo/30 bg-dunlo/15 text-dunlo"
-              : "border-white/10 bg-white/5 text-gray-400"
+              : "border-white/10 bg-white/5 text-dunlo-ink/46"
           }`}
         >
           {isDunlo ? "Tailored" : "Generic"}
@@ -2312,11 +2266,11 @@ function FailureCodeColumn({
             key={row.code}
             className={`rounded-2xl border p-4 ${
               isDunlo
-                ? "border-dunlo/20 bg-gray-950/70"
-                : "border-white/10 bg-gray-900/80"
+                ? "border-dunlo/20 bg-dunlo-ink/70"
+                : "border-white/10 bg-dunlo-ink/80"
             }`}
           >
-            <p className="font-mono text-[11px] font-semibold text-gray-400">
+            <p className="font-mono text-[11px] font-semibold text-dunlo-ink/46">
               {row.code}
             </p>
             <p className="mt-2 text-sm leading-6 text-gray-100">
@@ -2328,7 +2282,7 @@ function FailureCodeColumn({
 
       <p
         className={`mt-5 text-sm leading-6 ${
-          isDunlo ? "text-dunlo" : "text-gray-400"
+          isDunlo ? "text-dunlo" : "text-dunlo-ink/46"
         }`}
       >
         {caption}

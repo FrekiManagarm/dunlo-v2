@@ -4,13 +4,7 @@ interface LogoMarkProps {
 
 export function LogoMark({ size = 28 }: LogoMarkProps) {
   return (
-    <svg
-      width={size}
-      height={size}
-      viewBox="0 0 32 32"
-      fill="none"
-      aria-hidden
-    >
+    <svg width={size} height={size} viewBox="0 0 32 32" fill="none" aria-hidden>
       <rect width="32" height="32" rx="8.5" fill="var(--dunlo-accent)" />
       <path
         d="M 16 25 A 9 9 0 1 0 7 16"
@@ -46,7 +40,7 @@ export function Logo({
       {withText && (
         <span
           className={`font-sans text-[15px] font-semibold leading-none tracking-tight ${
-            dark ? "text-white" : "text-gray-900"
+            dark ? "text-white" : "text-dunlo-ink"
           }`}
         >
           dunlo

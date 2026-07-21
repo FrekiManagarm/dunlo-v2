@@ -13,7 +13,5 @@ export default function Image() {
     title,
     description,
     badge: "Dunlo blog",
-    metricLabel: "guides",
-    metricValue: "10+",
   });
 }
