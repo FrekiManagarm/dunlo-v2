@@ -54,6 +54,11 @@ const nextConfig: NextConfig = {
           destination: "/stripe-smart-retries-alternative",
           permanent: true,
         },
+        {
+          source: "/vs/baremetrics",
+          destination: "/alternatives/baremetrics",
+          permanent: true,
+        },
       );
   },
 };

@@ -12,6 +12,13 @@ type AlternativeRouteProps = {
 };
 
 const KEYWORDS: Record<string, string[]> = {
+  baremetrics: [
+    "baremetrics alternative",
+    "baremetrics vs",
+    "baremetrics pricing alternative",
+    "Baremetrics Recover alternative",
+    "Stripe dunning for bootstrapped SaaS",
+  ],
   "stripe-smart-retries": [
     "Stripe Smart Retries alternative",
     "Dunlo vs Stripe Smart Retries",

@@ -11,7 +11,6 @@ import { BetaTestimonialsSection } from "@/components/landing/beta-testimonials"
 import { Footer } from "@/components/landing/footer";
 import { Nav } from "@/components/landing/nav";
 import { PublicProofLayer } from "@/components/public-proof-layer";
-import { getRelatedAlternativeSlugs } from "@/lib/related-alternatives";
 
 type ComparisonRow = {
   label: string;
@@ -541,7 +540,7 @@ export const ALTERNATIVES: Record<string, AlternativePageData> = {
   },
   baremetrics: {
     slug: "baremetrics",
-    path: "/vs/baremetrics",
+    path: "/alternatives/baremetrics",
     competitorName: "Baremetrics",
     metaTitle: "Baremetrics vs Dunlo - Stripe Recovery for Early SaaS",
     metaDescription:
@@ -1850,18 +1849,7 @@ export const ALTERNATIVE_ROUTE_PAGES = Object.values(ALTERNATIVES).filter(
     page.slug !== "stripe-smart-retries",
 );
 
-export const VS_ROUTE_PAGES = Object.values(ALTERNATIVES).filter((page) =>
-  page.path.startsWith("/vs/"),
-);
-
 export function AlternativePage({ page }: { page: AlternativePageData }) {
-  const relatedPages = getRelatedAlternativeSlugs(page.slug)
-    .map((slug) => ALTERNATIVES[slug])
-    .filter(
-      (relatedPage): relatedPage is AlternativePageData =>
-        relatedPage !== undefined,
-    );
-
   return (
     <div className="min-h-dvh overflow-x-hidden bg-dunlo-ground font-sans text-dunlo-ink">
       <Nav />

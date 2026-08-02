@@ -162,6 +162,14 @@ export function AlternativesIndex() {
             <p className="max-w-xl text-sm leading-6 text-dunlo-ink/56">
               Each guide keeps the comparison practical: fit, setup, pricing,
               recovery workflow, and where Dunlo is intentionally narrower.
+              Comparing two other tools instead?{" "}
+              <Link
+                href="/compare"
+                className="font-semibold text-dunlo-deep underline underline-offset-4"
+              >
+                See head-to-head comparisons
+              </Link>
+              .
             </p>
           </div>
 

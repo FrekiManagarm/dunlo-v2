@@ -20,7 +20,7 @@ import {
 
 const TITLE = "Failed Payments: Recover SaaS Revenue | Dunlo";
 const DESCRIPTION =
-  "Recover failed payments with failure-code emails, smart retry timing, founder escalation, and revenue tracking built for SaaS teams.";
+  "Recover failed payments with failure-code emails, smart retry timing, founder escalation, and revenue tracking built for Stripe-first SaaS teams on a budget.";
 const KEYWORDS = [
   "Stripe failed payments",
   "failed Stripe payment recovery",

@@ -10,7 +10,7 @@ export const HEADER_NAV_LINKS = [
 ] as const satisfies readonly SiteLink[];
 
 export const ALTERNATIVE_LINKS = [
-  { label: "Baremetrics vs Dunlo", href: "/vs/baremetrics" },
+  { label: "Baremetrics vs Dunlo", href: "/alternatives/baremetrics" },
   {
     label: "Stripe customer emails",
     href: "/alternatives/stripe-customer-emails",
@@ -48,6 +48,7 @@ export const ALTERNATIVE_LINKS = [
 
 const FOOTER_COMPARE_LINKS = [
   { label: "All alternatives", href: "/alternatives" },
+  { label: "All comparisons", href: "/compare" },
   {
     label: "Stripe Smart Retries",
     href: "/stripe-smart-retries-alternative",

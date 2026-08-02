@@ -12,7 +12,7 @@ import {
 
 const BLOG_TITLE = "Stripe Payment Recovery Blog - Dunlo";
 const BLOG_DESCRIPTION =
-  "Practical guides for SaaS teams to recover failed payments, reduce involuntary churn, and improve dunning workflows.";
+  "Practical guides for SaaS teams to recover failed payments, reduce involuntary churn, and improve dunning workflows — failure codes, benchmarks, and recovery emails.";
 
 const BLOG_KEYWORDS = [
   "Stripe payment recovery blog",
